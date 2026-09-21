@@ -1,0 +1,35 @@
+import { useEffect } from 'react'
+import { useApp } from '@/lib/store'
+import { Sidebar } from '@/features/sidebar'
+import { ThreadList } from '@/features/threadlist'
+import { Reader } from '@/features/reader'
+import { ComposeHost } from '@/features/compose'
+import { SettingsModal } from '@/features/settings'
+import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/features/commands'
+
+/**
+ * Shell composition only. Each region is owned by a feature folder (see docs/04-workstreams.md);
+ * this file should rarely change.
+ */
+export function App(): JSX.Element {
+  const init = useApp((s) => s.init)
+  const ready = useApp((s) => s.ready)
+  useEffect(() => { void init() }, [init])
+  useGlobalShortcuts()
+
+  return (
+    <div className="app">
+      <Sidebar />
+      <main className="app__main">
+        <div className="titlebar drag" />
+        {ready && <ThreadList />}
+        <Reader />
+      </main>
+      <ComposeHost />
+      <SettingsModal />
+      <CommandPalette />
+      <ShortcutsHelp />
+      <Toaster />
+    </div>
+  )
+}
