@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`serializeToEmailHtml > produces a readable plain-text alternative (snapshot) 1`] = `
+"# Weekly update
+
+Hello Ada, see the notes <https://example.com/n?a=1&b=2>.
+
+## Shipped
+
+- Composer
+- Serializer
+
+1. First
+2. Second
+
+[x] Write tests
+[ ] Ship it
+
+Details
+  Hidden in Notion, flattened in email.
+
+> A quote.
+
+---
+
+💡 Remember the milk.
+
+\`\`\`
+const a = 1 < 2
+console.log(a)
+\`\`\`
+
+| Name | Role |
+| Ada | Engineer |
+
+coloured highlighted code()🚀
+
+[A tiny png]"
+`;
+
+exports[`serializeToEmailHtml > serialises a rich document (snapshot) 1`] = `
+"<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#37352f;width:100%;max-width:640px;word-wrap:break-word"><h1 style="font-size:26px;font-weight:600;line-height:1.3;margin:24px 0 8px;color:#37352f">Weekly update</h1><p style="margin:0 0 12px">Hello <strong>Ada</strong>, see the <a href="https://example.com/n?a=1&amp;b=2" target="_blank" rel="noopener noreferrer" style="color:#2383e2;text-decoration:underline">notes</a>.</p><h2 style="font-size:20px;font-weight:600;line-height:1.3;margin:20px 0 8px;color:#37352f">Shipped</h2><ul style="margin:0 0 12px;padding-left:24px"><li style="margin:0 0 4px"><span>Composer</span></li><li style="margin:0 0 4px"><span>Serializer</span></li></ul><ol style="margin:0 0 12px;padding-left:24px"><li style="margin:0 0 4px"><span>First</span></li><li style="margin:0 0 4px"><span>Second</span></li></ol><div style="margin:0 0 12px"><p style="margin:0 0 6px;color:#6b6a66"><span style="font-size:15px">&#9745;</span>&nbsp;<span style="text-decoration:line-through">Write tests</span></p><p style="margin:0 0 6px"><span style="font-size:15px">&#9744;</span>&nbsp;Ship it</p></div><div style="margin:0 0 12px"><p style="margin:0 0 4px;font-weight:600">&#9662;&nbsp;Details</p><div style="padding-left:18px"><p style="margin:0">Hidden in Notion, flattened in email.</p></div></div><blockquote style="margin:0 0 12px;border-left:3px solid #e3e2e0;padding:2px 0 2px 14px;color:#6b6a66"><p style="margin:0 0 12px">A quote.</p></blockquote><hr style="border:0;border-top:1px solid #e3e2e0;margin:20px 0" /><table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#f7f6f3" style="margin:0 0 12px;border-collapse:collapse;background-color:#f7f6f3;border-radius:4px"><tr><td valign="top" style="padding:12px 4px 12px 14px;font-size:16px;line-height:1.4;width:26px">💡</td><td valign="top" style="padding:12px 14px 12px 4px"><p style="margin:0">Remember the milk.</p></td></tr></table><pre style="margin:0 0 12px;background:#f4f3f1;border:1px solid #e3e2e0;border-radius:4px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:13px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word"><code style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:13px">const a = 1 &lt; 2
+console.log(a)</code></pre><table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px;border-collapse:collapse;width:100%;font-size:14px"><tr><th style="border:1px solid #e3e2e0;padding:6px 10px;text-align:left;vertical-align:top;background-color:#f4f3f1;font-weight:600"><p style="margin:0">Name</p></th><th style="border:1px solid #e3e2e0;padding:6px 10px;text-align:left;vertical-align:top;background-color:#f4f3f1;font-weight:600"><p style="margin:0">Role</p></th></tr><tr><td style="border:1px solid #e3e2e0;padding:6px 10px;text-align:left;vertical-align:top"><p style="margin:0">Ada</p></td><td style="border:1px solid #e3e2e0;padding:6px 10px;text-align:left;vertical-align:top"><p style="margin:0">Engineer</p></td></tr></table><p style="margin:0 0 12px"><span style="color:#c4554d">coloured</span> <span style="background-color:#fdecc8;border-radius:2px;padding:0 2px">highlighted</span> <code style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;font-size:0.92em;background:#f4f3f1;padding:1px 4px;border-radius:3px;color:#c2503e">code()</code>🚀</p><p style="margin:0 0 12px"><img src="cid:cid0-1@mailroom.local" alt="A tiny png" style="max-width:100%;height:auto;border:0;display:block" /></p></div>"
+`;
