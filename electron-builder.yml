@@ -1,0 +1,65 @@
+# electron-builder config for Mailroom. Personal-use build: ad-hoc signed, not notarised (see docs/install.md).
+appId: com.anthony.mailroom
+productName: Mailroom
+copyright: Copyright © 2026 Anthony
+directories:
+  output: release
+  buildResources: build
+
+# Ship only the bundled output + package.json. Production `dependencies` are added automatically;
+# devDependencies (electron, vite, vitest, …) never are.
+files:
+  - out/**
+  - package.json
+  - "!**/*.map"
+  - "!**/*.d.ts"
+  - "!**/*.d.cts"
+  - "!**/*.d.mts"
+asar: true
+# No native node modules (the DB is node:sqlite), so there is nothing to @electron/rebuild.
+npmRebuild: false
+
+# Ad-hoc signing happens in the afterSign hook; skip electron-builder's own identity lookup.
+afterSign: scripts/adhoc-sign.cjs
+
+mac:
+  category: public.app-category.productivity
+  icon: build/icon.icns
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  minimumSystemVersion: "12.0"
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  extendInfo:
+    NSHumanReadableCopyright: Copyright © 2026 Anthony
+    LSMinimumSystemVersion: "12.0"
+    LSApplicationCategoryType: public.app-category.productivity
+    NSHighResolutionCapable: true
+    CFBundleURLTypes:
+      - CFBundleURLName: Mail link
+        CFBundleTypeRole: Viewer
+        CFBundleURLSchemes:
+          - mailto
+
+dmg:
+  title: ${productName} ${version}
+  icon: build/icon.icns
+  iconSize: 96
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 140
+      y: 190
+      type: file
+    - x: 400
+      y: 190
+      type: link
+      path: /Applications
