@@ -95,6 +95,11 @@ export interface StyleScrubResult {
   blockedRemote: boolean
   /** The author set a colour or background — relevant to dark-mode handling. */
   authoredColor: boolean
+  /** The author set a *text* colour specifically. Unreadable on a dark surface, so the reader
+   *  neutralises it when the message is not being shown on the light paper surface. */
+  authoredTextColor: boolean
+  /** The author set a background — the signal that this mail is designed for a light page. */
+  authoredBackground: boolean
 }
 
 /**
@@ -103,7 +108,8 @@ export interface StyleScrubResult {
  */
 export function scrubInlineStyle(style: string, blockRemote: boolean): StyleScrubResult {
   let blockedRemote = false
-  let authoredColor = false
+  let authoredTextColor = false
+  let authoredBackground = false
   const kept: string[] = []
   for (const decl of splitDeclarations(style)) {
     if (DANGEROUS_CSS.test(decl)) continue
@@ -115,12 +121,19 @@ export function scrubInlineStyle(style: string, blockRemote: boolean): StyleScru
       if (unsafeInline) continue
       if (remote && blockRemote) { blockedRemote = true; continue }
     }
-    if (prop === 'color' || prop === 'background' || prop === 'background-color' || prop === 'background-image') {
-      authoredColor = true
+    if (prop === 'color') authoredTextColor = true
+    else if (prop === 'background' || prop === 'background-color' || prop === 'background-image') {
+      authoredBackground = true
     }
     kept.push(decl)
   }
-  return { style: kept.join('; '), blockedRemote, authoredColor }
+  return {
+    style: kept.join('; '),
+    blockedRemote,
+    authoredColor: authoredTextColor || authoredBackground,
+    authoredTextColor,
+    authoredBackground
+  }
 }
 
 /** Scrub the text of a `<style>` element. Returns null when nothing usable is left. */

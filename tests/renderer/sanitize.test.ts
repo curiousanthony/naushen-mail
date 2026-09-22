@@ -143,6 +143,24 @@ describe('sanitizeEmailHtml — style attributes and sheets', () => {
     expect(sanitizeEmailHtml('<table><tr><td bgcolor="#f6f5f4">x</td></tr></table>').hasAuthoredColors).toBe(true)
     expect(sanitizeEmailHtml('<p>plain</p>').hasAuthoredColors).toBe(false)
   })
+
+  it('separates an authored background from a mere text colour', () => {
+    // Only a background means "designed for a light page" — that is what sends a message to
+    // the reader's paper surface in dark mode.
+    expect(sanitizeEmailHtml('<div style="color:#222">x</div>').hasAuthoredBackground).toBe(false)
+    expect(sanitizeEmailHtml('<div style="background:#fff">x</div>').hasAuthoredBackground).toBe(true)
+    expect(sanitizeEmailHtml('<div style="background-color:#fff">x</div>').hasAuthoredBackground).toBe(true)
+    expect(sanitizeEmailHtml('<table><tr><td bgcolor="#eee">x</td></tr></table>').hasAuthoredBackground).toBe(true)
+    expect(sanitizeEmailHtml('<style>.a{background:#fff}</style><p>x</p>').hasAuthoredBackground).toBe(true)
+    expect(sanitizeEmailHtml('<p>plain</p>').hasAuthoredBackground).toBe(false)
+  })
+
+  it('tags elements whose text colour the reader may need to neutralise', () => {
+    expect(sanitizeEmailHtml('<div style="color:#222">x</div>').html).toContain('data-mr-fg')
+    expect(sanitizeEmailHtml('<font color="#222">x</font>').html).toContain('data-mr-fg')
+    // A background is not a text colour: nothing to neutralise.
+    expect(sanitizeEmailHtml('<div style="background:#fff">x</div>').html).not.toContain('data-mr-fg')
+  })
 })
 
 describe('sanitizeEmailHtml — images', () => {
@@ -154,6 +172,36 @@ describe('sanitizeEmailHtml — images', () => {
     expect(r.html).toContain('data:image/gif;base64')
     expect(r.html).not.toContain('cdn.test')
     expect(r.html).toContain('alt="Hero"')
+  })
+
+  it('pins the placeholder to the declared size so layout does not shift', () => {
+    // Without this the 1x1 placeholder GIF's intrinsic ratio wins and a 520x200 banner
+    // reserves a 520x520 hole.
+    const r = sanitizeEmailHtml('<img src="https://cdn.test/hero.png" width="520" height="200">')
+    expect(r.html).toContain('width:520px')
+    expect(r.html).toContain('height:200px')
+  })
+
+  it('invents no size when the author declared none', () => {
+    const r = sanitizeEmailHtml('<img src="https://cdn.test/hero.png">')
+    expect(r.html).not.toContain('width:')
+    expect(r.html).not.toContain('height:')
+  })
+
+  it('drops junk dimensions and never copies them into CSS', () => {
+    const r = sanitizeEmailHtml('<img src="https://cdn.test/a.png" width="100%" height="expression(alert(1))">')
+    expect(r.html).not.toContain('expression')
+    // A percentage is a legitimate dimension, so it stays as an attribute…
+    expect(r.html).toContain('width="100%"')
+    // …but only plain pixel values are promoted into the pinned style.
+    expect(r.html).not.toContain('width:100%')
+  })
+
+  it('pins unresolved cid: placeholders the same way', () => {
+    const r = sanitizeEmailHtml('<img src="cid:missing@x" width="300" height="80">')
+    expect(r.unresolvedCidCount).toBe(1)
+    expect(r.html).toContain('width:300px')
+    expect(r.html).toContain('height:80px')
   })
 
   it('loads remote images when allowed', () => {
