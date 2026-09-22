@@ -1,0 +1,588 @@
+/**
+ * Reader / thread view.
+ *
+ * Colours come from tokens.css. The `--reader-paper-*` family is defined here because it is
+ * meaningful only to this feature: it is the light surface that mail carrying its own colours
+ * is rendered on, in dark mode as well as light. Newsletters are designed for a white page;
+ * inverting them produces unreadable mush, so we give them the page they expect and let the
+ * app chrome around them stay dark.
+ */
+:root {
+  --reader-paper-bg: #ffffff;
+  --reader-paper-text: #37352f;
+  --reader-paper-text-2: rgba(55, 53, 47, 0.65);
+  --reader-paper-divider: rgba(55, 53, 47, 0.12);
+  --reader-paper-accent: #2383e2;
+  --reader-paper-fill: rgba(55, 53, 47, 0.06);
+
+  --reader-max-w: 760px;
+  --reader-pad-x: 28px;
+}
+
+/* ------------------------------------------------------------------ shells */
+
+.reader {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+}
+
+/* Side peek: slides over the list from the right edge. */
+.reader--side {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 1px solid var(--c-divider);
+  box-shadow: var(--shadow-peek);
+  animation: reader-slide-in var(--t-med);
+}
+
+@keyframes reader-slide-in {
+  from { transform: translateX(28px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Centre peek: modal over a dimmed list. */
+.reader__backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 24px 24px;
+  background: rgba(15, 15, 15, 0.32);
+  animation: reader-fade-in var(--t-med);
+}
+
+@keyframes reader-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.reader--centre {
+  position: relative;
+  width: min(940px, 100%);
+  height: 100%;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-peek);
+  overflow: hidden;
+  animation: reader-pop-in var(--t-med);
+}
+
+@keyframes reader-pop-in {
+  from { transform: scale(0.985) translateY(6px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Full page: replaces the list entirely. */
+.reader--full {
+  inset: 0;
+  animation: reader-fade-in var(--t-fast);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader--side, .reader--centre, .reader--full, .reader__backdrop { animation: none; }
+}
+
+/* ------------------------------------------------------------------ resizer */
+
+.reader__resizer {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  bottom: 0;
+  width: 7px;
+  z-index: 2;
+  cursor: col-resize;
+  background: none;
+  border: 0;
+  padding: 0;
+  touch-action: none;
+}
+
+.reader__resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 1px;
+  background: var(--c-accent);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+
+.reader__resizer:hover::after,
+.reader__resizer:focus-visible::after,
+.reader__resizer.is-dragging::after { opacity: 1; }
+.reader__resizer:focus-visible { outline: none; }
+.reader__resizer.is-dragging::after { width: 2px; }
+
+/* ------------------------------------------------------------------ header */
+
+.reader__header {
+  flex: none;
+  /* No horizontal padding: the divider spans the full width while the content inside lines up
+     with the message column. */
+  padding: 10px 0 12px;
+  border-bottom: 1px solid var(--c-divider);
+  background: var(--c-bg);
+}
+
+/* Same max-width and gutters as .reader__inner, so subject and messages share a left edge
+   in centre-peek and full-page, where the panel is wider than the reading column. */
+.reader__header-inner {
+  max-width: var(--reader-max-w);
+  margin: 0 auto;
+  padding: 0 var(--reader-pad-x);
+}
+
+.reader--side .reader__header,
+.reader--full .reader__header { padding-top: calc(var(--titlebar-h) - 8px); }
+
+.reader__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.reader__actions-spacer { flex: 1; }
+
+.reader__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 6px;
+  border-radius: var(--radius-md);
+  color: var(--c-text-2);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.reader__btn:hover { background: var(--c-bg-hover); color: var(--c-text); }
+.reader__btn:active { background: var(--c-bg-pressed); }
+.reader__btn.is-danger:hover { color: var(--c-danger); }
+.reader__btn[aria-pressed='true'] { background: var(--c-bg-selected); color: var(--c-accent); }
+
+.reader__btn-label { font-size: 13px; padding-right: 2px; }
+
+.reader__subject {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  color: var(--c-text);
+  overflow-wrap: break-word;
+}
+
+.reader__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.reader__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.reader__count {
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+
+/* ------------------------------------------------------------------ scroll area */
+
+.reader__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.reader__inner {
+  max-width: var(--reader-max-w);
+  margin: 0 auto;
+  padding: 6px var(--reader-pad-x) 20px;
+}
+
+.reader__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  padding: 40px;
+  color: var(--c-text-3);
+  font-size: 14px;
+  text-align: center;
+}
+
+.reader__state-title { color: var(--c-text-2); font-weight: 500; }
+
+/* Skeleton while threads.get is in flight. */
+.reader__skeleton { padding: 24px var(--reader-pad-x); max-width: var(--reader-max-w); margin: 0 auto; }
+.reader__skeleton-line {
+  height: 12px;
+  border-radius: 4px;
+  background: var(--c-bg-hover);
+  margin-bottom: 10px;
+  animation: reader-pulse 1.4s ease-in-out infinite;
+}
+.reader__skeleton-line:nth-child(2) { width: 82%; animation-delay: 0.1s; }
+.reader__skeleton-line:nth-child(3) { width: 64%; animation-delay: 0.2s; }
+.reader__skeleton-line:nth-child(4) { width: 73%; animation-delay: 0.3s; }
+
+@keyframes reader-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .reader__skeleton-line { animation: none; } }
+
+/* ------------------------------------------------------------------ message card */
+
+.msg {
+  border-bottom: 1px solid var(--c-divider);
+}
+
+.msg:last-of-type { border-bottom: 0; }
+
+.msg__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 8px;
+  margin: 0 -8px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background var(--t-fast);
+}
+
+.msg--collapsed .msg__head { cursor: pointer; align-items: center; }
+.msg--collapsed .msg__head:hover { background: var(--c-bg-hover); }
+
+.msg__avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+  user-select: none;
+}
+
+.msg__headtext { flex: 1; min-width: 0; }
+
+.msg__line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.msg__from {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msg__unread-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-unread-dot);
+  align-self: center;
+}
+
+.msg__snippet {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--c-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msg__to {
+  margin-top: 1px;
+  font-size: 12.5px;
+  color: var(--c-text-2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.msg__detail-toggle {
+  display: inline-flex;
+  align-items: center;
+  color: var(--c-text-3);
+  border-radius: 3px;
+  transition: color var(--t-fast), background var(--t-fast);
+}
+
+.msg__detail-toggle:hover { color: var(--c-text); background: var(--c-bg-hover); }
+
+.msg__aside {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-3);
+  white-space: nowrap;
+  padding-top: 1px;
+}
+
+.msg__clip { color: var(--c-text-3); display: inline-flex; }
+
+/* Expanded from/to/cc table */
+.msg__detail {
+  margin: 2px 0 0 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--c-divider);
+  border-radius: var(--radius-md);
+  background: var(--c-bg-input);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--c-text-2);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 10px;
+}
+
+.msg__detail dt { color: var(--c-text-3); }
+.msg__detail dd { margin: 0; color: var(--c-text); overflow-wrap: anywhere; }
+
+.msg__body-wrap { padding: 2px 0 16px 40px; }
+
+/* ------------------------------------------------------------------ message body */
+
+.msgbody { min-width: 0; }
+
+.msgbody__frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color-scheme: normal;
+}
+
+.msgbody__empty {
+  margin: 0;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--c-text-3);
+}
+
+.msgbody__banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 7px 8px 7px 10px;
+  border: 1px solid var(--c-divider);
+  border-radius: var(--radius-md);
+  background: var(--c-bg-input);
+  font-size: 12.5px;
+  color: var(--c-text-2);
+}
+
+.msgbody__banner svg { flex: none; color: var(--c-text-3); }
+.msgbody__banner-text { flex: 1; min-width: 0; }
+.msgbody__banner-note { font-style: normal; color: var(--c-text-3); }
+
+.msgbody__banner-btn {
+  flex: none;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-accent);
+  transition: background var(--t-fast);
+}
+
+.msgbody__banner-btn:hover { background: var(--c-bg-selected); }
+
+.msgbody__quote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  margin-top: 4px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-hover);
+  color: var(--c-text-3);
+  font-size: 12px;
+  line-height: 1;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+
+.msgbody__quote:hover { background: var(--c-bg-hover-strong); color: var(--c-text-2); }
+.msgbody__dots { letter-spacing: 1px; font-size: 9px; }
+.msgbody__quote:not(.is-open) .msgbody__quote-label {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ attachments */
+
+.atts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.att {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  padding: 6px 10px 6px 8px;
+  border: 1px solid var(--c-divider);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+  text-align: left;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+
+.att:hover { background: var(--c-bg-hover); border-color: var(--c-border); }
+.att:active { background: var(--c-bg-pressed); }
+
+.att__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+}
+
+.att__text { min-width: 0; line-height: 1.3; }
+
+.att__name {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.att__size { display: block; font-size: 11.5px; color: var(--c-text-3); }
+.att__dl { flex: none; color: var(--c-text-3); opacity: 0; transition: opacity var(--t-fast); }
+.att:hover .att__dl { opacity: 1; }
+
+/* ------------------------------------------------------------------ reply bar */
+
+.replybar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 0 6px 40px;
+}
+
+.replybar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-2);
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+
+.replybar__btn:hover { background: var(--c-bg-hover); color: var(--c-text); border-color: var(--c-text-3); }
+.replybar__btn:active { background: var(--c-bg-pressed); }
+
+.replybar__key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--c-text-3);
+  border: 1px solid var(--c-divider);
+  border-radius: 3px;
+  padding: 0 3px;
+  line-height: 14px;
+}
+
+/* The compose branch mounts its inline composer here. */
+#reader-inline-compose-slot:not(:empty) { padding: 12px 0 4px 40px; }
+
+/* ------------------------------------------------------------------ menu */
+
+.reader__menu {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  z-index: 40;
+  min-width: 210px;
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+  animation: reader-menu-in var(--t-fast);
+}
+
+@keyframes reader-menu-in {
+  from { opacity: 0; transform: scale(0.97) translateY(-3px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) { .reader__menu { animation: none; } }
+
+.reader__menu-wrap { position: relative; }
+
+.reader__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--c-text);
+  text-align: left;
+  transition: background var(--t-fast);
+}
+
+.reader__menu-item:hover { background: var(--c-bg-hover); }
+.reader__menu-item.is-danger { color: var(--c-danger); }
+.reader__menu-item svg { color: var(--c-text-3); }
+.reader__menu-item.is-danger svg { color: var(--c-danger); }
+.reader__menu-key { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--c-text-3); }
+.reader__menu-sep { height: 1px; margin: 4px 6px; background: var(--c-divider); }
