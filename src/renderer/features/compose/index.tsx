@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useApp, type ComposerState } from '@/lib/store'
 import { Composer } from './Composer'
+import { editorRegistry } from './registry'
 import './compose.css'
 
 export const INLINE_SLOT_ID = 'reader-inline-compose-slot'
@@ -70,7 +71,9 @@ function useTestHook(): void {
     w.__compose = {
       open: (init?: Partial<ComposerState>) => useApp.getState().openComposer(init),
       close: (id: string) => useApp.getState().closeComposer(id),
-      list: () => useApp.getState().composers
+      list: () => useApp.getState().composers,
+      editor: (id?: string) =>
+        (id ? editorRegistry.get(id) : editorRegistry.values().next().value) ?? null
     }
     return () => { delete w.__compose }
   }, [])

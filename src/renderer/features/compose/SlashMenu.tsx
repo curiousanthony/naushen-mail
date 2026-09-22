@@ -121,11 +121,14 @@ export function SlashMenu(props: Props): JSX.Element | null {
     )
   }
 
+  // Filtered results are ranked by score, so groups would interleave: headers are only
+  // meaningful for the unfiltered, curated list.
+  const showGroups = !query.trim()
   let lastGroup = ''
   return (
     <div className="cmp-menu" style={positionStyle(anchor)} role="listbox" ref={listRef}>
       {items.map((item, i) => {
-        const header = item.group !== lastGroup ? item.group : null
+        const header = showGroups && item.group !== lastGroup ? item.group : null
         lastGroup = item.group
         return (
           <div key={`${item.action}-${item.snippetId ?? item.title}`}>

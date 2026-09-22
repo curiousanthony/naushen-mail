@@ -15,6 +15,7 @@ import type { Address, Draft, Message, OutgoingMessage, ScheduledSend } from '@s
 import type { QuotedOriginal } from '@shared/emailhtml'
 import { buildQuoted, forwardHeaderHtml, forwardSubject, replyRecipients, replySubject } from '@shared/emailhtml'
 import { useApp, type ComposerState } from '@/lib/store'
+import { editorRegistry } from './registry'
 import { EditorSurface, useComposerEditor } from './Editor'
 import { RecipientField } from './RecipientField'
 import { validateCompose } from './recipients'
@@ -78,6 +79,12 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
   const signatureHtml = settings.signatureHtml?.[accountId]?.trim() || ''
 
   const editor = useComposerEditor({ onUpdate: () => { dirty.current = true } })
+
+  useEffect(() => {
+    if (!editor) return
+    editorRegistry.set(composer.id, editor)
+    return () => { editorRegistry.delete(composer.id) }
+  }, [editor, composer.id])
 
   // ---------------------------------------------------------------- prefill
 
@@ -395,7 +402,6 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
             ref={subjectRef}
             className="cmp-input"
             value={subject}
-            placeholder="Subject"
             aria-label="Subject"
             onChange={(e) => setSubject(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); editor?.commands.focus('start') } }}
