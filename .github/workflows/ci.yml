@@ -20,8 +20,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: npm ci (verbose diagnostics on failure)
-        run: npm ci --loglevel verbose || { echo "--- npm debug log ---"; cat /Users/runner/.npm/_logs/*-debug-0.log; exit 1; }
+      - run: npm ci
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
