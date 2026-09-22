@@ -48,6 +48,9 @@
 }
 
 .tl__tools { display: flex; align-items: center; gap: 4px; margin-left: auto; min-width: 0; }
+/* Chips give up room first; the Filter and Group buttons always stay reachable. */
+.tl__tools > .tl__tool, .tl__tools > .tl__clear { flex: none; }
+.tl__tools > .tl__activechip { flex: 0 1 auto; }
 .tl__tool {
   display: inline-flex;
   align-items: center;
@@ -68,6 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  min-width: 0;
   height: 24px;
   padding: 0 4px 0 9px;
   border-radius: 12px;
@@ -76,7 +80,9 @@
   font-size: 12px;
   max-width: 190px;
   white-space: nowrap;
+  /* Several chips plus "Clear all" must not push Filter / Date off the bar. */
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tl__activechip > button {
   display: grid;

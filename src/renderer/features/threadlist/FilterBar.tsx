@@ -2,6 +2,7 @@ import { Check, LayoutList, ListFilter, Paperclip, X } from 'lucide-react'
 import type { Label } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Popover, useAnchor } from '@/features/sidebar/Popover'
+import { accountTags, ambiguousLabelNames } from '@/features/sidebar/lib'
 import { chipStyle } from '@/lib/labels'
 import { EMPTY_CHIPS, chipCount, type Chips } from './lib'
 
@@ -14,10 +15,20 @@ export interface FilterBarProps {
 /** Filter popover (Unread / Attachments / labels / From) plus the group-by toggle. */
 export function FilterBar({ chips, onChange, labels }: FilterBarProps): JSX.Element {
   const settings = useApp((s) => s.settings)
+  const accounts = useApp((s) => s.accounts)
   const updateSettings = useApp((s) => s.updateSettings)
   const [anchor, toggle, close] = useAnchor()
   const n = chipCount(chips)
-  const byName = (id: string): string => labels.find((l) => l.id === id)?.name ?? 'Label'
+  // Two accounts can both have a "Receipts"; name the owner only on the rows that collide.
+  const ambiguous = ambiguousLabelNames(labels)
+  const tags = accountTags(accounts)
+  const owner = (l: Label): string | undefined => (ambiguous.has(l.name) ? tags[l.accountId] : undefined)
+  const byName = (id: string): string => {
+    const l = labels.find((x) => x.id === id)
+    if (!l) return 'Label'
+    const tag = owner(l)
+    return tag ? `${l.name} (${tag})` : l.name
+  }
 
   const set = (patch: Partial<Chips>): void => onChange({ ...chips, ...patch })
 
@@ -75,7 +86,10 @@ export function FilterBar({ chips, onChange, labels }: FilterBarProps): JSX.Elem
                     onClick={() => set({ labelIds: on ? chips.labelIds.filter((x) => x !== l.id) : [...chips.labelIds, l.id] })}
                   >
                     <span className="menu__icon">{on ? <Check size={14} /> : <span className="dot" style={{ background: `var(--chip-${l.color ?? 'gray'}-fg)` }} />}</span>
-                    <span className="menu__label"><span className="menu__title">{l.name}</span></span>
+                    <span className="menu__label">
+                      <span className="menu__title">{l.name}</span>
+                      {owner(l) && <span className="menu__sub">{owner(l)}</span>}
+                    </span>
                     <span className="trow__chip" style={chipStyle(l.color)}>{l.name}</span>
                   </button>
                 )

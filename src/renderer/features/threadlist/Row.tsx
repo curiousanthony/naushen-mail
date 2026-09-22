@@ -27,6 +27,9 @@ function Action({ label, on, onClick, children }: {
   return (
     <button
       className="trow__act" data-on={!!on} title={label} aria-label={label}
+      // Out of the tab order: a 300-row list would otherwise be ~1500 stops, and these
+      // actions are all reachable from the keyboard through the commands feature.
+      tabIndex={-1}
       onClick={(e) => { e.stopPropagation(); onClick() }}
       onMouseDown={(e) => e.stopPropagation()}
     >
@@ -53,6 +56,7 @@ function RowImpl({
       className="trow" role="option" aria-selected={selected} id={`trow-${t.id}`}
       data-unread={t.unread} data-selected={selected} data-focused={focused} data-open={open}
       onClick={(e) => onOpen(t.id, e)}
+      onDoubleClick={(e) => onOpen(t.id, e)}
     >
       <span className="trow__lead">
         <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />
