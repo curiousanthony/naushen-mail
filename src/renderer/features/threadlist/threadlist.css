@@ -124,8 +124,6 @@
   font-weight: 500;
   color: var(--c-text-3);
   background: var(--c-bg);
-  /* Hide rows scrolling up behind the hairline-free header. */
-  box-shadow: 0 -8px 0 8px var(--c-bg);
 }
 .tl__groupcount { font-variant-numeric: tabular-nums; opacity: 0.75; }
 

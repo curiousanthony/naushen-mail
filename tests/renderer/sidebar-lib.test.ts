@@ -1,8 +1,8 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import type { Counts, Label, View } from '../../src/shared/types'
 import {
-  MAIL_ITEMS, accountLabel, filterSummary, loadCollapsed, mailNav, navEquals, saveCollapsed,
-  sidebarLabels, sidebarViews, unreadFor
+  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, filterSummary, loadCollapsed,
+  mailNav, navEquals, saveCollapsed, sidebarLabels, sidebarViews, unreadFor
 } from '../../src/renderer/features/sidebar/lib'
 
 const label = (id: string, accountId: string, name: string, kind: Label['kind'] = 'user'): Label =>
@@ -109,5 +109,49 @@ describe('accountLabel', () => {
   it('falls back to the mailbox part of the address', () => {
     expect(accountLabel('Anthony', 'a@x.io')).toBe('Anthony')
     expect(accountLabel('  ', 'anthony@x.io')).toBe('anthony')
+  })
+})
+
+describe('ambiguousLabelNames', () => {
+  it('flags only names carried by more than one account', () => {
+    const names = ambiguousLabelNames([
+      label('a:L_Receipts', 'a', 'Receipts'),
+      label('b:L_Receipts', 'b', 'Receipts'),
+      label('a:L_Travel', 'a', 'Travel')
+    ])
+    expect([...names]).toEqual(['Receipts'])
+  })
+
+  it('ignores system labels and a name repeated within one account', () => {
+    const names = ambiguousLabelNames([
+      label('a:INBOX', 'a', 'Inbox', 'system'),
+      label('b:INBOX', 'b', 'Inbox', 'system'),
+      label('a:L_1', 'a', 'Team'),
+      label('a:L_2', 'a', 'Team')
+    ])
+    expect(names.size).toBe(0)
+  })
+})
+
+describe('accountTags', () => {
+  it('prefers the local part when it already separates the accounts', () => {
+    expect(accountTags([
+      { id: 'a', email: 'lea@acme.example' },
+      { id: 'b', email: 'marc@acme.example' }
+    ])).toEqual({ a: 'lea', b: 'marc' })
+  })
+
+  it('falls back to the domain when one person has two mailboxes', () => {
+    expect(accountTags([
+      { id: 'a', email: 'anthony@gmail.example' },
+      { id: 'b', email: 'anthony@acme.example' }
+    ])).toEqual({ a: 'gmail', b: 'acme' })
+  })
+
+  it('falls back to the full address when nothing shorter is unique', () => {
+    expect(accountTags([
+      { id: 'a', email: 'anthony@acme.example' },
+      { id: 'b', email: 'anthony@acme.other' }
+    ])).toEqual({ a: 'anthony@acme.example', b: 'anthony@acme.other' })
   })
 })

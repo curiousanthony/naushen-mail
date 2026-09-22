@@ -10,8 +10,8 @@ import { Popover, useAnchor } from './Popover'
 import { ViewEditor } from './ViewEditor'
 import { useViewEditor } from './viewEditorState'
 import {
-  MAIL_ITEMS, accountLabel, loadCollapsed, mailNav, navEquals, saveCollapsed, sidebarLabels,
-  sidebarViews, unreadFor
+  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, loadCollapsed, mailNav, navEquals,
+  saveCollapsed, sidebarLabels, sidebarViews, unreadFor
 } from './lib'
 import './sidebar.css'
 
@@ -41,6 +41,8 @@ export function Sidebar(): JSX.Element {
 
   const aux = useAuxCounts(views, accountId, counts)
   const userLabels = useMemo(() => sidebarLabels(labels, accountId), [labels, accountId])
+  const ambiguous = useMemo(() => ambiguousLabelNames(userLabels), [userLabels])
+  const tags = useMemo(() => accountTags(accounts), [accounts])
   const shownViews = useMemo(() => sidebarViews(views), [views])
   const go = useCallback((n: Nav) => setNav(n), [setNav])
 
@@ -91,18 +93,24 @@ export function Sidebar(): JSX.Element {
 
           {userLabels.length > 0 && (
             <Section id="labels" title="Labels" collapsed={!!sections.labels} onToggle={toggleSection}>
-              {userLabels.map((l) => (
-                <Row
-                  key={l.id} label={l.name} count={unreadFor(counts, accountId, l.id)}
-                  dot={`var(--chip-${l.color ?? 'gray'}-fg)`}
-                  active={navEquals(nav, { kind: 'label', labelId: l.id })}
-                  onClick={() => go({ kind: 'label', labelId: l.id })}
-                  trailing={accountId === 'all' && accounts.length > 1
-                    ? <span className="sidebar__acctdot" style={{ background: accounts.find((a) => a.id === l.accountId)?.color }} />
-                    : undefined}
-                  title={`${l.name} · ${accounts.find((a) => a.id === l.accountId)?.email ?? ''}`}
-                />
-              ))}
+              {userLabels.map((l) => {
+                const owner = accounts.find((a) => a.id === l.accountId)
+                // Two accounts can both have a "Receipts"; name the owner only when they do.
+                const dup = ambiguous.has(l.name)
+                return (
+                  <Row
+                    key={l.id} label={l.name} count={unreadFor(counts, accountId, l.id)}
+                    dot={`var(--chip-${l.color ?? 'gray'}-fg)`}
+                    suffix={dup ? tags[l.accountId] : undefined}
+                    active={navEquals(nav, { kind: 'label', labelId: l.id })}
+                    onClick={() => go({ kind: 'label', labelId: l.id })}
+                    trailing={dup
+                      ? <span className="sidebar__acctdot" style={{ background: owner?.color }} />
+                      : undefined}
+                    title={`${l.name} · ${owner?.email ?? ''}`}
+                  />
+                )
+              })}
             </Section>
           )}
         </nav>
@@ -258,8 +266,8 @@ function Badge({ n }: { n: number }): JSX.Element | null {
   return <span className="badge">{n > 999 ? '999+' : n}</span>
 }
 
-function Row({ icon, emoji, dot, label, count, active, onClick, trailing, title }: {
-  icon?: ReactNode; emoji?: string; dot?: string; label: string; count?: number
+function Row({ icon, emoji, dot, label, suffix, count, active, onClick, trailing, title }: {
+  icon?: ReactNode; emoji?: string; dot?: string; label: string; suffix?: string; count?: number
   active?: boolean; onClick(): void; trailing?: ReactNode; title?: string
 }): JSX.Element {
   return (
@@ -269,7 +277,10 @@ function Row({ icon, emoji, dot, label, count, active, onClick, trailing, title 
           : dot ? <span className="row__dot" style={{ background: dot }} />
             : icon}
       </span>
-      <span className="row__label">{label}</span>
+      <span className="row__label">
+        {label}
+        {suffix && <span className="row__suffix">{suffix}</span>}
+      </span>
       {trailing}
       <Badge n={count ?? 0} />
     </button>

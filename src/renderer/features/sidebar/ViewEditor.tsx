@@ -3,7 +3,7 @@ import { Check, Trash2 } from 'lucide-react'
 import { LABEL_COLORS, type LabelColor, type SystemRole, type ThreadFilter, type View } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { useViewEditor } from './viewEditorState'
-import { sidebarLabels } from './lib'
+import { accountTags, sidebarLabels } from './lib'
 
 const EMOJI = ['📥', '⭐️', '🔵', '📎', '🧾', '✈️', '👥', '🏷️', '🔥', '📌', '💬', '📰']
 const ROLES: { id: SystemRole | 'any'; name: string }[] = [
@@ -76,6 +76,7 @@ export function ViewEditor(): JSX.Element | null {
   if (!open) return null
 
   const userLabels = sidebarLabels(labels, accountId)
+  const tags = accountTags(accounts)
 
   async function save(): Promise<void> {
     const trimmed = name.trim()
@@ -201,7 +202,7 @@ export function ViewEditor(): JSX.Element | null {
                       <span className="dot" style={{ background: `var(--chip-${l.color ?? 'gray'}-fg)` }} />
                       {l.name}
                       {accountId === 'all' && accounts.length > 1 && (
-                        <span className="ve__labelacct">{accounts.find((a) => a.id === l.accountId)?.email.split('@')[0]}</span>
+                        <span className="ve__labelacct">{tags[l.accountId]}</span>
                       )}
                     </button>
                   )

@@ -16,7 +16,12 @@
 .sidebar__drag { height: var(--titlebar-h); flex: none; }
 
 /* store.sidebarCollapsed — the toggle itself lives in the commands feature. */
-.app { transition: grid-template-columns var(--t-med); }
+.app {
+  /* Without an explicit row the implicit one stretches to the tallest column's content, so the
+     sidebar footer and the list's bulk bar end up below the fold instead of the panes scrolling. */
+  grid-template-rows: minmax(0, 1fr);
+  transition: grid-template-columns var(--t-med);
+}
 .app:has(> .sidebar[data-collapsed='true']) { grid-template-columns: 0 1fr; }
 
 .sidebar__top { display: flex; align-items: center; gap: 2px; padding: 0 8px; flex: none; }
@@ -112,6 +117,7 @@
 .row__emoji { font-size: 13px; line-height: 1; }
 .row__dot { width: 8px; height: 8px; border-radius: 50%; }
 .row__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row__suffix { margin-left: 6px; font-size: 11px; font-weight: 400; color: var(--c-text-3); }
 .sidebar__acctdot { width: 6px; height: 6px; border-radius: 50%; flex: none; opacity: 0.75; }
 .badge {
   flex: none; font-size: 11.5px; color: var(--c-text-3); font-variant-numeric: tabular-nums;

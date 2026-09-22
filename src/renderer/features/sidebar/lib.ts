@@ -49,6 +49,24 @@ export function sidebarLabels(labels: Label[], accountId: string): Label[] {
     .sort((a, b) => a.name.localeCompare(b.name) || a.accountId.localeCompare(b.accountId))
 }
 
+/**
+ * Label names carried by more than one account. Viewing "All accounts" lists each account's
+ * label separately (threads are never merged across accounts), so these rows need the owning
+ * account spelled out to tell two identically-named labels apart.
+ */
+export function ambiguousLabelNames(labels: Label[]): Set<string> {
+  const byName = new Map<string, Set<string>>()
+  for (const l of labels) {
+    if (l.kind !== 'user') continue
+    const accounts = byName.get(l.name) ?? new Set<string>()
+    accounts.add(l.accountId)
+    byName.set(l.name, accounts)
+  }
+  const out = new Set<string>()
+  for (const [name, accounts] of byName) if (accounts.size > 1) out.add(name)
+  return out
+}
+
 /** Views shown in the sidebar, in saved order. */
 export function sidebarViews(views: View[]): View[] {
   return views.filter((v) => v.showInSidebar !== false).slice().sort((a, b) => a.position - b.position)
@@ -104,3 +122,18 @@ export function filterSummary(v: View, labels: Label[]): string {
 
 /** Text used in the sidebar for an account's display name. */
 export const accountLabel = (name: string, email: string): string => name.trim() || email.split('@')[0]
+
+const localPart = (email: string): string => email.split('@')[0]
+const domainPart = (email: string): string => email.split('@')[1]?.split('.')[0] ?? email
+
+/**
+ * The shortest tag that still tells these accounts apart, keyed by account id. One person's
+ * two mailboxes usually share a display name and often a local part ("anthony@gmail",
+ * "anthony@acme"), so fall through local part -> domain -> full address.
+ */
+export function accountTags(accounts: { id: string; email: string }[]): Record<string, string> {
+  const distinct = (f: (e: string) => string): boolean =>
+    new Set(accounts.map((a) => f(a.email))).size === accounts.length
+  const pick = distinct(localPart) ? localPart : distinct(domainPart) ? domainPart : (e: string) => e
+  return Object.fromEntries(accounts.map((a) => [a.id, pick(a.email)]))
+}
