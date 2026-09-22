@@ -236,7 +236,7 @@ export function Reader(): JSX.Element | null {
     </>
   )
 
-  if (style === 'centre') {
+  if (style === 'center') {
     return (
       <div className="reader__backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
         <div className="reader reader--centre" role="dialog" aria-modal="true" aria-label={thread?.subject || 'Conversation'} ref={rootRef}>

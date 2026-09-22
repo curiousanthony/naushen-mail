@@ -231,7 +231,7 @@ export interface ScheduledSend {
 // ---------------------------------------------------------------- Settings
 
 /** How an opened thread is presented — Settings → Inbox → Thread style (research §1.5). */
-export type ThreadStyle = 'side' | 'centre' | 'full'
+export type ThreadStyle = 'side' | 'center' | 'full'
 
 export interface AppSettings {
   theme: 'system' | 'light' | 'dark'
