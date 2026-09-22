@@ -7,7 +7,7 @@
  * configured rather than re-registered (registering a duplicate name throws).
  */
 
-import { Extension, wrappingInputRule } from '@tiptap/core'
+import { Extension, markInputRule, markPasteRule, wrappingInputRule } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import { TaskItem, TaskList } from '@tiptap/extension-list'
 import { TableKit } from '@tiptap/extension-table'
@@ -21,15 +21,28 @@ import { Callout } from './Callout'
 
 export const PLACEHOLDER = "Write, or press '/' for blocks"
 
+/** Single-tilde strike, per the spec (`~s~`). StarterKit only binds `~~double~~`. */
+const singleStrikeInput = /(?:^|\s)(~(?!\s|~)([^~]+)~)$/
+const singleStrikePaste = /(?:^|\s)(~(?!\s|~)([^~]+)~)/g
+
 /**
- * Notion types `"` for a quote; plain markdown uses `>`. StarterKit binds `>` already, so
- * this only adds the `"` alias (as its own extension, to avoid re-registering Blockquote).
+ * Markdown aliases the bundled extensions do not bind: Notion's `"` for a quote (plain
+ * markdown `>` is already handled by StarterKit's Blockquote) and single-tilde strike.
+ * Their own extension, so Blockquote and Strike are not re-registered.
  */
-const QuoteInputRule = Extension.create({
-  name: 'quoteInputRule',
+const MarkdownAliases = Extension.create({
+  name: 'markdownAliases',
   addInputRules() {
-    const type = this.editor.schema.nodes.blockquote
-    return type ? [wrappingInputRule({ find: /^\s*"\s$/, type })] : []
+    const quote = this.editor.schema.nodes.blockquote
+    const strike = this.editor.schema.marks.strike
+    return [
+      ...(quote ? [wrappingInputRule({ find: /^\s*"\s$/, type: quote })] : []),
+      ...(strike ? [markInputRule({ find: singleStrikeInput, type: strike })] : [])
+    ]
+  },
+  addPasteRules() {
+    const strike = this.editor.schema.marks.strike
+    return strike ? [markPasteRule({ find: singleStrikePaste, type: strike })] : []
   }
 })
 
@@ -51,7 +64,7 @@ export function buildExtensions(placeholder: string = PLACEHOLDER): ReturnType<t
       // Email has no undo history to share; the defaults are fine.
       trailingNode: false
     }),
-    QuoteInputRule,
+    MarkdownAliases,
     TaskList,
     TaskItem.configure({ nested: true }),
     CodeBlockLowlight.configure({ lowlight, defaultLanguage: null }),

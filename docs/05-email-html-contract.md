@@ -12,8 +12,8 @@ no external assets, always a text/plain alternative.**
 | Bulleted list | bullet, ul | `- ` `* ` | `<ul>` with inline margins | ✔ |
 | Numbered list | numbered, ol | `1. ` | `<ol>` | ✔ |
 | To-do | todo, checkbox, `[]` | `[] ` | `<p>` prefixed with `☐`/`☑` (checkboxes can't be interactive) | degrades |
-| Toggle | toggle | `> ` | flattened: bold summary line + indented children | degrades |
-| Quote | quote | `" ` | `<blockquote>` with left border inline | ✔ |
+| Toggle | toggle | – (see note) | flattened: bold summary line + indented children | degrades |
+| Quote | quote | `" ` or `> ` | `<blockquote>` with left border inline | ✔ |
 | Divider | divider, `---` | `---` | `<hr>` inline styled | ✔ |
 | Callout | callout | – | 1×1 `<table>` with tinted `bgcolor`, emoji cell | ✔ |
 | Code block | code | ``` | `<pre>` monospace, grey bg, inline styles (no highlighting) | ✔ |
@@ -23,6 +23,12 @@ no external assets, always a text/plain alternative.**
 | Emoji | `:name` | – | unicode | ✔ |
 | Text/background colour | red, blue… | – | inline `color` / `background-color` | ✔ |
 | Snippet | `/<snippet name>` | – | expands inline into blocks | ✔ |
+
+Notes: `> ` makes a **quote** (standard markdown, bound by StarterKit); a toggle has no markdown trigger —
+use `/toggle` or `⌥⌘7`. Strikethrough accepts both `~s~` and `~~s~~`. Inline images are stored in the document as
+`data:` URIs and rewritten to `cid:` references by `serializeToEmailHtml`, which returns them in `inlineImages`;
+the composer appends those to `OutgoingMessage.attachments` as `{ inline: true, contentId }` — nothing else in the
+app deals with content-ids.
 
 Rules: escape all text; whitelist URL schemes (`http https mailto tel`); wrap in a 100%-wide container `<div>` (max 640px);
 signature appended after a spacer; reply quoting appended as `<blockquote type="cite">` with attribution line
