@@ -23,6 +23,9 @@ function useThemeTokens(): { tokens: ThemeTokens; dark: boolean } {
   return state
 }
 
+/** Keys the reader acts on, forwarded out of the body iframe. Mirrors Reader's own handler. */
+const READER_KEYS = new Set(['Escape', 'r', 'a', 'f'])
+
 /**
  * Height of the document's content.
  *
@@ -100,6 +103,17 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       void window.api.invoke('app.openExternal', href)
     }
 
+    /**
+     * A keypress inside the iframe never reaches the parent's window listener, so clicking into
+     * a message body to select text would silently kill Esc and r/a/f. Re-dispatch the few keys
+     * the reader owns; everything else (typing, find-in-page) is left to the document.
+     */
+    const onKeyIn = (e: KeyboardEvent): void => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (!READER_KEYS.has(e.key)) return
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: e.key, bubbles: true }))
+    }
+
     const onLoad = (): void => {
       const doc = el.contentDocument
       if (!doc) return
@@ -116,6 +130,7 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       if (doc.documentElement) observer.observe(doc.documentElement)
       doc.addEventListener('click', onClick, true)
       doc.addEventListener('auxclick', onClick, true)
+      doc.addEventListener('keydown', onKeyIn, true)
       for (const img of Array.from(doc.images)) img.addEventListener('load', measure)
       // Fonts and late layout settle after the load event.
       timers = [setTimeout(measure, 80), setTimeout(measure, 400)]
@@ -127,6 +142,7 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       el.removeEventListener('load', onLoad)
       el.contentDocument?.removeEventListener('click', onClick, true)
       el.contentDocument?.removeEventListener('auxclick', onClick, true)
+      el.contentDocument?.removeEventListener('keydown', onKeyIn, true)
       observer?.disconnect()
       for (const t of timers) clearTimeout(t)
     }
@@ -162,7 +178,7 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
           <button className="msgbody__banner-btn" onClick={() => setLoadImages(true)}>Load images</button>
           <button
             className="msgbody__banner-btn"
-            onClick={() => { setLoadImages(true); void useAlwaysLoad() }}
+            onClick={() => { setLoadImages(true); void alwaysLoadImages() }}
           >
             Always load
           </button>
@@ -197,8 +213,11 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
   )
 }
 
-/** "Always load" flips the app-wide setting. Kept out of the component for readability. */
-async function useAlwaysLoad(): Promise<void> {
+/**
+ * "Always load" flips the app-wide setting. Not a hook despite living beside one — deliberately
+ * named so, since it is called from an onClick handler.
+ */
+async function alwaysLoadImages(): Promise<void> {
   const { useApp } = await import('@/lib/store')
   await useApp.getState().updateSettings({ blockRemoteImages: false })
 }

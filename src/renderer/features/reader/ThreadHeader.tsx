@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  Archive, BellOff, Clock, MailOpen, MoreHorizontal, Printer, ShieldAlert,
-  Star, Tag, Trash2, X
+  Archive, BellOff, Clock, MailOpen, MoreHorizontal, ShieldAlert, Star, Tag, Trash2, X
 } from 'lucide-react'
 import type { Label, ThreadWithMessages } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -60,84 +59,143 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
     <header className="reader__header">
       <div className="reader__header-inner">
         <div className="reader__actions no-drag">
-        <button className="reader__btn" onClick={() => void act({ type: 'archive' }, ids, 'Conversation archived')} title="Archive (e)" aria-label="Archive">
-          <Archive size={17} aria-hidden />
-        </button>
-        <button className="reader__btn is-danger" onClick={() => void act({ type: 'trash' }, ids, 'Moved to trash')} title="Move to trash (#)" aria-label="Move to trash">
-          <Trash2 size={17} aria-hidden />
-        </button>
-        <button className="reader__btn" onClick={() => void act({ type: 'markUnread' }, ids, 'Marked as unread')} title="Mark as unread (u)" aria-label="Mark as unread">
-          <MailOpen size={17} aria-hidden />
-        </button>
-        <button className="reader__btn" onClick={() => setOverlay('label-picker')} title="Label (l)" aria-label="Label">
-          <Tag size={17} aria-hidden />
-        </button>
-        <button className="reader__btn" onClick={() => setOverlay('snooze')} title="Set reminder (h)" aria-label="Set reminder">
-          <Clock size={17} aria-hidden />
-        </button>
-        <button
-          className="reader__btn"
-          onClick={() => void act({ type: thread.starred ? 'unstar' : 'star' }, ids)}
-          aria-pressed={thread.starred}
-          title={thread.starred ? 'Unstar' : 'Star'}
-          aria-label={thread.starred ? 'Unstar' : 'Star'}
-        >
-          <Star size={17} aria-hidden fill={thread.starred ? 'var(--c-star)' : 'none'} color={thread.starred ? 'var(--c-star)' : undefined} />
-        </button>
-        <button className="reader__btn" onClick={() => void act({ type: 'spam' }, ids, 'Reported as spam')} title="Report spam (!)" aria-label="Report spam">
-          <ShieldAlert size={17} aria-hidden />
-        </button>
-        {unsub && (
-          <button className="reader__btn" onClick={unsubscribe} title={`Unsubscribe (${unsub.kind === 'http' ? 'opens in browser' : 'sends an email'})`}>
-            <BellOff size={17} aria-hidden />
-            <span className="reader__btn-label">Unsubscribe</span>
-          </button>
-        )}
-
-        <span className="reader__actions-spacer" />
-
-        <div className="reader__menu-wrap" ref={menuWrap}>
           <button
             className="reader__btn"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-haspopup="menu"
-            aria-expanded={menuOpen}
-            title="More actions"
-            aria-label="More actions"
+            onClick={() => void act({ type: 'archive' }, ids, 'Conversation archived')}
+            title="Archive (e)"
+            aria-label="Archive"
           >
-            <MoreHorizontal size={17} aria-hidden />
+            <Archive size={17} aria-hidden />
           </button>
-          {menuOpen && (
-            <div className="reader__menu" role="menu">
-              <button className="reader__menu-item" role="menuitem" onClick={() => { setMenuOpen(false); void act({ type: 'markUnread' }, ids, 'Marked as unread') }}>
-                <MailOpen size={15} aria-hidden /> Mark as unread <span className="reader__menu-key">u</span>
-              </button>
-              <button className="reader__menu-item" role="menuitem" onClick={() => { setMenuOpen(false); setOverlay('label-picker') }}>
-                <Tag size={15} aria-hidden /> Add label <span className="reader__menu-key">l</span>
-              </button>
-              <button className="reader__menu-item" role="menuitem" onClick={() => { setMenuOpen(false); window.print() }}>
-                <Printer size={15} aria-hidden /> Print
-              </button>
-              {unsub && (
-                <button className="reader__menu-item" role="menuitem" onClick={unsubscribe}>
-                  <BellOff size={15} aria-hidden /> Unsubscribe
-                </button>
-              )}
-              <div className="reader__menu-sep" />
-              <button className="reader__menu-item is-danger" role="menuitem" onClick={() => { setMenuOpen(false); void act({ type: 'spam' }, ids, 'Reported as spam') }}>
-                <ShieldAlert size={15} aria-hidden /> Report spam <span className="reader__menu-key">!</span>
-              </button>
-              <button className="reader__menu-item is-danger" role="menuitem" onClick={() => { setMenuOpen(false); void act({ type: 'trash' }, ids, 'Moved to trash') }}>
-                <Trash2 size={15} aria-hidden /> Move to trash <span className="reader__menu-key">#</span>
-              </button>
-            </div>
+          <button
+            className="reader__btn is-danger"
+            onClick={() => void act({ type: 'trash' }, ids, 'Moved to trash')}
+            title="Move to trash (#)"
+            aria-label="Move to trash"
+          >
+            <Trash2 size={17} aria-hidden />
+          </button>
+          <button
+            className="reader__btn"
+            onClick={() => void act({ type: 'markUnread' }, ids, 'Marked as unread')}
+            title="Mark as unread (u)"
+            aria-label="Mark as unread"
+          >
+            <MailOpen size={17} aria-hidden />
+          </button>
+          <button
+            className="reader__btn"
+            onClick={() => setOverlay('label-picker')}
+            title="Label (l)"
+            aria-label="Label"
+          >
+            <Tag size={17} aria-hidden />
+          </button>
+          <button
+            className="reader__btn"
+            onClick={() => setOverlay('snooze')}
+            title="Set reminder (h)"
+            aria-label="Set reminder"
+          >
+            <Clock size={17} aria-hidden />
+          </button>
+          <button
+            className="reader__btn"
+            onClick={() => void act({ type: thread.starred ? 'unstar' : 'star' }, ids)}
+            aria-pressed={thread.starred}
+            title={thread.starred ? 'Unstar' : 'Star'}
+            aria-label={thread.starred ? 'Unstar' : 'Star'}
+          >
+            <Star
+              size={17}
+              aria-hidden
+              fill={thread.starred ? 'var(--c-star)' : 'none'}
+              color={thread.starred ? 'var(--c-star)' : undefined}
+            />
+          </button>
+          <button
+            className="reader__btn"
+            onClick={() => void act({ type: 'spam' }, ids, 'Reported as spam')}
+            title="Report spam (!)"
+            aria-label="Report spam"
+          >
+            <ShieldAlert size={17} aria-hidden />
+          </button>
+          {unsub && (
+            <button
+              className="reader__btn"
+              onClick={unsubscribe}
+              title={`Unsubscribe — ${unsub.kind === 'http' ? 'opens in your browser' : 'sends an email'}`}
+            >
+              <BellOff size={17} aria-hidden />
+              <span className="reader__btn-label">Unsubscribe</span>
+            </button>
           )}
-        </div>
 
-        <button className="reader__btn" onClick={onClose} title="Close (esc)" aria-label="Close thread">
-          <X size={17} aria-hidden />
-        </button>
-      </div>
+          <span className="reader__actions-spacer" />
+
+          <div className="reader__menu-wrap" ref={menuWrap}>
+            <button
+              className="reader__btn"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              title="More actions"
+              aria-label="More actions"
+            >
+              <MoreHorizontal size={17} aria-hidden />
+            </button>
+            {menuOpen && (
+              <div className="reader__menu" role="menu">
+                <button
+                  className="reader__menu-item"
+                  role="menuitem"
+                  onClick={() => { setMenuOpen(false); void act({ type: 'markUnread' }, ids, 'Marked as unread') }}
+                >
+                  <MailOpen size={15} aria-hidden /> Mark as unread <span className="reader__menu-key">u</span>
+                </button>
+                <button
+                  className="reader__menu-item"
+                  role="menuitem"
+                  onClick={() => { setMenuOpen(false); setOverlay('label-picker') }}
+                >
+                  <Tag size={15} aria-hidden /> Add label <span className="reader__menu-key">l</span>
+                </button>
+                <button
+                  className="reader__menu-item"
+                  role="menuitem"
+                  onClick={() => { setMenuOpen(false); setOverlay('snooze') }}
+                >
+                  <Clock size={15} aria-hidden /> Set reminder <span className="reader__menu-key">h</span>
+                </button>
+                {unsub && (
+                  <button className="reader__menu-item" role="menuitem" onClick={unsubscribe}>
+                    <BellOff size={15} aria-hidden /> Unsubscribe
+                  </button>
+                )}
+                <div className="reader__menu-sep" />
+                <button
+                  className="reader__menu-item is-danger"
+                  role="menuitem"
+                  onClick={() => { setMenuOpen(false); void act({ type: 'spam' }, ids, 'Reported as spam') }}
+                >
+                  <ShieldAlert size={15} aria-hidden /> Report spam <span className="reader__menu-key">!</span>
+                </button>
+                <button
+                  className="reader__menu-item is-danger"
+                  role="menuitem"
+                  onClick={() => { setMenuOpen(false); void act({ type: 'trash' }, ids, 'Moved to trash') }}
+                >
+                  <Trash2 size={15} aria-hidden /> Move to trash <span className="reader__menu-key">#</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button className="reader__btn" onClick={onClose} title="Close (esc)" aria-label="Close thread">
+            <X size={17} aria-hidden />
+          </button>
+        </div>
 
         <h1 className="reader__subject selectable">{thread.subject || '(no subject)'}</h1>
 
