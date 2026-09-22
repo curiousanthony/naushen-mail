@@ -19,6 +19,8 @@ export const INLINE_SLOT_ID = 'reader-inline-compose-slot'
 export function ComposeHost(): JSX.Element | null {
   const composers = useApp((s) => s.composers)
   const slot = useInlineSlot(composers)
+  // Minimised state lives here, not in `Composer`: the row layout needs every width.
+  const [minimised, setMinimised] = useState<ReadonlySet<string>>(() => new Set())
 
   useTestHook()
 
@@ -29,16 +31,57 @@ export function ComposeHost(): JSX.Element | null {
 
   return (
     <>
-      {windowed.map((c, i) => (
-        <Composer key={c.id} composer={c} index={windowed.length - 1 - i} />
+      {/* One row along the bottom-right: each composer is placed to the left of the ones
+          already there, so a minimised bar never hides behind an open window. */}
+      {layoutRow(windowed, minimised).map(({ composer, offsetRight }, i) => (
+        <Composer
+          key={composer.id}
+          composer={composer}
+          offsetRight={offsetRight}
+          stack={i}
+          minimised={minimised.has(composer.id)}
+          onMinimise={(v) => setMinimised((prev) => {
+            const next = new Set(prev)
+            v ? next.add(composer.id) : next.delete(composer.id)
+            return next
+          })}
+        />
       ))}
       {inline.length > 0 && slot &&
         createPortal(
-          inline.map((c) => <Composer key={c.id} composer={c} inline index={0} />),
+          inline.map((c) => (
+            <Composer
+              key={c.id}
+              composer={c}
+              inline
+              offsetRight={0}
+              stack={0}
+              minimised={false}
+              onMinimise={() => undefined}
+            />
+          )),
           slot
         )}
     </>
   )
+}
+
+const WINDOW_W = 640
+const MIN_W = 280
+const GAP = 12
+const EDGE = 16
+
+/** Right-edge offsets for a row of composers, widest-first from the corner. */
+function layoutRow(
+  composers: ComposerState[],
+  minimised: ReadonlySet<string>
+): { composer: ComposerState; offsetRight: number }[] {
+  let offset = EDGE
+  return composers.map((composer) => {
+    const placed = { composer, offsetRight: offset }
+    offset += (minimised.has(composer.id) ? MIN_W : WINDOW_W) + GAP
+    return placed
+  })
 }
 
 /**
@@ -72,6 +115,7 @@ function useTestHook(): void {
       open: (init?: Partial<ComposerState>) => useApp.getState().openComposer(init),
       close: (id: string) => useApp.getState().closeComposer(id),
       list: () => useApp.getState().composers,
+      toasts: () => useApp.getState().toasts,
       editor: (id?: string) =>
         (id ? editorRegistry.get(id) : editorRegistry.values().next().value) ?? null
     }

@@ -32,12 +32,18 @@ interface Props {
   composer: ComposerState
   /** Floating-window chrome is hidden for the inline placement. */
   inline?: boolean
-  index: number
+  /** Distance from the right edge, in px. `ComposeHost` lays the row out so that a
+   *  minimised bar and an open window never overlap. */
+  offsetRight: number
+  /** Paint order: later composers sit on top. */
+  stack: number
+  minimised: boolean
+  onMinimise: (value: boolean) => void
 }
 
 const AUTOSAVE_MS = 2000
 
-export function Composer({ composer, inline = false, index }: Props): JSX.Element {
+export function Composer({ composer, inline = false, offsetRight, stack, minimised, onMinimise }: Props): JSX.Element {
   // Atomic selectors: a selector returning a fresh object re-renders forever under zustand v5.
   const accounts = useApp((s) => s.accounts)
   const settings = useApp((s) => s.settings)
@@ -56,11 +62,12 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
   const [quoted, setQuoted] = useState<QuotedOriginal | null>(null)
   const [quoteOpen, setQuoteOpen] = useState(false)
   const [signatureOn, setSignatureOn] = useState(true)
-  const [minimised, setMinimised] = useState(false)
   const [maximised, setMaximised] = useState(false)
   const [menu, setMenu] = useState<null | 'schedule' | 'snippets' | 'help' | 'account'>(null)
   const [customTime, setCustomTime] = useState('')
   const [snippets, setSnippets] = useState<Snippet[]>(() => loadSnippets())
+  /** Non-null while naming a new snippet (Electron has no window.prompt). */
+  const [newSnippet, setNewSnippet] = useState<string | null>(null)
   const [problems, setProblems] = useState<{ errors: string[]; warnings: string[] } | null>(null)
   const [dragging, setDragging] = useState(false)
   const [sending, setSending] = useState(false)
@@ -214,6 +221,9 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
     })
 
     const plan = planSend({ undoSendSeconds: settings.undoSendSeconds, scheduledAt: opts.scheduledAt })
+    // Undo reopens the composer from a draft, so capture it now: closing the composer
+    // destroys the editor and `snapshot()` would have nothing left to read.
+    const draftForUndo = snapshot()
     try {
       let scheduled: ScheduledSend | null = null
       if (plan.kind === 'send') await window.api.invoke('compose.send', message)
@@ -234,12 +244,14 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
           message: 'Message sent',
           actionLabel: scheduled ? 'Undo' : undefined,
           duration: plan.kind === 'undoable' ? plan.undoSeconds * 1000 : 5000,
+          // Restore the draft *before* reopening, or the new composer's `drafts.get`
+          // races the save and finds the draft we deleted on send.
           onAction: scheduled
-            ? () => {
-                void window.api.invoke('compose.cancelScheduled', scheduled.id)
+            ? () => void (async () => {
+                await window.api.invoke('compose.cancelScheduled', scheduled.id)
+                if (draftForUndo) await window.api.invoke('drafts.save', draftForUndo)
                 useApp.getState().openComposer({ ...composer, draftId })
-                void window.api.invoke('drafts.save', snapshot() as Draft)
-              }
+              })()
             : undefined
         })
       }
@@ -311,14 +323,14 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
 
   const chrome = !inline
   const style: React.CSSProperties | undefined = chrome && !maximised
-    ? { right: 16 + index * 24, bottom: 0, zIndex: 40 + index }
+    ? { right: offsetRight, bottom: 0, zIndex: 40 + stack }
     : undefined
 
   if (chrome && minimised) {
     return (
-      <div className="cmp-min" style={{ right: 16 + index * 292, zIndex: 40 + index }}>
-        <button type="button" className="cmp-min__title" onClick={() => setMinimised(false)}>{title}</button>
-        <button type="button" className="cmp-iconbtn" aria-label="Expand" onClick={() => setMinimised(false)}><ChevronUp size={15} /></button>
+      <div className="cmp-min" style={{ right: offsetRight, zIndex: 40 + stack }}>
+        <button type="button" className="cmp-min__title" onClick={() => onMinimise(false)}>{title}</button>
+        <button type="button" className="cmp-iconbtn" aria-label="Expand" onClick={() => onMinimise(false)}><ChevronUp size={15} /></button>
         <button type="button" className="cmp-iconbtn" aria-label="Close" onClick={() => close({ save: true })}><X size={15} /></button>
       </div>
     )
@@ -342,7 +354,7 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
         <header className="cmp__header">
           <span className="cmp__title">{title}</span>
           <div className="cmp__chrome">
-            <button type="button" className="cmp-iconbtn" aria-label="Minimise" onClick={() => setMinimised(true)}><Minus size={15} /></button>
+            <button type="button" className="cmp-iconbtn" aria-label="Minimise" onClick={() => onMinimise(true)}><Minus size={15} /></button>
             <button type="button" className="cmp-iconbtn" aria-label={maximised ? 'Restore' : 'Maximise'} onClick={() => setMaximised((v) => !v)}>
               {maximised ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             </button>
@@ -525,16 +537,37 @@ export function Composer({ composer, inline = false, index }: Props): JSX.Elemen
                 <span className="cmp-menu__title">{s.name}</span>
               </button>
             ))}
-            <button
-              type="button"
-              className="cmp-menu__row cmp-menu__row--new"
-              onClick={() => {
-                const name = window.prompt('Snippet name')
-                if (!name || !editor) return
-                setSnippets(upsertSnippet({ name, doc: editor.getJSON() as never }))
-                setMenu(null)
-              }}
-            >+ New snippet from this draft</button>
+            {/* Electron does not implement window.prompt(), so name it inline. */}
+            {newSnippet === null ? (
+              <button
+                type="button"
+                className="cmp-menu__row cmp-menu__row--new"
+                onClick={() => setNewSnippet('')}
+              >+ New snippet from this draft</button>
+            ) : (
+              <div className="cmp-pop__custom">
+                <label htmlFor={`snip-${composer.id}`}>Snippet name</label>
+                <input
+                  id={`snip-${composer.id}`}
+                  className="cmp-input"
+                  autoFocus
+                  value={newSnippet}
+                  placeholder="Website link"
+                  onChange={(e) => setNewSnippet(e.target.value)}
+                  onKeyDown={(e) => {
+                    e.stopPropagation()
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      if (!newSnippet.trim() || !editor) return
+                      setSnippets(upsertSnippet({ name: newSnippet, doc: editor.getJSON() as never }))
+                      setNewSnippet(null)
+                      setMenu(null)
+                    }
+                    if (e.key === 'Escape') { e.preventDefault(); setNewSnippet(null) }
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
 
