@@ -216,9 +216,27 @@ describe('safeUrl / safeColor', () => {
     expect(safeUrl('  https://a.test/x  ')).toBe('https://a.test/x')
     expect(safeUrl('HTTPS://A.test')).toBe('HTTPS://A.test')
     expect(safeUrl('javascript:alert(1)')).toBeNull()
-    expect(safeUrl('java script:alert(1)')).toBeNull()
+    expect(safeUrl('java script:alert(1)')).toBeNull()
     expect(safeUrl('')).toBeNull()
     expect(safeUrl(42)).toBeNull()
+  })
+
+  it('strips the control characters browsers ignore when parsing a scheme', () => {
+    // Written as escapes on purpose: a literal NUL in the source makes git treat the
+    // whole file as binary. Each of these parses as `javascript:` in some client.
+    for (const raw of [
+      'java\x00script:alert(1)',
+      'java\tscript:alert(1)',
+      'java\nscript:alert(1)',
+      'java\rscript:alert(1)',
+      'java\x7fscript:alert(1)',
+      'java\x9fscript:alert(1)',
+      '\x01javascript:alert(1)'
+    ]) {
+      expect(safeUrl(raw), JSON.stringify(raw)).toBeNull()
+    }
+    // Stripping must not corrupt a legitimate URL.
+    expect(safeUrl('\thttps://a.test/x\n')).toBe('https://a.test/x')
   })
 
   it('whitelists colour syntax', () => {
