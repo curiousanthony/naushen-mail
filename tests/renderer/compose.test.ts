@@ -7,7 +7,7 @@ import {
   daysUntilNextMonday, fromLocalInputValue, scheduleOptions, scheduledToast, toLocalInputValue
 } from '@/features/compose/schedule'
 import {
-  deleteSnippet, findSnippets, fuzzyScore, loadSnippets, upsertSnippet, type SnippetStorage
+  SNIPPETS_KEY, deleteSnippet, findSnippets, fuzzyScore, loadSnippets, upsertSnippet, type SnippetStorage
 } from '@/features/compose/snippets'
 
 describe('recipients', () => {
@@ -172,14 +172,31 @@ describe('snippets', () => {
     upsertSnippet({ name: 'Zulu', doc: doc('z') }, s)
     upsertSnippet({ name: 'Alpha', doc: doc('a') }, s)
     expect(loadSnippets(s).map((x) => x.name)).toEqual(['Alpha', 'Zulu'])
-    s.setItem('mailroom.snippets.v1', '{not json')
+    s.setItem(SNIPPETS_KEY, '{not json')
     expect(loadSnippets(s)).toEqual([])
-    s.setItem('mailroom.snippets.v1', '{"a":1}')
+    s.setItem(SNIPPETS_KEY, '{"a":1}')
     expect(loadSnippets(s)).toEqual([])
   })
 
   it('names an untitled snippet', () => {
     expect(upsertSnippet({ name: '  ', doc: doc('x') }, store())[0].name).toBe('Untitled snippet')
+  })
+
+  it('shares its storage key and row shape with the Settings snippet list', () => {
+    const s = store()
+    upsertSnippet({ name: 'Intro', doc: doc('Hello!') }, s)
+    const row = JSON.parse(s.getItem(SNIPPETS_KEY)!)[0]
+    // Settings' loader only requires string `id` + `title`, and reads `html` for its editor.
+    expect(row).toMatchObject({ id: expect.any(String), title: 'Intro', html: expect.stringContaining('Hello!') })
+  })
+
+  it('reads a snippet written by Settings (no `doc`), synthesizing one from its HTML', () => {
+    const s = store()
+    s.setItem(SNIPPETS_KEY, JSON.stringify([{ id: 'x1', title: 'From settings', html: '<p>Plain body</p>' }]))
+    const [snip] = loadSnippets(s)
+    expect(snip.name).toBe('From settings')
+    expect(snip.doc.type).toBe('doc')
+    expect(JSON.stringify(snip.doc)).toContain('Plain body')
   })
 
   it('filters fuzzily, best match first', () => {

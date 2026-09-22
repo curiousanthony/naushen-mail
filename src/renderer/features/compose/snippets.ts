@@ -7,9 +7,16 @@
  * against), so they live in `localStorage`. Storage is injectable so the logic is testable
  * and so a private window with blocked site data degrades to an in-memory store instead of
  * throwing.
+ *
+ * The key and the on-disk row shape (`id`, `title`, `html`, optional `shortcut`) are shared
+ * with feat/settings-accounts, which has its own simple CRUD screen for snippets. This module
+ * additionally persists a `doc` (TipTap fragment) alongside `html` so a snippet inserted here
+ * round-trips losslessly through this editor; `html` is kept in sync as a derived mirror so
+ * Settings' plain-HTML editor can read and edit the same rows. A row written by Settings has
+ * no `doc` — it is synthesized from `html` on load (best-effort, via `htmlToDoc`).
  */
 
-import type { DocNode } from '@shared/emailhtml'
+import { htmlToDoc, serializeToEmailHtml, type DocNode } from '@shared/emailhtml'
 
 export interface Snippet {
   id: string
@@ -20,7 +27,19 @@ export interface Snippet {
   updatedAt: number
 }
 
-export const SNIPPETS_KEY = 'mailroom.snippets.v1'
+/** On-disk shape, shared with Settings' snippet list. */
+interface StoredSnippet {
+  id: string
+  title: string
+  html: string
+  shortcut?: string
+  /** Present only for rows saved from this editor; omitted (and re-derived) once Settings edits them. */
+  doc?: DocNode
+  createdAt?: number
+  updatedAt?: number
+}
+
+export const SNIPPETS_KEY = 'mailroom.snippets'
 
 export interface SnippetStorage {
   getItem(key: string): string | null
@@ -54,19 +73,37 @@ export function loadSnippets(storage: SnippetStorage = defaultStorage()): Snippe
     if (!raw) return []
     const parsed: unknown = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
-    return parsed.filter(isSnippet).sort((a, b) => a.name.localeCompare(b.name))
+    return parsed.filter(isStoredSnippet).map(fromStored).sort((a, b) => a.name.localeCompare(b.name))
   } catch {
     return []
   }
 }
 
-function isSnippet(v: unknown): v is Snippet {
-  const s = v as Snippet | null
-  return !!s && typeof s === 'object' && typeof s.id === 'string' && typeof s.name === 'string' && !!s.doc
+function isStoredSnippet(v: unknown): v is StoredSnippet {
+  const s = v as StoredSnippet | null
+  return !!s && typeof s === 'object' && typeof s.id === 'string' && typeof s.title === 'string'
+}
+
+/** A row written by Settings has no `doc`; synthesize one from its HTML (best-effort, lossy). */
+function fromStored(s: StoredSnippet): Snippet {
+  const now = Date.now()
+  return {
+    id: s.id, name: s.title, doc: s.doc ?? htmlToDoc(s.html ?? ''),
+    createdAt: s.createdAt ?? now, updatedAt: s.updatedAt ?? now
+  }
+}
+
+/** Best-effort `doc` -> email-safe HTML, for the mirror Settings' editor reads. Never throws. */
+function toHtml(doc: DocNode): string {
+  try { return serializeToEmailHtml(doc).html } catch { return '' }
+}
+
+function toStored(s: Snippet): StoredSnippet {
+  return { id: s.id, title: s.name, html: toHtml(s.doc), doc: s.doc, createdAt: s.createdAt, updatedAt: s.updatedAt }
 }
 
 export function saveSnippets(list: Snippet[], storage: SnippetStorage = defaultStorage()): void {
-  try { storage.setItem(SNIPPETS_KEY, JSON.stringify(list)) } catch { /* quota / private mode */ }
+  try { storage.setItem(SNIPPETS_KEY, JSON.stringify(list.map(toStored))) } catch { /* quota / private mode */ }
 }
 
 /** Create or replace by name (names are the `/slash` handle, so they must be unique). */
