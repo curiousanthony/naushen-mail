@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      # The runner's bundled npm (11.19.x) fails `npm ci` on this lockfile with a bare
+      # "Invalid Version:" error that a slightly older npm (11.12.x, used locally) does not
+      # hit. Pin a known-good npm until upstream fixes it.
+      - run: npm install -g npm@11.12.1
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
@@ -36,6 +40,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - run: npm install -g npm@11.12.1
       - run: npm ci
       - name: Build unpacked, ad-hoc signed .app
         run: npm run pack
