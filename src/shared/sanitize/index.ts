@@ -332,3 +332,66 @@ export function sanitizeEmailHtml(html: string, opts: SanitizeOptions = {}): San
     isEmpty
   }
 }
+
+/**
+ * A DOMPurify instance for `sanitizeFragment`, separate from `getPurifier()`'s.
+ *
+ * The email instance's hooks read the module-level `ctx` and actively rewrite `<img>` src
+ * (blocking remote images, resolving `cid:`) — correct for the reader's sandboxed iframe, wrong
+ * for a fragment that is either (a) rendered straight into the app's own unsandboxed document, or
+ * (b) fed back into an *outgoing* message (the composer's quote/forward preview: see
+ * `buildOutgoing` in `src/renderer/features/compose/send.ts`, which drops `quoted.html` and
+ * `signatureHtml` verbatim into the MIME body). Rewriting images there would silently corrupt
+ * mail the user is about to send. This instance only strips danger; it never rewrites content.
+ */
+let fragmentPurifier: typeof DOMPurify | null = null
+
+function getFragmentPurifier(): typeof DOMPurify {
+  if (fragmentPurifier) return fragmentPurifier
+
+  const win = (globalThis as { window?: unknown }).window
+  const factory = DOMPurify as unknown as (w: unknown) => typeof DOMPurify
+  fragmentPurifier = win ? factory(win) : DOMPurify
+
+  // Belt and braces, same as the email instance: an mXSS bypass would not get an `on*` handler
+  // past this second sweep.
+  fragmentPurifier.addHook('afterSanitizeAttributes', (n) => {
+    const node = n as unknown as El
+    if (!node.tagName) return
+    for (const name of attributeNames(node)) {
+      if (/^on/i.test(name)) node.removeAttribute(name)
+    }
+    if (node.tagName.toUpperCase() === 'A') {
+      const href = node.getAttribute('href')
+      if (isSafeLink(href)) {
+        node.setAttribute('target', '_blank')
+        node.setAttribute('rel', 'noopener noreferrer nofollow')
+      } else {
+        node.removeAttribute('href')
+      }
+      node.removeAttribute('ping')
+    }
+  })
+
+  return fragmentPurifier
+}
+
+/**
+ * Sanitise a small HTML fragment that is either rendered directly into the app's own document
+ * (no sandboxed-iframe boundary) or reused verbatim in an outgoing message. Used by the composer
+ * for: the read-only preview of a quoted/forwarded message, and the signature preview.
+ *
+ * Unlike `sanitizeEmailHtml`, this does not touch `<img src>`, does not resolve `cid:`, and does
+ * not mark quoted text — it must not change what the fragment renders as or what gets sent.
+ * `<style>` is additionally forbidden (on top of the shared `FORBID_TAGS`/`FORBID_ATTR`): an
+ * email's stylesheet is safe only behind the reader's iframe, and would otherwise restyle the
+ * app's own page.
+ */
+export function sanitizeFragment(html: string): string {
+  if (!html || !html.trim()) return ''
+  const purify = getFragmentPurifier()
+  return purify.sanitize(html, {
+    FORBID_TAGS: [...FORBID_TAGS, 'style'],
+    FORBID_ATTR
+  }) as unknown as string
+}
