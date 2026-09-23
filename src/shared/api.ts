@@ -48,6 +48,7 @@ export interface MailApi {
   'compose.schedule'(msg: OutgoingMessage, sendAt: number): Promise<ScheduledSend>
   'compose.cancelScheduled'(id: string): Promise<void>
   'compose.listScheduled'(): Promise<ScheduledSend[]>
+  'compose.retry'(id: string): Promise<void>
   'drafts.save'(draft: Draft): Promise<void>
   'drafts.list'(): Promise<Draft[]>
   'drafts.get'(id: string): Promise<Draft | null>
@@ -70,7 +71,7 @@ export const API_METHODS: ApiMethod[] = [
   'views.list', 'views.save', 'views.delete',
   'threads.list', 'threads.get', 'threads.act', 'threads.counts', 'threads.search', 'attachments.save',
   'messages.inlineImages', 'attachments.getText',
-  'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled',
+  'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled', 'compose.retry',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'
 ]

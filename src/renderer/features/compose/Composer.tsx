@@ -17,8 +17,8 @@ import { sanitizeFragment } from '@shared/sanitize'
 import { useApp, type ComposerState } from '@/lib/store'
 import { editorRegistry } from './registry'
 import { EditorSurface, useComposerEditor } from './Editor'
-import { RecipientField } from './RecipientField'
-import { validateCompose } from './recipients'
+import { RecipientField, type RecipientFieldHandle } from './RecipientField'
+import { dedupeAddresses, validateCompose } from './recipients'
 import { buildOutgoing, planSend } from './send'
 import {
   fileToAttachment, formatBytes, isImageType, isOverSizeLimit, partitionFiles,
@@ -80,6 +80,9 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
   const fileInput = useRef<HTMLInputElement>(null)
   const imageInput = useRef<HTMLInputElement>(null)
   const subjectRef = useRef<HTMLInputElement>(null)
+  const toRef = useRef<RecipientFieldHandle>(null)
+  const ccRef = useRef<RecipientFieldHandle>(null)
+  const bccRef = useRef<RecipientFieldHandle>(null)
   const accountRef = useRef<HTMLButtonElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const dirty = useRef(false)
@@ -206,22 +209,39 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
   const doSend = useCallback(async (opts: { scheduledAt?: number | null; archive?: boolean } = {}) => {
     if (!editor || sending) return
+    // A mouse-click Send gets any pending recipient text committed for free (the input blurs
+    // before the click fires); ⌘Enter doesn't blur anything, so force it here too, or a typed
+    // address never followed by Enter/comma would be silently dropped from the sent message.
+    // The commits update `to`/`cc`/`bcc` state, but that won't be visible until a re-render, so
+    // merge the returned addresses in locally rather than reading stale `to`/`cc`/`bcc` below.
+    const pendingTo = toRef.current?.commitPending()
+    const pendingCc = ccRef.current?.commitPending()
+    const pendingBcc = bccRef.current?.commitPending()
+    const finalTo = pendingTo ? dedupeAddresses([...to, pendingTo]) : to
+    const finalCc = pendingCc ? dedupeAddresses([...cc, pendingCc]) : cc
+    const finalBcc = pendingBcc ? dedupeAddresses([...bcc, pendingBcc]) : bcc
+
     const bodyText = editor.getText()
-    const check = validateCompose({ to, cc, bcc, subject, bodyText, attachmentCount: attachments.length })
+    const check = validateCompose({ to: finalTo, cc: finalCc, bcc: finalBcc, subject, bodyText, attachmentCount: attachments.length })
     // Warnings are confirmable: showing them once and sending on the second press is the
     // Notion/Gmail behaviour ("Send anyway").
     if (check.errors.length || (check.warnings.length && !problems)) { setProblems(check); return }
     setProblems(null)
     setSending(true)
 
+    // NOTE: `draftId` here is `composer.draftId ?? composer.id` — the *local* autosave draft's
+    // primary key (src/main/db/repo.ts). It never corresponds to a server-side Gmail/Outlook draft
+    // (`drafts.save` only ever writes to the local SQLite `drafts` table, never to a provider), so
+    // it must never be forwarded as `OutgoingMessage.draftId`: both adapters treat that field as
+    // "an existing remote draft to PUT/PATCH-then-send", and PUTting a remote draft that was never
+    // created 404s — which is why every real send was silently failing.
     const { message } = buildOutgoing({
-      accountId, to, cc, bcc, subject,
+      accountId, to: finalTo, cc: finalCc, bcc: finalBcc, subject,
       doc: editor.getJSON(),
       ...(signatureOn && signatureHtml ? { signatureHtml } : {}),
       ...(quoted ? { quoted } : {}),
       attachments,
-      ...(replyRef ? { inReplyTo: replyRef } : {}),
-      draftId
+      ...(replyRef ? { inReplyTo: replyRef } : {})
     })
 
     const plan = planSend({ undoSendSeconds: settings.undoSendSeconds, scheduledAt: opts.scheduledAt })
@@ -398,6 +418,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
         </div>
 
         <RecipientField
+          ref={toRef}
           label="To"
           value={to}
           onChange={setTo}
@@ -409,8 +430,8 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
             </span>
           }
         />
-        {showCc && <RecipientField label="Cc" value={cc} onChange={setCc} autoFocus />}
-        {showBcc && <RecipientField label="Bcc" value={bcc} onChange={setBcc} autoFocus />}
+        {showCc && <RecipientField ref={ccRef} label="Cc" value={cc} onChange={setCc} autoFocus />}
+        {showBcc && <RecipientField ref={bccRef} label="Bcc" value={bcc} onChange={setBcc} autoFocus />}
 
         <div className="cmp-field">
           <span className="cmp-field__label">Subject</span>

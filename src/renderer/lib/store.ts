@@ -106,7 +106,15 @@ export const useApp = create<AppState>((set, get) => ({
     await get().refreshMeta()
     await get().refreshThreads()
     set({ ready: true })
-    window.api.onEvent(() => {
+    window.api.onEvent((e) => {
+      if (e.type === 'outbox' && e.status === 'failed') {
+        get().toast({
+          message: e.error ? `Couldn't send: ${e.error}` : "Couldn't send the message.",
+          actionLabel: 'Retry',
+          duration: 0, // sticky: a swallowed send failure is exactly what must never go unnoticed
+          onAction: () => void window.api.invoke('compose.retry', e.id)
+        })
+      }
       // Coalesce bursts of sync events.
       if (refreshTimer) return
       refreshTimer = setTimeout(() => { refreshTimer = null; void get().refreshMeta(); void get().refreshThreads() }, 150)

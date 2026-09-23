@@ -3,7 +3,7 @@
  * Parsing lives in `recipients.ts`; this only decides *when* text becomes a chip.
  */
 
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import type { Address, Contact } from '@shared/types'
 import { chipLabel, dedupeAddresses, isValidEmail, parseAddress, parseAddressList } from './recipients'
@@ -19,7 +19,19 @@ interface Props {
   onCommitBlur?: () => void
 }
 
-export function RecipientField({ label, value, onChange, trailing, autoFocus, onCommitBlur }: Props): JSX.Element {
+/** Imperative escape hatch so the composer can force any pending, uncommitted text into a
+ *  chip right before send — a mouse-click Send gets this for free via the input's blur, but
+ *  a keyboard shortcut (⌘Enter) can fire while text is still sitting uncommitted in the field.
+ *  Returns the parsed address (or null) rather than relying on `onChange`/state, since the
+ *  caller needs it synchronously in the same tick — a `setState` from here wouldn't be visible
+ *  yet to code reading `value` right after calling this. */
+export interface RecipientFieldHandle {
+  commitPending(): Address | null
+}
+
+export const RecipientField = forwardRef<RecipientFieldHandle, Props>(function RecipientField(
+  { label, value, onChange, trailing, autoFocus, onCommitBlur }, ref
+) {
   const [text, setText] = useState('')
   const [suggestions, setSuggestions] = useState<Contact[]>([])
   const [active, setActive] = useState(0)
@@ -58,6 +70,16 @@ export function RecipientField({ label, value, onChange, trailing, autoFocus, on
     if (parsed) addAddresses([parsed])
     return true
   }, [text, addAddresses])
+
+  useImperativeHandle(ref, () => ({
+    commitPending: () => {
+      const raw = text.trim()
+      if (!raw) return null
+      const parsed = parseAddress(raw)
+      if (parsed) addAddresses([parsed]) // still updates chip UI, even though the caller won't wait for that state flip
+      return parsed
+    }
+  }), [text, addAddresses])
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     const hasSuggestion = suggestions.length > 0 && text.trim().length > 0
@@ -159,4 +181,4 @@ export function RecipientField({ label, value, onChange, trailing, autoFocus, on
       {trailing && <div className="cmp-field__trailing">{trailing}</div>}
     </div>
   )
-}
+})

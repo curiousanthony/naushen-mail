@@ -104,6 +104,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'compose.schedule': (m, at) => outbox.schedule(m, at),
     'compose.cancelScheduled': async (id) => outbox.cancel(id),
     'compose.listScheduled': async () => repo.listScheduled(),
+    'compose.retry': async (id) => outbox.retry(id),
     'drafts.save': async (d) => repo.saveDraft(d),
     'drafts.list': async () => repo.listDrafts(),
     'drafts.get': async (id) => repo.getDraft(id),

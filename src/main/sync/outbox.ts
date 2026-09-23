@@ -52,10 +52,20 @@ export class Outbox {
           this.repo.saveScheduled({ ...s, status: 'sent' })
           this.engine.emit({ type: 'outbox', id: s.id, status: 'sent' })
         } catch (e) {
-          this.repo.saveScheduled({ ...s, status: 'failed', error: e instanceof Error ? e.message : String(e) })
-          this.engine.emit({ type: 'outbox', id: s.id, status: 'failed' })
+          const error = e instanceof Error ? e.message : String(e)
+          this.repo.saveScheduled({ ...s, status: 'failed', error })
+          this.engine.emit({ type: 'outbox', id: s.id, status: 'failed', error })
         }
       }
     } finally { this.busy = false }
+  }
+
+  /** Re-queue a failed send for immediate retry. The message content is untouched in the DB. */
+  retry(id: string): void {
+    const s = this.repo.listScheduled().find((x) => x.id === id)
+    if (!s || s.status !== 'failed') return
+    this.repo.saveScheduled({ ...s, status: 'pending', sendAt: Date.now(), error: undefined })
+    this.engine.emit({ type: 'outbox', id, status: 'pending' })
+    void this.tick()
   }
 }

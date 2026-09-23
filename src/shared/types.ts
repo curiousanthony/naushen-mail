@@ -286,4 +286,4 @@ export interface Contact extends Address {
 export type SyncEvent =
   | { type: 'changed'; accountId?: string; threadIds?: string[] }
   | { type: 'account-status'; accountId: string }
-  | { type: 'outbox'; id: string; status: ScheduledSend['status'] }
+  | { type: 'outbox'; id: string; status: ScheduledSend['status']; error?: string }
