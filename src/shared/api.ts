@@ -42,6 +42,8 @@ export interface MailApi {
   'messages.inlineImages'(messageId: string): Promise<Record<string, string>>
   /** UTF-8 text of a small text attachment (e.g. a `.ics` meeting invite) without a save dialog. */
   'attachments.getText'(messageId: string, attachmentId: string): Promise<string | null>
+  /** The attachment's bytes as a `data:` URL, for previewing in-app without a save dialog. */
+  'attachments.getDataUrl'(messageId: string, attachmentId: string): Promise<string | null>
 
   // compose
   'compose.send'(msg: OutgoingMessage): Promise<void>
@@ -70,7 +72,7 @@ export const API_METHODS: ApiMethod[] = [
   'labels.list', 'labels.create', 'labels.update', 'labels.delete',
   'views.list', 'views.save', 'views.delete',
   'threads.list', 'threads.get', 'threads.act', 'threads.counts', 'threads.search', 'attachments.save',
-  'messages.inlineImages', 'attachments.getText',
+  'messages.inlineImages', 'attachments.getText', 'attachments.getDataUrl',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled', 'compose.retry',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'

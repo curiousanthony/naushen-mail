@@ -7,7 +7,8 @@ import { findUnsubscribe, parseListUnsubscribe } from '@/features/reader/unsubsc
 import {
   LIST_MIN, PEEK_DEFAULT, PEEK_MIN, PEEK_STORAGE_KEY, clampPeekWidth, loadPeekWidth, savePeekWidth
 } from '@/features/reader/peek'
-import { attachmentKind, extensionOf, visibleAttachments } from '@/features/reader/fileKinds'
+import { attachmentKind, extensionOf, isPreviewable, visibleAttachments } from '@/features/reader/fileKinds'
+import { dataUrlToBlob } from '@/features/reader/AttachmentPreview'
 import { buildBodyCss, buildBodyDocument, type ThemeTokens } from '@/features/reader/bodyDocument'
 
 // ------------------------------------------------------------------ unsubscribe
@@ -177,6 +178,30 @@ describe('attachmentKind', () => {
     expect(extensionOf('a/b/c.png')).toBe('png')
     expect(extensionOf('.gitignore')).toBe('')
     expect(extensionOf('noext')).toBe('')
+  })
+
+  it('isPreviewable allows the kinds the reader can render inline, no others', () => {
+    for (const k of ['image', 'pdf', 'audio', 'video', 'text', 'code'] as const) expect(isPreviewable(k), k).toBe(true)
+    for (const k of ['doc', 'sheet', 'slides', 'archive', 'file'] as const) expect(isPreviewable(k), k).toBe(false)
+  })
+})
+
+describe('dataUrlToBlob', () => {
+  it('decodes a base64 data: URL with its mime type', async () => {
+    const blob = dataUrlToBlob('data:application/pdf;base64,JVBERi0xLjQK')
+    expect(blob.type).toBe('application/pdf')
+    expect(await blob.text()).toBe('%PDF-1.4\n')
+  })
+
+  it('decodes a plain (non-base64) data: URL', async () => {
+    const blob = dataUrlToBlob('data:text/plain,hello%20world')
+    expect(blob.type).toBe('text/plain')
+    expect(await blob.text()).toBe('hello world')
+  })
+
+  it('rejects anything that is not a data: URL', () => {
+    expect(() => dataUrlToBlob('blob:file:///abc')).toThrow()
+    expect(() => dataUrlToBlob('https://example.com/x.pdf')).toThrow()
   })
 })
 

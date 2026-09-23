@@ -663,3 +663,42 @@
 .reader__menu-item.is-danger svg { color: var(--c-danger); }
 .reader__menu-key { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--c-text-3); }
 .reader__menu-sep { height: 1px; margin: 4px 6px; background: var(--c-divider); }
+
+/* ---------------------------------------------------------------- attachment preview */
+
+.attprev__scrim {
+  position: fixed; inset: 0; z-index: 80; display: grid; place-items: center;
+  background: rgba(15, 15, 15, 0.4); animation: ve-fade 120ms ease-out;
+}
+
+.attprev {
+  width: min(860px, calc(100vw - 64px)); height: min(720px, calc(100vh - 96px));
+  display: flex; flex-direction: column;
+  background: var(--c-bg-popover); border-radius: var(--radius-xl); box-shadow: var(--shadow-peek);
+  animation: pop-in 140ms ease-out; overflow: hidden;
+}
+
+.attprev__head {
+  flex: none; display: flex; align-items: center; gap: 6px;
+  height: 48px; padding: 0 10px 0 16px; border-bottom: 1px solid var(--c-divider);
+}
+.attprev__title { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
+.attprev__name { font-size: 13.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attprev__size { flex: none; font-size: 12px; color: var(--c-text-3); }
+.attprev__btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: var(--radius-md); color: var(--c-text-2);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.attprev__btn:hover { background: var(--c-bg-hover); color: var(--c-text); }
+
+.attprev__body { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: auto; background: var(--c-bg); }
+.attprev__status { color: var(--c-text-3); font-size: 13.5px; }
+.attprev__img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.attprev__frame { width: 100%; height: 100%; border: 0; }
+.attprev__audio { width: 100%; max-width: 480px; }
+.attprev__video { max-width: 100%; max-height: 100%; }
+.attprev__text {
+  width: 100%; height: 100%; margin: 0; padding: 18px 20px; overflow: auto; box-sizing: border-box;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; color: var(--c-text); white-space: pre-wrap;
+}

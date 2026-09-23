@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; font-src 'self' data:; frame-src 'self' about: blob:;" />
+    <!-- media-src added for the attachment preview's audio/video (fetched as blob: URLs, see
+         AttachmentPreview.tsx -- never data:, kept out on purpose since that's unlimited-size
+         inline content in a CSP source list). frame-src already had blob: for the PDF preview. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: http:; font-src 'self' data:; frame-src 'self' about: blob:; media-src 'self' blob:;" />
     <title>Mailroom</title>
   </head>
   <body>

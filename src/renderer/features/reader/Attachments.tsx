@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import {
-  Download, File, FileArchive, FileAudio, FileCode, FileImage, FileSpreadsheet,
+  Download, Eye, File, FileArchive, FileAudio, FileCode, FileImage, FileSpreadsheet,
   FileText, FileType, FileVideo, Presentation
 } from 'lucide-react'
 import type { Attachment } from '@shared/types'
 import { formatBytes } from '@shared/sanitize'
 import { Tooltip } from '@/features/tooltip'
-import { attachmentKind, visibleAttachments, type AttachmentKind } from './fileKinds'
+import { AttachmentPreview } from './AttachmentPreview'
+import { attachmentKind, isPreviewable, visibleAttachments, type AttachmentKind } from './fileKinds'
 
 const ICONS: Record<AttachmentKind, typeof File> = {
   image: FileImage,
@@ -33,9 +34,14 @@ interface Props {
   attachments: Attachment[]
 }
 
-/** File chips. Clicking one asks main for a save dialog and writes the file. */
+/**
+ * File chips. A previewable kind (image/pdf/audio/video/text/code) opens in-app instead of
+ * downloading -- clicking the separate download icon within the chip still saves directly,
+ * same as clicking anywhere on a non-previewable chip does.
+ */
 export function Attachments({ messageId, attachments }: Props): JSX.Element | null {
   const [busy, setBusy] = useState<string | null>(null)
+  const [preview, setPreview] = useState<Attachment | null>(null)
   const list = visibleAttachments(attachments)
   if (!list.length) return null
 
@@ -49,17 +55,23 @@ export function Attachments({ messageId, attachments }: Props): JSX.Element | nu
     }
   }
 
+  const open = (a: Attachment): void => {
+    if (isPreviewable(attachmentKind(a.mimeType, a.filename))) setPreview(a)
+    else void save(a)
+  }
+
   return (
     <div className="atts">
       {list.map((a) => {
         const kind = attachmentKind(a.mimeType, a.filename)
         const Icon = ICONS[kind]
         const tint = TINTS[kind]
+        const previewable = isPreviewable(kind)
         return (
-          <Tooltip key={a.id} label={`${a.filename} — ${formatBytes(a.size)}`}>
+          <Tooltip key={a.id} label={previewable ? `Preview ${a.filename}` : `Download ${a.filename} — ${formatBytes(a.size)}`}>
             <button
               className="att"
-              onClick={() => void save(a)}
+              onClick={() => open(a)}
               disabled={busy === a.id}
             >
               <span
@@ -72,11 +84,19 @@ export function Attachments({ messageId, attachments }: Props): JSX.Element | nu
                 <span className="att__name">{a.filename}</span>
                 <span className="att__size">{formatBytes(a.size)}</span>
               </span>
-              <Download className="att__dl" size={14} aria-hidden />
+              {previewable ? <Eye className="att__dl" size={14} aria-hidden /> : <Download className="att__dl" size={14} aria-hidden />}
             </button>
           </Tooltip>
         )
       })}
+      {preview && (
+        <AttachmentPreview
+          messageId={messageId}
+          attachment={preview}
+          onClose={() => setPreview(null)}
+          onDownload={() => void save(preview)}
+        />
+      )}
     </div>
   )
 }

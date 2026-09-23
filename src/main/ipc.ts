@@ -99,6 +99,25 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
         return null
       }
     },
+    // Preview-in-app (no save-to-disk round trip): same fetch as attachments.save, minus the
+    // dialog and the disk write. Only used for kinds the renderer knows how to render inline
+    // (image/pdf/audio/video/text/code -- see fileKinds.ts's isPreviewable); anything else stays
+    // on the save-dialog path.
+    'attachments.getDataUrl': async (messageId, attachmentId) => {
+      const row = repo.db.prepare('SELECT account_id, remote_id, attachments_json FROM messages WHERE id = ?').get(messageId) as
+        { account_id: string; remote_id: string; attachments_json: string } | undefined
+      if (!row) return null
+      const att = (JSON.parse(row.attachments_json) as { id: string; mimeType: string }[]).find((a) => a.id === attachmentId)
+      if (!att) return null
+      const adapter = engine.getAdapter(row.account_id)
+      if (!adapter) return null
+      try {
+        const buf = await adapter.fetchAttachment(row.remote_id, attachmentId)
+        return `data:${att.mimeType || 'application/octet-stream'};base64,${buf.toString('base64')}`
+      } catch {
+        return null
+      }
+    },
 
     'compose.send': (m) => outbox.sendWithUndo(m),
     'compose.schedule': (m, at) => outbox.schedule(m, at),

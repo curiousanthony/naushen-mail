@@ -56,3 +56,7 @@ export function attachmentKind(mimeType: string, filename = ''): AttachmentKind 
 /** Attachments worth showing as chips: inline images referenced by the body are not. */
 export const visibleAttachments = (list: Attachment[]): Attachment[] =>
   list.filter((a) => !(a.inline && a.contentId))
+
+/** Kinds the reader can render inline in the preview dialog, without a save-to-disk round trip. */
+export const isPreviewable = (kind: AttachmentKind): boolean =>
+  kind === 'image' || kind === 'pdf' || kind === 'audio' || kind === 'video' || kind === 'text' || kind === 'code'
