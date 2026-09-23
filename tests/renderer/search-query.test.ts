@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseSearchQuery } from '@/lib/searchQuery'
+import { activeContactPrefix, applyContactSuggestion, parseSearchQuery } from '@/lib/searchQuery'
 import type { Label } from '@shared/types'
 
 const label = (id: string, name: string): Label => ({ id, accountId: 'a', remoteId: id, name, kind: 'user' })
@@ -58,5 +58,44 @@ describe('parseSearchQuery', () => {
 
   it('plain free text with no operators is untouched', () => {
     expect(parseSearchQuery('quarterly roadmap', [])).toEqual({ filter: {}, text: 'quarterly roadmap' })
+  })
+})
+
+describe('activeContactPrefix', () => {
+  it('detects an in-progress from:/to: token at the end of the string', () => {
+    expect(activeContactPrefix('from:pri')).toEqual({ key: 'from', prefix: 'pri' })
+    expect(activeContactPrefix('budget to:jor')).toEqual({ key: 'to', prefix: 'jor' })
+    expect(activeContactPrefix('FROM:pri')).toEqual({ key: 'from', prefix: 'pri' })
+  })
+
+  it('fires with an empty prefix right after the colon', () => {
+    expect(activeContactPrefix('from:')).toEqual({ key: 'from', prefix: '' })
+  })
+
+  it('is null once the operator is not the last token', () => {
+    expect(activeContactPrefix('from:priya budget')).toBeNull()
+  })
+
+  it('is null with no from:/to: operator at all', () => {
+    expect(activeContactPrefix('budget forecast')).toBeNull()
+    expect(activeContactPrefix('subject:invoice')).toBeNull()
+    expect(activeContactPrefix('')).toBeNull()
+  })
+})
+
+describe('applyContactSuggestion', () => {
+  it('replaces the in-progress token, keeping preceding text and a trailing space', () => {
+    expect(applyContactSuggestion('budget from:pri', 'from', 'priya@acme.test'))
+      .toBe('budget from:priya@acme.test ')
+  })
+
+  it('works at the very start of the string too', () => {
+    expect(applyContactSuggestion('from:pri', 'from', 'priya@acme.test'))
+      .toBe('from:priya@acme.test ')
+  })
+
+  it('works with an empty prefix', () => {
+    expect(applyContactSuggestion('to:', 'to', 'jordan@acme.test'))
+      .toBe('to:jordan@acme.test ')
   })
 })

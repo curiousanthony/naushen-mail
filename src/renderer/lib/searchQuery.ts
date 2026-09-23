@@ -90,6 +90,26 @@ export function parseSearchQuery(raw: string, labels: Label[]): ParsedQuery {
   }
 }
 
+/**
+ * Whether the text the user is *currently typing* (the last whitespace-delimited token) is a
+ * `from:`/`to:` value in progress, e.g. `budget from:pri` -> `{ key: 'from', prefix: 'pri' }`.
+ * Used to drive a contact-suggestion dropdown under the search box, the same idea as the
+ * recipient autocomplete in the composer (`RecipientField`) but for the query string instead of
+ * a chip list. Only fires at the very end of the string -- mid-string editing doesn't get
+ * suggestions, matching how the operator cheat-sheet also only ever appends at the end.
+ */
+export function activeContactPrefix(q: string): { key: 'from' | 'to'; prefix: string } | null {
+  const m = /(?:^|\s)(from|to):(\S*)$/i.exec(q)
+  if (!m) return null
+  return { key: m[1].toLowerCase() as 'from' | 'to', prefix: m[2] }
+}
+
+/** Replace the in-progress `from:`/`to:` token at the end of `q` with a resolved address. */
+export function applyContactSuggestion(q: string, key: 'from' | 'to', email: string): string {
+  return q.replace(/(?:^|\s)(from|to):(\S*)$/i, (whole, _k, _p, offset: number) =>
+    `${offset > 0 ? ' ' : ''}${key}:${email} `)
+}
+
 /** Shown as a cheat-sheet under the search box while it's focused and empty. */
 export const SEARCH_OPERATOR_HELP: { op: string; hint: string }[] = [
   { op: 'from:', hint: 'sender name or address' },

@@ -56,7 +56,18 @@ export class SyncEngine {
         const page = await adapter.sync(cursor)
         if (page.reset) this.repo.clearAccountMail(accountId)
         // labels must exist before threads reference them (FKs are soft, but keep ordering explicit)
-        for (const t of page.threads) this.repo.upsertNormalized(t)
+        const me = this.repo.getAccount(accountId)?.email.toLowerCase()
+        for (const t of page.threads) {
+          this.repo.upsertNormalized(t)
+          // Recipient autocomplete (compose, search from:/to:) needs both directions: `send()`
+          // already bumps who *you* write to, this is the other half -- everyone a synced
+          // message came from or was sent to, so people who've only ever emailed you also
+          // show up as suggestions, not just people you've emailed. Exclude the account's own
+          // address, which shows up as `from` on sent mail and `to`/`cc` on received mail.
+          for (const m of t.messages) {
+            this.repo.bumpContacts([m.from, ...m.to, ...m.cc].filter((a) => a.email.toLowerCase() !== me))
+          }
+        }
         if (page.deletedRemoteThreadIds.length) this.repo.deleteThreadsByRemote(accountId, page.deletedRemoteThreadIds)
         cursor = page.cursor
         this.repo.patchAccount(accountId, { syncCursor: cursor })

@@ -15,7 +15,8 @@ import {
   saveCollapsed, sidebarLabels, sidebarViews, unreadFor
 } from './lib'
 import { VIEW_ICONS } from './viewIcons'
-import { SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
+import { activeContactPrefix, applyContactSuggestion, SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
+import type { Contact } from '@shared/types'
 import './sidebar.css'
 
 const MAIL_ICON: Record<string, ReactNode> = {
@@ -196,11 +197,26 @@ function SearchRow(): JSX.Element {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
   const [focused, setFocused] = useState(false)
+  const [suggestions, setSuggestions] = useState<Contact[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const prev = useRef<Nav>({ kind: 'role', role: 'inbox' })
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
+
+  // Autocomplete people while typing a from:/to: value, the same idea as the composer's
+  // RecipientField but for the search box's plain text instead of a chip list.
+  const contactPrefix = activeContactPrefix(q)
+  useEffect(() => {
+    if (!contactPrefix) { setSuggestions([]); return }
+    let cancelled = false
+    const t = setTimeout(() => {
+      void window.api.invoke('contacts.suggest', contactPrefix.prefix).then((list) => {
+        if (!cancelled) setSuggestions(list)
+      }).catch(() => { if (!cancelled) setSuggestions([]) })
+    }, 120)
+    return () => { cancelled = true; clearTimeout(t) }
+  }, [contactPrefix?.key, contactPrefix?.prefix])
 
   const start = (): void => {
     if (nav.kind !== 'search') prev.current = nav
@@ -236,6 +252,14 @@ function SearchRow(): JSX.Element {
     setQ(next)
     inputRef.current?.focus()
   }
+  const pickContact = (c: Contact): void => {
+    if (!contactPrefix) return
+    if (timer.current) { clearTimeout(timer.current); timer.current = null }
+    const next = applyContactSuggestion(q, contactPrefix.key, c.email)
+    setQ(next)
+    setNav({ kind: 'search', text: next.trim() })
+    inputRef.current?.focus()
+  }
 
   return (
     <div className="sidebar__searchwrap no-drag">
@@ -250,7 +274,22 @@ function SearchRow(): JSX.Element {
         />
         {q && <button className="search__clear" onMouseDown={(e) => e.preventDefault()} onClick={exit} aria-label="Clear search"><X size={13} /></button>}
       </div>
-      {focused && !q.trim() && (
+      {focused && contactPrefix && suggestions.length > 0 && (
+        <div className="search__ops" role="listbox" aria-label="Matching people">
+          {suggestions.map((c) => (
+            <button
+              key={c.email} type="button" className="search__op search__op--contact" role="option"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => pickContact(c)}
+            >
+              <span className="search__op-avatar" aria-hidden>{(c.name || c.email).charAt(0).toUpperCase()}</span>
+              {c.name && <span className="search__op-name">{c.name}</span>}
+              <span className="search__op-email">{c.email}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {focused && !contactPrefix && !q.trim() && (
         <div className="search__ops" role="listbox" aria-label="Search operators">
           {SEARCH_OPERATOR_HELP.map((o) => (
             <button
