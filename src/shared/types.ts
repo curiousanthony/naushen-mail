@@ -230,8 +230,13 @@ export interface ScheduledSend {
 
 // ---------------------------------------------------------------- Settings
 
+/** How an opened thread is presented — Settings → Inbox → Thread style (research §1.5). */
+export type ThreadStyle = 'side' | 'center' | 'full'
+
 export interface AppSettings {
   theme: 'system' | 'light' | 'dark'
+  /** Optional so settings saved before this existed still load; treat a missing value as 'side'. */
+  threadStyle?: ThreadStyle
   /** Show threads grouped by date bucket. */
   groupByDate: boolean
   density: 'comfortable' | 'compact'
@@ -250,6 +255,7 @@ export interface AppSettings {
 
 export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'system',
+  threadStyle: 'side',
   groupByDate: true,
   density: 'comfortable',
   blockRemoteImages: true,
