@@ -39,6 +39,30 @@ describe('GmailHttp', () => {
     expect(perm.calls).toHaveLength(1)
   })
 
+  // Regression: a real account hit this during backfill. Gmail returns 403 (not 429) for its
+  // per-user burst quota, and the reason string for "Quota exceeded for quota metric 'Queries'
+  // and limit 'Queries per minute per user'" is literally 'quotaExceeded', a different string
+  // from 'userRateLimitExceeded' -- both mean the same transient, retryable condition.
+  it('retries a literal "quotaExceeded" 403 (not just rateLimitExceeded/userRateLimitExceeded)', async () => {
+    let n = 0
+    const { fetch, calls } = fakeFetch(() =>
+      (++n === 1
+        ? json({ error: { message: "Quota exceeded for quota metric 'Queries' and limit 'Queries per minute per user'", errors: [{ reason: 'quotaExceeded' }] } }, 403)
+        : json({ ok: true }))
+    )
+    await expect(new GmailHttp({ getAccessToken: async () => 't', fetch, ...noSleep }).get('/x')).resolves.toEqual({ ok: true })
+    expect(calls).toHaveLength(2)
+  })
+
+  it('a sustained quota 403 can outlast a ~100s rate-limit window before giving up (default retry budget)', async () => {
+    const { fetch, calls } = fakeFetch(() => json({ error: { message: 'quota', errors: [{ reason: 'quotaExceeded' }] } }, 403))
+    const sleeps: number[] = []
+    const p = new GmailHttp({ getAccessToken: async () => 't', fetch, sleep: async (ms) => { sleeps.push(ms) }, random: () => 0 }).get('/x')
+    await expect(p).rejects.toMatchObject({ status: 403, reason: 'quotaExceeded' })
+    expect(calls.length).toBeGreaterThan(5) // old default (5) was not enough to span a real quota window
+    expect(sleeps.reduce((a, b) => a + b, 0)).toBeGreaterThan(100_000)
+  })
+
   it('gives up after maxRetries with a readable GmailApiError', async () => {
     const { fetch, calls } = fakeFetch(() => json({ error: { message: 'down' } }, 500))
     const p = new GmailHttp({ getAccessToken: async () => 't', fetch, maxRetries: 2, ...noSleep }).get('/x')

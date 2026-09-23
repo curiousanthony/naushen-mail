@@ -42,7 +42,11 @@ export interface HttpClientDeps {
   random?: () => number
 }
 
-const RETRYABLE_REASONS = new Set(['rateLimitExceeded', 'userRateLimitExceeded', 'backendError'])
+// Gmail returns 403 (not 429) for its per-user, per-100-second burst quota. The *reason* string
+// varies by which limit was hit ("Quota exceeded for quota metric 'Queries' and limit 'Queries
+// per minute per user'" comes back with reason 'quotaExceeded', not 'rateLimitExceeded') -- all
+// three are the same transient, retry-with-backoff situation, never a real permission problem.
+const RETRYABLE_REASONS = new Set(['rateLimitExceeded', 'userRateLimitExceeded', 'quotaExceeded', 'backendError'])
 const defaultSleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
 
 export function buildUrl(path: string, query?: Record<string, QueryValue>): string {
@@ -73,7 +77,10 @@ export class GmailHttp {
     const doFetch = this.deps.fetch ?? fetch
     const sleep = this.deps.sleep ?? defaultSleep
     const rand = this.deps.random ?? Math.random
-    const maxRetries = this.deps.maxRetries ?? 5
+    // A quota/rate-limit 403 resets on a rolling ~100s window. The old default (5 retries, 20s
+    // backoff cap) only spans ~15.5s worst case -- nowhere near enough to ride one out, so a
+    // large-mailbox backfill could keep failing even with the right reason now retried above.
+    const maxRetries = this.deps.maxRetries ?? 9
     const url = buildUrl(opts.url ?? path, opts.query)
     let forcedRefresh = false
     let force = false
@@ -144,7 +151,7 @@ export class GmailHttp {
 
 function backoff(attempt: number, retryAfterMs: number | null, rand: () => number): number {
   if (retryAfterMs !== null) return Math.min(retryAfterMs, 60_000)
-  return Math.min(500 * 2 ** attempt, 20_000) + Math.floor(rand() * 250)
+  return Math.min(500 * 2 ** attempt, 30_000) + Math.floor(rand() * 250)
 }
 
 async function toError(res: Response): Promise<GmailApiError> {
