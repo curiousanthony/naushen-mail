@@ -32,26 +32,18 @@ const body = squircle()
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3a3b40"/>
-      <stop offset="1" stop-color="#17181b"/>
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f2f2f0"/>
     </linearGradient>
     <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
       <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#ececea"/>
-    </linearGradient>
-    <linearGradient id="flap" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f3f3f1"/>
-    </linearGradient>
     <filter id="drop" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.20"/>
     </filter>
     <filter id="soft" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000" flood-opacity="0.16"/>
     </filter>
     <clipPath id="clip"><path d="${body}"/></clipPath>
   </defs>
@@ -60,21 +52,21 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" 
   <g clip-path="url(#clip)">
     <rect x="100" y="100" width="824" height="420" fill="url(#sheen)"/>
   </g>
-  <path d="${body}" fill="none" stroke="#fff" stroke-opacity="0.10" stroke-width="2"/>
-  <!-- paper plane: nose up-right, one visible fold. Drawn in a 24-unit box, scaled/rotated into
-       place. Not a copy of any third-party mark -- an original take on the generic send-plane glyph. -->
+  <path d="${body}" fill="none" stroke="#000" stroke-opacity="0.08" stroke-width="2"/>
+  <!-- paper plane: white fill, bold dark outline (a light-background icon needs the outline just
+       to read as a shape, unlike the earlier dark-background version). Nose up-right, one visible
+       fold, drawn in a 24-unit box, scaled/rotated into place. Not a copy of any third-party mark
+       -- an original take on the generic send-plane glyph. -->
   <g filter="url(#soft)" transform="translate(512,512) rotate(-12) scale(21.6) translate(-12,-12)">
-    <!-- full silhouette (nose, tail, underwing) -->
-    <polygon points="22,2 15,22 11,13 2,9" fill="url(#paper)"/>
+    <!-- full silhouette (nose, tail, underwing), outlined -->
+    <polygon points="22,2 15,22 11,13 2,9" fill="#ffffff" stroke="#1c1d1f" stroke-width="1.3" stroke-linejoin="round"/>
     <!-- underwing shade: the near-side fold reads slightly darker than the top face -->
-    <polygon points="11,13 15,22 8.2,15.6" fill="url(#flap)"/>
+    <polygon points="11,13 15,22 8.2,15.6" fill="#e8e8e6" stroke="#1c1d1f" stroke-width="1.1" stroke-linejoin="round"/>
     <!-- centre fold, nose to tail -->
-    <path d="M22 2 L11 13" stroke="#000" stroke-opacity="0.16" stroke-width="0.7" stroke-linecap="round"/>
-    <!-- leading edges -->
-    <path d="M22 2 L2 9 M22 2 L15 22" stroke="#000" stroke-opacity="0.08" stroke-width="0.5" stroke-linejoin="round" fill="none"/>
+    <path d="M22 2 L11 13" stroke="#1c1d1f" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
   </g>
   <!-- motion trail -->
-  <path d="M300 592 Q404 592 476 552" stroke="#fff" stroke-opacity="0.14" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <path d="M300 592 Q404 592 476 552" stroke="#1c1d1f" stroke-opacity="0.18" stroke-width="10" stroke-linecap="round" fill="none"/>
 </svg>
 `
 writeFileSync(join(buildDir, 'icon.svg'), svg)
