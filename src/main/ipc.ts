@@ -65,6 +65,27 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
       await writeFile(res.filePath, buf)
       return res.filePath
     },
+    'messages.inlineImages': async (messageId) => {
+      const row = repo.db.prepare('SELECT account_id, remote_id, attachments_json FROM messages WHERE id = ?').get(messageId) as
+        { account_id: string; remote_id: string; attachments_json: string } | undefined
+      if (!row) return {}
+      const attachments = JSON.parse(row.attachments_json) as
+        { id: string; mimeType: string; contentId?: string; inline: boolean }[]
+      const inlineAtts = attachments.filter((a) => a.inline && a.contentId)
+      if (inlineAtts.length === 0) return {}
+      const adapter = engine.getAdapter(row.account_id)
+      if (!adapter) return {}
+      const out: Record<string, string> = {}
+      await Promise.all(inlineAtts.map(async (a) => {
+        try {
+          const buf = await adapter.fetchAttachment(row.remote_id, a.id)
+          out[a.contentId!] = `data:${a.mimeType};base64,${buf.toString('base64')}`
+        } catch {
+          // Leave unresolved — the sanitiser's existing blocked-cid placeholder stands.
+        }
+      }))
+      return out
+    },
 
     'compose.send': (m) => outbox.sendWithUndo(m),
     'compose.schedule': (m, at) => outbox.schedule(m, at),
