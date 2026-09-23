@@ -18,7 +18,7 @@ import './threadlist.css'
  * the same table, so changing a value here changes the rendered height with it.
  */
 const DENSITY: Record<'comfortable' | 'compact', Metrics> = {
-  comfortable: { rowH: 40, headerH: 28 },
+  comfortable: { rowH: 44, headerH: 28 },
   compact: { rowH: 32, headerH: 26 }
 }
 

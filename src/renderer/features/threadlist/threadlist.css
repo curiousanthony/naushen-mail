@@ -6,7 +6,7 @@
 .app__main { min-width: 0; }
 
 .tl {
-  --row-h: 40px;
+  --row-h: 44px;
   --header-h: 28px;
   --gutter: 14px;
   flex: 1;
