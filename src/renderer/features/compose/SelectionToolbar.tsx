@@ -9,6 +9,7 @@ import {
   Bold, Check, ChevronDown, Code, ExternalLink, Italic, Link2, Palette,
   Strikethrough, Trash2, Underline
 } from 'lucide-react'
+import { Tooltip, splitShortcutHint } from '@/features/tooltip'
 import { BACKGROUND_COLORS, TEXT_COLORS, type SlashAction } from './slashItems'
 import { applyBlockAction } from './SlashMenu'
 
@@ -105,11 +106,17 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
               if (e.key === 'Escape') { e.preventDefault(); setPanel(null); editor.commands.focus() }
             }}
           />
-          <button type="button" className="cmp-iconbtn" title="Apply" onMouseDown={(e) => { e.preventDefault(); applyLink() }}><Check size={14} /></button>
+          <Tooltip label="Apply">
+            <button type="button" className="cmp-iconbtn" aria-label="Apply" onMouseDown={(e) => { e.preventDefault(); applyLink() }}><Check size={14} /></button>
+          </Tooltip>
           {editor.isActive('link') && (
             <>
-              <button type="button" className="cmp-iconbtn" title="Open link" onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', href) }}><ExternalLink size={14} /></button>
-              <button type="button" className="cmp-iconbtn" title="Remove link" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().extendMarkRange('link').unsetLink().run(); setPanel(null) }}><Trash2 size={14} /></button>
+              <Tooltip label="Open link">
+                <button type="button" className="cmp-iconbtn" aria-label="Open link" onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', href) }}><ExternalLink size={14} /></button>
+              </Tooltip>
+              <Tooltip label="Remove link">
+                <button type="button" className="cmp-iconbtn" aria-label="Remove link" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().extendMarkRange('link').unsetLink().run(); setPanel(null) }}><Trash2 size={14} /></button>
+              </Tooltip>
             </>
           )}
         </div>
@@ -120,27 +127,29 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
           <div className="cmp-menu__group">Text</div>
           <div className="cmp-swatches">
             {TEXT_COLORS.map((c) => (
-              <button
-                key={`t-${c.name}`}
-                type="button"
-                title={c.name}
-                className="cmp-swatch"
-                style={{ color: c.value || 'inherit' }}
-                onMouseDown={(e) => { e.preventDefault(); c.value ? editor.chain().focus().setColor(c.value).run() : editor.chain().focus().unsetColor().run(); setPanel(null) }}
-              >A</button>
+              <Tooltip key={`t-${c.name}`} label={c.name}>
+                <button
+                  type="button"
+                  className="cmp-swatch"
+                  aria-label={c.name}
+                  style={{ color: c.value || 'inherit' }}
+                  onMouseDown={(e) => { e.preventDefault(); c.value ? editor.chain().focus().setColor(c.value).run() : editor.chain().focus().unsetColor().run(); setPanel(null) }}
+                >A</button>
+              </Tooltip>
             ))}
           </div>
           <div className="cmp-menu__group">Background</div>
           <div className="cmp-swatches">
             {BACKGROUND_COLORS.map((c) => (
-              <button
-                key={`b-${c.name}`}
-                type="button"
-                title={c.name}
-                className="cmp-swatch cmp-swatch--bg"
-                style={{ background: c.value || 'transparent' }}
-                onMouseDown={(e) => { e.preventDefault(); c.value ? editor.chain().focus().setBackgroundColor(c.value).run() : editor.chain().focus().unsetBackgroundColor().run(); setPanel(null) }}
-              >A</button>
+              <Tooltip key={`b-${c.name}`} label={c.name}>
+                <button
+                  type="button"
+                  className="cmp-swatch cmp-swatch--bg"
+                  aria-label={c.name}
+                  style={{ background: c.value || 'transparent' }}
+                  onMouseDown={(e) => { e.preventDefault(); c.value ? editor.chain().focus().setBackgroundColor(c.value).run() : editor.chain().focus().unsetBackgroundColor().run(); setPanel(null) }}
+                >A</button>
+              </Tooltip>
             ))}
           </div>
         </div>
@@ -155,9 +164,12 @@ function ToolButton({ active, label, onClick, children }: {
   onClick: (e: React.MouseEvent) => void
   children: React.ReactNode
 }): JSX.Element {
+  const { text, shortcut } = splitShortcutHint(label)
   return (
-    <button type="button" title={label} aria-label={label} aria-pressed={active} className={`cmp-seltoolbar__btn${active ? ' is-active' : ''}`} onMouseDown={onClick}>
-      {children}
-    </button>
+    <Tooltip label={text} shortcut={shortcut}>
+      <button type="button" aria-label={label} aria-pressed={active} className={`cmp-seltoolbar__btn${active ? ' is-active' : ''}`} onMouseDown={onClick}>
+        {children}
+      </button>
+    </Tooltip>
   )
 }

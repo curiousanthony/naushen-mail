@@ -4,6 +4,7 @@ import type { Address, Message } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
 import { gravatarUrl } from '@/lib/avatar'
+import { Tooltip } from '@/features/tooltip'
 import { MessageBody } from './MessageBody'
 import { Attachments } from './Attachments'
 import { visibleAttachments } from './fileKinds'
@@ -68,44 +69,53 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
           {!expanded && <span className="msg__snippet">{message.snippet}</span>}
         </span>
         {expanded && (
-          <button
-            type="button"
-            className="msg__to"
-            onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
-            aria-expanded={showDetail}
-            aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
-            title={showDetail ? 'Hide details' : 'Show details'}
-          >
-            <span>
-              to {recipients.length ? recipients.map(displayName).join(', ') : 'me'}
-            </span>
-            {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
-          </button>
+          <Tooltip label={showDetail ? 'Hide details' : 'Show details'}>
+            <button
+              type="button"
+              className="msg__to"
+              onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
+              aria-expanded={showDetail}
+              aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
+            >
+              <span>
+                to {recipients.length ? recipients.map(displayName).join(', ') : 'me'}
+              </span>
+              {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
+            </button>
+          </Tooltip>
         )}
       </span>
       <span className="msg__aside">
         {attachments.length > 0 && (
-          <span className="msg__clip" title={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
-            <Paperclip size={13} aria-hidden />
-          </span>
+          <Tooltip label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
+            <span className="msg__clip" role="img" aria-label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
+              <Paperclip size={13} aria-hidden />
+            </span>
+          </Tooltip>
         )}
         <time dateTime={new Date(message.date).toISOString()} title={fullDate(message.date)}>
           {expanded ? fullDate(message.date) : listTime(message.date)}
         </time>
         {expanded && (
           <span className="msg__quickreply">
-            <button
-              type="button" className="msg__quickbtn" title="Reply" aria-label="Reply"
-              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'reply', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-            ><CornerUpLeft size={14} aria-hidden /></button>
-            <button
-              type="button" className="msg__quickbtn" title="Reply all" aria-label="Reply all"
-              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'replyAll', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-            ><ReplyAll size={14} aria-hidden /></button>
-            <button
-              type="button" className="msg__quickbtn" title="Forward" aria-label="Forward"
-              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'forward', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-            ><CornerUpRight size={14} aria-hidden /></button>
+            <Tooltip label="Reply">
+              <button
+                type="button" className="msg__quickbtn" aria-label="Reply"
+                onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'reply', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+              ><CornerUpLeft size={14} aria-hidden /></button>
+            </Tooltip>
+            <Tooltip label="Reply all">
+              <button
+                type="button" className="msg__quickbtn" aria-label="Reply all"
+                onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'replyAll', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+              ><ReplyAll size={14} aria-hidden /></button>
+            </Tooltip>
+            <Tooltip label="Forward">
+              <button
+                type="button" className="msg__quickbtn" aria-label="Forward"
+                onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'forward', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+              ><CornerUpRight size={14} aria-hidden /></button>
+            </Tooltip>
           </span>
         )}
       </span>
@@ -117,14 +127,15 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       {expanded ? (
         <div className="msg__head">{head}</div>
       ) : (
-        <button
-          className="msg__head"
-          onClick={onToggle}
-          aria-expanded={false}
-          title="Expand message"
-        >
-          {head}
-        </button>
+        <Tooltip label="Expand message">
+          <button
+            className="msg__head"
+            onClick={onToggle}
+            aria-expanded={false}
+          >
+            {head}
+          </button>
+        </Tooltip>
       )}
 
       {expanded && showDetail && (

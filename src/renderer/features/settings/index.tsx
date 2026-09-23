@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import clsx from 'clsx'
 import { Braces, Info, Keyboard, LayoutList, Palette, PenLine, Send, Tag, UserRound, X } from 'lucide-react'
 import { useApp } from '@/lib/store'
+import { Tooltip } from '@/features/tooltip'
 import { Avatar } from './ui'
 import { AccountsSection } from './sections/AccountsSection'
 import { AppearanceSection } from './sections/AppearanceSection'
@@ -99,7 +100,9 @@ function SettingsDialog(): JSX.Element {
           ))}
         </nav>
         <div className="st-pane" ref={pane}>
-          <button type="button" className="st-close" aria-label="Close settings" title="Close (Esc)" onClick={close}><X size={16} strokeWidth={1.75} /></button>
+          <Tooltip label="Close" shortcut="Esc">
+            <button type="button" className="st-close" aria-label="Close settings" onClick={close}><X size={16} strokeWidth={1.75} /></button>
+          </Tooltip>
           <div className="st-pane__inner" key={current.id}>{current.render()}</div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useApp } from '@/lib/store'
 import { initials, listTime } from '@/lib/format'
 import { chipStyle } from '@/lib/labels'
 import { gravatarUrl } from '@/lib/avatar'
+import { Tooltip } from '@/features/tooltip'
 import { rowLabels, senderText } from './lib'
 
 export interface RowProps {
@@ -26,16 +27,18 @@ function Action({ label, on, onClick, children }: {
   label: string; on?: boolean; onClick(): void; children: React.ReactNode
 }): JSX.Element {
   return (
-    <button
-      className="trow__act" data-on={!!on} title={label} aria-label={label}
-      // Out of the tab order: a 300-row list would otherwise be ~1500 stops, and these
-      // actions are all reachable from the keyboard through the commands feature.
-      tabIndex={-1}
-      onClick={(e) => { e.stopPropagation(); onClick() }}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      {children}
-    </button>
+    <Tooltip label={label}>
+      <button
+        className="trow__act" data-on={!!on} aria-label={label}
+        // Out of the tab order: a 300-row list would otherwise be ~1500 stops, and these
+        // actions are all reachable from the keyboard through the commands feature.
+        tabIndex={-1}
+        onClick={(e) => { e.stopPropagation(); onClick() }}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        {children}
+      </button>
+    </Tooltip>
   )
 }
 

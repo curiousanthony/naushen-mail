@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Trash2 } from 'lucide-react'
 import { LABEL_COLORS, type LabelColor, type SystemRole, type ThreadFilter, type View } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { Tooltip } from '@/features/tooltip'
 import { useViewEditor } from './viewEditorState'
 import { accountTags, sidebarLabels } from './lib'
 import { VIEW_ICON_KEYS, VIEW_ICONS } from './viewIcons'
@@ -145,22 +146,28 @@ export function ViewEditor(): JSX.Element | null {
             {VIEW_ICON_KEYS.map((key) => {
               const Icon = VIEW_ICONS[key]
               return (
-                <button key={key} className="ve__emojibtn" data-on={key === icon} onClick={() => setIcon(key)} title={key} aria-label={key}>
-                  <Icon size={15} />
-                </button>
+                <Tooltip key={key} label={key}>
+                  <button className="ve__emojibtn" data-on={key === icon} onClick={() => setIcon(key)} aria-label={key}>
+                    <Icon size={15} />
+                  </button>
+                </Tooltip>
               )
             })}
           </div>
 
           <label className="ve__label">Colour</label>
           <div className="ve__colors">
-            <button className="ve__swatch" data-on={color === ''} onClick={() => setColor('')} title="No colour" aria-label="No colour">
-              <span className="ve__swatchdot ve__swatchdot--none" />
-            </button>
-            {LABEL_COLORS.map((c) => (
-              <button key={c} className="ve__swatch" data-on={color === c} onClick={() => setColor(c)} title={c} aria-label={c}>
-                <span className="ve__swatchdot" style={{ background: `var(--chip-${c}-fg)` }} />
+            <Tooltip label="No colour">
+              <button className="ve__swatch" data-on={color === ''} onClick={() => setColor('')} aria-label="No colour">
+                <span className="ve__swatchdot ve__swatchdot--none" />
               </button>
+            </Tooltip>
+            {LABEL_COLORS.map((c) => (
+              <Tooltip key={c} label={c}>
+                <button className="ve__swatch" data-on={color === c} onClick={() => setColor(c)} aria-label={c}>
+                  <span className="ve__swatchdot" style={{ background: `var(--chip-${c}-fg)` }} />
+                </button>
+              </Tooltip>
             ))}
           </div>
 

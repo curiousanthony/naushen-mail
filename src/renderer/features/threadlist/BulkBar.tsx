@@ -1,6 +1,7 @@
 import { AlarmClock, Archive, Mail, MailOpen, Tag, Trash2, X } from 'lucide-react'
 import type { Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { Tooltip } from '@/features/tooltip'
 import { Popover, useAnchor } from '@/features/sidebar/Popover'
 
 export interface BulkBarProps {
@@ -44,9 +45,11 @@ export function BulkBar({ selected, labels }: BulkBarProps): JSX.Element | null 
         <AlarmClock size={14} /> Remind
       </button>
       <span className="bulk__sep" />
-      <button className="bulk__btn bulk__btn--icon" onClick={clearSelection} title="Clear selection" aria-label="Clear selection">
-        <X size={14} />
-      </button>
+      <Tooltip label="Clear selection">
+        <button className="bulk__btn bulk__btn--icon" onClick={clearSelection} aria-label="Clear selection">
+          <X size={14} />
+        </button>
+      </Tooltip>
 
       {anchor && (
         <Popover anchor={anchor} onClose={close} width={220} label="Apply label">
