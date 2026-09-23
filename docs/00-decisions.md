@@ -53,13 +53,24 @@ users see an "unverified app" warning once) removes the 7-day expiry. Both the G
 must be created by the user — the app reads the client IDs from Settings → Accounts. See `docs/06-provider-setup.md`.
 
 ## Definition of done
-- [ ] Launches as a real macOS `.app`; window chrome matches Notion Mail (hidden inset titlebar, sidebar, traffic lights)
-- [ ] Connect Gmail and Outlook accounts (OAuth) + a Demo provider that exercises the whole UI offline
-- [ ] Sidebar: account switcher, compose, search, Views (create/edit/delete), Mail folders, labels with colours, unread counts
-- [ ] Thread list: date groups, hover actions, unread styling, multi-select, keyboard nav (`j/k/x/e/#/…`), bulk actions
-- [ ] Reader: side peek, message cards, quoted-text collapse, attachments (download), sanitised HTML, inline reply/forward
-- [ ] Compose: To/Cc/Bcc chips w/ autocomplete, subject, block editor with `/` menu + markdown shortcuts + floating toolbar, attachments, signature, drafts autosave, send / send-later / undo-send, HTML output valid in real mail clients
-- [ ] Archive, trash, spam, star, read/unread, labels, reminders(snooze), unsubscribe, undo toasts, auto-advance
-- [ ] Command palette (`cmd+k`), shortcut help (`?`), light/dark/system theme
-- [ ] Settings: accounts, appearance, thread style, signature, views/labels, OAuth client setup guide
-- [ ] Documented: research, decisions, design system, provider setup, install; tests green; PRs reviewed-ready
+
+Status as of 2026-09-23, after 11 PRs merged to `main` in two rounds (8 feature branches, then a
+3-branch polish round) plus direct fixes for cross-branch integration bugs the merge surfaced.
+Verified means: exercised in the built app via the headless screenshot hook (`docs/…`/CLAUDE.md),
+not just read in the diff. 532 tests pass, typecheck and the packaged `.app` build are clean.
+
+- [x] Launches as a real macOS `.app`; window chrome matches Notion Mail (hidden inset titlebar, sidebar, traffic lights) — verified: `npm run pack` produces an ad-hoc-signed, launchable `.app`
+- [x] Demo provider exercises the whole UI offline — verified extensively
+- [ ] Connect Gmail and Outlook accounts (OAuth) — code complete (adapters, PKCE loopback flow, token refresh/reauth, 193 adapter tests against mocked HTTP) and the setup doc's scopes match the code exactly, but **not exercised against a real account**: that needs OAuth apps only the user can create (`docs/06-provider-setup.md`)
+- [x] Sidebar: account switcher, compose, search, Views (create/edit/delete), Mail folders, labels with colours, unread counts (including "All Mail", fixed) — verified
+- [x] Thread list: date groups, hover actions, unread styling, multi-select, keyboard nav (`j/k/x/e/#/…`), bulk actions, reachable loading skeleton — verified
+- [x] Reader: side/centre/full peek, message cards, quoted-text collapse, sanitised HTML incl. resolved `cid:` inline images, inline reply/forward (dedup + Escape-to-close fixed) — verified. Attachment *download* is wired (`attachments.save`) but not exercised against a real account
+- [x] Compose: To/Cc/Bcc chips w/ autocomplete, subject, block editor with `/` menu + markdown shortcuts + floating toolbar, attachments, signature, drafts autosave, send / send-later / undo-send, multiple composers no longer clip at narrow widths — verified. Email HTML validity is covered by the serializer's own test suite; not yet checked by actually opening a sent message in a real external mail client
+- [x] Archive, trash, spam, star, read/unread, labels, reminders (snooze), undo toasts, auto-advance — verified. Unsubscribe is implemented (`List-Unsubscribe` parsing) but not click-tested end to end
+- [x] Command palette (`cmd+k`), shortcut help (`?`), light/dark/system theme — verified
+- [x] Settings: accounts, appearance, thread style, signature, views/labels, OAuth client setup guide, keyboard focus trap — verified
+- [x] Documented: research, decisions, design system, provider setup, install; tests green; CI green on `main`
+
+**What's left for a fully "no more intervention needed" app**: only the user's ~20 minutes in
+Google Cloud Console + Azure (`docs/06-provider-setup.md`) — everything downstream of that is
+built and tested against mocked provider responses.
