@@ -5,7 +5,14 @@ body {
   font-family: var(--font-ui); font-size: 14px; line-height: 1.5; color: var(--c-text); background: var(--c-bg);
   -webkit-font-smoothing: antialiased; overflow: hidden; user-select: none; -webkit-user-select: none;
 }
-button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: default; }
+/* Notion Mail (like most Electron/web-shell apps) used a pointer cursor on clickable elements,
+   not macOS's native "no pointer on buttons" convention. Match that; opt out per element with
+   `.cursor-default` where a button is genuinely disabled or purely informational. */
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+button:disabled { cursor: default; }
+a, select, summary, [role='button'], [role='menuitem'], [role='option'], [role='tab'],
+label:has(input[type='checkbox']), label:has(input[type='radio']) { cursor: pointer; }
+.cursor-default { cursor: default; }
 input, textarea { font: inherit; color: inherit; }
 ::selection { background: rgba(35, 131, 226, 0.25); }
 .selectable, .selectable * { user-select: text; -webkit-user-select: text; }

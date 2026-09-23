@@ -35,10 +35,10 @@ export const gmailConnector: Connector = {
     const { code, redirectUri } = await loopbackAuth((redirect, state) => buildAuthUrl(client, redirect, state, challenge), { host: '127.0.0.1' })
     const tokens = await exchangeCode(client, code, verifier, redirectUri)
     if (!tokens.refreshToken) {
-      throw new Error('Google did not issue a refresh token. Remove Mailroom at myaccount.google.com/permissions and try again.')
+      throw new Error('Google did not issue a refresh token. Remove Naushen Mail at myaccount.google.com/permissions and try again.')
     }
     if (!(tokens.scope ?? '').split(' ').includes(GMAIL_MODIFY_SCOPE)) {
-      throw new Error('Mailroom needs permission to read and manage your Gmail. Connect again and leave every permission ticked.')
+      throw new Error('Naushen Mail needs permission to read and manage your Gmail. Connect again and leave every permission ticked.')
     }
     const me = await fetchUserInfo(tokens.accessToken)
 
@@ -48,6 +48,7 @@ export const gmailConnector: Connector = {
       email: me.email,
       name: me.name || me.email.split('@')[0],
       color: '',
+      avatarUrl: me.picture,
       createdAt: Date.now(),
       syncCursor: null,
       lastSyncAt: null,

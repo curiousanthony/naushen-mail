@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
-  AlarmClock, ChevronDown, ChevronsUpDown, FileText, Layers, MoreHorizontal, PencilLine,
-  Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Trash2, X
+  AlarmClock, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, Layers, MoreHorizontal,
+  PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Trash2, X
 } from 'lucide-react'
 import type { Account, Counts, View } from '@shared/types'
 import { useApp, type Nav } from '@/lib/store'
@@ -68,7 +68,7 @@ export function Sidebar(): JSX.Element {
             action={{ icon: <Plus size={14} />, label: 'New view', onClick: () => openEditor(null) }}
           >
             <Row
-              emoji="📥" label="Inbox" count={unreadFor(counts, accountId, 'inbox')}
+              icon={<InboxIcon size={16} />} label="Inbox" count={unreadFor(counts, accountId, 'inbox')}
               active={navEquals(nav, { kind: 'role', role: 'inbox' })}
               onClick={() => go({ kind: 'role', role: 'inbox' })}
             />
@@ -143,6 +143,7 @@ function AccountSwitcher({ accounts, accountId, counts }: {
       <button className="acct" onClick={toggle} aria-haspopup="menu" aria-expanded={!!anchor} title={sub}>
         <span className="acct__avatar" style={{ background: active?.color ?? 'var(--c-text-3)' }}>
           {active ? initials({ name: active.name, email: active.email }) : <Layers size={12} strokeWidth={2.5} />}
+          {active?.avatarUrl && <img className="acct__avatarimg" src={active.avatarUrl} alt="" />}
         </span>
         <span className="acct__text">
           <span className="acct__name">{name}</span>
@@ -159,7 +160,10 @@ function AccountSwitcher({ accounts, accountId, counts }: {
           </button>
           {accounts.map((a) => (
             <button key={a.id} className="menu__item" data-menuitem data-on={accountId === a.id} onClick={() => pick(a.id)}>
-              <span className="acct__avatar acct__avatar--sm" style={{ background: a.color }}>{initials({ name: a.name, email: a.email })}</span>
+              <span className="acct__avatar acct__avatar--sm" style={{ background: a.color }}>
+                {initials({ name: a.name, email: a.email })}
+                {a.avatarUrl && <img className="acct__avatarimg" src={a.avatarUrl} alt="" />}
+              </span>
               <span className="menu__label">
                 <span className="menu__title">{accountLabel(a.name, a.email)}</span>
                 <span className="menu__sub">{a.email}</span>
