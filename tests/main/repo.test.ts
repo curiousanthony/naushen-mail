@@ -66,6 +66,13 @@ describe('repo', () => {
   it('counts unread per role', () => {
     expect(repo.counts().unread['all:inbox']).toBeGreaterThan(0)
   })
+  it('counts unread for "All Mail" (a thread with several labels is not double-counted)', () => {
+    const allUnread = repo.listThreads({ filter: { role: 'all', unread: true } }).total
+    expect(allUnread).toBeGreaterThan(0)
+    expect(repo.counts().unread['all:all']).toBe(allUnread)
+    const aUnread = repo.listThreads({ filter: { role: 'all', unread: true, accountIds: ['a'] } }).total
+    expect(repo.counts().unread['a:all']).toBe(aUnread)
+  })
   it('settings merge nested oauth', () => {
     repo.setSettings({ oauth: { googleClientId: 'x', googleClientSecret: '', microsoftClientId: '' } })
     expect(repo.getSettings().oauth.googleClientId).toBe('x')
