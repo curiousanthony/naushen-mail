@@ -136,6 +136,52 @@ describe('serializeToEmailHtml', () => {
     expect(html).toContain('src="https://a.test/x.png"')
   })
 
+  it('renders a width attribute clamped to the max body width', () => {
+    const { html } = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', width: 240 } }))
+    expect(html).toContain('width="240"')
+    const wide = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', width: 2000 } }))
+    expect(wide.html).toContain('width="640"')
+    expect(ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', width: 300 } }), { maxWidth: 200 }).html)
+      .toContain('width="200"')
+  })
+
+  it('defaults an image with no align to the original byte-identical left rendering', () => {
+    const { html } = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', alt: 'x' } }))
+    expect(html).toContain('<p style="margin:0 0 12px"><img src="cid:cid0-1@mailroom.local" alt="x" style="max-width:100%;height:auto;border:0;display:block" /></p>')
+    expect(ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', alt: 'x', align: 'left' } })).html).toBe(html)
+  })
+
+  it('centres and right-aligns an image via text-align on its wrapping paragraph', () => {
+    const center = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', align: 'center' } })).html
+    expect(center).toContain('<p style="margin:0 0 12px;text-align:center">')
+    expect(center).toContain('display:inline-block')
+
+    const right = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', align: 'right' } })).html
+    expect(right).toContain('<p style="margin:0 0 12px;text-align:right">')
+    expect(right).toContain('display:inline-block')
+  })
+
+  it('rejects an unrecognised align value instead of passing it through', () => {
+    const { html } = ser(doc({ type: 'image', attrs: { src: 'data:image/png;base64,AAAA', align: 'center;position:fixed' } }))
+    expect(html).not.toContain('position:fixed')
+    expect(html).not.toContain('text-align:center;position')
+    expect(html).toContain('display:block')
+  })
+
+  it('keeps width but drops alignment on an inline image within a line of text', () => {
+    const { html } = ser(doc({
+      type: 'paragraph',
+      content: [
+        { type: 'text', text: 'before ' },
+        { type: 'image', attrs: { src: 'data:image/png;base64,AAAA', width: 80, align: 'center' } },
+        { type: 'text', text: ' after' }
+      ]
+    }))
+    expect(html).toContain('width="80"')
+    expect(html).not.toContain('text-align:center')
+    expect(html).not.toContain('<p style="margin:0 0 12px;text-align')
+  })
+
   it('refuses a non-image data: URI', () => {
     const { html, inlineImages } = ser(doc({ type: 'image', attrs: { src: 'data:text/html;base64,PHNjcmlwdD4=', alt: 'x' } }))
     expect(inlineImages).toEqual([])

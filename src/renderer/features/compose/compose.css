@@ -370,13 +370,66 @@
 
 .cmp-prose a { color: var(--c-accent); text-decoration: underline; cursor: text; }
 
-.cmp-prose .cmp-image, .cmp-prose img {
+/* Image block — NodeView in ImageBlock.tsx. `.cmp-image-node` is the full-width block
+   ProseMirror positions/selects; `__frame` hugs the image itself (sized to it, not the
+   column) so the resize handles and align toolbar land right on its edges regardless of
+   alignment. `text-align` on `.cmp-image-node` positions the frame, matching the email
+   serializer's approach in `src/shared/emailhtml/serialize.ts`. */
+.cmp-image-node { margin: 6px 0; }
+.cmp-image-node__frame {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.cmp-image-node__frame img {
+  display: block;
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-sm);
-  margin: 6px 0;
 }
-.cmp-prose img.ProseMirror-selectednode { outline: 2px solid var(--c-accent); }
+/* ProseMirror adds this class to the NodeView's root element (the wrapper), not the <img>. */
+.cmp-image-node.ProseMirror-selectednode .cmp-image-node__frame img { outline: 2px solid var(--c-accent); }
+
+.cmp-image-handle {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 34px;
+  margin-top: -17px;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  box-shadow: var(--shadow-popover);
+  cursor: ew-resize;
+  z-index: 2;
+}
+.cmp-image-handle--left { left: -4px; }
+.cmp-image-handle--right { right: -4px; }
+
+.cmp-image-align {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--c-bg-popover);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+}
+.cmp-image-align__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--c-text-2);
+}
+.cmp-image-align__btn:hover { background: var(--c-bg-hover); color: var(--c-text); }
+.cmp-image-align__btn.is-active { background: var(--c-bg-selected); color: var(--c-accent); }
 
 /* tables */
 .cmp-prose table, .cmp-prose .cmp-table {
