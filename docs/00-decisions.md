@@ -47,10 +47,17 @@ Renderer (React) ──window.api.invoke──▶ main/ipc.ts ──▶ Repo (SQ
 * Local IDs: `${accountId}:${remoteId}`.
 
 ## Gmail authentication constraint (needs the user)
-`gmail.modify` is a **restricted scope**. With the OAuth consent screen in **Testing**, Google issues refresh tokens that
-**expire after 7 days**. Publishing the consent screen to **In production** (no verification needed for personal use;
-users see an "unverified app" warning once) removes the 7-day expiry. Both the Google Cloud and Azure app registrations
-must be created by the user — the app reads the client IDs from Settings → Accounts. See `docs/06-provider-setup.md`.
+`gmail.modify` is a **restricted scope** (confirmed against Google's own restricted-scopes list, along with
+`gmail.readonly`/`compose`/`insert`/`metadata`/`mail.google.com` — any scope that can read mail content is
+restricted; there is no unrestricted alternative for a mail client that needs to display messages). Removing
+the 7-day refresh-token expiry requires full Google verification, including a paid third-party security audit
+(CASA) — not reasonable for a personal, single-user app. **Publishing the consent screen does not avoid this**
+for a restricted scope (an earlier version of this doc, and the in-app guide, said otherwise — corrected
+2026-09-24). The correct, Google-sanctioned path for personal use: stay in **Testing**, add yourself as a
+**test user**, and expect to click **Reauthorize** roughly every 7 days (a quick Google sign-in, not a full
+re-setup — the app already surfaces a `reauth` account status for this). Both the Google Cloud and Azure app
+registrations must be created by the user — the app reads the client IDs from Settings → Accounts. See
+`docs/06-provider-setup.md`.
 
 ## Definition of done
 

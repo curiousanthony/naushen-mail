@@ -9,12 +9,17 @@ export const GOOGLE_STEPS: GuideStep[] = [
   { text: 'APIs & Services → Library → enable the Gmail API.' },
   { text: 'Google Auth Platform → Get started: app name “Naushen Mail”, your email, audience External.' },
   { text: 'Data Access → Add scopes:', code: ['openid', '.../auth/userinfo.email', '.../auth/userinfo.profile', '.../auth/gmail.modify'] },
-  { text: 'Audience → Publish app, to move it from Testing to In production. Do not submit it for verification.' },
+  { text: 'Audience → Test users → Add users → your own Gmail address(es). Leave publishing status as Testing — see the note below.' },
   { text: 'Clients → Create client → Desktop app. Copy the Client ID and Client secret into the fields above.' }
 ]
 
 export const GOOGLE_PUBLISH_NOTE =
-  'Publish the app. While the consent screen is in Testing, Google expires refresh tokens after 7 days for a restricted scope like gmail.modify, so you would have to sign in again every week. An unverified production app has no such expiry; you click through a one-time “Google hasn’t verified this app” screen (Advanced → Go to Naushen Mail).'
+  'Stay in Testing — do not Publish. gmail.modify is a Google "restricted" scope: removing the 7-day refresh-token ' +
+  'expiry needs full verification, including a paid third-party security audit, which only makes sense for a real ' +
+  'multi-user product. For personal use, Google’s own guidance is to stay in Testing with yourself as a test ' +
+  'user. The tradeoff: your refresh token expires about every 7 days, so you will occasionally need to click ' +
+  '"Reauthorize" in Settings → Accounts (a quick Google sign-in, not a redo of this setup). You will also see ' +
+  'a one-time "Google hasn’t verified this app" screen on each sign-in — click Advanced → Go to Naushen Mail.'
 
 export const MICROSOFT_STEPS: GuideStep[] = [
   { text: 'In Microsoft Entra: App registrations → New registration.' },

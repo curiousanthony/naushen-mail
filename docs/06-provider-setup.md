@@ -10,10 +10,13 @@ Naushen Mail has no backend, so **you own the OAuth apps**. Nothing here is bill
 3. **Google Auth Platform → Get started** → app name "Naushen Mail", your email, audience **External**.
 4. **Data Access → Add scopes**: `openid`, `.../auth/userinfo.email`, `.../auth/userinfo.profile`, `.../auth/gmail.modify`
    (`gmail.modify` already covers send, drafts and labels).
-5. **Audience → Publish app** (moves it from *Testing* to *In production*). **Do not submit for verification.**
-   Why: in *Testing* mode Google expires refresh tokens after **7 days** for restricted scopes like `gmail.modify`,
-   forcing a weekly re-login. Unverified production apps have no such expiry; you click through a one-time
-   "Google hasn't verified this app" screen (Advanced → Go to Naushen Mail). Limit: 100 users — irrelevant for personal use.
+5. **Audience → Test users → Add users** → your own Gmail address(es). **Leave the app in *Testing* — do not Publish.**
+   `gmail.modify` is a Google **restricted** scope; removing the 7-day refresh-token expiry requires full
+   verification, including a paid third-party security audit (CASA) — meant for real multi-user products, not a
+   personal app. Google's own guidance for personal/known-users apps is to stay in Testing. The tradeoff: your
+   refresh token expires roughly every **7 days**, so you'll occasionally click **Reauthorize** in
+   Settings → Accounts (a quick Google sign-in, not a redo of this setup). You'll also see a one-time
+   "Google hasn't verified this app" screen on each sign-in — click **Advanced → Go to Naushen Mail**.
 6. **Clients → Create client → Desktop app** → copy **Client ID** and **Client secret** into Naushen Mail
    (for desktop apps Google treats the secret as non-confidential; it is still required by the token endpoint).
 
