@@ -159,6 +159,13 @@ export const useApp = create<AppState>((set, get) => ({
   },
 
   openComposer(init) {
+    // Replying/forwarding a thread that already has a composer open for it (e.g. two keyboard
+    // or menu paths both firing for one keypress) reuses that composer instead of stacking a
+    // duplicate. Plain 'new' composers are exempt — opening several blank drafts is intentional.
+    if (init?.mode && init.mode !== 'new' && init.threadId) {
+      const existing = get().composers.find((c) => c.mode === init.mode && c.threadId === init.threadId)
+      if (existing) return existing.id
+    }
     const id = crypto.randomUUID()
     const accountId = init?.accountId ?? (get().accountId !== 'all' ? get().accountId : get().accounts[0]?.id ?? '')
     set((s) => ({ composers: [...s.composers, { mode: 'new', placement: 'window', ...init, id, accountId }] }))

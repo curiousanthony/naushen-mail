@@ -41,8 +41,9 @@ export function useGlobalShortcuts(): void {
       const editable = isEditableElement(e.target as HTMLElement | null)
 
       if (editable) {
-        // Typing surfaces own their keys. Only global modifier combos and "esc closes the overlay" pass.
-        if (combo === 'esc' && overlay) { e.preventDefault(); useApp.getState().setOverlay(null); clearHint(); return }
+        // Typing surfaces own their keys. Only global modifier combos and "esc backs out one
+        // level" (composer, then overlay — see HANDLERS['nav.back']) pass through.
+        if (combo === 'esc') { e.preventDefault(); runCommand('nav.back'); clearHint(); return }
         const id = matcherLookup(combo)
         if (id && isGlobalBinding(id) && !(overlay && !PASS_THROUGH_WHEN_OVERLAY.has(id))) {
           e.preventDefault(); lastHandled = { id, at: Date.now() }; runCommand(id, { combo })

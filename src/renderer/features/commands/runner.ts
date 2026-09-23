@@ -139,7 +139,11 @@ export const HANDLERS: Record<string, Handler> = {
   'nav.open': () => { const s = S(); if (s.focusedId) s.openThread(s.focusedId) },
   'nav.back': () => {
     const s = S()
+    // A modal overlay (palette, settings, a picker) sits above a floating composer, so it closes
+    // first. Only once nothing modal is in front does esc reach the composer ("Exit draft: esc"
+    // in the shortcuts sheet), then the reader, then a selection.
     if (s.overlay) s.setOverlay(null)
+    else if (s.composers.length) s.closeComposer(s.composers[s.composers.length - 1].id)
     else if (s.openThreadId) s.openThread(null)
     else if (s.selectedIds.length) s.clearSelection()
   },

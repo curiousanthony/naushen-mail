@@ -3,20 +3,12 @@ import type { ThreadWithMessages } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { ThreadHeader } from './ThreadHeader'
 import { MessageCard } from './MessageCard'
-import { ReplyBar, type ReplyMode } from './ReplyBar'
+import { ReplyBar } from './ReplyBar'
 import { PEEK_DEFAULT, clampPeekWidth, loadPeekWidth, savePeekWidth } from './peek'
 import './reader.css'
 
 export { ReplyBar } from './ReplyBar'
 export type { ReplyMode } from './ReplyBar'
-
-/** Typing somewhere? Then the key belongs to that field, not to us. */
-function isTypingTarget(t: EventTarget | null): boolean {
-  const el = t as HTMLElement | null
-  if (!el || !el.tagName) return false
-  const tag = el.tagName.toUpperCase()
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable
-}
 
 /**
  * The thread view.
@@ -31,7 +23,6 @@ export function Reader(): JSX.Element | null {
   const labels = useApp((s) => s.labels)
   const overlay = useApp((s) => s.overlay)
   const composers = useApp((s) => s.composers)
-  const openComposer = useApp((s) => s.openComposer)
 
   const [thread, setThread] = useState<ThreadWithMessages | null>(null)
   const [loading, setLoading] = useState(false)
@@ -93,34 +84,14 @@ export function Reader(): JSX.Element | null {
   const close = useCallback(() => { openThread(null) }, [openThread])
 
   // -------------------------------------------------------------- keyboard
+  //
+  // Escape-closes-thread and r/a/f-to-reply are handled once, globally, by
+  // commands/runner.ts ('nav.back' and 'msg.reply'/'msg.replyAll'/'msg.forward') — a second,
+  // reader-local listener for the same keys used to double-fire on every keypress (two
+  // window-level 'keydown' listeners both run for one event), opening two reply composers
+  // from a single 'r'. `hasInlineComposer` below still guards the *button* row.
 
   const lastMessageId = thread?.messages[thread.messages.length - 1]?.id
-
-  useEffect(() => {
-    if (!openThreadId) return
-    const onKey = (e: KeyboardEvent): void => {
-      if (isTypingTarget(e.target)) return
-
-      if (e.key === 'Escape') {
-        // An overlay (label picker, reminder) is on top — it closes first.
-        if (overlay) return
-        e.preventDefault()
-        close()
-        return
-      }
-
-      if (e.metaKey || e.ctrlKey || e.altKey) return
-      if (overlay || hasInlineComposer || !thread || !lastMessageId) return
-
-      const mode: ReplyMode | null =
-        e.key === 'r' ? 'reply' : e.key === 'a' ? 'replyAll' : e.key === 'f' ? 'forward' : null
-      if (!mode) return
-      e.preventDefault()
-      openComposer({ mode, threadId: thread.id, messageId: lastMessageId, placement: 'inline' })
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [openThreadId, overlay, hasInlineComposer, thread, lastMessageId, close, openComposer])
 
   // -------------------------------------------------------------- side-peek width
 
