@@ -64,10 +64,21 @@ export const API_METHODS: ApiMethod[] = [
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'
 ]
 
+/** Parsed from an OS-level `mailto:` link (Mailroom registers the scheme). Unsupported mailto
+ *  params (e.g. `body`) are dropped — the composer's `init` has no field for them yet. */
+export interface MailtoInit {
+  to: { email: string }[]
+  cc: { email: string }[]
+  bcc: { email: string }[]
+  subject?: string
+}
+
 export interface RendererBridge {
   invoke<K extends ApiMethod>(method: K, ...args: Parameters<MailApi[K]>): ReturnType<MailApi[K]>
   /** Subscribe to main-process push events. Returns an unsubscribe function. */
   onEvent(cb: (e: SyncEvent) => void): () => void
   /** Native menu / global shortcut commands (e.g. 'compose', 'search'). */
   onMenuCommand(cb: (cmd: string) => void): () => void
+  /** The OS opened Mailroom for a `mailto:` link. */
+  onMailto(cb: (init: MailtoInit) => void): () => void
 }

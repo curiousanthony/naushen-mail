@@ -16,6 +16,35 @@ import { connectAccount } from './accounts'
 applyUserDataOverride()
 
 let win: BrowserWindow | null = null
+let pendingMailto: string | null = null
+
+/** Parse a `mailto:` URI into composer-init fields (best-effort; unknown params are ignored). */
+function parseMailto(url: string): { to: { email: string }[]; cc: { email: string }[]; bcc: { email: string }[]; subject?: string; body?: string } | null {
+  try {
+    const u = new URL(url)
+    if (u.protocol !== 'mailto:') return null
+    const addrs = (s: string): { email: string }[] =>
+      s.split(',').map((e) => e.trim()).filter(Boolean).map((email) => ({ email }))
+    return {
+      to: addrs(decodeURIComponent(u.pathname)),
+      cc: addrs(u.searchParams.get('cc') ?? ''),
+      bcc: addrs(u.searchParams.get('bcc') ?? ''),
+      subject: u.searchParams.get('subject') ?? undefined,
+      body: u.searchParams.get('body') ?? undefined
+    }
+  } catch { return null }
+}
+
+function handleMailto(url: string): void {
+  if (!win) { pendingMailto = url; return }
+  win.webContents.send('mailto', parseMailto(url))
+  win.show()
+  win.focus()
+}
+
+// Registered before `whenReady` so a cold launch via a mailto: link (macOS calls this instead of
+// passing argv) is captured even though the window doesn't exist yet.
+app.on('open-url', (event, url) => { event.preventDefault(); handleMailto(url) })
 
 function createWindow(): BrowserWindow {
   const w = new BrowserWindow({
@@ -65,6 +94,8 @@ app.whenReady().then(async () => {
   engine.onEvent((e) => send('event', e))
   Menu.setApplicationMenu(buildMenu((cmd) => send('menu', cmd)))
   nativeTheme.themeSource = repo.getSettings().theme
+
+  win.webContents.once('did-finish-load', () => { if (pendingMailto) { handleMailto(pendingMailto); pendingMailto = null } })
 
   engine.start()
   outbox.start()

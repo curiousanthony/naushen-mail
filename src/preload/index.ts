@@ -12,6 +12,11 @@ const bridge: RendererBridge = {
     const h = (_: unknown, c: string): void => cb(c)
     ipcRenderer.on('menu', h)
     return () => ipcRenderer.removeListener('menu', h)
+  },
+  onMailto: (cb) => {
+    const h = (_: unknown, init: Parameters<typeof cb>[0]): void => { if (init) cb(init) }
+    ipcRenderer.on('mailto', h)
+    return () => ipcRenderer.removeListener('mailto', h)
   }
 }
 contextBridge.exposeInMainWorld('api', bridge)

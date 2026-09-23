@@ -65,7 +65,7 @@ export class SyncEngine {
       }
       this.setStatus(accountId, { status: 'ok', statusMessage: undefined, lastSyncAt: Date.now() })
     } catch (e) {
-      this.setStatus(accountId, { status: 'error', statusMessage: e instanceof Error ? e.message : String(e) })
+      this.failStatus(accountId, e)
     } finally {
       this.running.delete(accountId)
     }
@@ -74,6 +74,17 @@ export class SyncEngine {
   private setStatus(accountId: string, patch: Partial<Account>): void {
     this.repo.patchAccount(accountId, patch)
     this.emit({ type: 'account-status', accountId })
+  }
+
+  /**
+   * Record a thrown sync/action error, without clobbering a more specific 'reauth' status the
+   * adapter may have just set (via `markReauthNeeded`) immediately before throwing — a bare
+   * network/API error is a worse, less actionable message than "sign in again".
+   */
+  private failStatus(accountId: string, e: unknown, prefix = ''): void {
+    const current = this.repo.getAccount(accountId)?.status
+    if (current === 'reauth') return
+    this.setStatus(accountId, { status: 'error', statusMessage: `${prefix}${e instanceof Error ? e.message : String(e)}` })
   }
 
   /** Optimistic: apply locally, notify UI, then push to provider (re-sync on failure). */
@@ -90,7 +101,7 @@ export class SyncEngine {
       try {
         for (const t of threads) await adapter.applyAction(t.remoteId, action, { labels })
       } catch (e) {
-        this.setStatus(accountId, { status: 'error', statusMessage: `Action failed: ${e instanceof Error ? e.message : e}` })
+        this.failStatus(accountId, e, 'Action failed: ')
         void this.syncAccount(accountId) // reconcile local state with the server
       }
     }))

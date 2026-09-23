@@ -17,6 +17,9 @@ export function App(): JSX.Element {
   useEffect(() => { void init() }, [init])
   useGlobalShortcuts()
 
+  // The OS opened Mailroom for a `mailto:` link (Mailroom registers the scheme).
+  useEffect(() => window.api.onMailto((init) => { useApp.getState().openComposer({ init }) }), [])
+
   return (
     <div className="app">
       <Sidebar />
