@@ -6,7 +6,6 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import DOMPurify from 'dompurify'
 import {
   Braces, ChevronDown, ChevronUp, HelpCircle, Maximize2, Minimize2, Minus,
   Paperclip, Send, Trash2, X
@@ -14,6 +13,7 @@ import {
 import type { Address, Draft, Message, OutgoingMessage, ScheduledSend } from '@shared/types'
 import type { QuotedOriginal } from '@shared/emailhtml'
 import { buildQuoted, forwardHeaderHtml, forwardSubject, replyRecipients, replySubject } from '@shared/emailhtml'
+import { sanitizeFragment } from '@shared/sanitize'
 import { useApp, type ComposerState } from '@/lib/store'
 import { editorRegistry } from './registry'
 import { EditorSurface, useComposerEditor } from './Editor'
@@ -33,8 +33,12 @@ interface Props {
   /** Floating-window chrome is hidden for the inline placement. */
   inline?: boolean
   /** Distance from the right edge, in px. `ComposeHost` lays the row out so that a
-   *  minimised bar and an open window never overlap. */
+   *  minimised bar and an open window never overlap (or, when they don't all fit, cascade
+   *  deliberately rather than clip — see `layout.ts`). */
   offsetRight: number
+  /** Window width in px, computed by `layout.ts` from the viewport and how many composers
+   *  are open. Ignored for the inline placement, which fills its slot. */
+  width?: number
   /** Paint order: later composers sit on top. */
   stack: number
   minimised: boolean
@@ -43,7 +47,7 @@ interface Props {
 
 const AUTOSAVE_MS = 2000
 
-export function Composer({ composer, inline = false, offsetRight, stack, minimised, onMinimise }: Props): JSX.Element {
+export function Composer({ composer, inline = false, offsetRight, width, stack, minimised, onMinimise }: Props): JSX.Element {
   // Atomic selectors: a selector returning a fresh object re-renders forever under zustand v5.
   const accounts = useApp((s) => s.accounts)
   const settings = useApp((s) => s.settings)
@@ -124,7 +128,7 @@ export function Composer({ composer, inline = false, offsetRight, stack, minimis
         setTo(r.to); setCc(r.cc); setShowCc(r.cc.length > 0)
         setSubject(replySubject(msg.subject))
       }
-      const clean = msg.bodyHtml ? DOMPurify.sanitize(msg.bodyHtml, { FORBID_TAGS: ['script', 'style'] }) : null
+      const clean = msg.bodyHtml ? sanitizeFragment(msg.bodyHtml) : null
       const q = buildQuoted({ ...msg, bodyHtml: clean })
       setQuoted(composer.mode === 'forward'
         ? { ...q, html: `${forwardHeaderHtml(msg)}${clean ?? ''}` }
@@ -323,7 +327,7 @@ export function Composer({ composer, inline = false, offsetRight, stack, minimis
 
   const chrome = !inline
   const style: React.CSSProperties | undefined = chrome && !maximised
-    ? { right: offsetRight, bottom: 0, zIndex: 40 + stack }
+    ? { right: offsetRight, bottom: 0, zIndex: 40 + stack, ...(width ? { width } : {}) }
     : undefined
 
   if (chrome && minimised) {
@@ -425,7 +429,7 @@ export function Composer({ composer, inline = false, offsetRight, stack, minimis
         {editor && <EditorSurface editor={editor} snippets={snippets} onRequestImage={() => imageInput.current?.click()} />}
 
         {signatureOn && signatureHtml && (
-          <div className="cmp__signature" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(signatureHtml) }} />
+          <div className="cmp__signature" dangerouslySetInnerHTML={{ __html: sanitizeFragment(signatureHtml) }} />
         )}
 
         {quoted && (
@@ -435,7 +439,7 @@ export function Composer({ composer, inline = false, offsetRight, stack, minimis
               <blockquote className="cmp__quoted">
                 <p className="cmp__quote-attr">{quoted.attribution}</p>
                 {quoted.html
-                  ? <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(quoted.html, { FORBID_TAGS: ['script', 'style'] }) }} />
+                  ? <div dangerouslySetInnerHTML={{ __html: sanitizeFragment(quoted.html) }} />
                   : <pre className="cmp__quote-text">{quoted.text}</pre>}
               </blockquote>
             )}

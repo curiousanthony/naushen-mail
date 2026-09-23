@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useApp, type ComposerState } from '@/lib/store'
 import { Composer } from './Composer'
-import { editorRegistry } from './registry'
+import { layoutComposers } from './layout'
 import './compose.css'
 
 export const INLINE_SLOT_ID = 'reader-inline-compose-slot'
@@ -21,23 +21,30 @@ export function ComposeHost(): JSX.Element | null {
   const slot = useInlineSlot(composers)
   // Minimised state lives here, not in `Composer`: the row layout needs every width.
   const [minimised, setMinimised] = useState<ReadonlySet<string>>(() => new Set())
-
-  useTestHook()
+  const viewportWidth = useViewportWidth()
 
   if (!composers.length) return null
 
   const windowed = composers.filter((c) => c.placement !== 'inline' || !slot)
   const inline = slot ? composers.filter((c) => c.placement === 'inline') : []
 
+  const placed = layoutComposers(
+    windowed.map((c) => ({ id: c.id, minimised: minimised.has(c.id) })),
+    viewportWidth
+  )
+
   return (
     <>
       {/* One row along the bottom-right: each composer is placed to the left of the ones
-          already there, so a minimised bar never hides behind an open window. */}
-      {layoutRow(windowed, minimised).map(({ composer, offsetRight }, i) => (
+          already there, so a minimised bar never hides behind an open window. When they no
+          longer fit side by side, they cascade instead of clipping off the left edge — see
+          `layout.ts`. */}
+      {windowed.map((composer, i) => (
         <Composer
           key={composer.id}
           composer={composer}
-          offsetRight={offsetRight}
+          offsetRight={placed[i].offsetRight}
+          width={placed[i].width}
           stack={i}
           minimised={minimised.has(composer.id)}
           onMinimise={(v) => setMinimised((prev) => {
@@ -66,22 +73,15 @@ export function ComposeHost(): JSX.Element | null {
   )
 }
 
-const WINDOW_W = 640
-const MIN_W = 280
-const GAP = 12
-const EDGE = 16
-
-/** Right-edge offsets for a row of composers, widest-first from the corner. */
-function layoutRow(
-  composers: ComposerState[],
-  minimised: ReadonlySet<string>
-): { composer: ComposerState; offsetRight: number }[] {
-  let offset = EDGE
-  return composers.map((composer) => {
-    const placed = { composer, offsetRight: offset }
-    offset += (minimised.has(composer.id) ? MIN_W : WINDOW_W) + GAP
-    return placed
-  })
+/** Tracks `window.innerWidth` so the composer row can re-flow when the app window resizes. */
+function useViewportWidth(): number {
+  const [width, setWidth] = useState(() => window.innerWidth)
+  useEffect(() => {
+    const onResize = (): void => setWidth(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  return width
 }
 
 /**
@@ -102,25 +102,6 @@ function useInlineSlot(composers: ComposerState[]): HTMLElement | null {
   }, [wantsInline, composers.length])
 
   return slot
-}
-
-/**
- * Headless-screenshot hook (see CLAUDE.md). The sidebar and reader that normally open a
- * composer live on other branches, so expose a tiny opener for `MAILROOM_STEPS` execs.
- */
-function useTestHook(): void {
-  useEffect(() => {
-    const w = window as unknown as { __compose?: unknown }
-    w.__compose = {
-      open: (init?: Partial<ComposerState>) => useApp.getState().openComposer(init),
-      close: (id: string) => useApp.getState().closeComposer(id),
-      list: () => useApp.getState().composers,
-      toasts: () => useApp.getState().toasts,
-      editor: (id?: string) =>
-        (id ? editorRegistry.get(id) : editorRegistry.values().next().value) ?? null
-    }
-    return () => { delete w.__compose }
-  }, [])
 }
 
 export { Composer } from './Composer'
