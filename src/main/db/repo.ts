@@ -251,18 +251,31 @@ export class Repo {
 
   counts(): Counts {
     const unread: Record<string, number> = {}
+    const bump = (k: string, c: number): void => { unread[k] = (unread[k] ?? 0) + c }
+    const now = Date.now()
     const rows = this.db.prepare(
       `SELECT t.account_id a, l.id lid, l.role role, COUNT(*) c
        FROM threads t JOIN thread_labels tl ON tl.thread_id = t.id JOIN labels l ON l.id = tl.label_id
        WHERE t.unread = 1 AND (t.snoozed_until IS NULL OR t.snoozed_until <= ?)
        GROUP BY t.account_id, l.id`
-    ).all(Date.now()) as Row[]
+    ).all(now) as Row[]
     for (const r of rows) {
-      const bump = (k: string): void => { unread[k] = (unread[k] ?? 0) + r.c }
-      bump(`${r.a}:${r.lid}`)
-      if (r.role) { bump(`${r.a}:${r.role}`); bump(`all:${r.role}`) }
-      bump(`all:${r.lid}`)
+      bump(`${r.a}:${r.lid}`, r.c)
+      if (r.role) { bump(`${r.a}:${r.role}`, r.c); bump(`all:${r.role}`, r.c) }
+      bump(`all:${r.lid}`, r.c)
     }
+    // 'all' (the "All Mail" row) isn't a label role, and can't be derived by summing the
+    // per-label counts above — a thread can carry several labels (e.g. inbox + a user label)
+    // and would be double-counted. Count distinct unread threads outside trash/spam instead,
+    // matching buildWhere's own definition of the 'all' / undefined role filter.
+    const allRows = this.db.prepare(
+      `SELECT t.account_id a, COUNT(*) c FROM threads t
+       WHERE t.unread = 1 AND (t.snoozed_until IS NULL OR t.snoozed_until <= ?)
+         AND NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role = 'trash')
+         AND NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role = 'spam')
+       GROUP BY t.account_id`
+    ).all(now) as Row[]
+    for (const r of allRows) { bump(`${r.a}:all`, r.c); bump('all:all', r.c) }
     return { unread }
   }
 

@@ -47,6 +47,19 @@ export function ThreadList(): JSX.Element {
   // A new mailbox is a new set of filters.
   useEffect(() => { setChips(EMPTY_CHIPS); anchor.current = null }, [nav, accountId])
 
+  // `loading` flips true as soon as a nav change kicks off a refetch, but the OLD thread list
+  // (from the mailbox you just left) keeps rendering under it until the new page arrives — local
+  // SQLite queries usually resolve well under a frame, so replacing that content with the
+  // skeleton immediately would just be a flash. Only swap to the skeleton once a load has been
+  // running long enough that showing something stale is worse than showing a placeholder; a
+  // load that finishes first (the common case) never shows it at all.
+  const [staleLoad, setStaleLoad] = useState(false)
+  useEffect(() => {
+    if (!loading) { setStaleLoad(false); return undefined }
+    const t = setTimeout(() => setStaleLoad(true), 150)
+    return () => clearTimeout(t)
+  }, [loading])
+
   const metrics = DENSITY[settings.density]
   const visible = useMemo(() => applyChips(threads, chips), [threads, chips])
   const items = useMemo(
@@ -153,7 +166,7 @@ export function ThreadList(): JSX.Element {
         className="tl__scroll" ref={scroller} onScroll={onScroll}
         role="listbox" aria-multiselectable aria-label="Conversations" tabIndex={-1}
       >
-        {loading && !threads.length ? (
+        {loading && (!threads.length || staleLoad) ? (
           <Skeleton />
         ) : !items.length ? (
           <div className="tl__empty">
