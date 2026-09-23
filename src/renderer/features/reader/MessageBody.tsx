@@ -120,6 +120,7 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
     if (!el) return
     let observer: ResizeObserver | null = null
     let timers: ReturnType<typeof setTimeout>[] = []
+    let imgs: HTMLImageElement[] = []
 
     const onClick = (e: Event): void => {
       const target = e.target as Element | null
@@ -143,13 +144,19 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       window.dispatchEvent(new KeyboardEvent('keydown', { key: e.key, bubbles: true }))
     }
 
+    // Named (not per-onLoad-call anonymous) so cleanup can unbind the exact same reference
+    // from every image it was attached to -- the previous version attached a fresh `measure`
+    // closure per image and never removed it, leaking one listener per image per message open.
+    const measure = (): void => {
+      const doc = el.contentDocument
+      if (!doc) return
+      const h = contentHeight(doc)
+      if (h > 0) setHeight(h)
+    }
+
     const onLoad = (): void => {
       const doc = el.contentDocument
       if (!doc) return
-      const measure = (): void => {
-        const h = contentHeight(doc)
-        if (h > 0) setHeight(h)
-      }
       measure()
       observer?.disconnect()
       observer = new ResizeObserver(measure)
@@ -160,7 +167,9 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       doc.addEventListener('click', onClick, true)
       doc.addEventListener('auxclick', onClick, true)
       doc.addEventListener('keydown', onKeyIn, true)
-      for (const img of Array.from(doc.images)) img.addEventListener('load', measure)
+      for (const img of imgs) img.removeEventListener('load', measure) // a re-fired load event: drop the old set first
+      imgs = Array.from(doc.images)
+      for (const img of imgs) img.addEventListener('load', measure)
       // Fonts and late layout settle after the load event.
       timers = [setTimeout(measure, 80), setTimeout(measure, 400)]
     }
@@ -172,6 +181,7 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       el.contentDocument?.removeEventListener('click', onClick, true)
       el.contentDocument?.removeEventListener('auxclick', onClick, true)
       el.contentDocument?.removeEventListener('keydown', onKeyIn, true)
+      for (const img of imgs) img.removeEventListener('load', measure)
       observer?.disconnect()
       for (const t of timers) clearTimeout(t)
     }

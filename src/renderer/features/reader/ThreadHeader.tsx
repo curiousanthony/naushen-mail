@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import {
-  Archive, BellOff, Clock, MailOpen, MoreHorizontal, ShieldAlert, Star, Tag, Trash2, X
+  Archive, BellOff, ChevronsRight, Clock, MailOpen, MoreHorizontal, ShieldAlert, Star, Tag, Trash2, X
 } from 'lucide-react'
 import type { Label, ThreadWithMessages } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -60,6 +60,11 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
     <header className="reader__header">
       <div className="reader__header-inner">
         <div className="reader__actions no-drag">
+          <Tooltip label="Collapse" shortcut="Esc">
+            <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label="Collapse thread">
+              <ChevronsRight size={17} aria-hidden />
+            </button>
+          </Tooltip>
           <Tooltip label="Archive" shortcut="E">
             <button
               className="reader__btn"

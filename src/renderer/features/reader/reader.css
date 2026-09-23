@@ -151,6 +151,9 @@
 
 .reader__actions-spacer { flex: 1; }
 
+/* Sits alone at the far left, Mac-panel-collapse style (»), separate from the action cluster. */
+.reader__btn--collapse { margin-right: 8px; }
+
 .reader__btn {
   display: inline-flex;
   align-items: center;

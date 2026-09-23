@@ -45,7 +45,9 @@
 
   --radius-sm: 4px; --radius-md: 6px; --radius-lg: 10px; --radius-xl: 12px;
   --sidebar-w: 240px;
-  --titlebar-h: 40px;
+  /* Matches BrowserWindow's trafficLightPosition.y * 2 (src/main/index.ts) so the traffic
+     lights sit dead-centre in the drag strip, instead of high up with a lopsided gap below. */
+  --titlebar-h: 32px;
   --t-fast: 120ms ease-out; --t-med: 200ms ease-out;
   color-scheme: light;
 }
