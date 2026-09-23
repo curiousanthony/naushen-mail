@@ -17,7 +17,7 @@ export function App(): JSX.Element {
   useEffect(() => { void init() }, [init])
   useGlobalShortcuts()
 
-  // The OS opened Mailroom for a `mailto:` link (Mailroom registers the scheme).
+  // The OS opened Naushen Mail for a `mailto:` link (Naushen Mail registers the scheme).
   useEffect(() => window.api.onMailto((init) => { useApp.getState().openComposer({ init }) }), [])
 
   return (

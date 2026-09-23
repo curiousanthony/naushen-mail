@@ -1,6 +1,6 @@
 {
   "name": "mailroom",
-  "productName": "Mailroom",
+  "productName": "Naushen Mail",
   "version": "0.1.0",
   "description": "A calm, keyboard-first desktop mail client for Gmail and Outlook.",
   "private": true,

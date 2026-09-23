@@ -1,4 +1,4 @@
-# Mailroom — agent notes
+# Naushen Mail — agent notes
 
 Electron + React + TypeScript mail client (Notion-Mail ergonomics; Gmail + Outlook; no AI). Read `docs/00-decisions.md` first.
 

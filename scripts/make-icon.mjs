@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Generates build/icon.svg, build/icon.png (1024) and build/icon.icns.
-// Original artwork: an off-white envelope on a calm charcoal squircle. No third-party branding.
+// Original artwork: an off-white paper plane on a calm charcoal squircle. No third-party branding.
 // Rasterises the SVG with the repo's own Electron (transparent offscreen window), then iconutil builds the .icns.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
@@ -61,15 +61,20 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" 
     <rect x="100" y="100" width="824" height="420" fill="url(#sheen)"/>
   </g>
   <path d="${body}" fill="none" stroke="#fff" stroke-opacity="0.10" stroke-width="2"/>
-  <!-- envelope -->
-  <g filter="url(#soft)">
-    <rect x="252" y="330" width="520" height="364" rx="46" fill="url(#paper)"/>
+  <!-- paper plane: nose up-right, one visible fold. Drawn in a 24-unit box, scaled/rotated into
+       place. Not a copy of any third-party mark -- an original take on the generic send-plane glyph. -->
+  <g filter="url(#soft)" transform="translate(512,512) rotate(-12) scale(21.6) translate(-12,-12)">
+    <!-- full silhouette (nose, tail, underwing) -->
+    <polygon points="22,2 15,22 11,13 2,9" fill="url(#paper)"/>
+    <!-- underwing shade: the near-side fold reads slightly darker than the top face -->
+    <polygon points="11,13 15,22 8.2,15.6" fill="url(#flap)"/>
+    <!-- centre fold, nose to tail -->
+    <path d="M22 2 L11 13" stroke="#000" stroke-opacity="0.16" stroke-width="0.7" stroke-linecap="round"/>
+    <!-- leading edges -->
+    <path d="M22 2 L2 9 M22 2 L15 22" stroke="#000" stroke-opacity="0.08" stroke-width="0.5" stroke-linejoin="round" fill="none"/>
   </g>
-  <!-- inner fold lines (subtle, from bottom corners toward the centre) -->
-  <path d="M262 676 L440 528 M762 676 L584 528" stroke="#000" stroke-opacity="0.10" stroke-width="7" stroke-linecap="round" fill="none"/>
-  <!-- flap -->
-  <path d="M252 376 Q252 330 298 330 L726 330 Q772 330 772 376 L772 384 Q772 412 750 430 L536 596 Q512 614 488 596 L274 430 Q252 412 252 384 Z" fill="url(#flap)"/>
-  <path d="M272 430 L488 596 Q512 614 536 596 L752 430" stroke="#000" stroke-opacity="0.13" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- motion trail -->
+  <path d="M300 592 Q404 592 476 552" stroke="#fff" stroke-opacity="0.14" stroke-width="10" stroke-linecap="round" fill="none"/>
 </svg>
 `
 writeFileSync(join(buildDir, 'icon.svg'), svg)

@@ -1,6 +1,6 @@
-# Mailroom — decisions & definition of done
+# Naushen Mail — decisions & definition of done
 
-Mailroom is a personal-use, keyboard-first desktop mail client for macOS that clones the *ergonomics* of Notion Mail
+Naushen Mail is a personal-use, keyboard-first desktop mail client for macOS that clones the *ergonomics* of Notion Mail
 (which shuts down 2026-09-22) for Gmail and Outlook accounts. **No AI features. No Notion accounts, databases or
 workspaces.** No Notion logos or proprietary fonts are used; only the general design language (spacing, neutrals,
 block-editor behaviour).

@@ -7,7 +7,7 @@ const LINKS = [
   { label: 'Provider setup guide', desc: 'Connect Gmail and Outlook', url: `${REPO}/blob/main/docs/06-provider-setup.md` },
   { label: 'Decisions & architecture', desc: 'Stack, trade-offs, definition of done', url: `${REPO}/blob/main/docs/00-decisions.md` },
   { label: 'Design system', desc: 'Tokens, type, motion', url: `${REPO}/blob/main/docs/03-design-system.md` },
-  { label: 'Source code', desc: 'Mailroom on GitHub', url: REPO }
+  { label: 'Source code', desc: 'Naushen Mail on GitHub', url: REPO }
 ]
 const CREDITS = ['Electron', 'React', 'TipTap', 'Zustand', 'Lucide icons', 'date-fns', 'DOMPurify', 'Nodemailer', 'cmdk']
 
@@ -21,11 +21,11 @@ export function AboutSection(): JSX.Element {
       <div className="st-about">
         <span className="st-about__logo"><Mail size={26} strokeWidth={1.5} /></span>
         <div>
-          <div className="st-about__name">Mailroom</div>
+          <div className="st-about__name">Naushen Mail</div>
           <div className="st-about__ver">{info ? `Version ${info.version}${platform ? ` · ${platform}` : ''}` : 'Version …'}</div>
         </div>
       </div>
-      <p className="st-muted st-about__blurb">A calm, keyboard-first desktop mail client for Gmail and Outlook. Your mail is cached on this Mac and account tokens are kept in the macOS Keychain. Mailroom has no servers of its own and no AI features.</p>
+      <p className="st-muted st-about__blurb">A calm, keyboard-first desktop mail client for Gmail and Outlook. Your mail is cached on this Mac and account tokens are kept in the macOS Keychain. Naushen Mail has no servers of its own and no AI features.</p>
 
       <Group title="Documentation">
         {LINKS.map((l) => (

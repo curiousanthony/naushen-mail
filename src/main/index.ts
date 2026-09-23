@@ -50,7 +50,7 @@ function createWindow(): BrowserWindow {
   const w = new BrowserWindow({
     width: 1280, height: 820, minWidth: 900, minHeight: 560,
     show: false,
-    title: 'Mailroom',
+    title: 'Naushen Mail',
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 16, y: 16 },
     vibrancy: 'sidebar',
@@ -75,7 +75,7 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(async () => {
-  app.setName('Mailroom')
+  app.setName('Naushen Mail')
   const db = openDb(userDataPath('mailroom.db'))
   const repo = new Repo(db)
   const engine = new SyncEngine(repo)

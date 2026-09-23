@@ -33,7 +33,7 @@ export async function loopbackAuth(
       const code = url.searchParams.get('code')
       const ok = !err && code && url.searchParams.get('state') === state
       res.writeHead(ok ? 200 : 400, { 'Content-Type': 'text/html; charset=utf-8' })
-      res.end(ok ? PAGE('You’re connected', 'You can close this tab and return to Mailroom.') : PAGE('Something went wrong', err ?? 'Invalid response.'))
+      res.end(ok ? PAGE('You’re connected', 'You can close this tab and return to Naushen Mail.') : PAGE('Something went wrong', err ?? 'Invalid response.'))
       clearTimeout(timer)
       server.close()
       if (ok) resolve({ code: code!, redirectUri: `http://${host}:${(server.address() as AddressInfo | null)?.port ?? port}` })

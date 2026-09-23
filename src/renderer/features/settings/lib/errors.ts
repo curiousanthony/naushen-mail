@@ -20,10 +20,10 @@ export const PROVIDER_LABEL: Record<ProviderKind, string> = { gmail: 'Gmail', ou
 /** Returns a message when the OAuth client for this provider has not been configured yet. */
 export function missingCredentials(provider: ProviderKind, oauth: AppSettings['oauth']): FriendlyError | null {
   if (provider === 'gmail' && !oauth.googleClientId.trim()) {
-    return { message: 'Add your Google OAuth client ID first. Mailroom has no backend, so you create the (free) OAuth app yourself.', hint: 'oauth-setup' }
+    return { message: 'Add your Google OAuth client ID first. Naushen Mail has no backend, so you create the (free) OAuth app yourself.', hint: 'oauth-setup' }
   }
   if (provider === 'outlook' && !oauth.microsoftClientId.trim()) {
-    return { message: 'Add your Microsoft application (client) ID first. Mailroom has no backend, so you register the (free) app yourself.', hint: 'oauth-setup' }
+    return { message: 'Add your Microsoft application (client) ID first. Naushen Mail has no backend, so you register the (free) app yourself.', hint: 'oauth-setup' }
   }
   return null
 }
@@ -37,7 +37,7 @@ export function friendlyConnectError(provider: ProviderKind, e: unknown): Friend
   if (/redirect[\s_-]?uri|AADSTS50011/i.test(msg)) {
     return { message: `${name} rejected the redirect address. Follow the redirect step in OAuth setup exactly. (${msg})`, hint: 'oauth-setup' }
   }
-  if (/not available in this build/i.test(msg)) return { message: `The ${name} connector is not available in this build of Mailroom.` }
+  if (/not available in this build/i.test(msg)) return { message: `The ${name} connector is not available in this build of Naushen Mail.` }
   if (/timed out/i.test(msg)) return { message: 'Sign-in timed out. Try again and finish signing in within a few minutes.' }
   if (/access_denied|cancel/i.test(msg)) return { message: 'Sign-in was cancelled. Nothing was connected.' }
   if (/ENOTFOUND|ECONNREFUSED|ETIMEDOUT|network|fetch failed|offline/i.test(msg)) return { message: `Couldn't reach ${name}. Check your internet connection and try again.` }

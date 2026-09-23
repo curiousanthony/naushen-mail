@@ -1,6 +1,6 @@
-# electron-builder config for Mailroom. Personal-use build: ad-hoc signed, not notarised (see docs/install.md).
-appId: com.anthony.mailroom
-productName: Mailroom
+# electron-builder config for Naushen Mail. Personal-use build: ad-hoc signed, not notarised (see docs/install.md).
+appId: com.anthony.naushenmail
+productName: Naushen Mail
 copyright: Copyright © 2026 Anthony
 directories:
   output: release

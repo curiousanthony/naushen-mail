@@ -1,4 +1,4 @@
-# Mailroom
+# Naushen Mail
 
 A calm, keyboard-first desktop mail client for macOS — the ergonomics of Notion Mail (block-style composer with `/` menu,
 Views, side-peek reading, `cmd+k`) for **Gmail** and **Outlook**, with no AI and no Notion dependency.

@@ -43,7 +43,7 @@ jobs:
         run: |
           MAILROOM_USER_DATA="$RUNNER_TEMP/mr-ci" MAILROOM_DEMO=1 MAILROOM_SIZE=1280x820 \
             MAILROOM_SHOT="$RUNNER_TEMP/shot.png" \
-            "release/mac-arm64/Mailroom.app/Contents/MacOS/Mailroom"
+            "release/mac-arm64/Naushen Mail.app/Contents/MacOS/Naushen Mail"
           test -s "$RUNNER_TEMP/shot.png"
           test -s "$RUNNER_TEMP/mr-ci/mailroom.db"
       - uses: actions/upload-artifact@v4
