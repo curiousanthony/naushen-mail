@@ -13,6 +13,7 @@ import { SnippetsSection } from './sections/SnippetsSection'
 import { ShortcutsSection } from './sections/ShortcutsSection'
 import { AboutSection } from './sections/AboutSection'
 import { safeLocalGet, safeLocalSet } from './lib/hooks'
+import { useFocusTrap } from './lib/focus-trap'
 import './settings.css'
 
 type SectionId = 'accounts' | 'appearance' | 'signature' | 'sending' | 'labels' | 'views' | 'snippets' | 'shortcuts' | 'about'
@@ -57,13 +58,11 @@ function SettingsDialog(): JSX.Element {
   })
   const dialog = useRef<HTMLDivElement>(null)
   const pane = useRef<HTMLDivElement>(null)
-  const previouslyFocused = useRef<Element | null>(document.activeElement)
 
-  useEffect(() => {
-    dialog.current?.focus()
-    const prev = previouslyFocused.current as HTMLElement | null
-    return () => { prev?.focus?.() }
-  }, [])
+  // Traps Tab/Shift+Tab inside the dialog, focuses the first focusable element on open, and
+  // restores focus to whatever opened it when this component unmounts (SettingsModal only
+  // mounts SettingsDialog while overlay === 'settings', so mount/unmount tracks open/close).
+  useFocusTrap(dialog)
   useEffect(() => { pane.current?.scrollTo({ top: 0 }) }, [section])
 
   const close = (): void => setOverlay(null)
