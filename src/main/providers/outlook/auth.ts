@@ -79,3 +79,18 @@ export async function fetchProfile(accessToken: string, fetchImpl?: typeof fetch
   if (!email) throw new Error('Microsoft did not return an email address for this account.')
   return { email, name: me.displayName?.trim() || email }
 }
+
+/**
+ * GET /me/photo/$value: a `data:` URI for the signed-in user's profile photo, or `undefined` if
+ * they have none set (very common for personal Microsoft accounts -- a 404, not an error). Graph
+ * always normalises this endpoint's bytes to JPEG regardless of the source image's format.
+ */
+export async function fetchPhoto(accessToken: string, fetchImpl?: typeof fetch): Promise<string | undefined> {
+  const c = new GraphClient({ tokens: { get: async () => accessToken }, fetchImpl, maxRetries: 1 })
+  try {
+    const bytes = await c.get<Buffer>('/me/photo/$value', { raw: true })
+    return `data:image/jpeg;base64,${bytes.toString('base64')}`
+  } catch {
+    return undefined // no photo set, or transiently unreachable -- never block sign-in on this
+  }
+}

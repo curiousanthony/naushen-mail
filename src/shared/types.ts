@@ -17,8 +17,10 @@ export interface Account {
   provider: ProviderKind
   email: string
   name: string
-  /** Hex colour used for the account avatar / dot. */
+  /** Hex colour used for the account avatar / dot (fallback when avatarUrl is absent). */
   color: string
+  /** Profile photo from the provider (Google's userinfo `picture`, Graph's `/me/photo`), if any. */
+  avatarUrl?: string
   createdAt: number
   /** Opaque incremental-sync cursor (Gmail historyId / Graph deltaLink bundle). */
   syncCursor: string | null
@@ -241,6 +243,10 @@ export interface AppSettings {
   groupByDate: boolean
   density: 'comfortable' | 'compact'
   blockRemoteImages: boolean
+  /** Sender/recipient photos in the thread list and reader (via Gravatar; see lib/avatar.ts).
+   *  Off by default -- Notion Mail itself never showed them, and it's one more thing quietly
+   *  pinging an external service per contact. */
+  showAvatars: boolean
   undoSendSeconds: 0 | 5 | 10 | 20 | 30
   signatureHtml: Record<string, string> // accountId -> html
   /** OAuth client configuration supplied by the user (never bundled). */
@@ -259,6 +265,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   groupByDate: true,
   density: 'comfortable',
   blockRemoteImages: true,
+  showAvatars: false,
   undoSendSeconds: 10,
   signatureHtml: {},
   oauth: { googleClientId: '', googleClientSecret: '', microsoftClientId: '' },

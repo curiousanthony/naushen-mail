@@ -1,9 +1,10 @@
-import { memo, type MouseEvent } from 'react'
+import { memo, useState, type MouseEvent } from 'react'
 import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { initials, listTime } from '@/lib/format'
 import { chipStyle } from '@/lib/labels'
+import { gravatarUrl } from '@/lib/avatar'
 import { rowLabels, senderText } from './lib'
 
 export interface RowProps {
@@ -45,9 +46,15 @@ function RowImpl({
   const act = useApp((s) => s.act)
   const focus = useApp((s) => s.focus)
   const setOverlay = useApp((s) => s.setOverlay)
+  const showAvatars = useApp((s) => s.settings.showAvatars)
   const chips = rowLabels(t, labels, 2)
   const sender = senderText(t, myEmails)
   const lead = t.participants.find((p) => !myEmails.has(p.email.toLowerCase())) ?? t.participants[0]
+  // The row instance can be reused for a different thread (list re-sort, windowing), so track
+  // which email a load failure applies to -- a stale failure must not suppress a new avatar.
+  const [failedFor, setFailedFor] = useState<string | null>(null)
+  const avatarEmail = lead?.email ?? null
+  const avatarFailed = failedFor === avatarEmail
 
   const remind = (): void => { focus(t.id); setOverlay('snooze') }
 
@@ -66,6 +73,12 @@ function RowImpl({
           title={account ? account.email : undefined}
         >
           {lead ? initials(lead) : '—'}
+          {showAvatars && avatarEmail && !avatarFailed && (
+            <img
+              className="trow__avatarimg" src={gravatarUrl(avatarEmail, 44)} alt=""
+              loading="lazy" onError={() => setFailedFor(avatarEmail)}
+            />
+          )}
         </span>
         {/* Overlays the avatar on hover / when selected. */}
         <button

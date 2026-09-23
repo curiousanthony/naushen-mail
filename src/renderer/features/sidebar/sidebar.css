@@ -46,10 +46,12 @@
 .acct:hover { background: var(--c-bg-hover); }
 .acct:active { background: var(--c-bg-pressed); }
 .acct__avatar {
+  position: relative; overflow: hidden;
   width: 22px; height: 22px; flex: none; border-radius: 50%; display: grid; place-items: center;
   color: #fff; font-size: 9.5px; font-weight: 600; letter-spacing: 0.02em;
 }
 .acct__avatar--sm { width: 20px; height: 20px; font-size: 9px; }
+.acct__avatarimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .acct__text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .acct__name { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .acct__sub { font-size: 11px; color: var(--c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, Paperclip } from 'lucide-react'
 import type { Address, Message } from '@shared/types'
+import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
+import { gravatarUrl } from '@/lib/avatar'
 import { MessageBody } from './MessageBody'
 import { Attachments } from './Attachments'
 import { visibleAttachments } from './fileKinds'
+import { InviteCard, findInvite } from './InviteCard'
 
 const AVATAR_TINTS = ['blue', 'green', 'orange', 'purple', 'pink', 'red', 'yellow', 'brown'] as const
 
@@ -34,10 +37,13 @@ interface Props {
  */
 export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: Props): JSX.Element {
   const [showDetail, setShowDetail] = useState(false)
+  const [avatarFailed, setAvatarFailed] = useState(false)
+  const showAvatars = useApp((s) => s.settings.showAvatars)
   const tint = avatarTint(message.from.email)
   const name = displayName(message.from)
   const recipients = [...message.to, ...message.cc]
   const attachments = visibleAttachments(message.attachments)
+  const invite = findInvite(message.attachments)
 
   const head = (
     <>
@@ -47,6 +53,12 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
         aria-hidden
       >
         {initials(message.from)}
+        {showAvatars && !avatarFailed && (
+          <img
+            className="msg__avatarimg" src={gravatarUrl(message.from.email, 64)} alt=""
+            loading="lazy" onError={() => setAvatarFailed(true)}
+          />
+        )}
       </span>
       <span className="msg__headtext">
         <span className="msg__line">
@@ -115,6 +127,7 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
 
       {expanded && (
         <div className="msg__body-wrap selectable">
+          {invite && <InviteCard message={message} attachment={invite} />}
           <MessageBody message={message} blockRemoteImages={blockRemoteImages} />
           <Attachments messageId={message.id} attachments={message.attachments} />
         </div>

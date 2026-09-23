@@ -3,7 +3,7 @@ import type { Repo } from '../../db/repo'
 import { connectors } from '../../accounts'
 import { deleteTokens, loadTokens, saveTokens } from '../../auth/tokens'
 import { OutlookAdapter } from './adapter'
-import { MISSING_CLIENT_ID, createTokenSource, fetchProfile, signIn } from './auth'
+import { MISSING_CLIENT_ID, createTokenSource, fetchPhoto, fetchProfile, signIn } from './auth'
 
 let repoRef: Repo | null = null
 
@@ -34,8 +34,9 @@ connectors.outlook = {
     if (!clientId) throw new Error(MISSING_CLIENT_ID)
     const tokens = await signIn(clientId)
     const { email, name } = await fetchProfile(tokens.accessToken)
+    const avatarUrl = await fetchPhoto(tokens.accessToken)
     const account: Account = {
-      id: outlookAccountId(email), provider: 'outlook', email, name, color: '', createdAt: Date.now(),
+      id: outlookAccountId(email), provider: 'outlook', email, name, color: '', avatarUrl, createdAt: Date.now(),
       syncCursor: null, lastSyncAt: null, status: 'ok'
     }
     saveTokens(repo, account.id, tokens)
