@@ -11,13 +11,13 @@ import { Extension, markInputRule, markPasteRule, wrappingInputRule } from '@tip
 import StarterKit from '@tiptap/starter-kit'
 import { TaskItem, TaskList } from '@tiptap/extension-list'
 import { TableKit } from '@tiptap/extension-table'
-import { Image } from '@tiptap/extension-image'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { TextStyleKit } from '@tiptap/extension-text-style'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details'
 import { createLowlight, common } from 'lowlight'
 import { Callout } from './Callout'
+import { ImageBlock } from './ImageBlock'
 
 export const PLACEHOLDER = "Write, or press '/' for blocks"
 
@@ -69,7 +69,7 @@ export function buildExtensions(placeholder: string = PLACEHOLDER): ReturnType<t
     TaskItem.configure({ nested: true }),
     CodeBlockLowlight.configure({ lowlight, defaultLanguage: null }),
     TableKit.configure({ table: { resizable: false, HTMLAttributes: { class: 'cmp-table' } } }),
-    Image.configure({ allowBase64: true, inline: false, HTMLAttributes: { class: 'cmp-image' } }),
+    ImageBlock.configure({ allowBase64: true, inline: false, HTMLAttributes: { class: 'cmp-image' } }),
     // `textStyle.color` / `textStyle.backgroundColor` are exactly what the serializer reads.
     TextStyleKit.configure({ fontFamily: false, fontSize: false, lineHeight: false }),
     Details.configure({ persist: false, HTMLAttributes: { class: 'cmp-details' } }),

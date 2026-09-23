@@ -28,6 +28,8 @@ interface Ctx {
   images: InlineImage[]
   cidPrefix: string
   seq: number
+  /** Width of the body container in px — an image is never wider than the email can show. */
+  maxWidth: number
 }
 
 // ------------------------------------------------------------------ public API
@@ -40,8 +42,8 @@ interface Ctx {
  */
 export function serializeToEmailHtml(doc: unknown, opts: SerializeOptions = {}): SerializeResult {
   const root = asNode(doc)
-  const ctx: Ctx = { images: [], cidPrefix: opts.cidPrefix ?? randomToken(), seq: 0 }
   const maxWidth = opts.maxWidth ?? 640
+  const ctx: Ctx = { images: [], cidPrefix: opts.cidPrefix ?? randomToken(), seq: 0, maxWidth }
 
   const body = renderBlocks(root?.content ?? [], ctx)
   const parts: string[] = [body || emptyParagraph()]
@@ -203,6 +205,7 @@ function renderImage(n: DocNode, ctx: Ctx): string {
   const rawSrc = typeof n.attrs?.src === 'string' ? n.attrs.src : ''
   const alt = typeof n.attrs?.alt === 'string' ? n.attrs.alt : ''
   const width = Number(n.attrs?.width)
+  const align = imageAlign(n)
   let src: string | null = null
 
   const data = parseDataUri(rawSrc)
@@ -223,9 +226,24 @@ function renderImage(n: DocNode, ctx: Ctx): string {
   }
   if (!src) return alt ? `<p${style(BLOCK_GAP, `color:${INK_MUTED}`)}>${escapeHtml(alt)}</p>` : ''
 
-  const w = Number.isFinite(width) && width > 0 ? ` width="${Math.round(width)}"` : ''
-  return `<p${style(BLOCK_GAP)}><img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}"${w}` +
-    style('max-width:100%', 'height:auto', 'border:0', 'display:block') + ' /></p>'
+  // Never resize an image wider than the body container itself can show.
+  const w = Number.isFinite(width) && width > 0 ? ` width="${Math.min(Math.round(width), ctx.maxWidth)}"` : ''
+
+  // Email clients disagree wildly on CSS (no flexbox/grid, `float` is unreliable), so the
+  // only broadly-supported way to align a standalone image is `text-align` on its block-level
+  // wrapper with the `<img>` itself `display:inline-block` (so the wrapper's text-align can
+  // act on it). Left is the default, and rendered exactly as before (no text-align, `img`
+  // stays `display:block`) so existing left-aligned mail is byte-identical.
+  const wrapStyle = align === 'left' ? style(BLOCK_GAP) : style(BLOCK_GAP, `text-align:${align}`)
+  const imgDisplay = align === 'left' ? 'display:block' : 'display:inline-block'
+  return `<p${wrapStyle}><img src="${escapeAttr(src)}" alt="${escapeAttr(alt)}"${w}` +
+    style('max-width:100%', 'height:auto', 'border:0', imgDisplay) + ' /></p>'
+}
+
+/** Whitelisted: an unrecognised or tampered `align` value degrades to `left`, never passed through raw. */
+function imageAlign(n: DocNode): 'left' | 'center' | 'right' {
+  const a = n.attrs?.align
+  return a === 'center' || a === 'right' ? a : 'left'
 }
 
 function renderQuote(q: { attribution: string; html?: string; text?: string }): string {
