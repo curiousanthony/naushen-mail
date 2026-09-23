@@ -30,11 +30,11 @@ describe('unreadFor', () => {
 
 describe('mail section', () => {
   it('lists Notion Mail\'s folders with All Mail first', () => {
-    expect(MAIL_ITEMS.map((m) => m.name)).toEqual(['All Mail', 'Sent', 'Drafts', 'Reminders', 'Trash', 'Spam'])
+    expect(MAIL_ITEMS.map((m) => m.name)).toEqual(['All Mail', 'Starred', 'Sent', 'Drafts', 'Reminders', 'Trash', 'Spam'])
   })
   it('maps rows to navs, with Reminders using the local snoozed nav', () => {
     expect(mailNav(MAIL_ITEMS[0])).toEqual({ kind: 'role', role: 'all' })
-    expect(mailNav(MAIL_ITEMS[3])).toEqual({ kind: 'snoozed' })
+    expect(mailNav(MAIL_ITEMS[4])).toEqual({ kind: 'snoozed' })
   })
 })
 

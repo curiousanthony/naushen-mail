@@ -4,6 +4,7 @@ import { useApp } from '@/lib/store'
 import { Row } from './Row'
 import { FilterBar } from './FilterBar'
 import { BulkBar } from './BulkBar'
+import { VIEW_ICONS } from '../sidebar/viewIcons'
 import {
   EMPTY_CHIPS, WINDOW_THRESHOLD, applyChips, chipCount, emptyCopy, flatten, groupThreads,
   listTitle, offsetsOf, rangeIds, scrollOffsetFor, unionIds, windowRange,
@@ -155,7 +156,7 @@ export function ThreadList(): JSX.Element {
     <section className="tl" data-density={settings.density} aria-label={head.title}>
       <header className="tl__bar">
         <h1 className="tl__title">
-          {head.emoji && <span className="tl__emoji">{head.emoji}</span>}
+          {head.emoji && VIEW_ICONS[head.emoji] && (() => { const Icon = VIEW_ICONS[head.emoji!]; return <Icon size={16} className="tl__emoji" /> })()}
           <span className="tl__titletext">{head.title}</span>
           {count > 0 && <span className="tl__count">{count}</span>}
         </h1>

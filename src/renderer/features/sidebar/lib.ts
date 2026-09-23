@@ -32,6 +32,7 @@ export interface MailItem {
  */
 export const MAIL_ITEMS: MailItem[] = [
   { id: 'all', name: 'All Mail', role: 'all' },
+  { id: 'starred', name: 'Starred', role: 'starred' },
   { id: 'sent', name: 'Sent', role: 'sent' },
   { id: 'drafts', name: 'Drafts', role: 'drafts' },
   { id: 'snoozed', name: 'Reminders', snoozed: true },

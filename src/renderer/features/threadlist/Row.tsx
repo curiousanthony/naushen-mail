@@ -69,10 +69,11 @@ function RowImpl({
         <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />
         <span
           className="trow__avatar"
-          style={showAccount && account ? { background: account.color, color: '#fff' } : undefined}
-          title={account ? account.email : undefined}
+          data-empty={!showAvatars || undefined}
+          style={showAvatars && showAccount && account ? { background: account.color, color: '#fff' } : undefined}
+          title={showAvatars && account ? account.email : undefined}
         >
-          {lead ? initials(lead) : '—'}
+          {showAvatars && (lead ? initials(lead) : '—')}
           {showAvatars && avatarEmail && !avatarFailed && (
             <img
               className="trow__avatarimg" src={gravatarUrl(avatarEmail, 44)} alt=""

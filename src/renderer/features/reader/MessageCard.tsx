@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Paperclip } from 'lucide-react'
+import { ChevronDown, ChevronRight, CornerUpLeft, CornerUpRight, Paperclip, ReplyAll } from 'lucide-react'
 import type { Address, Message } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
@@ -39,6 +39,7 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
   const [showDetail, setShowDetail] = useState(false)
   const [avatarFailed, setAvatarFailed] = useState(false)
   const showAvatars = useApp((s) => s.settings.showAvatars)
+  const openComposer = useApp((s) => s.openComposer)
   const tint = avatarTint(message.from.email)
   const name = displayName(message.from)
   const recipients = [...message.to, ...message.cc]
@@ -67,20 +68,19 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
           {!expanded && <span className="msg__snippet">{message.snippet}</span>}
         </span>
         {expanded && (
-          <span className="msg__to">
+          <button
+            type="button"
+            className="msg__to"
+            onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
+            aria-expanded={showDetail}
+            aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
+            title={showDetail ? 'Hide details' : 'Show details'}
+          >
             <span>
               to {recipients.length ? recipients.map(displayName).join(', ') : 'me'}
             </span>
-            <button
-              className="msg__detail-toggle"
-              onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
-              aria-expanded={showDetail}
-              aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
-              title={showDetail ? 'Hide details' : 'Show details'}
-            >
-              {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
-            </button>
-          </span>
+            {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
+          </button>
         )}
       </span>
       <span className="msg__aside">
@@ -92,6 +92,22 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
         <time dateTime={new Date(message.date).toISOString()} title={fullDate(message.date)}>
           {expanded ? fullDate(message.date) : listTime(message.date)}
         </time>
+        {expanded && (
+          <span className="msg__quickreply">
+            <button
+              type="button" className="msg__quickbtn" title="Reply" aria-label="Reply"
+              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'reply', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+            ><CornerUpLeft size={14} aria-hidden /></button>
+            <button
+              type="button" className="msg__quickbtn" title="Reply all" aria-label="Reply all"
+              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'replyAll', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+            ><ReplyAll size={14} aria-hidden /></button>
+            <button
+              type="button" className="msg__quickbtn" title="Forward" aria-label="Forward"
+              onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'forward', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
+            ><CornerUpRight size={14} aria-hidden /></button>
+          </span>
+        )}
       </span>
     </>
   )

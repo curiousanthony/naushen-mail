@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   AlarmClock, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, Layers, MoreHorizontal,
-  PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Trash2, X
+  PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star, Trash2, X
 } from 'lucide-react'
 import type { Account, Counts, View } from '@shared/types'
 import { useApp, type Nav } from '@/lib/store'
@@ -13,10 +13,11 @@ import {
   MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, loadCollapsed, mailNav, navEquals,
   saveCollapsed, sidebarLabels, sidebarViews, unreadFor
 } from './lib'
+import { VIEW_ICONS } from './viewIcons'
 import './sidebar.css'
 
 const MAIL_ICON: Record<string, ReactNode> = {
-  all: <Layers size={16} />, sent: <Send size={16} />, drafts: <FileText size={16} />,
+  all: <Layers size={16} />, starred: <Star size={16} />, sent: <Send size={16} />, drafts: <FileText size={16} />,
   snoozed: <AlarmClock size={16} />, trash: <Trash2 size={16} />, spam: <ShieldAlert size={16} />
 }
 
@@ -270,16 +271,14 @@ function Badge({ n }: { n: number }): JSX.Element | null {
   return <span className="badge">{n > 999 ? '999+' : n}</span>
 }
 
-function Row({ icon, emoji, dot, label, suffix, count, active, onClick, trailing, title }: {
-  icon?: ReactNode; emoji?: string; dot?: string; label: string; suffix?: string; count?: number
+function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title }: {
+  icon?: ReactNode; dot?: string; label: string; suffix?: string; count?: number
   active?: boolean; onClick(): void; trailing?: ReactNode; title?: string
 }): JSX.Element {
   return (
     <button className="row" data-active={!!active} onClick={onClick} title={title ?? label}>
       <span className="row__lead">
-        {emoji ? <span className="row__emoji">{emoji}</span>
-          : dot ? <span className="row__dot" style={{ background: dot }} />
-            : icon}
+        {dot ? <span className="row__dot" style={{ background: dot }} /> : icon}
       </span>
       <span className="row__label">
         {label}
@@ -297,6 +296,7 @@ function ViewRow({ view, count, active, onClick }: {
   const [anchor, toggle, close] = useAnchor()
   const openEditor = useViewEditor((s) => s.open)
   const dotColor = view.color ? `var(--chip-${view.color}-fg)` : undefined
+  const Icon = view.emoji ? VIEW_ICONS[view.emoji] : undefined
 
   return (
     <div className="row__wrap">
@@ -305,7 +305,7 @@ function ViewRow({ view, count, active, onClick }: {
         onContextMenu={(e) => { e.preventDefault(); toggle(e) }}
       >
         <span className="row__lead">
-          {view.emoji ? <span className="row__emoji">{view.emoji}</span>
+          {Icon ? <Icon size={16} />
             : <span className="row__dot" style={{ background: dotColor ?? 'var(--c-text-3)' }} />}
         </span>
         <span className="row__label">{view.name}</span>

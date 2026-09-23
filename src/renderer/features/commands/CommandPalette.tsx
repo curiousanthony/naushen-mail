@@ -18,6 +18,7 @@ import { Keys } from './Keycaps'
 import { Overlay } from './Overlay'
 import { SnoozePicker } from './SnoozePicker'
 import { LabelPicker } from './LabelPicker'
+import { VIEW_ICONS } from '../sidebar/viewIcons'
 import './commands.css'
 
 type Icon = ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
@@ -126,14 +127,15 @@ function PaletteBody(): JSX.Element {
   }
 
   const renderItem = (it: PaletteItem): JSX.Element => {
-    const Ico = ICONS[it.icon] ?? Search
+    // A view's own icon (VIEW_ICONS key, see sidebar/viewIcons.ts) wins over the generic
+    // per-command icon; unrecognised/legacy values (an old emoji) just fall through to it.
+    const Ico = (it.emoji && VIEW_ICONS[it.emoji]) || ICONS[it.icon] || Search
     const binding = it.binding ?? primaryBinding(it.cmd)
     return (
       <Command.Item key={it.key} value={`cmd:${it.key}`} onSelect={() => runItem(it)} className="cmd-item">
         <span className="cmd-item__icon">
-          {it.emoji ? <span className="cmd-item__emoji">{it.emoji}</span>
-            : it.labelColor ? <span className="cmd-dot" style={{ background: `var(--chip-${it.labelColor}-fg)` }} />
-              : <Ico size={16} strokeWidth={1.5} />}
+          {it.labelColor ? <span className="cmd-dot" style={{ background: `var(--chip-${it.labelColor}-fg)` }} />
+            : <Ico size={16} strokeWidth={1.5} />}
         </span>
         <span className="cmd-item__label">{it.label}</span>
         {binding ? <Keys binding={binding} /> : it.hint ? <span className="cmd-item__hint">{it.hint}</span> : null}

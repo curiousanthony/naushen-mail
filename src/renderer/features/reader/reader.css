@@ -337,7 +337,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  text-align: left;
+  border-radius: 3px;
+  transition: color var(--t-fast);
 }
+.msg__to:hover { color: var(--c-text); }
 
 .msg__detail-toggle {
   display: inline-flex;
@@ -361,6 +365,21 @@
 }
 
 .msg__clip { color: var(--c-text-3); display: inline-flex; }
+
+/* Reply / Reply all / Forward, mirrored at the top-right of an expanded message (the bottom
+   ReplyBar covers the thread as a whole; these act on this specific message). */
+.msg__quickreply { display: inline-flex; align-items: center; gap: 2px; margin-left: 2px; }
+.msg__quickbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  color: var(--c-text-3);
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.msg__quickbtn:hover { color: var(--c-text); background: var(--c-bg-hover); }
 
 /* Expanded from/to/cc table */
 .msg__detail {

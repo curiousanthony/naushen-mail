@@ -190,6 +190,11 @@
   transition: opacity var(--t-fast);
   overflow: hidden;
 }
+/* Settings -> Appearance -> "Show avatars" off: no circle, no initials, no colour -- matches
+   Notion Mail, which never showed one either. The row keeps the same footprint so nothing
+   reflows, and the selection checkbox (positioned within .trow__lead, not .trow__avatar) still
+   overlays the same spot on hover. */
+.trow__avatar[data-empty='true'] { background: transparent; }
 /* Covers the initials once it loads; onError removes it from the DOM, so the initials underneath
    are always the fallback -- never a broken-image icon. */
 .trow__avatarimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }

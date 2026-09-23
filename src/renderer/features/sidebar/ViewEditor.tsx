@@ -4,8 +4,8 @@ import { LABEL_COLORS, type LabelColor, type SystemRole, type ThreadFilter, type
 import { useApp } from '@/lib/store'
 import { useViewEditor } from './viewEditorState'
 import { accountTags, sidebarLabels } from './lib'
+import { VIEW_ICON_KEYS, VIEW_ICONS } from './viewIcons'
 
-const EMOJI = ['📥', '⭐️', '🔵', '📎', '🧾', '✈️', '👥', '🏷️', '🔥', '📌', '💬', '📰']
 const ROLES: { id: SystemRole | 'any'; name: string }[] = [
   { id: 'inbox', name: 'Inbox' }, { id: 'all', name: 'All mail' }, { id: 'sent', name: 'Sent' },
   { id: 'drafts', name: 'Drafts' }, { id: 'trash', name: 'Trash' }, { id: 'spam', name: 'Spam' },
@@ -33,7 +33,7 @@ export function ViewEditor(): JSX.Element | null {
 
   const base = useMemo(() => views.find((v) => v.id === editingId) ?? null, [views, editingId])
   const [name, setName] = useState('')
-  const [emoji, setEmoji] = useState('📥')
+  const [icon, setIcon] = useState('inbox')
   const [color, setColor] = useState<LabelColor | ''>('')
   const [accountId, setAccountId] = useState('all')
   const [role, setRole] = useState<SystemRole | 'any'>('inbox')
@@ -50,7 +50,7 @@ export function ViewEditor(): JSX.Element | null {
     if (!open) return
     const f: ThreadFilter = base?.filter ?? { role: 'inbox' }
     setName(base?.name ?? '')
-    setEmoji(base?.emoji ?? '📥')
+    setIcon(base?.emoji && base.emoji in VIEW_ICONS ? base.emoji : 'inbox')
     setColor(base?.color ?? '')
     setAccountId(f.accountIds?.length === 1 ? f.accountIds[0] : 'all')
     setRole(f.role ?? 'any')
@@ -97,7 +97,7 @@ export function ViewEditor(): JSX.Element | null {
     const view: View = {
       id: base?.id ?? crypto.randomUUID(),
       name: trimmed,
-      emoji: emoji || undefined,
+      emoji: icon || undefined,
       color: color || undefined,
       filter,
       position: base?.position ?? views.length,
@@ -131,20 +131,25 @@ export function ViewEditor(): JSX.Element | null {
 
         <div className="ve__body">
           <div className="ve__namerow">
-            <input
-              className="ve__emoji" value={emoji} onChange={(e) => setEmoji([...e.target.value].slice(-1).join(''))}
-              aria-label="View icon" maxLength={4}
-            />
+            <span className="ve__emoji" aria-hidden>
+              {(() => { const Icon = VIEW_ICONS[icon] ?? VIEW_ICONS.inbox; return <Icon size={16} /> })()}
+            </span>
             <input
               ref={nameRef} className="ve__name" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="View name" aria-label="View name" autoFocus
             />
           </div>
 
+          <label className="ve__label">Icon</label>
           <div className="ve__emojis">
-            {EMOJI.map((e) => (
-              <button key={e} className="ve__emojibtn" data-on={e === emoji} onClick={() => setEmoji(e)} title={`Use ${e}`}>{e}</button>
-            ))}
+            {VIEW_ICON_KEYS.map((key) => {
+              const Icon = VIEW_ICONS[key]
+              return (
+                <button key={key} className="ve__emojibtn" data-on={key === icon} onClick={() => setIcon(key)} title={key} aria-label={key}>
+                  <Icon size={15} />
+                </button>
+              )
+            })}
           </div>
 
           <label className="ve__label">Colour</label>

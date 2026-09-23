@@ -5,6 +5,7 @@ import type { View } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Button, ConfirmBar, EmptyState, Group, IconButton, SectionTitle, Swatch, Switch } from '../ui'
 import { describeFilter, dropOrder, moveView, reorderViews, sortViews } from '../lib/views'
+import { VIEW_ICONS } from '../../sidebar/viewIcons'
 
 export function ViewsSection(): JSX.Element {
   const views = useApp((s) => s.views)
@@ -62,7 +63,7 @@ export function ViewsSection(): JSX.Element {
                 }}>
                 <div className="st-view__row">
                   <span className="st-view__grip" aria-hidden><GripVertical size={15} strokeWidth={1.5} /></span>
-                  <span className="st-view__icon">{v.emoji ? <span>{v.emoji}</span> : <Swatch color={v.color} />}</span>
+                  <span className="st-view__icon">{v.emoji && VIEW_ICONS[v.emoji] ? (() => { const Icon = VIEW_ICONS[v.emoji!]; return <Icon size={15} /> })() : <Swatch color={v.color} />}</span>
                   <span className="st-view__text">
                     <span className="st-view__name">{v.name}</span>
                     <span className="st-view__desc">{describeFilter(v.filter)}</span>
