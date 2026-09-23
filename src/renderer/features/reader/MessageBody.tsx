@@ -3,6 +3,7 @@ import { ChevronDown, ImageOff } from 'lucide-react'
 import type { Attachment, Message } from '@shared/types'
 import { sanitizeEmailHtml } from '@shared/sanitize'
 import { plainTextToHtml } from '@shared/sanitize/text'
+import { Tooltip } from '@/features/tooltip'
 import { buildBodyDocument, readThemeTokens, type ThemeTokens } from './bodyDocument'
 
 /**
@@ -227,15 +228,19 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       )}
 
       {result.hasQuotedText && (
-        <button
-          className={`msgbody__quote${showQuote ? ' is-open' : ''}`}
-          onClick={() => setShowQuote((v) => !v)}
-          aria-expanded={showQuote}
-          title={showQuote ? 'Hide quoted text' : 'Show quoted text'}
-        >
-          {showQuote ? <ChevronDown size={14} aria-hidden /> : <span className="msgbody__dots" aria-hidden>•••</span>}
-          <span className="msgbody__quote-label">{showQuote ? 'Hide quoted text' : 'Show quoted text'}</span>
-        </button>
+        // The label span is visually hidden while collapsed (see msgbody__quote-label in
+        // reader.css) — collapsed, this is an icon-only "•••" button, so it still needs a
+        // tooltip even though there's a text node in the DOM.
+        <Tooltip label={showQuote ? 'Hide quoted text' : 'Show quoted text'}>
+          <button
+            className={`msgbody__quote${showQuote ? ' is-open' : ''}`}
+            onClick={() => setShowQuote((v) => !v)}
+            aria-expanded={showQuote}
+          >
+            {showQuote ? <ChevronDown size={14} aria-hidden /> : <span className="msgbody__dots" aria-hidden>•••</span>}
+            <span className="msgbody__quote-label">{showQuote ? 'Hide quoted text' : 'Show quoted text'}</span>
+          </button>
+        </Tooltip>
       )}
     </div>
   )

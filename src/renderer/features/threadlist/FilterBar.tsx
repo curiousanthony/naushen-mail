@@ -1,6 +1,7 @@
 import { Check, LayoutList, ListFilter, Paperclip, X } from 'lucide-react'
 import type { Label } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { Tooltip } from '@/features/tooltip'
 import { Popover, useAnchor } from '@/features/sidebar/Popover'
 import { accountTags, ambiguousLabelNames } from '@/features/sidebar/lib'
 import { chipStyle } from '@/lib/labels'
@@ -46,12 +47,14 @@ export function FilterBar({ chips, onChange, labels }: FilterBarProps): JSX.Elem
         <ListFilter size={14} /> Filter{n > 0 ? ` · ${n}` : ''}
       </button>
 
-      <button
-        className="tl__tool" title="Group conversations by date"
-        onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })}
-      >
-        <LayoutList size={14} /> {settings.groupByDate ? 'Date' : 'No groups'}
-      </button>
+      <Tooltip label="Group conversations by date">
+        <button
+          className="tl__tool"
+          onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })}
+        >
+          <LayoutList size={14} /> {settings.groupByDate ? 'Date' : 'No groups'}
+        </button>
+      </Tooltip>
 
       {anchor && (
         <Popover anchor={anchor} onClose={close} align="end" width={252} label="Filter conversations">

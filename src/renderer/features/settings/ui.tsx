@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
 import type { Account, LabelColor } from '@shared/types'
 import { LABEL_COLORS } from '@shared/types'
+import { Tooltip, splitShortcutHint } from '@/features/tooltip'
 
 /* ------------------------------------------------------------------ layout */
 
@@ -60,7 +61,12 @@ export function Button({ variant = 'default', size = 'md', busy, icon, children,
 }
 
 export function IconButton({ label, children, className, ...rest }: { label: string; children: ReactNode } & React.ButtonHTMLAttributes<HTMLButtonElement>): JSX.Element {
-  return <button type="button" aria-label={label} title={label} {...rest} className={clsx('st-icon-btn', className)}>{children}</button>
+  const { text, shortcut } = splitShortcutHint(label)
+  return (
+    <Tooltip label={text} shortcut={shortcut}>
+      <button type="button" aria-label={label} {...rest} className={clsx('st-icon-btn', className)}>{children}</button>
+    </Tooltip>
+  )
 }
 
 export function Spinner({ size = 14 }: { size?: number }): JSX.Element {

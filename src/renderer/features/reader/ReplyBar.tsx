@@ -27,13 +27,13 @@ export function ReplyBar({ threadId, messageId, hidden }: Props): JSX.Element | 
 
   return (
     <div className="replybar">
-      <button className="replybar__btn" onClick={() => open('reply')} title="Reply (r)">
+      <button className="replybar__btn" onClick={() => open('reply')}>
         <CornerUpLeft size={15} aria-hidden /> Reply <span className="replybar__key">r</span>
       </button>
-      <button className="replybar__btn" onClick={() => open('replyAll')} title="Reply all (a)">
+      <button className="replybar__btn" onClick={() => open('replyAll')}>
         <ReplyAll size={15} aria-hidden /> Reply all <span className="replybar__key">a</span>
       </button>
-      <button className="replybar__btn" onClick={() => open('forward')} title="Forward (f)">
+      <button className="replybar__btn" onClick={() => open('forward')}>
         <CornerUpRight size={15} aria-hidden /> Forward <span className="replybar__key">f</span>
       </button>
     </div>

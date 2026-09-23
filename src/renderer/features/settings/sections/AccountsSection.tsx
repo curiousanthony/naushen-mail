@@ -49,7 +49,7 @@ function AccountRow({ account, now, onConnect, connecting }: { account: Account;
           </div>
           <div className="st-account__email">{account.email}</div>
         </div>
-        <div className={clsx('st-account__status', `is-${status.tone}`)} title={status.text}>
+        <div className={clsx('st-account__status', `is-${status.tone}`)}>
           {status.tone === 'busy' || busy ? <Spinner size={12} /> : status.tone === 'ok' ? <span className="st-dot" /> : <AlertCircle size={13} strokeWidth={1.75} />}
           <span>{busy && status.tone !== 'busy' ? 'Syncing…' : status.text}</span>
         </div>

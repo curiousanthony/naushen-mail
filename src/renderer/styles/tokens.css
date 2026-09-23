@@ -26,6 +26,12 @@
   --shadow-popover: rgba(15, 15, 15, 0.05) 0 0 0 1px, rgba(15, 15, 15, 0.1) 0 3px 6px, rgba(15, 15, 15, 0.2) 0 9px 24px;
   --shadow-peek: rgba(15, 15, 15, 0.05) 0 0 0 1px, rgba(15, 15, 15, 0.08) 0 6px 20px, rgba(15, 15, 15, 0.12) 0 16px 48px;
 
+  /* Always-dark floating surfaces (toast, tooltip): same colour in light or dark mode. */
+  --c-bg-inverse: #2b2a28;
+  --c-text-inverse: rgba(255, 255, 255, 0.92);
+  --c-text-inverse-2: rgba(255, 255, 255, 0.6);
+  --c-bg-inverse-hover: rgba(255, 255, 255, 0.14);
+
   /* label chip colours: --chip-<name>-fg / -bg */
   --chip-gray-fg: #5a5a58;   --chip-gray-bg: rgba(227, 226, 224, 0.5);
   --chip-brown-fg: #8b5e4a;  --chip-brown-bg: rgba(238, 224, 218, 0.6);
@@ -64,6 +70,7 @@
     --c-star: #e6b91e;
     --shadow-popover: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 3px 6px, rgba(0, 0, 0, 0.4) 0 9px 24px;
     --shadow-peek: rgba(0, 0, 0, 0.4) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 6px 20px, rgba(0, 0, 0, 0.5) 0 16px 48px;
+    --c-bg-inverse: #3b3b3a;
     --chip-gray-fg: #9b9b9b;   --chip-gray-bg: rgba(90, 90, 90, 0.35);
     --chip-brown-fg: #b48c78;  --chip-brown-bg: rgba(140, 84, 60, 0.3);
     --chip-orange-fg: #e0913f; --chip-orange-bg: rgba(200, 110, 30, 0.3);

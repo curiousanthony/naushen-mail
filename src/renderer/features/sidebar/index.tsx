@@ -6,6 +6,7 @@ import {
 import type { Account, Counts, View } from '@shared/types'
 import { useApp, type Nav } from '@/lib/store'
 import { initials } from '@/lib/format'
+import { Tooltip } from '@/features/tooltip'
 import { Popover, useAnchor } from './Popover'
 import { ViewEditor } from './ViewEditor'
 import { useViewEditor } from './viewEditorState'
@@ -52,12 +53,14 @@ export function Sidebar(): JSX.Element {
         <div className="sidebar__drag drag" />
         <div className="sidebar__top no-drag">
           <AccountSwitcher accounts={accounts} accountId={accountId} counts={counts} />
-          <button
-            className="sidebar__icon" title="New message" aria-label="New message"
-            onClick={() => openComposer()}
-          >
-            <PencilLine size={16} />
-          </button>
+          <Tooltip label="New message" shortcut="C">
+            <button
+              className="sidebar__icon" aria-label="New message"
+              onClick={() => openComposer()}
+            >
+              <PencilLine size={16} />
+            </button>
+          </Tooltip>
         </div>
 
         <SearchRow />
@@ -255,9 +258,11 @@ function Section({ id, title, collapsed, onToggle, action, children }: {
           <span>{title}</span>
         </button>
         {action && (
-          <button className="sec__action" title={action.label} aria-label={action.label} onClick={action.onClick}>
-            {action.icon}
-          </button>
+          <Tooltip label={action.label}>
+            <button className="sec__action" aria-label={action.label} onClick={action.onClick}>
+              {action.icon}
+            </button>
+          </Tooltip>
         )}
       </div>
       {!collapsed && <div className="sec__body">{children}</div>}
@@ -311,12 +316,14 @@ function ViewRow({ view, count, active, onClick }: {
         <span className="row__label">{view.name}</span>
         <Badge n={count} />
       </button>
-      <button
-        className="row__more" aria-label={`Options for ${view.name}`} title="Options"
-        onClick={(e) => { e.stopPropagation(); toggle(e) }}
-      >
-        <MoreHorizontal size={14} />
-      </button>
+      <Tooltip label="Options">
+        <button
+          className="row__more" aria-label={`Options for ${view.name}`}
+          onClick={(e) => { e.stopPropagation(); toggle(e) }}
+        >
+          <MoreHorizontal size={14} />
+        </button>
+      </Tooltip>
       {anchor && (
         <Popover anchor={anchor} onClose={close} width={180} label={`${view.name} options`}>
           <button className="menu__item" data-menuitem onClick={() => { close(); openEditor(view.id) }}>

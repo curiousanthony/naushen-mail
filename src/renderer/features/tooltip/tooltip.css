@@ -1,0 +1,42 @@
+/* Tooltip feature: a single floating node (see TooltipHost.tsx). Always a dark pill regardless
+   of the app's light/dark theme, using the shared always-dark tokens from styles/tokens.css
+   (--c-bg-inverse etc — the same ones the toast in commands/commands.css is built from). */
+
+.tooltip {
+  position: fixed;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 260px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-inverse);
+  color: var(--c-text-inverse);
+  box-shadow: var(--shadow-popover);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  animation: tooltip-in 100ms ease-out;
+}
+
+.tooltip__label { overflow: hidden; text-overflow: ellipsis; }
+
+.tooltip__shortcut {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--c-bg-inverse-hover);
+  color: var(--c-text-inverse-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}

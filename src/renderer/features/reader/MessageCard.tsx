@@ -4,6 +4,7 @@ import type { Address, Message } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
 import { gravatarUrl } from '@/lib/avatar'
+import { Tooltip } from '@/features/tooltip'
 import { MessageBody } from './MessageBody'
 import { Attachments } from './Attachments'
 import { visibleAttachments } from './fileKinds'
@@ -71,23 +72,26 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
             <span>
               to {recipients.length ? recipients.map(displayName).join(', ') : 'me'}
             </span>
-            <button
-              className="msg__detail-toggle"
-              onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
-              aria-expanded={showDetail}
-              aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
-              title={showDetail ? 'Hide details' : 'Show details'}
-            >
-              {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
-            </button>
+            <Tooltip label={showDetail ? 'Hide details' : 'Show details'}>
+              <button
+                className="msg__detail-toggle"
+                onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
+                aria-expanded={showDetail}
+                aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
+              >
+                {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
+              </button>
+            </Tooltip>
           </span>
         )}
       </span>
       <span className="msg__aside">
         {attachments.length > 0 && (
-          <span className="msg__clip" title={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
-            <Paperclip size={13} aria-hidden />
-          </span>
+          <Tooltip label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
+            <span className="msg__clip" role="img" aria-label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
+              <Paperclip size={13} aria-hidden />
+            </span>
+          </Tooltip>
         )}
         <time dateTime={new Date(message.date).toISOString()} title={fullDate(message.date)}>
           {expanded ? fullDate(message.date) : listTime(message.date)}
@@ -101,14 +105,15 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       {expanded ? (
         <div className="msg__head">{head}</div>
       ) : (
-        <button
-          className="msg__head"
-          onClick={onToggle}
-          aria-expanded={false}
-          title="Expand message"
-        >
-          {head}
-        </button>
+        <Tooltip label="Expand message">
+          <button
+            className="msg__head"
+            onClick={onToggle}
+            aria-expanded={false}
+          >
+            {head}
+          </button>
+        </Tooltip>
       )}
 
       {expanded && showDetail && (

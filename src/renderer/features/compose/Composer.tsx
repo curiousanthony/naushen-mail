@@ -15,6 +15,7 @@ import type { QuotedOriginal } from '@shared/emailhtml'
 import { buildQuoted, forwardHeaderHtml, forwardSubject, replyRecipients, replySubject } from '@shared/emailhtml'
 import { sanitizeFragment } from '@shared/sanitize'
 import { useApp, type ComposerState } from '@/lib/store'
+import { Tooltip } from '@/features/tooltip'
 import { editorRegistry } from './registry'
 import { EditorSurface, useComposerEditor } from './Editor'
 import { RecipientField, type RecipientFieldHandle } from './RecipientField'
@@ -455,7 +456,9 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
         {quoted && (
           <div className="cmp__quote">
-            <button type="button" className="cmp__quote-toggle" aria-expanded={quoteOpen} title="Show quoted text" onClick={() => setQuoteOpen((v) => !v)}>···</button>
+            <Tooltip label="Show quoted text">
+              <button type="button" className="cmp__quote-toggle" aria-expanded={quoteOpen} aria-label="Show quoted text" onClick={() => setQuoteOpen((v) => !v)}>···</button>
+            </Tooltip>
             {quoteOpen && (
               <blockquote className="cmp__quoted">
                 <p className="cmp__quote-attr">{quoted.attribution}</p>
@@ -497,10 +500,18 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
       <footer className="cmp__toolbar">
         <div className="cmp__tools">
-          <button type="button" className="cmp-toolbtn" title="Snippets" aria-label="Snippets" onClick={() => setMenu(menu === 'snippets' ? null : 'snippets')}><Braces size={16} /></button>
-          <button type="button" className="cmp-toolbtn" title="Attach files" aria-label="Attach files" onClick={() => fileInput.current?.click()}><Paperclip size={16} /></button>
-          <button type="button" className="cmp-toolbtn" title="Discard draft (⌘⇧D)" aria-label="Discard draft" onClick={discard}><Trash2 size={16} /></button>
-          <button type="button" className="cmp-toolbtn" title="Formatting help" aria-label="Formatting help" onClick={() => setMenu(menu === 'help' ? null : 'help')}><HelpCircle size={16} /></button>
+          <Tooltip label="Snippets">
+            <button type="button" className="cmp-toolbtn" aria-label="Snippets" onClick={() => setMenu(menu === 'snippets' ? null : 'snippets')}><Braces size={16} /></button>
+          </Tooltip>
+          <Tooltip label="Attach files">
+            <button type="button" className="cmp-toolbtn" aria-label="Attach files" onClick={() => fileInput.current?.click()}><Paperclip size={16} /></button>
+          </Tooltip>
+          <Tooltip label="Discard draft" shortcut="⌘⇧D">
+            <button type="button" className="cmp-toolbtn" aria-label="Discard draft" onClick={discard}><Trash2 size={16} /></button>
+          </Tooltip>
+          <Tooltip label="Formatting help">
+            <button type="button" className="cmp-toolbtn" aria-label="Formatting help" onClick={() => setMenu(menu === 'help' ? null : 'help')}><HelpCircle size={16} /></button>
+          </Tooltip>
           {signatureHtml && (
             <button type="button" className={`cmp-toolbtn cmp-toolbtn--text${signatureOn ? ' is-on' : ''}`} onClick={() => setSignatureOn((v) => !v)}>Signature</button>
           )}

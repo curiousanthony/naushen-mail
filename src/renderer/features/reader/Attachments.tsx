@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import type { Attachment } from '@shared/types'
 import { formatBytes } from '@shared/sanitize'
+import { Tooltip } from '@/features/tooltip'
 import { attachmentKind, visibleAttachments, type AttachmentKind } from './fileKinds'
 
 const ICONS: Record<AttachmentKind, typeof File> = {
@@ -55,25 +56,25 @@ export function Attachments({ messageId, attachments }: Props): JSX.Element | nu
         const Icon = ICONS[kind]
         const tint = TINTS[kind]
         return (
-          <button
-            key={a.id}
-            className="att"
-            onClick={() => void save(a)}
-            disabled={busy === a.id}
-            title={`${a.filename} — ${formatBytes(a.size)}`}
-          >
-            <span
-              className="att__icon"
-              style={{ color: `var(--chip-${tint}-fg)`, background: `var(--chip-${tint}-bg)` }}
+          <Tooltip key={a.id} label={`${a.filename} — ${formatBytes(a.size)}`}>
+            <button
+              className="att"
+              onClick={() => void save(a)}
+              disabled={busy === a.id}
             >
-              <Icon size={15} aria-hidden />
-            </span>
-            <span className="att__text">
-              <span className="att__name">{a.filename}</span>
-              <span className="att__size">{formatBytes(a.size)}</span>
-            </span>
-            <Download className="att__dl" size={14} aria-hidden />
-          </button>
+              <span
+                className="att__icon"
+                style={{ color: `var(--chip-${tint}-fg)`, background: `var(--chip-${tint}-bg)` }}
+              >
+                <Icon size={15} aria-hidden />
+              </span>
+              <span className="att__text">
+                <span className="att__name">{a.filename}</span>
+                <span className="att__size">{formatBytes(a.size)}</span>
+              </span>
+              <Download className="att__dl" size={14} aria-hidden />
+            </button>
+          </Tooltip>
         )
       })}
     </div>
