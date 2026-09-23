@@ -1,7 +1,7 @@
 import type { Label, OutgoingMessage, ThreadAction } from '@shared/types'
 import { makeId } from '@shared/types'
 import type { NormalizedThread, ProviderAdapter, SyncPage } from '../types'
-import { buildMockMailbox, type MockMailbox } from './fixtures'
+import { buildMockMailbox, MOCK_ATTACHMENT_CONTENT, type MockMailbox } from './fixtures'
 
 /** In-memory demo provider. Lets the whole UI run with no OAuth, and doubles as a test double. */
 export class MockAdapter implements ProviderAdapter {
@@ -52,7 +52,10 @@ export class MockAdapter implements ProviderAdapter {
 
   async saveDraft(_m: OutgoingMessage): Promise<{ remoteDraftId: string }> { return { remoteDraftId: `D_${Date.now()}` } }
   async deleteDraft(): Promise<void> {}
-  async fetchAttachment(): Promise<Buffer> { return Buffer.from('Demo attachment content') }
+  async fetchAttachment(remoteMessageId: string, attachmentId: string): Promise<Buffer> {
+    const content = MOCK_ATTACHMENT_CONTENT.get(`${remoteMessageId}:${attachmentId}`)
+    return Buffer.from(content ?? 'Demo attachment content')
+  }
 
   async createLabel(name: string, color?: string): Promise<Label> {
     const l: Label = { id: makeId(this.accountId, `L_${name}`), accountId: this.accountId, remoteId: `L_${name}`, name, color: color as Label['color'], kind: 'user' }

@@ -40,6 +40,8 @@ export interface MailApi {
    * fetch, are simply absent from the result; the caller leaves the sanitiser's placeholder.
    */
   'messages.inlineImages'(messageId: string): Promise<Record<string, string>>
+  /** UTF-8 text of a small text attachment (e.g. a `.ics` meeting invite) without a save dialog. */
+  'attachments.getText'(messageId: string, attachmentId: string): Promise<string | null>
 
   // compose
   'compose.send'(msg: OutgoingMessage): Promise<void>
@@ -67,7 +69,7 @@ export const API_METHODS: ApiMethod[] = [
   'labels.list', 'labels.create', 'labels.update', 'labels.delete',
   'views.list', 'views.save', 'views.delete',
   'threads.list', 'threads.get', 'threads.act', 'threads.counts', 'threads.search', 'attachments.save',
-  'messages.inlineImages',
+  'messages.inlineImages', 'attachments.getText',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'

@@ -86,6 +86,19 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
       }))
       return out
     },
+    'attachments.getText': async (messageId, attachmentId) => {
+      const row = repo.db.prepare('SELECT account_id, remote_id FROM messages WHERE id = ?').get(messageId) as
+        { account_id: string; remote_id: string } | undefined
+      if (!row) return null
+      const adapter = engine.getAdapter(row.account_id)
+      if (!adapter) return null
+      try {
+        const buf = await adapter.fetchAttachment(row.remote_id, attachmentId)
+        return buf.toString('utf-8')
+      } catch {
+        return null
+      }
+    },
 
     'compose.send': (m) => outbox.sendWithUndo(m),
     'compose.schedule': (m, at) => outbox.schedule(m, at),

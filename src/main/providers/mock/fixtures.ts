@@ -2,6 +2,9 @@ import type { Address, Label, LabelColor, Message, SystemRole } from '@shared/ty
 import { makeId } from '@shared/types'
 import type { NormalizedThread } from '../types'
 
+/** `${remoteMessageId}:${attachmentId}` -> raw content, for attachments whose `attach` entry set `content`. */
+export const MOCK_ATTACHMENT_CONTENT = new Map<string, string>()
+
 const H = 3600_000
 const D = 24 * H
 
@@ -13,7 +16,8 @@ interface Tpl {
   unread?: boolean
   starred?: boolean
   ago: number // ms ago for last message
-  attach?: { filename: string; mimeType: string; size: number }[]
+  /** `content`, when set, is what MockAdapter.fetchAttachment() returns (see MOCK_ATTACHMENT_CONTENT below) — otherwise it's generic placeholder text. */
+  attach?: { filename: string; mimeType: string; size: number; content?: string }[]
   msgs: { from: Address; to?: Address[]; cc?: Address[]; html: string; agoOffset?: number; unsubscribe?: string }[]
 }
 
@@ -28,6 +32,29 @@ const newsletterHtml = (title: string, body: string): string =>
   <p style="margin-top:24px"><a href="https://example.com" style="background:#2383e2;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-family:sans-serif;font-size:14px">Read more</a></p>
   <p style="color:#999;font-size:12px;font-family:sans-serif;margin-top:32px">You received this because you subscribed. <a href="https://example.com/unsub">Unsubscribe</a></p>
   </td></tr></table></td></tr></table>`
+
+/** A realistic Teams-style meeting invite .ics, ~1 week out, so InviteCard has something real to parse. */
+function teamsInvite(me: Address): string {
+  const start = new Date(Date.now() + 7 * D)
+  start.setUTCHours(15, 0, 0, 0)
+  const end = new Date(start.getTime() + 30 * 60_000)
+  const fmt = (d: Date): string => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
+  return [
+    'BEGIN:VCALENDAR', 'PRODID:-//Mock//Teams//EN', 'VERSION:2.0', 'METHOD:REQUEST',
+    'BEGIN:VEVENT',
+    'UID:mock-design-review-001@acme.example',
+    'SEQUENCE:0',
+    `DTSTAMP:${fmt(new Date())}`,
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    'SUMMARY:Design review',
+    'LOCATION:Microsoft Teams Meeting',
+    'ORGANIZER;CN=Jordan Lee:mailto:jordan@acme.example',
+    `ATTENDEE;CN=${me.name};PARTSTAT=NEEDS-ACTION:mailto:${me.email}`,
+    'ATTENDEE;CN=Jordan Lee;PARTSTAT=ACCEPTED:mailto:jordan@acme.example',
+    'END:VEVENT', 'END:VCALENDAR', ''
+  ].join('\r\n')
+}
 
 export const USER_LABELS: { name: string; color: LabelColor }[] = [
   { name: 'Newsletters', color: 'purple' },
@@ -84,6 +111,9 @@ function workTemplates(me: Address): Tpl[] {
       ] },
     { key: 'w2', subject: '[acme/web] Pull request #482: Fix flaky checkout test', labels: ['Team'], unread: true, ago: 2 * H, roles: ['inbox'],
       msgs: [{ from: p('GitHub', 'notifications@github.example'), html: wrap('<p><b>sam-k</b> requested your review on <a href="https://example.com">#482</a>.</p><pre style="background:#f6f8fa;padding:12px;border-radius:6px">- await page.click(\'#pay\')\n+ await page.getByRole(\'button\', { name: \'Pay\' }).click()</pre>') }] },
+    { key: 'w2b', subject: 'Invitation: Design review @ Thu Oct 8, 3:00 PM', labels: ['Team'], unread: true, ago: 30 * 60_000, roles: ['inbox'],
+      attach: [{ filename: 'invite.ics', mimeType: 'text/calendar; method=REQUEST', size: 640, content: teamsInvite(me) }],
+      msgs: [{ from: p('Jordan Lee', 'jordan@acme.example'), to: [me], html: wrap('<p>Sending an invite for the design review — agenda attached to the calendar item. Let me know if the time doesn\'t work.</p>') }] },
     { key: 'w3', subject: 'Invoice #2041 — October consulting', labels: ['Receipts'], ago: 5 * H, roles: ['inbox'], attach: [{ filename: 'invoice-2041.pdf', mimeType: 'application/pdf', size: 88_100 }],
       msgs: [{ from: p('Studio Nova', 'billing@studionova.example'), html: wrap('<p>Please find attached invoice <b>#2041</b> for <b>€2,400.00</b>, due in 14 days.</p>') }] },
     { key: 'w4', subject: 'Design critique notes', labels: ['Team'], ago: 1 * D + 1 * H, roles: ['inbox'],
@@ -140,7 +170,11 @@ export function buildMockMailbox(accountId: string, email: string, name: string,
         id: makeId(accountId, `M_${t.key}_${i}`), threadId: tid, accountId, remoteId: `M_${t.key}_${i}`,
         from: m.from, to: m.to ?? [me], cc: m.cc ?? [], bcc: [], subject: t.subject, date: t.msgs.length > 1 ? now - t.ago - (m.agoOffset ?? 0) : date,
         snippet: text.slice(0, 140), bodyHtml: m.html, bodyText: text,
-        attachments: isLast || t.msgs.length === 1 ? (t.attach ?? []).map((a, k) => ({ id: `A${k}`, filename: a.filename, mimeType: a.mimeType, size: a.size, inline: false })) : [],
+        attachments: isLast || t.msgs.length === 1 ? (t.attach ?? []).map((a, k) => {
+          const id = `A${k}`
+          if (a.content !== undefined) MOCK_ATTACHMENT_CONTENT.set(`M_${t.key}_${i}:${id}`, a.content)
+          return { id, filename: a.filename, mimeType: a.mimeType, size: a.size, inline: false }
+        }) : [],
         unread: !!t.unread && isLast && !fromMe, messageIdHeader: `<${t.key}.${i}@mock.local>`, listUnsubscribe: m.unsubscribe,
         labelIds, isDraft: (t.roles ?? []).includes('drafts')
       }
