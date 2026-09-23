@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, test, build
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  package:
+    name: Package (unpacked .app)
+    runs-on: macos-latest
+    needs: verify
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Build unpacked, ad-hoc signed .app
+        run: npm run pack
+      - name: Smoke test the packaged app (headless screenshot + node:sqlite)
+        run: |
+          MAILROOM_USER_DATA="$RUNNER_TEMP/mr-ci" MAILROOM_DEMO=1 MAILROOM_SIZE=1280x820 \
+            MAILROOM_SHOT="$RUNNER_TEMP/shot.png" \
+            "release/mac-arm64/Mailroom.app/Contents/MacOS/Mailroom"
+          test -s "$RUNNER_TEMP/shot.png"
+          test -s "$RUNNER_TEMP/mr-ci/mailroom.db"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mailroom-smoke-screenshot
+          path: ${{ runner.temp }}/shot.png
