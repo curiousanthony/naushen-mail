@@ -32,6 +32,14 @@ export interface MailApi {
   'threads.counts'(): Promise<Counts>
   'threads.search'(text: string, accountIds?: string[]): Promise<ThreadListResult>
   'attachments.save'(messageId: string, attachmentId: string): Promise<string | null>
+  /**
+   * Resolves every `inline: true` attachment on a message to a displayable `data:` URL, keyed
+   * by `Content-ID` (bracket-stripped, matching what the sanitiser's `cidOf()` extracts from a
+   * body's `cid:` src). Used by the reader to swap `cid:` image sources after sanitising —
+   * see `sanitizeEmailHtml`'s `cidMap` option. Attachments with no match, or that fail to
+   * fetch, are simply absent from the result; the caller leaves the sanitiser's placeholder.
+   */
+  'messages.inlineImages'(messageId: string): Promise<Record<string, string>>
 
   // compose
   'compose.send'(msg: OutgoingMessage): Promise<void>
@@ -59,6 +67,7 @@ export const API_METHODS: ApiMethod[] = [
   'labels.list', 'labels.create', 'labels.update', 'labels.delete',
   'views.list', 'views.save', 'views.delete',
   'threads.list', 'threads.get', 'threads.act', 'threads.counts', 'threads.search', 'attachments.save',
+  'messages.inlineImages',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'
