@@ -1,4 +1,4 @@
-import { memo, useState, type MouseEvent } from 'react'
+import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -6,6 +6,7 @@ import { initials, listTime } from '@/lib/format'
 import { chipStyle } from '@/lib/labels'
 import { gravatarUrl } from '@/lib/avatar'
 import { Tooltip } from '@/features/tooltip'
+import { usePreviewStore } from '@/features/preview'
 import { rowLabels, senderText } from './lib'
 
 export interface RowProps {
@@ -61,12 +62,48 @@ function RowImpl({
 
   const remind = (): void => { focus(t.id); setOverlay('snooze') }
 
+  // Row preview: hover this row for a moment and a floating card tracking the cursor shows a
+  // richer preview (see features/preview). Cursor updates are coalesced to one per animation
+  // frame so a fast mousemove sweep doesn't hammer the shared store while the card is following.
+  const rafRef = useRef<number | null>(null)
+  const pendingRef = useRef<{ x: number; y: number } | null>(null)
+  const flushCursor = (): void => {
+    rafRef.current = null
+    const p = pendingRef.current
+    if (p) usePreviewStore.getState().updateCursor(t.id, p.x, p.y)
+  }
+  const onRowMouseEnter = (e: MouseEvent): void => {
+    usePreviewStore.getState().scheduleShow(t.id, e.clientX, e.clientY)
+  }
+  const onRowMouseMove = (e: MouseEvent): void => {
+    pendingRef.current = { x: e.clientX, y: e.clientY }
+    if (rafRef.current === null) rafRef.current = requestAnimationFrame(flushCursor)
+  }
+  const onRowMouseLeave = (): void => {
+    if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
+    usePreviewStore.getState().hide(t.id)
+  }
+  // A row can unmount mid-hover (the list is virtualized — see threadlist/index.tsx's
+  // WINDOW_THRESHOLD/windowRange comments), which skips mouseleave entirely. Guard the preview
+  // from getting stuck on a thread whose row is gone.
+  useEffect(() => () => {
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+    usePreviewStore.getState().hide(t.id)
+  }, [t.id])
+
   return (
     <div
       className="trow" role="option" aria-selected={selected} id={`trow-${t.id}`}
       data-unread={t.unread} data-selected={selected} data-focused={focused} data-open={open}
       onClick={(e) => onOpen(t.id, e)}
       onDoubleClick={(e) => onOpen(t.id, e)}
+      onMouseEnter={onRowMouseEnter}
+      onMouseMove={onRowMouseMove}
+      onMouseLeave={onRowMouseLeave}
+      // Opening/selecting the row should dismiss the preview immediately, even if the click
+      // happens without the cursor ever leaving the row. The select checkbox and hover actions
+      // stop propagation on their own mousedown, so this only fires for the row body itself.
+      onMouseDown={() => usePreviewStore.getState().hide(t.id)}
     >
       <span className="trow__lead">
         <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />

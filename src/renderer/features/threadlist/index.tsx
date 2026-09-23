@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
 import { Inbox } from 'lucide-react'
 import { useApp } from '@/lib/store'
+import { usePreviewStore } from '@/features/preview'
 import { Row } from './Row'
 import { FilterBar } from './FilterBar'
 import { BulkBar } from './BulkBar'
@@ -113,6 +114,9 @@ export function ThreadList(): JSX.Element {
 
   const windowed = items.length > WINDOW_THRESHOLD
   const onScroll = useCallback(() => {
+    // The row preview tracks the cursor, not the row's own position — a scroll moves the
+    // hovered thread out from under the (still) cursor, so it must go rather than drift stale.
+    usePreviewStore.getState().hide()
     if (!windowed) return
     const el = scroller.current
     if (el) setScrollTop(el.scrollTop)

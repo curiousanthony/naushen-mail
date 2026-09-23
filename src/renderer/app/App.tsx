@@ -7,6 +7,7 @@ import { ComposeHost } from '@/features/compose'
 import { SettingsModal } from '@/features/settings'
 import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/features/commands'
 import { TooltipHost } from '@/features/tooltip'
+import { PreviewHost } from '@/features/preview'
 
 /**
  * Shell composition only. Each region is owned by a feature folder (see docs/04-workstreams.md);
@@ -35,6 +36,7 @@ export function App(): JSX.Element {
       <ShortcutsHelp />
       <Toaster />
       <TooltipHost />
+      <PreviewHost />
     </div>
   )
 }
