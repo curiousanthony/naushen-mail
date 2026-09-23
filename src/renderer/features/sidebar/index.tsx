@@ -14,6 +14,7 @@ import {
   saveCollapsed, sidebarLabels, sidebarViews, unreadFor
 } from './lib'
 import { VIEW_ICONS } from './viewIcons'
+import { SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
 import './sidebar.css'
 
 const MAIL_ICON: Record<string, ReactNode> = {
@@ -191,6 +192,7 @@ function SearchRow(): JSX.Element {
   const setNav = useApp((s) => s.setNav)
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
+  const [focused, setFocused] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const prev = useRef<Nav>({ kind: 'role', role: 'inbox' })
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -226,6 +228,12 @@ function SearchRow(): JSX.Element {
       </div>
     )
   }
+  const insertOperator = (op: string): void => {
+    const next = q.trim() ? `${q.trim()} ${op}` : op
+    setQ(next)
+    inputRef.current?.focus()
+  }
+
   return (
     <div className="sidebar__searchwrap no-drag">
       <div className="search search--open">
@@ -234,10 +242,24 @@ function SearchRow(): JSX.Element {
           ref={inputRef} value={q} placeholder="Search mail" aria-label="Search mail"
           onChange={(e) => change(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); exit() } }}
-          onBlur={() => { if (!q.trim()) exit() }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => { setFocused(false); if (!q.trim()) exit() }}
         />
         {q && <button className="search__clear" onMouseDown={(e) => e.preventDefault()} onClick={exit} aria-label="Clear search"><X size={13} /></button>}
       </div>
+      {focused && !q.trim() && (
+        <div className="search__ops" role="listbox" aria-label="Search operators">
+          {SEARCH_OPERATOR_HELP.map((o) => (
+            <button
+              key={o.op} type="button" className="search__op" role="option"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => insertOperator(o.op)}
+            >
+              <kbd>{o.op}</kbd><span>{o.hint}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

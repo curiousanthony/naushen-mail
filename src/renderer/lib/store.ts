@@ -3,6 +3,7 @@ import type {
   Account, AppSettings, Counts, Draft, Label, SystemRole, Thread, ThreadAction, ThreadFilter, View
 } from '@shared/types'
 import { DEFAULT_SETTINGS } from '@shared/types'
+import { parseSearchQuery } from './searchQuery'
 
 /** What the list area is currently showing. */
 export type Nav =
@@ -80,13 +81,18 @@ interface AppState {
 }
 
 /** Translate the current nav to a ThreadFilter. Pure; exported for tests and for features. */
-export function navToFilter(nav: Nav, accountId: string, views: View[]): ThreadFilter {
+export function navToFilter(nav: Nav, accountId: string, views: View[], labels: Label[] = []): ThreadFilter {
   const base: ThreadFilter = accountId === 'all' ? {} : { accountIds: [accountId] }
   switch (nav.kind) {
     case 'role': return { ...base, role: nav.role }
     case 'label': return { ...base, labelIds: [nav.labelId] }
     case 'snoozed': return { ...base, onlySnoozed: true }
-    case 'search': return { ...base, text: nav.text }
+    case 'search': {
+      // Gmail/Notion-Mail-style operators (from:, to:, subject:, has:attachment, is:unread,
+      // is:starred, label:, before:, after:) layered on the plain FTS text search.
+      const parsed = parseSearchQuery(nav.text, labels)
+      return { ...base, ...parsed.filter, text: parsed.text }
+    }
     case 'view': {
       const v = views.find((x) => x.id === nav.viewId)
       return { ...(v?.filter ?? {}), ...(accountId === 'all' ? {} : { accountIds: [accountId] }) }
@@ -130,9 +136,9 @@ export const useApp = create<AppState>((set, get) => ({
   },
 
   async refreshThreads() {
-    const { nav, accountId, views } = get()
+    const { nav, accountId, views, labels } = get()
     set({ loading: true })
-    const res = await window.api.invoke('threads.list', { filter: navToFilter(nav, accountId, views), limit: 300 })
+    const res = await window.api.invoke('threads.list', { filter: navToFilter(nav, accountId, views, labels), limit: 300 })
     // Drop stale selection.
     const ids = new Set(res.threads.map((t) => t.id))
     set((s) => ({
