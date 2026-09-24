@@ -215,6 +215,8 @@ export const HANDLERS: Record<string, Handler> = {
     // Second press clears, like Finder / Gmail's select-all toggle.
     const all = ids.every((i) => s.selectedIds.includes(i))
     useApp.setState({ selectedIds: all ? [] : ids })
+    // The native Edit > Select All menu item also fires on a real ⌘A and would paint the whole page blue.
+    requestAnimationFrame(() => window.getSelection()?.removeAllRanges())
   },
 
   'thread.archive': () => { const n = targetIds(S()).length; if (n) return perform({ type: 'archive' }, toastText('archive', n)) },

@@ -98,7 +98,10 @@ function RowImpl({
       } else {
         // The reminder picker targets the selection, so make this row (or its selection) the target.
         const before = useApp.getState().selectedIds
-        useApp.setState({ focusedId: t.id, selectedIds: ids })
+        // Targets resolve selection > open thread > cursor: only force a selection when another
+        // thread is open (or several are selected), otherwise the cursor alone is enough.
+        const open = useApp.getState().openThreadId
+        useApp.setState({ focusedId: t.id, selectedIds: ids.length > 1 || (open && open !== t.id) ? ids : [] })
         setOverlay('snooze')
         // Cancelling the picker must not leave this row selected (and the bulk bar up).
         const off = useApp.subscribe((s) => {
@@ -152,7 +155,7 @@ function RowImpl({
   }, [t.id])
 
   return (
-    <div className="trow-wrap" ref={wrapRef} data-swipe={swipe?.side} data-armed={swipe?.armed || undefined}>
+    <div className="trow-wrap" role="presentation" ref={wrapRef} data-swipe={swipe?.side} data-armed={swipe?.armed || undefined}>
       {swipe && (
         <div
           className="trow__reveal" data-side={swipe.side} data-armed={swipe.armed} aria-hidden

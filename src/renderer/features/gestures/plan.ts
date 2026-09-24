@@ -77,15 +77,28 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
       message = `${noun(apply.length)} starred`
       break
     case 'label': {
-      // A label belongs to one account; threads of other accounts are left alone.
-      const mine = threads.filter((t) => t.accountId === dest.accountId)
-      // "Move" semantics (Gmail): the label goes on and the thread leaves the inbox.
-      apply = mine.filter((t) => !t.labelIds.includes(dest.labelId) || has(t, inbox))
-      const add = apply.filter((t) => !t.labelIds.includes(dest.labelId))
-      const out = apply.filter((t) => has(t, inbox))
-      if (add.length) steps.push({ ids: add.map((t) => t.id), action: { type: 'addLabel', labelId: dest.labelId } })
-      if (out.length) steps.push({ ids: out.map((t) => t.id), action: { type: 'archive' } })
+      // Labels are per account. A thread of another account gets that account's label of the
+      // same name (Receipts on Gmail -> Receipts on Outlook); with no such label it is left alone.
       const name = labels.find((l) => l.id === dest.labelId)?.name ?? 'label'
+      const want = name.toLowerCase()
+      const resolve = (t: Thread): string | null => {
+        if (t.accountId === dest.accountId) return dest.labelId
+        return labels.find((l) => l.kind === 'user' && l.accountId === t.accountId && l.name.toLowerCase() === want)?.id ?? null
+      }
+      // "Move" semantics (Gmail): the label goes on and the thread leaves the inbox.
+      const target = new Map<string, string>()
+      for (const t of threads) {
+        const lid = resolve(t)
+        if (lid && (!t.labelIds.includes(lid) || has(t, inbox))) { apply.push(t); target.set(t.id, lid) }
+      }
+      const byLabel = new Map<string, string[]>()
+      for (const t of apply) {
+        const lid = target.get(t.id)!
+        if (!t.labelIds.includes(lid)) (byLabel.get(lid) ?? byLabel.set(lid, []).get(lid)!).push(t.id)
+      }
+      for (const [labelId, ids] of byLabel) steps.push({ ids, action: { type: 'addLabel', labelId } })
+      const out = apply.filter((t) => has(t, inbox))
+      if (out.length) steps.push({ ids: out.map((t) => t.id), action: { type: 'archive' } })
       message = `${noun(apply.length)} moved to “${name}”`
       break
     }
@@ -96,7 +109,7 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
 /** Toast copy when part of a multi-account selection was skipped. */
 export function skippedNote(plan: MovePlan, dest: Dest): string {
   if (!plan.skipped || !plan.apply.length) return plan.message
-  const why = dest.kind === 'label' ? `${plan.skipped} from another account left as is` : `${plan.skipped} already there`
+  const why = dest.kind === 'label' ? `${plan.skipped} without a matching label left as is` : `${plan.skipped} already there`
   return `${plan.message} (${why})`
 }
 

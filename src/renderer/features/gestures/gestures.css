@@ -34,6 +34,7 @@
 .trow__reveal[data-kind='restore'] { --rv-bg: var(--chip-blue-bg); --rv-fg: var(--chip-blue-fg); }
 .trow__reveal[data-kind='remind'] { --rv-bg: var(--chip-orange-bg); --rv-fg: var(--chip-orange-fg); }
 .trow__reveal[data-side='left'] { justify-content: flex-end; }
+.trow__reveal[data-side='left'] .trow__revealbody { flex-direction: row-reverse; }
 .trow__reveal[data-side='right'] { justify-content: flex-start; }
 /* Armed: the strip fills solid, so "let go now" reads without any text. */
 .trow__reveal[data-armed='true'] { background: var(--rv-fg); color: var(--c-accent-text); }

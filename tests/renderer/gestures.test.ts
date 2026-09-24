@@ -97,15 +97,30 @@ const th = (id: string, accountId: string, labelIds: string[], extra: Partial<Th
 
 describe('planMove', () => {
   const a1 = th('a1', 'a', ['a:inbox']), a2 = th('a2', 'a', ['a:inbox', 'a:travel']), b1 = th('b1', 'b', ['b:inbox'])
-  it('label drop: only that account, adds label and leaves the inbox', () => {
-    const p = planMove([a1, b1], { kind: 'label', labelId: 'a:travel', accountId: 'a' }, labels)
+  it('label drop: adds the label and leaves the inbox', () => {
+    const p = planMove([a1], { kind: 'label', labelId: 'a:travel', accountId: 'a' }, labels)
     expect(p.apply.map((t) => t.id)).toEqual(['a1'])
-    expect(p.skipped).toBe(1)
     expect(p.steps).toEqual([
       { ids: ['a1'], action: { type: 'addLabel', labelId: 'a:travel' } },
       { ids: ['a1'], action: { type: 'archive' } }
     ])
-    expect(skippedNote(p, { kind: 'label', labelId: 'a:travel', accountId: 'a' })).toContain('from another account left as is')
+  })
+  it('unified view: each thread gets its own account\'s label of the same name', () => {
+    const p = planMove([a1, b1], { kind: 'label', labelId: 'a:travel', accountId: 'a' }, labels)
+    expect(p.apply.map((t) => t.id)).toEqual(['a1', 'b1'])
+    expect(p.skipped).toBe(0)
+    expect(p.steps).toEqual([
+      { ids: ['a1'], action: { type: 'addLabel', labelId: 'a:travel' } },
+      { ids: ['b1'], action: { type: 'addLabel', labelId: 'b:travel' } },
+      { ids: ['a1', 'b1'], action: { type: 'archive' } }
+    ])
+  })
+  it('a thread whose account has no label of that name is skipped, with a note', () => {
+    const only = labels.filter((l) => l.id !== 'b:travel')
+    const p = planMove([a1, b1], { kind: 'label', labelId: 'a:travel', accountId: 'a' }, only)
+    expect(p.apply.map((t) => t.id)).toEqual(['a1'])
+    expect(p.skipped).toBe(1)
+    expect(skippedNote(p, { kind: 'label', labelId: 'a:travel', accountId: 'a' })).toContain('without a matching label')
   })
   it('a thread already labelled and archived is left alone; labelled but in inbox just leaves it', () => {
     const done = th('a3', 'a', ['a:travel'])
@@ -113,8 +128,8 @@ describe('planMove', () => {
     const p = planMove([a2], { kind: 'label', labelId: 'a:travel', accountId: 'a' }, labels)
     expect(p.steps).toEqual([{ ids: ['a2'], action: { type: 'archive' } }])
   })
-  it('a label of another account cannot accept anything', () => {
-    expect(planMove([a1], { kind: 'label', labelId: 'b:travel', accountId: 'b' }, labels).apply).toEqual([])
+  it('dropping on another account\'s label maps back to the thread\'s own label', () => {
+    expect(planMove([a1], { kind: 'label', labelId: 'b:travel', accountId: 'b' }, labels).steps[0]).toEqual({ ids: ['a1'], action: { type: 'addLabel', labelId: 'a:travel' } })
   })
   it('inbox / archive / trash refuse no-ops', () => {
     expect(planMove([a1], { kind: 'inbox' }, labels).apply).toEqual([])
