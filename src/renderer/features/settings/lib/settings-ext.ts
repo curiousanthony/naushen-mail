@@ -13,9 +13,11 @@ export interface SettingsExt {
   autoAdvance: AutoAdvance
   /** Append the signature to replies and forwards (not only new messages). */
   signatureInReplies: boolean
+  /** Two-finger trackpad swipe on a thread row: left archives, right sets a reminder. */
+  swipeGestures: boolean
 }
 
-export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'next', signatureInReplies: true }
+export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'next', signatureInReplies: true, swipeGestures: true }
 
 export const THREAD_STYLES: readonly ThreadStyle[] = ['side', 'center', 'full']
 export const AUTO_ADVANCE: readonly AutoAdvance[] = ['next', 'previous', 'close']
@@ -25,7 +27,8 @@ export function readExt(settings: AppSettings): SettingsExt {
   return {
     threadStyle: THREAD_STYLES.includes(raw.threadStyle as ThreadStyle) ? (raw.threadStyle as ThreadStyle) : EXT_DEFAULTS.threadStyle,
     autoAdvance: AUTO_ADVANCE.includes(raw.autoAdvance as AutoAdvance) ? (raw.autoAdvance as AutoAdvance) : EXT_DEFAULTS.autoAdvance,
-    signatureInReplies: typeof raw.signatureInReplies === 'boolean' ? raw.signatureInReplies : EXT_DEFAULTS.signatureInReplies
+    signatureInReplies: typeof raw.signatureInReplies === 'boolean' ? raw.signatureInReplies : EXT_DEFAULTS.signatureInReplies,
+    swipeGestures: typeof raw.swipeGestures === 'boolean' ? raw.swipeGestures : EXT_DEFAULTS.swipeGestures
   }
 }
 

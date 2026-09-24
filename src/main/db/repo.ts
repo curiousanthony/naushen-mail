@@ -21,7 +21,10 @@ const rowToLabel = (r: Row): Label => ({
 })
 
 export class Repo {
-  constructor(readonly db: DB) {}
+  constructor(readonly db: DB) {
+    // Local-only mute flag. Created lazily (not in db.ts's versioned SCHEMA) so it needs no schema bump.
+    db.exec('CREATE TABLE IF NOT EXISTS muted_threads (thread_id TEXT PRIMARY KEY)')
+  }
 
   // ------------------------------------------------------------ accounts
   listAccounts(): Account[] {
@@ -112,7 +115,10 @@ export class Repo {
       ).run(t.id, t.accountId, t.remoteId, t.subject, t.snippet, t.lastMessageAt, t.messageCount,
         +t.unread, +t.starred, +t.hasAttachments, JSON.stringify(t.participants))
       this.db.prepare('DELETE FROM thread_labels WHERE thread_id = ?').run(t.id)
-      for (const l of new Set(t.labelIds)) this.db.prepare('INSERT INTO thread_labels (thread_id, label_id) VALUES (?,?)').run(t.id, l)
+      const muted = this.db.prepare('SELECT 1 FROM muted_threads WHERE thread_id = ?').get(t.id)
+      const inboxIds = muted ? new Set(this.labelsForAccount(t.accountId).filter((l) => l.role === 'inbox').map((l) => l.id)) : null
+      // A muted conversation's new replies must not resurface in the inbox.
+      for (const l of new Set(t.labelIds)) if (!inboxIds?.has(l)) this.db.prepare('INSERT INTO thread_labels (thread_id, label_id) VALUES (?,?)').run(t.id, l)
       if (n.messages.length) {
         this.db.prepare('DELETE FROM messages WHERE thread_id = ?').run(t.id)
         const ins = this.db.prepare(
@@ -172,9 +178,25 @@ export class Repo {
     return map
   }
 
+  private mutedAmong(threadIds: string[]): Set<string> {
+    const out = new Set<string>()
+    for (let i = 0; i < threadIds.length; i += 500) {
+      const chunk = threadIds.slice(i, i + 500)
+      const rows = this.db.prepare(`SELECT thread_id FROM muted_threads WHERE thread_id IN (${chunk.map(() => '?').join(',')})`).all(...chunk) as Row[]
+      for (const r of rows) out.add(r.thread_id)
+    }
+    return out
+  }
+
   private hydrate(rows: Row[]): Thread[] {
-    const labels = this.labelsFor(rows.map((r) => r.id))
-    return rows.map((r) => this.rowToThread(r, labels.get(r.id) ?? []))
+    const ids = rows.map((r) => r.id)
+    const labels = this.labelsFor(ids)
+    const muted = this.mutedAmong(ids)
+    return rows.map((r) => {
+      const t = this.rowToThread(r, labels.get(r.id) ?? [])
+      if (muted.has(r.id)) t.muted = true
+      return t
+    })
   }
 
   getThread(id: string): ThreadWithMessages | null {
@@ -310,7 +332,16 @@ export class Repo {
           case 'snooze': this.db.prepare('UPDATE threads SET snoozed_until = ? WHERE id = ?').run(action.until, id); break
           case 'unsnooze': this.db.prepare('UPDATE threads SET snoozed_until = NULL WHERE id = ?').run(id); break
           case 'remind': this.db.prepare('UPDATE threads SET reminder_at = ? WHERE id = ?').run(action.at, id); break
+          case 'mute':
+            this.db.prepare('INSERT OR IGNORE INTO muted_threads VALUES (?)').run(id)
+            del(byRole('inbox'))
+            break
+          case 'unmute':
+            this.db.prepare('DELETE FROM muted_threads WHERE thread_id = ?').run(id)
+            add(byRole('inbox'))
+            break
           case 'deleteForever':
+            this.db.prepare('DELETE FROM muted_threads WHERE thread_id = ?').run(id)
             this.db.prepare('DELETE FROM thread_fts WHERE thread_id = ?').run(id)
             this.db.prepare('DELETE FROM messages WHERE thread_id = ?').run(id)
             this.db.prepare('DELETE FROM threads WHERE id = ?').run(id)

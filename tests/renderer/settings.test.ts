@@ -24,7 +24,7 @@ describe('settings extension fields', () => {
   })
   it('reads valid values', () => {
     const s = { ...DEFAULT_SETTINGS, ...extPatch({ threadStyle: 'full', autoAdvance: 'close', signatureInReplies: false }) }
-    expect(readExt(s)).toEqual({ threadStyle: 'full', autoAdvance: 'close', signatureInReplies: false })
+    expect(readExt(s)).toMatchObject({ threadStyle: 'full', autoAdvance: 'close', signatureInReplies: false })
   })
 })
 

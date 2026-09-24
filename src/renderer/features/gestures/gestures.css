@@ -1,0 +1,121 @@
+/* Gestures & triage speed: row swipe reveal, drag ghost, sidebar drop targets, bulk-bar hints.
+   Colours come from tokens.css only; every animation has a reduced-motion fallback at the end. */
+
+/* ---------------------------------------------------------------- row swipe */
+
+.trow-wrap { position: relative; }
+/* Only clip while swiping (the keyboard cursor bar and focus rings must not be cut off otherwise). */
+.trow-wrap[data-swipe] { overflow: hidden; border-radius: var(--radius-md); }
+
+/* The row is see-through at rest; while it slides it must cover the strip behind it. */
+.trow-wrap[data-swipe] .trow {
+  background-color: var(--c-bg);
+  background-image: linear-gradient(var(--c-bg-hover), var(--c-bg-hover));
+  will-change: transform;
+  cursor: grabbing;
+}
+.trow-wrap[data-swipe] .trow[data-selected='true'] { background-image: linear-gradient(var(--c-bg-selected), var(--c-bg-selected)); }
+.trow-wrap[data-swipe] .trow__actions { display: none; }
+.trow-wrap[data-swipe] .trow__time { display: block; }
+
+.trow__reveal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  --rv-bg: var(--chip-green-bg);
+  --rv-fg: var(--chip-green-fg);
+  background: var(--rv-bg);
+  color: var(--rv-fg);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.trow__reveal[data-kind='restore'] { --rv-bg: var(--chip-blue-bg); --rv-fg: var(--chip-blue-fg); }
+.trow__reveal[data-kind='remind'] { --rv-bg: var(--chip-orange-bg); --rv-fg: var(--chip-orange-fg); }
+.trow__reveal[data-side='left'] { justify-content: flex-end; }
+.trow__reveal[data-side='right'] { justify-content: flex-start; }
+/* Armed: the strip fills solid, so "let go now" reads without any text. */
+.trow__reveal[data-armed='true'] { background: var(--rv-fg); color: var(--c-accent-text); }
+
+.trow__revealbody {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 22px;
+  font-size: 13px;
+  font-weight: 600;
+  /* --swipe-p (0..1) is written by useRowSwipe on the wrapper while the fingers move. */
+  opacity: calc(0.25 + var(--swipe-p, 0) * 0.75);
+  transform: scale(calc(0.72 + var(--swipe-p, 0) * 0.28));
+  transform-origin: center;
+}
+.trow__reveal[data-side='left'] .trow__revealbody { transform-origin: right center; }
+.trow__reveal[data-side='right'] .trow__revealbody { transform-origin: left center; }
+.trow__reveal[data-armed='true'] .trow__revealbody { transform: scale(1.08); transition: transform 160ms cubic-bezier(0.2, 1.5, 0.4, 1); }
+
+/* ---------------------------------------------------------------- dragging rows */
+
+.trow[data-dragging='true'] { opacity: 0.45; }
+
+/* The drag image. Must be in the DOM (off-screen) when setDragImage snapshots it. */
+.dragghost {
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  height: 30px;
+  padding: 0 12px 0 10px;
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-popover);
+  color: var(--c-text);
+  box-shadow: var(--shadow-popover);
+  font: 500 13px/1 var(--font-ui);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.dragghost__icon { width: 8px; height: 8px; border-radius: 50%; background: var(--c-accent); flex: none; }
+.dragghost__text { overflow: hidden; text-overflow: ellipsis; }
+/* A stack of cards behind the pill when several conversations are dragged. */
+.dragghost[data-stack='2'] { box-shadow: var(--shadow-popover), 3px 3px 0 -1px var(--c-bg-popover), 3px 3px 0 0 var(--c-border); }
+.dragghost[data-stack='3'] { box-shadow: var(--shadow-popover), 3px 3px 0 -1px var(--c-bg-popover), 3px 3px 0 0 var(--c-border), 6px 6px 0 -1px var(--c-bg-popover), 6px 6px 0 0 var(--c-border); }
+
+/* ---------------------------------------------------------------- sidebar drop targets */
+
+.row[data-drop='ready'] { background: var(--c-bg-hover); }
+.row[data-drop='over'] {
+  background: var(--c-bg-selected);
+  box-shadow: inset 0 0 0 1.5px var(--c-accent);
+}
+.row[data-drop='refuse'] { opacity: 0.45; cursor: not-allowed; }
+
+/* A collapsed section a dragged conversation could spring open. */
+.sec__head[data-dragging='true'] .sec__title { color: var(--c-accent); }
+.sec__head[data-dragging='true'] .sec__chev { animation: gest-nudge 700ms ease-in-out infinite; }
+@keyframes gest-nudge { 50% { transform: translateX(2px); } }
+
+/* ---------------------------------------------------------------- bulk bar hints */
+
+.bulk__kbd {
+  margin-left: 2px;
+  padding: 0 4px;
+  min-width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--c-bg-hover);
+  color: var(--c-text-3);
+  font: 500 10.5px/1 var(--font-ui);
+  transition: color var(--t-fast);
+}
+.bulk__btn:hover .bulk__kbd { color: var(--c-text-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .trow__reveal, .trow__revealbody { transition: none; }
+  .sec__head[data-dragging='true'] .sec__chev { animation: none; }
+}

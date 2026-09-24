@@ -17,11 +17,19 @@ import {
 import { VIEW_ICONS } from './viewIcons'
 import { activeContactPrefix, applyContactSuggestion, SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
 import type { Contact } from '@shared/types'
+import { useDropTarget, useSpringLoad } from '@/features/gestures/dnd'
+import type { Dest } from '@/features/gestures/plan'
+import '@/features/gestures/gestures.css'
 import './sidebar.css'
 
 const MAIL_ICON: Record<string, ReactNode> = {
   all: <Layers size={16} />, starred: <Star size={16} />, sent: <Send size={16} />, drafts: <FileText size={16} />,
   snoozed: <AlarmClock size={16} />, trash: <Trash2 size={16} />, spam: <ShieldAlert size={16} />
+}
+
+/** Which "Mail" rows accept a dropped conversation (Sent, Drafts and Reminders do not). */
+const MAIL_DROP: Record<string, Dest> = {
+  all: { kind: 'archive' }, starred: { kind: 'starred' }, trash: { kind: 'trash' }, spam: { kind: 'spam' }
 }
 
 /** Left navigation: accounts, compose, search, Views, Mail, Labels, Settings. */
@@ -77,6 +85,7 @@ export function Sidebar(): JSX.Element {
               icon={<InboxIcon size={16} />} label="Inbox" count={unreadFor(counts, accountId, 'inbox')}
               active={navEquals(nav, { kind: 'role', role: 'inbox' })}
               onClick={() => go({ kind: 'role', role: 'inbox' })}
+              dest={{ kind: 'inbox' }}
             />
             {shownViews.map((v) => (
               <ViewRow
@@ -93,6 +102,7 @@ export function Sidebar(): JSX.Element {
                 key={m.id} icon={MAIL_ICON[m.id]} label={m.name}
                 count={m.role ? unreadFor(counts, accountId, m.role) : 0}
                 active={navEquals(nav, mailNav(m))} onClick={() => go(mailNav(m))}
+                dest={MAIL_DROP[m.id] ?? null}
               />
             ))}
           </Section>
@@ -114,6 +124,7 @@ export function Sidebar(): JSX.Element {
                       ? <span className="sidebar__acctdot" style={{ background: owner?.color }} />
                       : undefined}
                     title={`${l.name} · ${owner?.email ?? ''}`}
+                    dest={{ kind: 'label', labelId: l.id, accountId: l.accountId }}
                   />
                 )
               })}
@@ -312,9 +323,11 @@ function Section({ id, title, collapsed, onToggle, action, children }: {
   id: string; title: string; collapsed: boolean; onToggle(id: string): void
   action?: { icon: ReactNode; label: string; onClick(): void }; children: ReactNode
 }): JSX.Element {
+  // Spring-loaded: hold a dragged conversation over a collapsed section and it opens.
+  const spring = useSpringLoad(collapsed, () => onToggle(id))
   return (
     <section className="sec" data-collapsed={collapsed}>
-      <div className="sec__head">
+      <div className="sec__head" {...spring.props} data-dragging={spring.dragging && collapsed ? 'true' : undefined}>
         <button className="sec__title" onClick={() => onToggle(id)} aria-expanded={!collapsed}>
           <ChevronDown size={12} className="sec__chev" />
           <span>{title}</span>
@@ -337,12 +350,15 @@ function Badge({ n }: { n: number }): JSX.Element | null {
   return <span className="badge">{n > 999 ? '999+' : n}</span>
 }
 
-function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title }: {
+function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title, dest }: {
   icon?: ReactNode; dot?: string; label: string; suffix?: string; count?: number
   active?: boolean; onClick(): void; trailing?: ReactNode; title?: string
+  /** Where a conversation dropped on this row goes (omit: not a drop target). */
+  dest?: Dest | null
 }): JSX.Element {
+  const drop = useDropTarget(dest ?? null)
   return (
-    <button className="row" data-active={!!active} onClick={onClick} title={title ?? label}>
+    <button className="row" data-active={!!active} onClick={onClick} title={title ?? label} data-drop={drop.state} {...drop.props}>
       <span className="row__lead">
         {dot ? <span className="row__dot" style={{ background: dot }} /> : icon}
       </span>

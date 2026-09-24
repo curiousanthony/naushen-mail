@@ -5,6 +5,8 @@ export interface UndoEntry {
   ids: string[]
   inverse: ThreadAction
   label: string
+  /** More inverse steps applied after `inverse` (a compound action such as Move to label). */
+  extra?: { ids: string[]; action: ThreadAction }[]
 }
 
 /** The action that reverses `a`, or null when it cannot be reversed (deleteForever). */
@@ -26,6 +28,8 @@ export function invertAction(a: ThreadAction): ThreadAction | null {
     case 'unsnooze': return null
     case 'remind': return a.at === null ? null : { type: 'remind', at: null }
     case 'deleteForever': return null
+    case 'mute': return { type: 'unmute' }
+    case 'unmute': return { type: 'mute' }
   }
 }
 
@@ -35,8 +39,8 @@ export class UndoStack {
   private seq = 1
   constructor(private max = 20) {}
 
-  push(ids: string[], inverse: ThreadAction, label: string): UndoEntry {
-    const entry = { id: this.seq++, ids, inverse, label }
+  push(ids: string[], inverse: ThreadAction, label: string, extra?: { ids: string[]; action: ThreadAction }[]): UndoEntry {
+    const entry: UndoEntry = { id: this.seq++, ids, inverse, label, ...(extra?.length ? { extra } : {}) }
     this.items.push(entry)
     if (this.items.length > this.max) this.items.shift()
     return entry
@@ -54,7 +58,7 @@ export class UndoStack {
 const noun = (n: number): string => (n === 1 ? 'Conversation' : `${n} conversations`)
 
 /** Toast copy: "Conversation archived", "3 conversations moved to trash". */
-export function toastText(kind: 'archive' | 'unarchive' | 'trash' | 'untrash' | 'spam' | 'notSpam' | 'read' | 'unread' | 'star' | 'unstar', n: number): string {
+export function toastText(kind: 'archive' | 'unarchive' | 'trash' | 'untrash' | 'spam' | 'notSpam' | 'read' | 'unread' | 'star' | 'unstar' | 'mute' | 'unmute', n: number): string {
   const subj = noun(n)
   switch (kind) {
     case 'archive': return `${subj} archived`
@@ -67,5 +71,7 @@ export function toastText(kind: 'archive' | 'unarchive' | 'trash' | 'untrash' | 
     case 'unread': return `${subj} marked as unread`
     case 'star': return `${subj} starred`
     case 'unstar': return `${subj} unstarred`
+    case 'mute': return `${subj} muted. Replies will skip your inbox`
+    case 'unmute': return `${subj} unmuted and moved to inbox`
   }
 }

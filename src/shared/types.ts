@@ -111,6 +111,8 @@ export interface Thread {
   snoozedUntil: number | null
   /** Local-only: "remind me if no reply" timestamp. */
   reminderAt: number | null
+  /** Local-only: replies to this conversation skip the inbox (see ThreadAction 'mute'). */
+  muted?: boolean
 }
 
 export interface ThreadWithMessages extends Thread {
@@ -186,6 +188,10 @@ export type ThreadAction =
   | { type: 'unsnooze' } // local only
   | { type: 'remind'; at: number | null } // local only
   | { type: 'deleteForever' }
+  /** Local: replies skip the inbox. Also archives (Gmail-style). */
+  | { type: 'mute' }
+  /** Local: stop muting and put the thread back in the inbox. */
+  | { type: 'unmute' }
 
 // ---------------------------------------------------------------- Compose
 

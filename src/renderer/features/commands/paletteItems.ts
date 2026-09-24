@@ -41,6 +41,10 @@ export interface PaletteCtx {
   theme: 'system' | 'light' | 'dark'
   sidebarCollapsed: boolean
   canUndo: boolean
+  /** Every target thread is muted (label flips to Unmute). */
+  targetMuted?: boolean
+  /** Number of threads in the visible list (Select all needs some). */
+  listCount?: number
 }
 
 const item = (i: Omit<PaletteItem, 'key'> & { key?: string }): PaletteItem => ({ key: i.key ?? `${i.cmd}:${i.arg ?? ''}`, ...i })
@@ -60,7 +64,10 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
     out.push(item({ group: 'Actions', label: c.targetUnread ? 'Mark as read' : 'Mark as unread', cmd: c.targetUnread ? 'thread.markRead' : 'thread.markUnread', icon: c.targetUnread ? 'mail-open' : 'mail', binding: primaryBinding('thread.unread'), keywords: ['read', 'unread'] }))
     out.push(item({ group: 'Actions', label: 'Delete', cmd: 'thread.trash', icon: 'trash', keywords: ['trash', 'remove'] }))
     out.push(item({ group: 'Actions', label: 'Report spam', cmd: 'thread.spam', icon: 'spam', keywords: ['junk'] }))
+    out.push(item({ group: 'Actions', label: 'Move to…', cmd: 'thread.move', icon: 'folder-input', keywords: ['folder', 'label', 'file', 'move'] }))
+    out.push(item({ group: 'Actions', label: c.targetMuted ? 'Unmute conversation' : 'Mute conversation', cmd: 'thread.mute', icon: 'bell-off', keywords: ['silence', 'ignore', 'skip inbox', 'mute'] }))
   }
+  if ((c.listCount ?? 0) > 0) out.push(item({ group: 'Actions', label: 'Select all conversations', cmd: 'sel.all', icon: 'check-square', keywords: ['everything', 'multi-select', 'all'] }))
   if (c.hasThread) out.push(item({ group: 'Actions', label: 'Unsubscribe', cmd: 'thread.unsubscribe', icon: 'unsubscribe', keywords: ['newsletter', 'mailing list'] }))
   if (c.canUndo) out.push(item({ group: 'Actions', label: 'Undo last action', cmd: 'thread.undo', icon: 'undo', keywords: ['revert'] }))
 

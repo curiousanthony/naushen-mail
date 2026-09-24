@@ -58,7 +58,7 @@ interface AppState {
   openThreadId: string | null
   composers: ComposerState[]
   toasts: Toast[]
-  overlay: null | 'palette' | 'settings' | 'shortcuts' | 'snooze' | 'label-picker' | 'view-editor'
+  overlay: null | 'palette' | 'settings' | 'shortcuts' | 'snooze' | 'label-picker' | 'view-editor' | 'move-picker'
   sidebarCollapsed: boolean
 
   init(): Promise<void>
@@ -160,7 +160,17 @@ export const useApp = create<AppState>((set, get) => ({
     const ids = idsArg ?? (s.selectedIds.length ? s.selectedIds : s.openThreadId ? [s.openThreadId] : s.focusedId ? [s.focusedId] : [])
     if (!ids.length) return
     // Auto-advance: if the open thread leaves the list, move to the next one.
-    const leaving = ['archive', 'trash', 'spam', 'snooze', 'deleteForever'].includes(action.type)
+    const leaving = ['archive', 'trash', 'spam', 'snooze', 'deleteForever', 'mute'].includes(action.type)
+    // Cursor-only triage (nothing open): when the focused row leaves, land on its neighbour rather
+    // than letting the post-refresh fallback throw the cursor back to the top of the list.
+    if (leaving && !s.openThreadId && s.focusedId && ids.includes(s.focusedId)) {
+      const idx = s.threads.findIndex((t) => t.id === s.focusedId)
+      const after = s.threads.slice(idx + 1).find((t) => !ids.includes(t.id))
+      const before = s.threads.slice(0, idx).reverse().find((t) => !ids.includes(t.id))
+      const pickPrev = (s.settings as unknown as { autoAdvance?: string }).autoAdvance === 'previous'
+      const next = pickPrev ? before ?? after : after ?? before
+      set({ focusedId: next?.id ?? null })
+    }
     if (leaving && s.openThreadId && ids.includes(s.openThreadId)) {
       const idx = s.threads.findIndex((t) => t.id === s.openThreadId)
       const next = s.threads.filter((t) => !ids.includes(t.id))[Math.min(idx, s.threads.length - ids.length - 1)]
