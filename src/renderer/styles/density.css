@@ -1,0 +1,21 @@
+/* Density: Comfortable (default) or Compact (tighter, Linear-like). `data-density` is mirrored onto
+   <html> by features/settings/lib/appearance.ts; the thread list also keeps its own
+   `.tl[data-density]` for row heights, which the JS windowing (DENSITY in threadlist/index.tsx)
+   must match: 44px comfortable / 32px compact. Everything else keys off these tokens. */
+:root {
+  --sb-row-h: 30px;      /* sidebar rows */
+  --sb-sec-gap: 14px;    /* space between sidebar sections */
+  --msg-pad-y: 16px;     /* reader message card vertical padding */
+}
+:root[data-density='compact'] {
+  --sb-row-h: 26px;
+  --sb-sec-gap: 8px;
+  --msg-pad-y: 10px;
+  --reader-pad-x: 22px;
+}
+:root[data-density='compact'] .trow { gap: 8px; }
+:root[data-density='compact'] .trow__sender,
+:root[data-density='compact'] .trow__text { font-size: 13px; }
+:root[data-density='compact'] .trow__avatar { width: 18px; height: 18px; font-size: 8.5px; }
+:root[data-density='compact'] .trow__chip { height: 15px; font-size: 10.5px; }
+:root[data-density='compact'] .row { font-size: 13.5px; }

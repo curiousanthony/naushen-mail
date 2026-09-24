@@ -1,0 +1,43 @@
+/* Empty states and loading skeleton for the thread list. Tokens only. */
+.es {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 62%; padding: 40px 24px; text-align: center;
+  animation: es-in var(--dur-4) var(--ease-out);
+}
+@keyframes es-in { from { opacity: 0; transform: translateY(6px); } }
+.es__title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.es__body { margin: 4px 0 0; max-width: 34ch; font-size: 13px; line-height: 1.5; color: var(--c-text-2); }
+.es__hint { margin: 10px 0 0; font-size: 12px; color: var(--c-text-3); }
+.es__glyph {
+  display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 14px; border-radius: 50%;
+  color: var(--c-text-2); background: var(--c-bg-hover);
+  box-shadow: 0 0 0 6px var(--c-bg-cursor), inset 0 0 0 var(--hairline) var(--c-divider);
+}
+.es__scene { display: block; margin-bottom: 8px; overflow: visible; }
+.es__halo { fill: var(--c-bg-selected); }
+.es__sun { fill: var(--c-accent); opacity: 0.9; }
+.es__stars circle { fill: var(--c-text-3); }
+.es__hill--far { fill: var(--c-bg-hover-strong); }
+.es__hill--near { fill: var(--c-bg-hover); }
+.es__check {
+  fill: none; stroke: var(--c-text-2); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 34; stroke-dashoffset: 0; animation: es-draw 520ms var(--ease-out) 180ms backwards;
+}
+@keyframes es-draw { from { stroke-dashoffset: 34; } }
+.es--zero .es__halo { animation: es-breathe 6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes es-breathe { 50% { transform: scale(1.08); } }
+
+/* Loading skeleton: a slow shimmer, calmer than a pulse. */
+.tl__skel { padding-top: 4px; }
+.tl__skelrow { display: flex; align-items: center; gap: 10px; height: var(--row-h); padding: 0 7px; }
+.tl__skelavatar, .tl__skelbar {
+  background: linear-gradient(90deg, var(--c-bg-hover) 0%, var(--c-bg-hover-strong) 50%, var(--c-bg-hover) 100%);
+  background-size: 220% 100%;
+  border-radius: var(--radius-sm);
+  animation: tl-shimmer 1.5s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.tl__skelavatar { width: 22px; height: 22px; flex: none; border-radius: 50%; }
+.tl__skelbar { height: 9px; }
+.tl__skelbar--wide { flex: none; }
+@keyframes tl-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }

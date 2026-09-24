@@ -107,7 +107,7 @@
 
 /* ---------------------------------------------------------------- sections */
 
-.sec { margin-bottom: 14px; }
+.sec { margin-bottom: var(--sb-sec-gap); }
 .sec__head { display: flex; align-items: center; gap: 2px; height: 24px; padding-right: 2px; }
 .sec__title {
   flex: 1; min-width: 0; display: flex; align-items: center; gap: 3px; height: 100%;
@@ -130,7 +130,7 @@
 /* ---------------------------------------------------------------- rows */
 
 .row {
-  width: 100%; display: flex; align-items: center; gap: 9px; height: 30px;
+  width: 100%; display: flex; align-items: center; gap: 9px; height: var(--sb-row-h);
   padding: 0 7px; border-radius: var(--radius-md); text-align: left; font-size: 14px;
   color: var(--c-text); transition: background var(--t-fast);
 }

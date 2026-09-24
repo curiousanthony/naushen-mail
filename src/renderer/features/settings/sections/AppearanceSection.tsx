@@ -3,7 +3,8 @@ import clsx from 'clsx'
 import type { AppSettings } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
-import { extPatch, readExt, type AutoAdvance, type ThreadStyle } from '../lib/settings-ext'
+import { extPatch, readExt, type Accent, type AutoAdvance, type ThreadStyle } from '../lib/settings-ext'
+import { ACCENTS } from '../lib/appearance'
 
 const STYLES: { value: ThreadStyle; label: string; desc: string }[] = [
   { value: 'side', label: 'Side peek', desc: 'Opens from the right, over the list' },
@@ -38,10 +39,19 @@ export function AppearanceSection(): JSX.Element {
             { value: 'system', label: 'System', icon: <Monitor size={14} strokeWidth={1.5} /> }
           ]} />
         </Row>
-        <Row label="Density" description="Row height in the thread list.">
+        <Row label="Density" description="Comfortable, or Compact for tighter rows in the list, sidebar and reader.">
           <Segmented label="Density" value={settings.density} onChange={(density) => set({ density })} options={[
             { value: 'comfortable', label: 'Comfortable' }, { value: 'compact', label: 'Compact' }
           ]} />
+        </Row>
+        <Row label="Accent colour" description="Selection, focus, unread dots and primary buttons.">
+          <div className="st-accents" role="radiogroup" aria-label="Accent colour">
+            {ACCENTS.map((a) => (
+              <button key={a.value} type="button" role="radio" aria-checked={ext.accent === a.value} aria-label={a.label} title={a.label}
+                className={clsx('st-accent', ext.accent === a.value && 'is-active')} style={{ '--sw': `var(--sw-${a.value})` } as React.CSSProperties}
+                onClick={() => set(extPatch({ accent: a.value as Accent }))} />
+            ))}
+          </div>
         </Row>
       </Group>
 

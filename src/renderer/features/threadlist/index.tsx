@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
-import { Inbox } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { usePreviewStore } from '@/features/preview'
 import { Row } from './Row'
@@ -11,6 +10,8 @@ import {
   listTitle, offsetsOf, rangeIds, scrollOffsetFor, unionIds, windowRange,
   type Chips, type Metrics
 } from './lib'
+import { useListFlip } from './useListFlip'
+import { EmptyState, Skeleton } from './EmptyState'
 import './threadlist.css'
 
 /**
@@ -113,6 +114,8 @@ export function ThreadList(): JSX.Element {
   }, [visible])
 
   const windowed = items.length > WINDOW_THRESHOLD
+  // Rows below a removed/arrived thread glide to their new slot (no-op when windowed / reduced motion).
+  useListFlip(scroller, items, JSON.stringify(nav) + accountId, !windowed)
   const onScroll = useCallback(() => {
     // The row preview tracks the cursor, not the row's own position — a scroll moves the
     // hovered thread out from under the (still) cursor, so it must go rather than drift stale.
@@ -174,11 +177,7 @@ export function ThreadList(): JSX.Element {
         {loading && (!threads.length || staleLoad) ? (
           <Skeleton />
         ) : !items.length ? (
-          <div className="tl__empty">
-            <span className="tl__emptyicon"><Inbox size={22} /></span>
-            <p className="tl__emptytitle">{empty.title}</p>
-            <p className="tl__emptybody">{empty.body}</p>
-          </div>
+          <EmptyState nav={nav} copy={empty} filtered={filtered} />
         ) : (
           <>
             {win.padTop > 0 && <div style={{ height: win.padTop }} aria-hidden />}
@@ -217,21 +216,6 @@ function GroupHeader({ label, count }: { label: string; count: number }): JSX.El
     <div className="tl__group" role="presentation">
       <span>{label}</span>
       <span className="tl__groupcount">{count}</span>
-    </div>
-  )
-}
-
-/** Placeholder rows while the first page loads, so the list does not flash empty. */
-function Skeleton(): JSX.Element {
-  return (
-    <div className="tl__skel" aria-hidden>
-      {Array.from({ length: 9 }, (_, i) => (
-        <div className="tl__skelrow" key={i}>
-          <span className="tl__skelavatar" />
-          <span className="tl__skelbar" style={{ width: `${18 + ((i * 7) % 10)}%` }} />
-          <span className="tl__skelbar tl__skelbar--wide" style={{ width: `${34 + ((i * 11) % 22)}%` }} />
-        </div>
-      ))}
     </div>
   )
 }
