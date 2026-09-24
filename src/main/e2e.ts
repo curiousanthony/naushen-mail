@@ -23,6 +23,8 @@ export function attachE2E(w: BrowserWindow): void {
     : process.env.MAILROOM_SHOT ? [{ exec: process.env.MAILROOM_EXEC, wait: Number(process.env.MAILROOM_WAIT ?? 1200), shot: process.env.MAILROOM_SHOT }] : []
   if (!steps.length) return
   if (process.env.MAILROOM_SIZE) { const [W, H] = process.env.MAILROOM_SIZE.split('x').map(Number); w.setSize(W, H) }
+  // A hidden window throttles rAF/animations, so screenshots would capture stale frames.
+  w.webContents.setBackgroundThrottling(false)
   w.webContents.once('did-finish-load', async () => {
     await sleep(Number(process.env.MAILROOM_BOOT_WAIT ?? 1500))
     for (const s of steps) {
