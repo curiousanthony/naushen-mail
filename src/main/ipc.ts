@@ -128,7 +128,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'drafts.list': async () => repo.listDrafts(),
     'drafts.get': async (id) => repo.getDraft(id),
     'drafts.delete': async (id) => repo.deleteDraft(id),
-    'contacts.suggest': async (prefix) => repo.suggestContacts(prefix),
+    'contacts.suggest': async (prefix, limit) => repo.suggestContacts(prefix, limit),
 
     'sync.now': (id) => (id ? engine.syncAccount(id) : engine.syncAll()),
     'settings.get': async () => repo.getSettings(),

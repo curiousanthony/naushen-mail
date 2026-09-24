@@ -55,7 +55,7 @@ export interface MailApi {
   'drafts.list'(): Promise<Draft[]>
   'drafts.get'(id: string): Promise<Draft | null>
   'drafts.delete'(id: string): Promise<void>
-  'contacts.suggest'(prefix: string): Promise<Contact[]>
+  'contacts.suggest'(prefix: string, limit?: number): Promise<Contact[]>
 
   // sync / app
   'sync.now'(accountId?: string): Promise<void>

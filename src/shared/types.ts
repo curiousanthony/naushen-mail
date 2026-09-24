@@ -257,6 +257,8 @@ export interface AppSettings {
   }
   markReadOnOpen: boolean
   notifications: boolean
+  /** Composer: curl quotes, turn `--` into an em dash and `...` into an ellipsis. Missing = on. */
+  smartTypography?: boolean
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {

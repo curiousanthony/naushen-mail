@@ -11,7 +11,9 @@ import {
   BACKGROUND_COLORS, TEXT_COLORS, filterSlashItems,
   type ColorChoice, type SlashAction, type SlashItem
 } from './slashItems'
-import type { Snippet } from './snippets'
+import { findByShortcut, type Snippet } from './snippets'
+import { insertSnippet } from './snippetInsert'
+import type { SnippetContext } from './snippetVars'
 
 export interface MenuAnchor { x: number; y: number; bottom: number }
 
@@ -25,6 +27,9 @@ interface Props {
   onConsume: () => void
   onRequestImage: () => void
   onRequestLink: () => void
+  /** `snippet` = the `;shortcut` menu: only snippets, matched on their shortcut. */
+  mode?: 'slash' | 'snippet'
+  snippetContext?: () => SnippetContext
 }
 
 const Icon = ({ name, size = 16 }: { name: string; size?: number }): JSX.Element => {
@@ -33,12 +38,17 @@ const Icon = ({ name, size = 16 }: { name: string; size?: number }): JSX.Element
 }
 
 export function SlashMenu(props: Props): JSX.Element | null {
-  const { editor, query, anchor, snippets, onClose, onConsume, onRequestImage, onRequestLink } = props
+  const { editor, query, anchor, snippets, onClose, onConsume, onRequestImage, onRequestLink, mode = 'slash', snippetContext } = props
   const [active, setActive] = useState(0)
   const [submenu, setSubmenu] = useState<null | { kind: 'color'; action: SlashAction }>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  const items = filterSlashItems(query, snippets.map((s) => ({ id: s.id, name: s.name })))
+  const items = mode === 'snippet'
+    ? findByShortcut(snippets, query).map((s): SlashItem => ({
+        action: 'snippet', title: s.name, description: 'Insert snippet', icon: 'Braces', group: 'Snippets',
+        keywords: [], hint: `;${s.shortcut}`, snippetId: s.id
+      }))
+    : filterSlashItems(query, snippets.map((s) => ({ id: s.id, name: s.name, shortcut: s.shortcut })))
   const colors = submenu?.action === 'backgroundColor' ? BACKGROUND_COLORS : TEXT_COLORS
 
   useEffect(() => { setActive(0); setSubmenu(null) }, [query])
@@ -51,7 +61,7 @@ export function SlashMenu(props: Props): JSX.Element | null {
   const run = (item: SlashItem): void => {
     if (item.submenu === 'color') { setSubmenu({ kind: 'color', action: item.action }); return }
     onConsume()
-    applySlashAction(editor, item, { snippets, onRequestImage, onRequestLink })
+    applySlashAction(editor, item, { snippets, onRequestImage, onRequestLink, snippetContext })
     onClose()
   }
 
@@ -169,6 +179,7 @@ export interface ApplyContext {
   snippets: Snippet[]
   onRequestImage: () => void
   onRequestLink: () => void
+  snippetContext?: () => SnippetContext
 }
 
 /** Map a menu item to the editor command that inserts it. */
@@ -193,7 +204,7 @@ export function applySlashAction(editor: Editor, item: SlashItem, ctx: ApplyCont
     case 'emoji': chain.insertContent(':').run(); break
     case 'snippet': {
       const snippet = ctx.snippets.find((s) => s.id === item.snippetId)
-      if (snippet) chain.insertContent(snippet.doc.content ?? snippet.doc).run()
+      if (snippet) insertSnippet(editor, snippet, ctx.snippetContext?.() ?? {})
       break
     }
     default: break

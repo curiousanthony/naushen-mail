@@ -4,6 +4,7 @@
  */
 
 import type { Address } from '@shared/types'
+import { findAttachmentMention } from './safety'
 
 /**
  * Pragmatic address check. Deliberately not RFC 5322 (which permits quoted local parts
@@ -96,8 +97,6 @@ export interface ComposeValidation {
   warnings: string[]
 }
 
-const MENTIONS_ATTACHMENT = /\b(attach(ed|ment|ments|ing)?|enclosed|pi[èe]ce jointe|ci-joint)\b/i
-
 export function validateCompose(input: {
   to: Address[]
   cc: Address[]
@@ -119,7 +118,7 @@ export function validateCompose(input: {
   }
   if (!input.subject.trim()) warnings.push('This message has no subject.')
   if (!input.bodyText.trim() && !input.attachmentCount) warnings.push('This message is empty.')
-  if (!input.attachmentCount && MENTIONS_ATTACHMENT.test(input.bodyText)) {
+  if (!input.attachmentCount && findAttachmentMention(input.bodyText)) {
     warnings.push('You mentioned an attachment but nothing is attached.')
   }
   return { errors, warnings }
