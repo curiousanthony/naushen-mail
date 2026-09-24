@@ -45,12 +45,14 @@ export function scheduleDetail(d: Date, now: Date): string {
  * guarantees that), so the list is always valid.
  */
 export function scheduleOptions(now: Date = new Date()): ScheduleOption[] {
-  const morning = at(now, 1, 8)
-  const afternoon = at(now, 1, 13)
+  // Small hours (before 5 AM): "tomorrow morning" would be more than a day away, today's is meant.
+  const early = now.getHours() < 5
+  const morning = at(now, early ? 0 : 1, 8)
+  const afternoon = at(now, early ? 0 : 1, 13)
   const monday = at(now, daysUntilNextMonday(now), 8)
   return [
-    { id: 'tomorrow-morning', label: 'Tomorrow morning', detail: scheduleDetail(morning, now), at: morning.getTime() },
-    { id: 'tomorrow-afternoon', label: 'Tomorrow afternoon', detail: scheduleDetail(afternoon, now), at: afternoon.getTime() },
+    { id: 'tomorrow-morning', label: early ? 'This morning' : 'Tomorrow morning', detail: scheduleDetail(morning, now), at: morning.getTime() },
+    { id: 'tomorrow-afternoon', label: early ? 'This afternoon' : 'Tomorrow afternoon', detail: scheduleDetail(afternoon, now), at: afternoon.getTime() },
     { id: 'next-week', label: 'Next week', detail: scheduleDetail(monday, now), at: monday.getTime() },
     { id: 'custom', label: 'Pick date & time', detail: '', at: null }
   ]

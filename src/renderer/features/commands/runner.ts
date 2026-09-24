@@ -202,6 +202,7 @@ export const HANDLERS: Record<string, Handler> = {
   },
   'thread.undo': undoLast,
   'thread.remind': () => { if (targetIds(S()).length) S().setOverlay('snooze') },
+  'thread.followup': () => { if (targetIds(S()).length) S().setOverlay('followup') },
   'thread.label': () => { if (targetIds(S()).length) S().setOverlay('label-picker') },
   'thread.star': () => {
     const n = targetIds(S()).length

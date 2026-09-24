@@ -31,13 +31,48 @@ export function getSnoozePresets(now: Date = new Date()): SnoozePreset[] {
   const later = new Date(Math.ceil((now.getTime() + 3 * HOUR) / HALF_HOUR) * HALF_HOUR)
   if (sameDay(later, now)) out.push({ id: 'later', label: 'Later today', at: later })
   if (now.getHours() < 15) out.push({ id: 'evening', label: 'This evening', at: atTime(now, 0, 18) })
-  out.push({ id: 'tomorrow', label: 'Tomorrow', at: atTime(now, 1, 8) })
+  // Small hours (before 5 AM): "tomorrow 8 AM" would be a day and a half away; today's morning is meant.
+  if (now.getHours() < 5) out.push({ id: 'tomorrow', label: 'This morning', at: atTime(now, 0, 8) })
+  else out.push({ id: 'tomorrow', label: 'Tomorrow', at: atTime(now, 1, 8) })
   const dow = now.getDay() // 0 = Sunday
   if (dow >= 1 && dow <= 4) out.push({ id: 'weekend', label: 'This weekend', at: atTime(now, 6 - dow, 8) })
   let toMonday = (8 - dow) % 7 || 7
   if (toMonday === 1) toMonday = 8
   out.push({ id: 'nextweek', label: 'Next week', at: atTime(now, toMonday, 8) })
   return out
+}
+
+/** Hour used for "tomorrow", "next week"... and by the typed-time parser when no time is given. */
+export const DEFAULT_HOUR = 8
+
+/**
+ * "Follow up if no reply" presets: N days out at the default hour. Not filtered by time of day
+ * (a day count is always meaningful).
+ */
+export type FollowUpPresetId = 'fu2d' | 'fu3d' | 'fu1w' | 'fu2w'
+export function getFollowUpPresets(now: Date = new Date()): Array<{ id: FollowUpPresetId; label: string; at: Date }> {
+  return [
+    { id: 'fu2d', label: 'In 2 days', at: atTime(now, 2, DEFAULT_HOUR) },
+    { id: 'fu3d', label: 'In 3 days', at: atTime(now, 3, DEFAULT_HOUR) },
+    { id: 'fu1w', label: 'In 1 week', at: atTime(now, 7, DEFAULT_HOUR) },
+    { id: 'fu2w', label: 'In 2 weeks', at: atTime(now, 14, DEFAULT_HOUR) }
+  ]
+}
+
+/** Times a preset must have been used before it floats to the top ("remember the most-used presets"). */
+export const USAGE_THRESHOLD = 3
+
+/**
+ * Stable reorder: presets used at least USAGE_THRESHOLD times move up, most-used first; the rest
+ * keep their chronological order. Returns the input untouched when nothing qualifies.
+ */
+export function orderByUsage<T extends { id: string }>(presets: T[], usage: Record<string, number> | undefined): T[] {
+  if (!usage) return presets
+  const hot = presets.filter((p) => (usage[p.id] ?? 0) >= USAGE_THRESHOLD)
+  if (!hot.length) return presets
+  const rank = (p: T): number => usage[p.id] ?? 0
+  const sorted = [...hot].sort((a, b) => rank(b) - rank(a))
+  return [...sorted, ...presets.filter((p) => !sorted.includes(p))]
 }
 
 /** Row hint / toast text: "Today, 6:00 PM", "Tomorrow, 8:00 AM", "Sat, 8:00 AM", "Oct 12, 8:00 AM". */

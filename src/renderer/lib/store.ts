@@ -58,7 +58,7 @@ interface AppState {
   openThreadId: string | null
   composers: ComposerState[]
   toasts: Toast[]
-  overlay: null | 'palette' | 'settings' | 'shortcuts' | 'snooze' | 'label-picker' | 'view-editor'
+  overlay: null | 'palette' | 'settings' | 'shortcuts' | 'snooze' | 'label-picker' | 'view-editor' | 'followup'
   sidebarCollapsed: boolean
 
   init(): Promise<void>

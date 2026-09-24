@@ -173,7 +173,7 @@ export function parseWhen(input: string, opts: ParseOptions = {}): ParsedWhen | 
   // time-of-day words may accompany a date or stand alone
   let tod: number | null = null
   const tw = take(/\b(morning|afternoon|evening|night|lunchtime|lunch)\b/)
-  if (tw) tod = TOD[tw[1]]
+  if (tw) tod = tw[1] === 'morning' ? defH : TOD[tw[1]]
 
   let dayResolved: Date | null = day
   if (yearless && dayResolved && (dayResolved as Date) < today) {

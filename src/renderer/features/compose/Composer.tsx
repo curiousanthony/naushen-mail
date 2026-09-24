@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Braces, ChevronDown, ChevronUp, HelpCircle, Maximize2, Minimize2, Minus,
+  Braces, Check, ChevronDown, ChevronUp, HelpCircle, Maximize2, Minimize2, Minus,
   Paperclip, Send, Trash2, X
 } from 'lucide-react'
 import type { Address, Draft, Message, OutgoingMessage, ScheduledSend } from '@shared/types'
@@ -27,6 +27,7 @@ import {
 } from './attachments'
 import { fromLocalInputValue, scheduleOptions, scheduledToast, toLocalInputValue } from './schedule'
 import { loadSnippets, upsertSnippet, type Snippet } from './snippets'
+import { WhenField } from '@/features/time/WhenField'
 import './compose.css'
 
 interface Props {
@@ -70,6 +71,9 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
   const [maximised, setMaximised] = useState(false)
   const [menu, setMenu] = useState<null | 'schedule' | 'snippets' | 'help' | 'account'>(null)
   const [customTime, setCustomTime] = useState('')
+  // Send menu: typed send-later time, and "remind me if no reply" (local follow-up, 3 days after it leaves).
+  const [whenText, setWhenText] = useState('')
+  const [followUp, setFollowUp] = useState(false)
   const [snippets, setSnippets] = useState<Snippet[]>(() => loadSnippets())
   /** Non-null while naming a new snippet (Electron has no window.prompt). */
   const [newSnippet, setNewSnippet] = useState<string | null>(null)
@@ -236,7 +240,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
     // it must never be forwarded as `OutgoingMessage.draftId`: both adapters treat that field as
     // "an existing remote draft to PUT/PATCH-then-send", and PUTting a remote draft that was never
     // created 404s — which is why every real send was silently failing.
-    const { message } = buildOutgoing({
+    const { message: built } = buildOutgoing({
       accountId, to: finalTo, cc: finalCc, bcc: finalBcc, subject,
       doc: editor.getJSON(),
       ...(signatureOn && signatureHtml ? { signatureHtml } : {}),
@@ -245,6 +249,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       ...(replyRef ? { inReplyTo: replyRef } : {})
     })
 
+    const message = followUp ? { ...built, followUpDays: 3 } : built
     const plan = planSend({ undoSendSeconds: settings.undoSendSeconds, scheduledAt: opts.scheduledAt })
     // Undo reopens the composer from a draft, so capture it now: closing the composer
     // destroys the editor and `snapshot()` would have nothing left to read.
@@ -260,13 +265,13 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
       if (plan.kind === 'scheduled') {
         toast({
-          message: scheduledToast(plan.at),
+          message: scheduledToast(plan.at) + (followUp ? ' · follow-up in 3 days' : ''),
           actionLabel: 'Cancel',
           onAction: scheduled ? () => void window.api.invoke('compose.cancelScheduled', scheduled.id) : undefined
         })
       } else {
         toast({
-          message: 'Message sent',
+          message: followUp ? 'Message sent · follow-up in 3 days if no reply' : 'Message sent',
           actionLabel: scheduled ? 'Undo' : undefined,
           duration: plan.kind === 'undoable' ? plan.undoSeconds * 1000 : 5000,
           // Restore the draft *before* reopening, or the new composer's `drafts.get`
@@ -286,7 +291,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       toast({ message: e instanceof Error ? e.message : 'Could not send the message' })
     }
   }, [editor, sending, to, cc, bcc, subject, attachments, problems, accountId, signatureOn, signatureHtml,
-      quoted, replyRef, draftId, settings.undoSendSeconds, closeComposer, composer, toast, act, snapshot])
+      quoted, replyRef, draftId, followUp, settings.undoSendSeconds, closeComposer, composer, toast, act, snapshot])
 
   const addFiles = useCallback(async (files: File[]) => {
     if (!files.length) return
@@ -529,6 +534,16 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
           {menu === 'schedule' && (
             <div className="cmp-pop cmp-pop--schedule">
               <div className="cmp-menu__group">Schedule send</div>
+              <div className="cmp-pop__when">
+                <WhenField
+                  value={whenText}
+                  onChange={setWhenText}
+                  placeholder="Type a time… tomorrow 9am"
+                  ariaLabel="Type a send time"
+                  autoFocus
+                  onSubmit={(w) => { setMenu(null); void doSend({ scheduledAt: w.date.getTime() }) }}
+                />
+              </div>
               {options.map((o) => (
                 o.at
                   ? (
@@ -559,6 +574,11 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                     </div>
                   )
               ))}
+              <div className="tf-sep" />
+              <button type="button" className="cmp-menu__row tf-followup" role="menuitemcheckbox" aria-checked={followUp} onClick={() => setFollowUp((v) => !v)}>
+                <span className="tf-followup__box" data-on={followUp}>{followUp && <Check size={11} strokeWidth={3} />}</span>
+                <span className="cmp-menu__title">Remind me if no reply in 3 days</span>
+              </button>
             </div>
           )}
         </div>

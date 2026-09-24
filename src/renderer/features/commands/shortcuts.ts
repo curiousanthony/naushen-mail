@@ -51,6 +51,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'thread.inbox', label: 'Move to Inbox', section: 'Threads', keys: ['shift+e'], keywords: ['unarchive', 'restore'] },
   { id: 'thread.undo', label: 'Undo', section: 'Threads', keys: ['z'], keywords: ['revert'] },
   { id: 'thread.remind', label: 'Set reminder', section: 'Threads', keys: ['h'], keywords: ['snooze', 'later'] },
+  { id: 'thread.followup', label: 'Follow up if no reply', section: 'Threads', keys: ['w'], keywords: ['remind', 'waiting', 'nudge', 'no response'] },
   { id: 'thread.label', label: 'Label / remove label', section: 'Threads', keys: ['l'], keywords: ['tag', 'labels'] },
   { id: 'thread.star', label: 'Star / unstar', section: 'Threads', keys: ['s'], keywords: ['favorite'] },
   { id: 'thread.unsubscribe', label: 'Unsubscribe', section: 'Threads', keys: ['mod+u'], keywords: ['newsletter', 'mailing list'] },
