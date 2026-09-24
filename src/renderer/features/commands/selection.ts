@@ -1,4 +1,5 @@
 import type { Message } from '@shared/types'
+import { expandBundleTargets } from '../threadlist/bundleNav'
 
 /** Pure list-cursor / selection maths (j/k, shift+arrows, target resolution). */
 
@@ -10,9 +11,10 @@ export interface CursorState {
 
 /** Threads an action applies to: selection, else the open thread, else the keyboard cursor. */
 export function targetIds(s: CursorState): string[] {
-  if (s.selectedIds.length) return s.selectedIds
+  // A collapsed inbox bundle (opt-in) stands for all of its members; otherwise this is the identity.
+  if (s.selectedIds.length) return expandBundleTargets(s.selectedIds)
   if (s.openThreadId) return [s.openThreadId]
-  return s.focusedId ? [s.focusedId] : []
+  return s.focusedId ? expandBundleTargets([s.focusedId]) : []
 }
 
 /** Move the cursor by `delta` rows (clamped). With no cursor, lands on the first/last row. */

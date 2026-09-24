@@ -8,6 +8,7 @@ import { SettingsModal } from '@/features/settings'
 import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/features/commands'
 import { TooltipHost } from '@/features/tooltip'
 import { PreviewHost } from '@/features/preview'
+import { RuleHost } from '@/features/rules/RuleHost'
 
 /**
  * Shell composition only. Each region is owned by a feature folder (see docs/04-workstreams.md);
@@ -37,6 +38,7 @@ export function App(): JSX.Element {
       <Toaster />
       <TooltipHost />
       <PreviewHost />
+      <RuleHost />
     </div>
   )
 }

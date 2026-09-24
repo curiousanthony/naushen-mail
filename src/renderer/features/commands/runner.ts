@@ -5,6 +5,8 @@ import { extendSelection, lastMessage, moveFocus, targetIds } from './selection'
 import { UndoStack, invertAction, toastText } from './undo'
 import { parseListUnsubscribe } from './unsubscribe'
 import { useCommandUi } from './ui-store'
+import { bundleStops, collapseBundleAt, expandBundleAt } from '../threadlist/bundleNav'
+import { archiveAllFrom, blockSender, openRuleForFocused, toggleLabelBundle, toggleSenderBundle, unsubscribeAndArchive } from '../rules/actions'
 
 /**
  * Command implementations, keyed by the ids in shortcuts.ts. Used by the keyboard hook, the
@@ -115,7 +117,9 @@ const starredTarget = (): boolean => { const { threads } = targetThreads(); retu
 
 function move(delta: number): void {
   const s = S()
-  const id = moveFocus(s.threads.map((t) => t.id), s.focusedId, delta)
+  // With inbox bundles on, a collapsed bundle is a single stop (see threadlist/bundleNav).
+  const stops = bundleStops(s.threads.map((t) => t.id), s.focusedId)
+  const id = moveFocus(stops.ids, stops.focusedId, delta)
   if (!id) return
   s.focus(id)
   if (s.openThreadId) s.openThread(id)
@@ -136,7 +140,7 @@ export const THEMES = ['system', 'light', 'dark'] as const
 export const HANDLERS: Record<string, Handler> = {
   'nav.next': () => move(1),
   'nav.prev': () => move(-1),
-  'nav.open': () => { const s = S(); if (s.focusedId) s.openThread(s.focusedId) },
+  'nav.open': () => { const s = S(); if (s.focusedId && !expandBundleAt(s.focusedId)) s.openThread(s.focusedId) },
   'nav.back': () => {
     const s = S()
     // A modal overlay (palette, settings, a picker) sits above a floating composer, so it closes
@@ -146,6 +150,7 @@ export const HANDLERS: Record<string, Handler> = {
     else if (s.composers.length) s.closeComposer(s.composers[s.composers.length - 1].id)
     else if (s.openThreadId) s.openThread(null)
     else if (s.selectedIds.length) s.clearSelection()
+    else collapseBundleAt(s.focusedId)
   },
   'nav.top': () => { const s = S(); const id = s.threads[0]?.id ?? null; if (id) { s.focus(id); if (s.openThreadId) s.openThread(id); reveal(id) } },
   'nav.bottom': () => { const s = S(); const id = s.threads[s.threads.length - 1]?.id ?? null; if (id) { s.focus(id); if (s.openThreadId) s.openThread(id); reveal(id) } },
@@ -209,6 +214,13 @@ export const HANDLERS: Record<string, Handler> = {
     return starredTarget() ? perform({ type: 'unstar' }, toastText('unstar', n), { silent: true }) : perform({ type: 'star' }, toastText('star', n), { silent: true })
   },
   'thread.unsubscribe': unsubscribe,
+  // Local rules, sender-level actions and inbox bundles (features/rules)
+  'rule.create': () => openRuleForFocused(),
+  'sender.archiveAll': ({ arg }) => archiveAllFrom(arg).then(() => undefined),
+  'sender.block': ({ arg }) => blockSender(arg),
+  'sender.unsubscribeArchive': ({ arg }) => unsubscribeAndArchive(arg),
+  'bundle.label': ({ arg }) => toggleLabelBundle(arg),
+  'bundle.sender': ({ arg }) => toggleSenderBundle(arg),
 
   'msg.reply': () => composeFor('reply'),
   'msg.replyAll': () => composeFor('replyAll'),

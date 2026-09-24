@@ -4,6 +4,7 @@ import type {
 } from '@shared/types'
 import { DEFAULT_SETTINGS } from '@shared/types'
 import { parseSearchQuery } from './searchQuery'
+import { expandLabelIds } from './labels'
 
 /** What the list area is currently showing. */
 export type Nav =
@@ -85,7 +86,7 @@ export function navToFilter(nav: Nav, accountId: string, views: View[], labels: 
   const base: ThreadFilter = accountId === 'all' ? {} : { accountIds: [accountId] }
   switch (nav.kind) {
     case 'role': return { ...base, role: nav.role }
-    case 'label': return { ...base, labelIds: [nav.labelId] }
+    case 'label': return { ...base, labelIds: expandLabelIds(labels, nav.labelId, accountId) }
     case 'snoozed': return { ...base, onlySnoozed: true }
     case 'search': {
       // Gmail/Notion-Mail-style operators (from:, to:, subject:, has:attachment, is:unread,

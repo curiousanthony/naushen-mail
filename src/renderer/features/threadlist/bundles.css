@@ -1,0 +1,70 @@
+/* Inbox bundles. Reuses the .trow geometry from threadlist.css so a bundle lines up with
+   conversation rows; everything here is colour tokens only. */
+
+.tbundle__icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--c-bg-hover);
+  color: var(--c-text-2);
+  transition: opacity var(--t-fast), background var(--t-fast);
+}
+.tbundle:hover .tbundle__icon { background: var(--c-bg-hover-strong); }
+/* No selection checkbox on a bundle, so the icon stays put on hover. */
+.tbundle:hover .trow__avatar,
+.tbundle:hover .trow__unread[data-on='true'] { opacity: 1; }
+.tbundle:hover .trow__unread:not([data-on='true']) { opacity: 0; }
+
+.tbundle__name { font-weight: 500; }
+.tbundle[data-unread='true'] .tbundle__name { font-weight: 600; }
+
+.tbundle__count {
+  flex: none;
+  font-size: 12px;
+  color: var(--c-text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tbundle__count[data-new='true'] { color: var(--c-accent); font-weight: 600; }
+
+.tbundle__chev { color: var(--c-text-3); transition: transform var(--t-med); }
+.tbundle[data-expanded='true'] .tbundle__chev { transform: rotate(90deg); }
+.tbundle[data-expanded='true'] { background: var(--c-bg-hover); }
+
+/* Members of an open bundle: same 44/32px rows, inset under a quiet guide line. They fade and
+   slide in rather than animating height, because the list is windowed on fixed row heights. */
+.tbundle__child {
+  position: relative;
+  margin-left: 18px;
+  border-left: 1px solid var(--c-divider);
+  padding-left: 4px;
+  animation: tbundle-in 170ms ease-out both;
+}
+.tbundle__child .trow[data-focused='true']::before { left: -5px; }
+
+@keyframes tbundle-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* "All accounts" account marker: a quiet dot in the (otherwise empty) avatar slot. The colour is
+   set per account from index.tsx via --acct. The avatar fades on hover, taking the dot with it. */
+.tl[data-acct-marker='true'] .trow__avatar[data-empty='true']::after {
+  content: '';
+  display: block;
+  /* A ring, not a disc: the unread dot beside it is solid and may share the account's colour. */
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.75px solid var(--acct, transparent);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tbundle__child { animation: none; }
+  .tbundle__chev { transition: none; }
+}

@@ -5,6 +5,7 @@
 import type { Label, SystemRole, Thread, View } from '@shared/types'
 import { groupLabel, displayName } from '@/lib/format'
 import type { Nav } from '@/lib/store'
+import type { BundleGroup } from './bundles'
 
 // ---------------------------------------------------------------- filter chips
 
@@ -58,7 +59,8 @@ export function groupThreads(threads: Thread[], byDate: boolean, now = Date.now(
 
 export type Item =
   | { kind: 'header'; key: string; label: string; count: number }
-  | { kind: 'row'; key: string; thread: Thread }
+  | { kind: 'row'; key: string; thread: Thread; /** A member shown under its expanded bundle. */ child?: boolean }
+  | { kind: 'bundle'; key: string; bundle: BundleGroup; expanded: boolean }
 
 export function flatten(groups: Group[]): Item[] {
   const items: Item[] = []
@@ -115,7 +117,7 @@ export function windowRange(
   let header: Window['header'] = null
   let padTop = offsets[start]
   const first = items[start]
-  if (first && first.kind === 'row') {
+  if (first && first.kind !== 'header') {
     for (let i = start - 1; i >= 0; i--) {
       const it = items[i]
       if (it.kind === 'header') { header = { label: it.label, count: it.count }; padTop = offsets[start] - m.headerH; break }
