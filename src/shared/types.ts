@@ -111,6 +111,8 @@ export interface Thread {
   snoozedUntil: number | null
   /** Local-only: "remind me if no reply" timestamp. */
   reminderAt: number | null
+  /** Local-only: set once a "follow up if no reply" deadline passed without an inbound reply ("No reply yet"). */
+  followUpFiredAt?: number | null
 }
 
 export interface ThreadWithMessages extends Thread {
@@ -211,6 +213,8 @@ export interface OutgoingMessage {
   inReplyTo?: { threadId: string; messageId: string; mode: 'reply' | 'replyAll' | 'forward' }
   /** Existing remote draft id to replace/send. */
   draftId?: string
+  /** Local-only: arm "follow up if no reply" this many days after the message actually leaves. */
+  followUpDays?: number
 }
 
 export interface Draft extends Omit<OutgoingMessage, 'html' | 'text'> {

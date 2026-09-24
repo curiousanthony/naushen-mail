@@ -107,7 +107,8 @@ export class Repo {
         `INSERT INTO threads (id, account_id, remote_id, subject, snippet, last_message_at, message_count, unread, starred, has_attachments, participants)
          VALUES (?,?,?,?,?,?,?,?,?,?,?)
          ON CONFLICT(id) DO UPDATE SET subject=excluded.subject, snippet=excluded.snippet, last_message_at=excluded.last_message_at,
-           message_count=excluded.message_count, unread=excluded.unread, starred=excluded.starred,
+           message_count=excluded.message_count, starred=excluded.starred,
+           unread=CASE WHEN threads.followup_fired_at IS NOT NULL AND threads.unread = 1 THEN 1 ELSE excluded.unread END,
            has_attachments=excluded.has_attachments, participants=excluded.participants`
       ).run(t.id, t.accountId, t.remoteId, t.subject, t.snippet, t.lastMessageAt, t.messageCount,
         +t.unread, +t.starred, +t.hasAttachments, JSON.stringify(t.participants))
@@ -157,7 +158,7 @@ export class Repo {
       id: r.id, accountId: r.account_id, remoteId: r.remote_id, subject: r.subject, snippet: r.snippet,
       lastMessageAt: r.last_message_at, messageCount: r.message_count, unread: !!r.unread, starred: !!r.starred,
       hasAttachments: !!r.has_attachments, labelIds, participants: j<Address[]>(r.participants, []),
-      snoozedUntil: r.snoozed_until ?? null, reminderAt: r.reminder_at ?? null
+      snoozedUntil: r.snoozed_until ?? null, reminderAt: r.reminder_at ?? null, followUpFiredAt: r.followup_fired_at ?? null
     }
   }
 
@@ -201,7 +202,8 @@ export class Repo {
     if (f.labelIds?.length) { w.push(`EXISTS (SELECT 1 FROM thread_labels tl WHERE tl.thread_id = t.id AND tl.label_id IN (${f.labelIds.map(() => '?').join(',')}))`); p.push(...f.labelIds) }
 
     switch (f.role) {
-      case 'inbox': w.push(roleExists('inbox')); break
+      // A fired follow-up ("No reply yet") resurfaces in the Inbox until it is archived or dismissed.
+      case 'inbox': w.push(`(${roleExists('inbox')} OR t.followup_fired_at IS NOT NULL)`); break
       case 'sent': w.push(roleExists('sent')); break
       case 'drafts': w.push(roleExists('drafts')); break
       case 'trash': w.push(roleExists('trash')); break
@@ -244,7 +246,7 @@ export class Repo {
   listThreads(q: ThreadQuery): ThreadListResult {
     const { where, params } = this.buildWhere(q.filter)
     const total = (this.db.prepare(`SELECT COUNT(*) c FROM threads t ${where}`).get(...params) as Row).c as number
-    const rows = this.db.prepare(`SELECT t.* FROM threads t ${where} ORDER BY t.last_message_at DESC LIMIT ? OFFSET ?`)
+    const rows = this.db.prepare(`SELECT t.* FROM threads t ${where} ORDER BY MAX(t.last_message_at, COALESCE(t.followup_fired_at, 0)) DESC LIMIT ? OFFSET ?`)
       .all(...params, q.limit ?? 100, q.offset ?? 0) as Row[]
     return { threads: this.hydrate(rows), total }
   }
@@ -276,6 +278,14 @@ export class Repo {
        GROUP BY t.account_id`
     ).all(now) as Row[]
     for (const r of allRows) { bump(`${r.a}:all`, r.c); bump('all:all', r.c) }
+    // Fired follow-ups show in the Inbox (see buildWhere) even without the provider's INBOX label.
+    const fired = this.db.prepare(
+      `SELECT t.account_id a, il.id lid FROM threads t JOIN labels il ON il.account_id = t.account_id AND il.role = 'inbox'
+       WHERE t.unread = 1 AND t.followup_fired_at IS NOT NULL
+         AND NOT EXISTS (SELECT 1 FROM thread_labels tl WHERE tl.thread_id = t.id AND tl.label_id = il.id)
+         AND NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role IN ('trash','spam'))`
+    ).all() as Row[]
+    for (const r of fired) { bump(`${r.a}:${r.lid}`, 1); bump(`${r.a}:inbox`, 1); bump('all:inbox', 1); bump(`all:${r.lid}`, 1) }
     return { unread }
   }
 
@@ -295,7 +305,7 @@ export class Repo {
         const add = (l?: Label): void => { if (l) this.db.prepare('INSERT OR IGNORE INTO thread_labels VALUES (?,?)').run(id, l.id) }
         const del = (l?: Label): void => { if (l) this.db.prepare('DELETE FROM thread_labels WHERE thread_id = ? AND label_id = ?').run(id, l.id) }
         switch (action.type) {
-          case 'archive': del(byRole('inbox')); break
+          case 'archive': del(byRole('inbox')); this.db.prepare('UPDATE threads SET followup_fired_at = NULL WHERE id = ?').run(id); break
           case 'unarchive': add(byRole('inbox')); del(byRole('trash')); del(byRole('spam')); break
           case 'trash': add(byRole('trash')); del(byRole('inbox')); break
           case 'untrash': del(byRole('trash')); add(byRole('inbox')); break
@@ -309,7 +319,10 @@ export class Repo {
           case 'removeLabel': this.db.prepare('DELETE FROM thread_labels WHERE thread_id = ? AND label_id = ?').run(id, action.labelId); break
           case 'snooze': this.db.prepare('UPDATE threads SET snoozed_until = ? WHERE id = ?').run(action.until, id); break
           case 'unsnooze': this.db.prepare('UPDATE threads SET snoozed_until = NULL WHERE id = ?').run(id); break
-          case 'remind': this.db.prepare('UPDATE threads SET reminder_at = ? WHERE id = ?').run(action.at, id); break
+          case 'remind': // "follow up if no reply": arm (baseline = now) or cancel. See sync/followups.ts.
+            this.db.prepare('UPDATE threads SET reminder_at = ?, followup_set_at = ?, followup_fired_at = NULL WHERE id = ?')
+              .run(action.at, action.at === null ? null : Date.now(), id)
+            break
           case 'deleteForever':
             this.db.prepare('DELETE FROM thread_fts WHERE thread_id = ?').run(id)
             this.db.prepare('DELETE FROM messages WHERE thread_id = ?').run(id)
@@ -325,6 +338,13 @@ export class Repo {
   private setUnread(threadId: string, unread: boolean): void {
     this.db.prepare('UPDATE threads SET unread = ? WHERE id = ?').run(+unread, threadId)
     this.db.prepare('UPDATE messages SET unread = ? WHERE thread_id = ?').run(+unread, threadId)
+  }
+
+  /** Newest thread of `accountId` with this subject touched since `since` (used to attach follow-ups to a just-sent new message). */
+  findRecentThreadBySubject(accountId: string, subject: string, since: number): string | null {
+    const r = this.db.prepare('SELECT id FROM threads WHERE account_id = ? AND subject = ? AND last_message_at >= ? ORDER BY last_message_at DESC LIMIT 1')
+      .get(accountId, subject, since) as Row | undefined
+    return r ? (r.id as string) : null
   }
 
   /** Threads whose snooze elapsed: clear and return them (they resurface, marked unread). */

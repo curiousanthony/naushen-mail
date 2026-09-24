@@ -67,7 +67,26 @@ export function openDb(path: string): DB {
     db.exec(SCHEMA)
     db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`)
   }
+  ensureColumns(db)
   return db
+}
+
+/**
+ * Additive, idempotent column migrations. Independent of `user_version` (which only gates the
+ * initial CREATE script), so parallel feature branches can each append a line without
+ * fighting over a version number.
+ */
+const EXTRA_COLUMNS: Array<[table: string, column: string, type: string]> = [
+  // "Follow up if no reply": when the reminder was armed (baseline for reply detection) and when it fired.
+  ['threads', 'followup_set_at', 'INTEGER'],
+  ['threads', 'followup_fired_at', 'INTEGER']
+]
+
+function ensureColumns(db: DB): void {
+  for (const [table, column, type] of EXTRA_COLUMNS) {
+    const cols = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>
+    if (!cols.some((c) => c.name === column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`)
+  }
 }
 
 /** Run fn inside a transaction (node:sqlite has no helper). */
