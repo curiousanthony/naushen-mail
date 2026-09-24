@@ -143,7 +143,7 @@
   appearance: none; -webkit-appearance: none; flex: none; position: relative; width: 30px; height: 18px; margin: 0; border-radius: 9px;
   background: var(--c-bg-pressed); transition: background var(--t-fast); cursor: pointer;
 }
-.cmd-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--c-accent-text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); transition: transform 140ms ease-out; }
+.cmd-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--c-accent-text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); transition: transform var(--dur-2) var(--ease-spring); }
 .cmd-switch:checked { background: var(--c-accent); }
 .cmd-switch:checked::after { transform: translateX(12px); }
 
