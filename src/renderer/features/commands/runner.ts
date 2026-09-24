@@ -5,6 +5,7 @@ import { extendSelection, lastMessage, moveFocus, targetIds } from './selection'
 import { UndoStack, invertAction, toastText } from './undo'
 import { parseListUnsubscribe } from './unsubscribe'
 import { useCommandUi } from './ui-store'
+import { copyVerificationCode } from '@/features/reader/codeCommand'
 
 /**
  * Command implementations, keyed by the ids in shortcuts.ts. Used by the keyboard hook, the
@@ -213,6 +214,7 @@ export const HANDLERS: Record<string, Handler> = {
   'msg.reply': () => composeFor('reply'),
   'msg.replyAll': () => composeFor('replyAll'),
   'msg.forward': () => composeFor('forward'),
+  'msg.copyCode': copyVerificationCode,
   'compose.new': () => { S().openComposer() }
 }
 

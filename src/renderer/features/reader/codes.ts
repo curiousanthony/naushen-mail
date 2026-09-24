@@ -94,3 +94,36 @@ export function activeVerificationCode(
   const code = detectVerificationCode(text)
   return code ? { code, expiresAt } : null
 }
+
+// ---------------------------------------------------------------- messages / threads
+
+interface CodeSource {
+  subject?: string
+  snippet?: string
+  bodyText?: string | null
+  bodyHtml?: string | null
+  date: number
+}
+
+/** Plain text of a message for detection: subject, snippet and the start of the body. */
+export function messageCodeText(m: Omit<CodeSource, 'date'>): string {
+  let body = m.bodyText ?? ''
+  if (!body.trim() && m.bodyHtml) {
+    body = m.bodyHtml.slice(0, 8000)
+      .replace(/<(?:style|script)[\s\S]*?<\/(?:style|script)>/gi, ' ')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;|&#160;/gi, ' ')
+  }
+  return `${m.subject ?? ''}\n${m.snippet ?? ''}\n${body.slice(0, 2000)}`
+}
+
+/** The newest message in a thread that carries a code which has not expired yet. */
+export function newestActiveCode(messages: CodeSource[], now: number = Date.now()): ActiveCode | null {
+  const byNewest = [...messages].sort((a, b) => b.date - a.date)
+  for (const m of byNewest) {
+    if (now >= m.date + CODE_TTL_MS) break // everything after this is older still
+    const hit = activeVerificationCode(messageCodeText(m), m.date, now)
+    if (hit) return hit
+  }
+  return null
+}

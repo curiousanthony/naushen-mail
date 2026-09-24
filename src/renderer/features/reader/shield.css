@@ -1,0 +1,204 @@
+/**
+ * Privacy shield & smart reading: tracker shield + popover, link hover pill / warning / menu,
+ * verification-code chip, dark-mode "Adapt" toggle. Every colour is a token; nothing here is
+ * visible until there is something to say.
+ */
+
+/* ------------------------------------------------------------------ tracker shield */
+
+.shield { position: relative; display: inline-flex; align-items: center; }
+
+.shield__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  color: var(--c-text-3);
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.shield__btn:hover,
+.shield__btn[aria-expanded='true'] { color: var(--c-text-2); background: var(--c-bg-hover); }
+
+.shield__pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 288px;
+  padding: 10px 12px 11px;
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+  color: var(--c-text);
+  font-size: 12.5px;
+  line-height: 1.45;
+  white-space: normal;
+  text-align: left;
+  animation: shield-pop var(--t-fast);
+}
+@keyframes shield-pop { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+
+.shield__title { font-weight: 600; margin-bottom: 6px; }
+.shield__list { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 3px; }
+.shield__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.shield__host {
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shield__svc { flex: none; color: var(--c-text-3); font-size: 11.5px; }
+.shield__note { margin: 0; color: var(--c-text-2); font-size: 12px; }
+
+/* ------------------------------------------------------------------ link hover pill */
+
+.linkpill {
+  position: absolute;
+  z-index: 40;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: baseline;
+  max-width: min(calc(100% - 24px), 580px);
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  background: var(--c-bg-inverse);
+  color: var(--c-text-inverse);
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: var(--shadow-popover);
+  pointer-events: none;
+  animation: linkpill-in 100ms ease-out;
+}
+@keyframes linkpill-in { from { opacity: 0; } to { opacity: 1; } }
+
+.linkpill__host { flex: none; font-weight: 600; }
+.linkpill__rest {
+  min-width: 0;
+  flex: 0 1 auto;
+  color: var(--c-text-inverse-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.linkpill__scheme, .linkpill__insecure, .linkpill__note { flex: none; color: var(--c-text-inverse-2); }
+.linkpill__insecure { color: var(--c-danger); }
+.linkpill__note { margin-left: 8px; font-size: 11px; }
+.linkpill[data-warn='true'] .linkpill__host { color: var(--c-danger); }
+
+/* ------------------------------------------------------------------ phishing warning */
+
+.linkwarn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 7px 8px 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--chip-orange-fg) 40%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--chip-orange-bg);
+  font-size: 12.5px;
+  color: var(--c-text);
+}
+.linkwarn svg { flex: none; color: var(--chip-orange-fg); }
+.linkwarn__text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.linkwarn__btn {
+  flex: none;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-text-2);
+  transition: background var(--t-fast);
+}
+.linkwarn__btn:hover { background: var(--c-bg-hover-strong); }
+.linkwarn__btn--primary { color: var(--c-accent); }
+
+/* ------------------------------------------------------------------ link context menu */
+
+.linkmenu {
+  position: fixed;
+  z-index: 1200;
+  min-width: 196px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+}
+.linkmenu__item {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  text-align: left;
+  color: var(--c-text);
+}
+.linkmenu__item:hover, .linkmenu__item:focus-visible { background: var(--c-bg-hover); outline: none; }
+
+/* ------------------------------------------------------------------ verification code chip */
+
+.codechip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+  height: 20px;
+  padding: 0 8px 0 6px;
+  border-radius: 10px;
+  background: var(--c-bg-selected);
+  color: var(--c-accent);
+  font-size: 11.5px;
+  white-space: nowrap;
+  transition: background var(--t-fast);
+}
+.codechip:hover { background: var(--c-bg-hover-strong); }
+.codechip b { font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+
+.codechip--message { display: flex; width: fit-content; height: 24px; margin: 0 0 10px; padding: 0 10px 0 8px; font-size: 12.5px; border-radius: 12px; }
+
+/* In the thread list the chip stays out of sight until the row is hovered / focused. */
+.codechip--row { display: none; margin-right: 2px; }
+.trow:hover .codechip--row,
+.trow:focus-within .codechip--row,
+.trow[data-focused='true'] .codechip--row,
+.trow[data-open='true'] .codechip--row { display: inline-flex; }
+
+/* ------------------------------------------------------------------ dark mode: Original / Adapted */
+
+.msgbody { position: relative; }
+
+.msgbody__adapt {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--c-divider);
+  border-radius: var(--radius-md);
+  background: var(--c-bg-popover);
+  color: var(--c-text-2);
+  font-size: 11.5px;
+  box-shadow: var(--shadow-popover);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-fast), color var(--t-fast);
+}
+.msgbody:hover .msgbody__adapt,
+.msgbody__adapt:focus-visible { opacity: 1; pointer-events: auto; }
+.msgbody__adapt:hover { color: var(--c-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .shield__pop, .linkpill { animation: none; }
+  .shield__btn, .codechip, .msgbody__adapt, .linkwarn__btn { transition: none; }
+}

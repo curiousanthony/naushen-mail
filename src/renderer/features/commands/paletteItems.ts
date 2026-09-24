@@ -62,6 +62,7 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
     out.push(item({ group: 'Actions', label: 'Report spam', cmd: 'thread.spam', icon: 'spam', keywords: ['junk'] }))
   }
   if (c.hasThread) out.push(item({ group: 'Actions', label: 'Unsubscribe', cmd: 'thread.unsubscribe', icon: 'unsubscribe', keywords: ['newsletter', 'mailing list'] }))
+  if (c.hasThread) out.push(item({ group: 'Actions', label: 'Copy verification code', cmd: 'msg.copyCode', icon: 'keyboard', binding: primaryBinding('msg.copyCode'), keywords: ['otp', 'one-time', 'passcode', '2fa'] }))
   if (c.canUndo) out.push(item({ group: 'Actions', label: 'Undo last action', cmd: 'thread.undo', icon: 'undo', keywords: ['revert'] }))
 
   // ---- Navigate

@@ -8,6 +8,7 @@ import { gravatarUrl } from '@/lib/avatar'
 import { Tooltip } from '@/features/tooltip'
 import { usePreviewStore } from '@/features/preview'
 import { rowLabels, senderText } from './lib'
+import { CodeChip, useActiveCode } from '@/features/reader/CodeChip'
 
 export interface RowProps {
   thread: Thread
@@ -53,6 +54,8 @@ function RowImpl({
   const showAvatars = useApp((s) => s.settings.showAvatars)
   const chips = rowLabels(t, labels, 2)
   const sender = senderText(t, myEmails)
+  // Verification code (<10 min old): a "Copy 482913" chip shown on hover / focus.
+  const code = useActiveCode(() => `${t.subject}\n${t.snippet}`, t.lastMessageAt)
   const lead = t.participants.find((p) => !myEmails.has(p.email.toLowerCase())) ?? t.participants[0]
   // The row instance can be reused for a different thread (list re-sort, windowing), so track
   // which email a load failure applies to -- a stale failure must not suppress a new avatar.
@@ -141,6 +144,7 @@ function RowImpl({
       </span>
 
       <span className="trow__meta">
+        {code && <CodeChip code={code.code} variant="row" />}
         {chips.map((l) => (
           <span key={l.id} className="trow__chip" style={chipStyle(l.color)}>{l.name}</span>
         ))}
