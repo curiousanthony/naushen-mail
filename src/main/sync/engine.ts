@@ -1,7 +1,9 @@
-import type { Account, Label, OutgoingMessage, SyncEvent, ThreadAction } from '@shared/types'
+import type { Account, Label, OutgoingMessage, Rule, RuleStep, SyncEvent, Thread, ThreadAction } from '@shared/types'
+import { activeRules } from '@shared/rules'
 import type { ProviderAdapter } from '../providers/types'
 import type { Repo } from '../db/repo'
 import { FollowUps } from './followups'
+import { RulesStore, planFor } from './rules'
 
 const LOCAL_ONLY = new Set<ThreadAction['type']>(['snooze', 'unsnooze', 'remind'])
 
@@ -16,10 +18,12 @@ export class SyncEngine {
   private listeners = new Set<(e: SyncEvent) => void>()
 
   readonly followups: FollowUps
+  /** Local filter rules (never pushed to a provider). */
+  readonly rules: RulesStore
   /** Sent-message follow-ups waiting for the provider to report the new thread. */
   private pendingFollowUps: Array<{ accountId: string; subject: string; sentAt: number; at: number }> = []
 
-  constructor(private repo: Repo) { this.followups = new FollowUps(repo) }
+  constructor(private repo: Repo) { this.followups = new FollowUps(repo); this.rules = new RulesStore(repo.db) }
 
   onEvent(cb: (e: SyncEvent) => void): () => void {
     this.listeners.add(cb)
@@ -66,11 +70,21 @@ export class SyncEngine {
       this.repo.replaceLabels(accountId, labels)
       let cursor = this.repo.getAccount(accountId)?.syncCursor ?? null
       for (let guard = 0; guard < 200; guard++) {
+        // Rules file *newly arrived* mail. The first backfill (no cursor) and a reset re-import
+        // the whole mailbox, which is not "new" and must never be re-filed.
+        const fileNew = cursor !== null
         const page = await adapter.sync(cursor)
         if (page.reset) this.repo.clearAccountMail(accountId)
+        const arrived: string[] = []
         // labels must exist before threads reference them (FKs are soft, but keep ordering explicit)
         const me = this.repo.getAccount(accountId)?.email.toLowerCase()
         for (const t of page.threads) {
+          // An incremental page also returns threads that merely changed (read, relabelled). Only a
+          // thread that is new here, or has a newer message than we stored, counts as arrival.
+          if (fileNew && !page.reset) {
+            const prev = this.repo.getThreadRow(t.thread.id)
+            if (!prev || t.thread.lastMessageAt > prev.lastMessageAt) arrived.push(t.thread.id)
+          }
           this.repo.upsertNormalized(t)
           // Recipient autocomplete (compose, search from:/to:) needs both directions: `send()`
           // already bumps who *you* write to, this is the other half -- everyone a synced
@@ -85,6 +99,7 @@ export class SyncEngine {
         cursor = page.cursor
         this.repo.patchAccount(accountId, { syncCursor: cursor })
         this.attachPendingFollowUps(accountId)
+        if (arrived.length) await this.fileArrivals(arrived)
         this.emit({ type: 'changed', accountId })
         if (!page.hasMore) break
       }
@@ -111,6 +126,31 @@ export class SyncEngine {
     const current = this.repo.getAccount(accountId)?.status
     if (current === 'reauth') return
     this.setStatus(accountId, { status: 'error', statusMessage: `${prefix}${e instanceof Error ? e.message : String(e)}` })
+  }
+
+  /**
+   * Run the local rules over just-arrived threads. Goes through `act`, so the change is optimistic
+   * locally *and* pushed to the provider (otherwise the next sync would undo it), then announces
+   * what it did so the UI can offer an undo.
+   */
+  private async fileArrivals(threadIds: string[]): Promise<void> {
+    const rules = activeRules(this.rules.list())
+    if (!rules.length) return
+    const threads = threadIds.map((id) => this.repo.getThreadRow(id)).filter((t): t is NonNullable<typeof t> => !!t)
+    await this.runRules(rules, threads)
+  }
+
+  /** Apply rules to threads; emits one `rules-applied` per rule that changed something. */
+  async runRules(rules: Rule[], threads: Thread[]): Promise<Map<string, RuleStep[]>> {
+    const byRule = new Map<string, RuleStep[]>()
+    for (const { ruleId, step } of planFor(this.repo, rules, threads)) {
+      await this.act(step.threadIds, step.action)
+      ;(byRule.get(ruleId) ?? byRule.set(ruleId, []).get(ruleId)!).push(step)
+    }
+    for (const [ruleId, steps] of byRule) {
+      this.emit({ type: 'rules-applied', ruleId, threadCount: new Set(steps.flatMap((x) => x.threadIds)).size, steps })
+    }
+    return byRule
   }
 
   /** Optimistic: apply locally, notify UI, then push to provider (re-sync on failure). */

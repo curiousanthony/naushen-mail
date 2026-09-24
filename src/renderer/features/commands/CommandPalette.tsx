@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Command } from 'cmdk'
 import {
   Archive, Clock, CornerDownLeft, FileText, Forward, History, Inbox, Keyboard, Layers, Mail, MailOpen, MailX, Monitor, Moon, PanelLeft,
-  RefreshCw, Reply, ReplyAll, Search, Send, Settings, ShieldAlert, SquarePen, Star, StarOff, Sun, Tag, Trash2, Undo2, User, UserPlus, Users, X
+  ListFilter, RefreshCw, Reply, ReplyAll, Search, Send, Settings, ShieldAlert, ShieldBan, SquarePen, Star, StarOff, Sun, Tag, Trash2, Undo2, User, UserPlus, Users, X
 } from 'lucide-react'
 import type { Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -19,6 +19,8 @@ import { Overlay } from './Overlay'
 import { SnoozePicker } from './SnoozePicker'
 import { LabelPicker } from './LabelPicker'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
+import { focusedSender } from '../rules/actions'
+import { readBundles } from '../rules/prefs'
 import './commands.css'
 
 type Icon = ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
@@ -26,7 +28,7 @@ const ICONS: Record<string, Icon> = {
   archive: Archive, trash: Trash2, spam: ShieldAlert, mail: Mail, 'mail-open': MailOpen, inbox: Inbox, clock: Clock, tag: Tag, star: Star,
   'star-off': StarOff, undo: Undo2, unsubscribe: MailX, reply: Reply, 'reply-all': ReplyAll, forward: Forward, pencil: SquarePen, send: Send,
   file: FileText, layers: Layers, settings: Settings, keyboard: Keyboard, sidebar: PanelLeft, refresh: RefreshCw, 'user-plus': UserPlus,
-  user: User, users: Users, sun: Sun, moon: Moon, monitor: Monitor, view: Layers, label: Tag
+  user: User, users: Users, sun: Sun, moon: Moon, monitor: Monitor, view: Layers, label: Tag, rule: ListFilter, block: ShieldBan
 }
 
 const MAX_RESULTS = 8
@@ -83,9 +85,10 @@ function PaletteBody(): JSX.Element {
     hasThread: !!(s.openThreadId ?? s.focusedId),
     navRole: s.nav.kind === 'role' ? s.nav.role : null,
     accountId: s.accountId, accounts: s.accounts, views: s.views, labels: s.labels,
-    theme: s.settings.theme, sidebarCollapsed: s.sidebarCollapsed, canUndo: undoStack.size > 0
+    theme: s.settings.theme, sidebarCollapsed: s.sidebarCollapsed, canUndo: undoStack.size > 0,
+    sender: focusedSender(), bundleIds: readBundles(s.settings).map((b) => b.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [ids.join('|'), s.threads, s.openThreadId, s.focusedId, s.nav, s.accountId, s.accounts, s.views, s.labels, s.settings.theme, s.sidebarCollapsed])
+  }), [ids.join('|'), s.threads, s.openThreadId, s.focusedId, s.nav, s.accountId, s.accounts, s.views, s.labels, s.settings.theme, s.sidebarCollapsed, s.settings])
 
   const q = query.trim()
   const visible = useMemo(() => {

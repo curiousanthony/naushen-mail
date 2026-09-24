@@ -299,7 +299,47 @@ export interface Contact extends Address {
   useCount: number
 }
 
+// ---------------------------------------------------------------- Rules (local, never pushed to a provider)
+
+export type RuleField = 'from' | 'fromDomain' | 'subject'
+
+export interface RuleCondition {
+  field: RuleField
+  value: string
+}
+
+export type RuleAction =
+  | { type: 'archive' }
+  | { type: 'markRead' }
+  | { type: 'star' }
+  | { type: 'trash' }
+  | { type: 'neverSpam' }
+  /** By label *name* (case-insensitive) so one rule spans accounts; skipped where the label does not exist. */
+  | { type: 'label'; name: string }
+
+/** A local filter run by the sync engine on newly arrived mail. Providers never see it. */
+export interface Rule {
+  id: string
+  enabled: boolean
+  /** Lower runs first. */
+  position: number
+  /** null = every account. */
+  accountId: string | null
+  /** All conditions must match. */
+  conditions: RuleCondition[]
+  actions: RuleAction[]
+  createdAt: number
+}
+
+/** One concrete change a rule made, with what undoes it. */
+export interface RuleStep {
+  threadIds: string[]
+  action: ThreadAction
+  inverse: ThreadAction | null
+}
+
 export type SyncEvent =
   | { type: 'changed'; accountId?: string; threadIds?: string[] }
   | { type: 'account-status'; accountId: string }
   | { type: 'outbox'; id: string; status: ScheduledSend['status']; error?: string }
+  | { type: 'rules-applied'; ruleId: string; threadCount: number; steps: RuleStep[] }

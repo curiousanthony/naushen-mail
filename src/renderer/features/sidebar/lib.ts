@@ -2,7 +2,7 @@
  * Pure helpers for the sidebar. No React, no DOM beyond localStorage (guarded), so this
  * module is unit-testable under vitest's node environment.
  */
-import type { Counts, Label, SystemRole, View } from '@shared/types'
+import type { Counts, Label, LabelColor, SystemRole, View } from '@shared/types'
 import type { Nav } from '@/lib/store'
 
 /**
@@ -49,6 +49,56 @@ export function sidebarLabels(labels: Label[], accountId: string): Label[] {
     .filter((l) => l.kind === 'user' && (accountId === 'all' || l.accountId === accountId))
     .sort((a, b) => a.name.localeCompare(b.name) || a.accountId.localeCompare(b.accountId))
 }
+
+/** One sidebar row: a label, or (All accounts) every account's label of the same name. */
+export interface LabelGroup {
+  /** Stable key: lower-cased name when merged, the label id otherwise. */
+  key: string
+  name: string
+  color?: LabelColor
+  /** Underlying label ids; the first is what navigation stores. */
+  ids: string[]
+  accountIds: string[]
+}
+
+/**
+ * Labels for the sidebar. Viewing "All accounts", same-named labels (case-insensitive) collapse
+ * into one row so "Newsletters" is not listed once per account; with a single account selected
+ * every label stays its own row.
+ */
+export function mergedLabels(labels: Label[], accountId: string): LabelGroup[] {
+  const own = sidebarLabels(labels, accountId)
+  if (accountId !== 'all') {
+    return own.map((l) => ({ key: l.id, name: l.name, color: l.color, ids: [l.id], accountIds: [l.accountId] }))
+  }
+  const groups = new Map<string, LabelGroup>()
+  const votes = new Map<string, Map<string, number>>()
+  for (const l of own) {
+    const key = l.name.trim().toLowerCase()
+    const g = groups.get(key)
+    const spelling = l.name.trim()
+    const v = votes.get(key) ?? new Map<string, number>()
+    v.set(spelling, (v.get(spelling) ?? 0) + 1)
+    votes.set(key, v)
+    if (!g) groups.set(key, { key, name: spelling, color: l.color, ids: [l.id], accountIds: [l.accountId] })
+    else {
+      g.ids.push(l.id)
+      if (!g.accountIds.includes(l.accountId)) g.accountIds.push(l.accountId)
+      g.color ??= l.color
+    }
+  }
+  // Display the spelling most accounts use ("Receipts" over "receipts"); a tie keeps the first seen.
+  for (const [key, g] of groups) {
+    let best = g.name
+    for (const [spelling, n] of votes.get(key)!) if (n > (votes.get(key)!.get(best) ?? 0)) best = spelling
+    g.name = best
+  }
+  return [...groups.values()].sort((a, b) => a.name.localeCompare(b.name))
+}
+
+/** Combined unread count of a merged row. A thread lives in one account, so nothing double counts. */
+export const unreadForGroup = (counts: Counts, accountId: string, g: LabelGroup): number =>
+  g.ids.reduce((n, id) => n + unreadFor(counts, accountId, id), 0)
 
 /**
  * Label names carried by more than one account. Viewing "All accounts" lists each account's

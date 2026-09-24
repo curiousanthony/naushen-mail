@@ -1,0 +1,166 @@
+/* Rules: the shared form, the create popover, the Settings list and the sidebar's bundled marker.
+   Colour tokens only (tokens.css); light/dark come from the tokens. */
+
+/* ---------------------------------------------------------------- form */
+
+.rf { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--c-text); }
+.rf__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rf__cap { font-size: 12px; color: var(--c-text-2); }
+.rf__cap--then { margin-top: 4px; }
+
+.rf__seg {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border-radius: var(--radius-md);
+  background: var(--c-bg-hover);
+}
+.rf__segopt {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--c-text-2);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.rf__segopt:hover { color: var(--c-text); }
+.rf__segopt[data-on='true'] { background: var(--c-bg); color: var(--c-text); box-shadow: 0 0 0 1px var(--c-divider), 0 1px 2px rgba(15, 15, 15, 0.08); }
+
+.rf__input {
+  width: 100%;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-input);
+  color: var(--c-text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.rf__input::placeholder { color: var(--c-text-3); }
+.rf__input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-focus-ring); }
+.rf__hint { margin: -3px 0 0; font-size: 11.5px; color: var(--c-text-3); }
+
+.rf__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rf__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border);
+  font-size: 12px;
+  color: var(--c-text-2);
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.rf__chip:hover { background: var(--c-bg-hover); color: var(--c-text); }
+.rf__chip[data-on='true'] { background: var(--c-bg-selected); border-color: transparent; color: var(--c-accent); }
+
+.rf__field { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--c-text-2); }
+.rf__fieldicon { flex: none; color: var(--c-text-3); }
+.rf__fieldicon--dot { width: 8px; height: 8px; margin: 0 2.5px; border-radius: 50%; }
+.rf__select { position: relative; margin-left: auto; display: inline-flex; align-items: center; }
+.rf__select select {
+  appearance: none;
+  height: 26px;
+  max-width: 210px;
+  padding: 0 24px 0 8px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-input);
+  color: var(--c-text);
+  font: inherit;
+  font-size: 12.5px;
+  outline: none;
+}
+.rf__select select:focus-visible { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-focus-ring); }
+.rf__select svg { position: absolute; right: 7px; pointer-events: none; color: var(--c-text-3); }
+
+/* ---------------------------------------------------------------- create popover */
+
+.rp__scrim { position: fixed; inset: 0; z-index: 70; }
+.rp {
+  position: fixed;
+  padding: 12px 14px 10px;
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+  color: var(--c-text);
+  outline: none;
+  animation: rp-in 130ms ease-out both;
+}
+.rp__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; min-width: 0; }
+.rp__head h2 { margin: 0; font-size: 13.5px; font-weight: 600; flex: none; }
+.rp__from { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--c-text-3); }
+
+.rp__match {
+  margin: 12px -14px 0;
+  padding: 8px 14px;
+  border-top: 1px solid var(--c-divider);
+  font-size: 12.5px;
+  color: var(--c-text-2);
+  font-variant-numeric: tabular-nums;
+}
+.rp__match[data-empty='true'] { color: var(--c-text-3); }
+
+.rp__foot { display: flex; align-items: center; gap: 6px; }
+.rp__spacer { flex: 1; }
+.rp__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  color: var(--c-text-2);
+  white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast), opacity var(--t-fast);
+}
+.rp__btn:hover:not(:disabled) { background: var(--c-bg-hover); color: var(--c-text); }
+.rp__btn:disabled { opacity: 0.45; cursor: default; }
+.rp__btn--primary { background: var(--c-bg-hover-strong); color: var(--c-text); font-weight: 500; }
+.rp__btn--strong { background: var(--c-accent); color: var(--c-accent-text); }
+.rp__btn--strong:hover:not(:disabled) { background: var(--c-accent-hover); color: var(--c-accent-text); }
+.rp__kbd { font: inherit; font-size: 11px; opacity: 0.7; }
+.rp__note { margin: 8px 0 0; font-size: 11.5px; color: var(--c-text-3); }
+
+@keyframes rp-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rp { animation: none; } }
+
+/* ---------------------------------------------------------------- Settings -> Rules */
+
+.rules__list { list-style: none; margin: 0; padding: 0; }
+.rules__item { padding: 10px 0; border-top: 1px solid var(--c-divider); }
+.rules__item:first-child { border-top: 0; }
+.rules__item[data-off='true'] .rules__text { opacity: 0.5; }
+.rules__line { display: flex; align-items: center; gap: 12px; }
+.rules__ico { width: 26px; display: grid; place-items: center; flex: none; color: var(--c-text-2); }
+.rules__text { flex: 1; min-width: 0; }
+.rules__when { font-size: 13.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rules__then { margin-top: 2px; font-size: 12.5px; color: var(--c-text-2); }
+.rules__scope { margin-left: 6px; color: var(--c-text-3); }
+.rules__scope::before { content: '· '; }
+.rules__tools { display: flex; align-items: center; gap: 1px; flex: none; }
+.rules__tools .st-icon-btn:disabled { opacity: 0.3; }
+.rules__edit { margin: 10px 0 0 44px; padding: 12px; border-radius: var(--radius-lg); background: var(--c-bg-hover); }
+.rules__editfoot { display: flex; justify-content: flex-end; gap: 6px; margin-top: 12px; }
+.rules__foot { margin: 10px 0 0; font-size: 12px; color: var(--c-text-3); }
+.rules__kbd {
+  display: inline-block;
+  min-width: 18px;
+  margin: 0 1px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--c-bg-hover-strong);
+  font: inherit;
+  font-size: 11.5px;
+  text-align: center;
+  color: var(--c-text-2);
+}
+
+/* ---------------------------------------------------------------- sidebar: label is bundled */
+
+.row__bundled { flex: none; margin-right: 2px; color: var(--c-text-3); }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import clsx from 'clsx'
-import { Braces, Info, Keyboard, LayoutList, Palette, PenLine, Send, Tag, UserRound, X } from 'lucide-react'
+import { Braces, Info, Keyboard, LayoutList, ListFilter, Palette, PenLine, Send, Tag, UserRound, X } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { Tooltip } from '@/features/tooltip'
 import { Avatar } from './ui'
@@ -13,11 +13,12 @@ import { ViewsSection } from './sections/ViewsSection'
 import { SnippetsSection } from './sections/SnippetsSection'
 import { ShortcutsSection } from './sections/ShortcutsSection'
 import { AboutSection } from './sections/AboutSection'
+import { RulesSection } from '@/features/rules/RulesSection'
 import { safeLocalGet, safeLocalSet } from './lib/hooks'
 import { useFocusTrap } from './lib/focus-trap'
 import './settings.css'
 
-type SectionId = 'accounts' | 'appearance' | 'signature' | 'sending' | 'labels' | 'views' | 'snippets' | 'shortcuts' | 'about'
+type SectionId = 'accounts' | 'appearance' | 'signature' | 'sending' | 'labels' | 'views' | 'snippets' | 'rules' | 'shortcuts' | 'about'
 
 interface NavItem { id: SectionId; label: string; icon: ReactNode; render: () => JSX.Element }
 const icon = (I: typeof Palette): ReactNode => <I size={16} strokeWidth={1.5} />
@@ -31,7 +32,8 @@ const NAV: { title: string; items: NavItem[] }[] = [
       { id: 'sending', label: 'Sending', icon: icon(Send), render: () => <SendingSection /> },
       { id: 'labels', label: 'Labels', icon: icon(Tag), render: () => <LabelsSection /> },
       { id: 'views', label: 'Views', icon: icon(LayoutList), render: () => <ViewsSection /> },
-      { id: 'snippets', label: 'Snippets', icon: icon(Braces), render: () => <SnippetsSection /> }
+      { id: 'snippets', label: 'Snippets', icon: icon(Braces), render: () => <SnippetsSection /> },
+      { id: 'rules', label: 'Rules & bundles', icon: icon(ListFilter), render: () => <RulesSection /> }
     ]
   },
   {

@@ -9,6 +9,7 @@ import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/fe
 import { TooltipHost } from '@/features/tooltip'
 import { PreviewHost } from '@/features/preview'
 import { useNativeBridge } from '@/features/native'
+import { RuleHost } from '@/features/rules/RuleHost'
 
 /**
  * Shell composition only. Each region is owned by a feature folder (see docs/04-workstreams.md);
@@ -39,6 +40,7 @@ export function App(): JSX.Element {
       <Toaster />
       <TooltipHost />
       <PreviewHost />
+      <RuleHost />
     </div>
   )
 }

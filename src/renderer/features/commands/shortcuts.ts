@@ -55,6 +55,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'thread.label', label: 'Label / remove label', section: 'Threads', keys: ['l'], keywords: ['tag', 'labels'] },
   { id: 'thread.star', label: 'Star / unstar', section: 'Threads', keys: ['s'], keywords: ['favorite'] },
   { id: 'thread.unsubscribe', label: 'Unsubscribe', section: 'Threads', keys: ['mod+u'], keywords: ['newsletter', 'mailing list'] },
+  { id: 'rule.create', label: 'Create rule from thread', section: 'Threads', keys: ['mod+shift+r'], keywords: ['filter', 'automate', 'sender', 'skip inbox'] },
 
   // ---- Selection
   { id: 'sel.toggle', label: 'Select / unselect conversation', section: 'Selection', keys: ['x'], keywords: ['check', 'multi'] },

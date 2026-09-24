@@ -4,6 +4,7 @@ import {
   PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star, Trash2, X
 } from 'lucide-react'
 import type { Account, Counts, View } from '@shared/types'
+import { bundlesPatch, isBundled, readBundles, toggleBundle } from '@/features/rules/prefs'
 import { useApp, type Nav } from '@/lib/store'
 import { initials } from '@/lib/format'
 import { Tooltip } from '@/features/tooltip'
@@ -11,8 +12,8 @@ import { Popover, useAnchor } from './Popover'
 import { ViewEditor } from './ViewEditor'
 import { useViewEditor } from './viewEditorState'
 import {
-  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, loadCollapsed, mailNav, navEquals,
-  saveCollapsed, sidebarLabels, sidebarViews, unreadFor
+  MAIL_ITEMS, accountLabel, accountTags, loadCollapsed, mailNav, mergedLabels, navEquals,
+  saveCollapsed, sidebarViews, unreadFor, unreadForGroup, type LabelGroup
 } from './lib'
 import { VIEW_ICONS } from './viewIcons'
 import { activeContactPrefix, applyContactSuggestion, SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
@@ -44,8 +45,8 @@ export function Sidebar(): JSX.Element {
   }, [])
 
   const aux = useAuxCounts(views, accountId, counts)
-  const userLabels = useMemo(() => sidebarLabels(labels, accountId), [labels, accountId])
-  const ambiguous = useMemo(() => ambiguousLabelNames(userLabels), [userLabels])
+  // "All accounts": same-named labels across accounts are one row (per-account rows otherwise).
+  const labelRows = useMemo(() => mergedLabels(labels, accountId), [labels, accountId])
   const tags = useMemo(() => accountTags(accounts), [accounts])
   const shownViews = useMemo(() => sidebarViews(views), [views])
   const go = useCallback((n: Nav) => setNav(n), [setNav])
@@ -97,23 +98,16 @@ export function Sidebar(): JSX.Element {
             ))}
           </Section>
 
-          {userLabels.length > 0 && (
+          {labelRows.length > 0 && (
             <Section id="labels" title="Labels" collapsed={!!sections.labels} onToggle={toggleSection}>
-              {userLabels.map((l) => {
-                const owner = accounts.find((a) => a.id === l.accountId)
-                // Two accounts can both have a "Receipts"; name the owner only when they do.
-                const dup = ambiguous.has(l.name)
+              {labelRows.map((g) => {
+                const owners = g.accountIds.map((id) => tags[id] ?? accounts.find((a) => a.id === id)?.email ?? '')
                 return (
-                  <Row
-                    key={l.id} label={l.name} count={unreadFor(counts, accountId, l.id)}
-                    dot={`var(--chip-${l.color ?? 'gray'}-fg)`}
-                    suffix={dup ? tags[l.accountId] : undefined}
-                    active={navEquals(nav, { kind: 'label', labelId: l.id })}
-                    onClick={() => go({ kind: 'label', labelId: l.id })}
-                    trailing={dup
-                      ? <span className="sidebar__acctdot" style={{ background: owner?.color }} />
-                      : undefined}
-                    title={`${l.name} · ${owner?.email ?? ''}`}
+                  <LabelRow
+                    key={g.key} group={g} count={unreadForGroup(counts, accountId, g)}
+                    active={nav.kind === 'label' && g.ids.includes(nav.labelId)}
+                    onClick={() => go({ kind: 'label', labelId: g.ids[0] })}
+                    title={g.accountIds.length > 1 ? `${g.name} · ${owners.join(', ')}` : `${g.name} · ${accounts.find((a) => a.id === g.accountIds[0])?.email ?? ''}`}
                   />
                 )
               })}
@@ -353,6 +347,51 @@ function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title
       {trailing}
       <Badge n={count ?? 0} />
     </button>
+  )
+}
+
+/** A label row (merged across accounts in "All accounts"). Its menu toggles Inbox bundling. */
+function LabelRow({ group, count, active, onClick, title }: {
+  group: LabelGroup; count: number; active: boolean; onClick(): void; title: string
+}): JSX.Element {
+  const [anchor, toggle, close] = useAnchor()
+  const settings = useApp((s) => s.settings)
+  const updateSettings = useApp((s) => s.updateSettings)
+  const defs = readBundles(settings)
+  const bundled = isBundled(defs, 'label', group.name)
+  const setBundled = (): void => {
+    close()
+    void updateSettings(bundlesPatch(toggleBundle(defs, 'label', group.name, group.name)))
+  }
+
+  return (
+    <div className="row__wrap">
+      <button
+        className="row" data-active={active} onClick={onClick} title={title}
+        onContextMenu={(e) => { e.preventDefault(); toggle(e) }}
+      >
+        <span className="row__lead"><span className="row__dot" style={{ background: `var(--chip-${group.color ?? 'gray'}-fg)` }} /></span>
+        <span className="row__label">{group.name}</span>
+        {bundled && <Layers size={11} className="row__bundled" aria-label="Bundled in Inbox" />}
+        <Badge n={count} />
+      </button>
+      <Tooltip label="Options">
+        <button
+          className="row__more" aria-label={`Options for ${group.name}`}
+          onClick={(e) => { e.stopPropagation(); toggle(e) }}
+        >
+          <MoreHorizontal size={14} />
+        </button>
+      </Tooltip>
+      {anchor && (
+        <Popover anchor={anchor} onClose={close} width={220} label={`${group.name} options`}>
+          <button className="menu__item" data-menuitem onClick={setBundled}>
+            <span className="menu__icon"><Layers size={14} /></span>
+            <span className="menu__label"><span className="menu__title">{bundled ? 'Stop bundling in Inbox' : 'Bundle in Inbox'}</span></span>
+          </button>
+        </Popover>
+      )}
+    </div>
   )
 }
 

@@ -8,6 +8,7 @@ import type { SyncEngine } from './sync/engine'
 import type { Outbox } from './sync/outbox'
 import { connectAccount, removeAccount } from './accounts'
 import { dragOutAttachment } from './dragout'
+import { matchExisting } from './sync/rules'
 
 export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): void {
   const impl: MailApi = {
@@ -130,6 +131,21 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'drafts.get': async (id) => repo.getDraft(id),
     'drafts.delete': async (id) => repo.deleteDraft(id),
     'contacts.suggest': async (prefix, limit) => repo.suggestContacts(prefix, limit),
+
+    'rules.list': async () => engine.rules.list(),
+    'rules.save': async (rule) => engine.rules.save(rule),
+    'rules.delete': async (id) => engine.rules.delete(id),
+    'rules.reorder': async (ids) => engine.rules.reorder(ids),
+    'rules.preview': async (rule) => {
+      const threads = matchExisting(repo, rule)
+      return { count: threads.length, threadIds: threads.slice(0, 2000).map((t) => t.id) }
+    },
+    'rules.applyExisting': async (rule) => {
+      const threads = matchExisting(repo, rule)
+      const byRule = await engine.runRules([{ ...rule, enabled: true }], threads)
+      const steps = byRule.get(rule.id) ?? []
+      return { threadCount: new Set(steps.flatMap((s) => s.threadIds)).size, steps }
+    },
 
     'sync.now': (id) => (id ? engine.syncAccount(id) : engine.syncAll()),
     'settings.get': async () => repo.getSettings(),

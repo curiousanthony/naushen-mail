@@ -41,6 +41,10 @@ export interface PaletteCtx {
   theme: 'system' | 'light' | 'dark'
   sidebarCollapsed: boolean
   canUndo: boolean
+  /** Sender of the focused thread (first participant who is not you); enables sender-level actions. */
+  sender?: { name: string; email: string } | null
+  /** Ids of the inbox bundles switched on (features/threadlist/bundles), to word the toggle. */
+  bundleIds?: string[]
 }
 
 const item = (i: Omit<PaletteItem, 'key'> & { key?: string }): PaletteItem => ({ key: i.key ?? `${i.cmd}:${i.arg ?? ''}`, ...i })
@@ -64,6 +68,15 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
   }
   if (c.hasThread) out.push(item({ group: 'Actions', label: 'Unsubscribe', cmd: 'thread.unsubscribe', icon: 'unsubscribe', keywords: ['newsletter', 'mailing list'] }))
   if (c.hasThread) out.push(item({ group: 'Actions', label: 'Copy verification code', cmd: 'msg.copyCode', icon: 'keyboard', binding: primaryBinding('msg.copyCode'), keywords: ['otp', 'one-time', 'passcode', '2fa'] }))
+  if (c.hasThread) out.push(item({ group: 'Actions', label: 'Create rule from this thread…', cmd: 'rule.create', icon: 'rule', keywords: ['filter', 'automate', 'skip inbox', 'always'] }))
+  if (c.sender) {
+    const { name, email } = c.sender
+    out.push(item({ group: 'Actions', label: `Archive all from ${name}`, cmd: 'sender.archiveAll', arg: email, icon: 'archive', keywords: ['sender', 'everything', email], hint: email }))
+    out.push(item({ group: 'Actions', label: `Unsubscribe & archive all from ${name}`, cmd: 'sender.unsubscribeArchive', arg: email, icon: 'unsubscribe', keywords: ['sender', 'newsletter', 'mailing list', email] }))
+    out.push(item({ group: 'Actions', label: `Block ${name}`, cmd: 'sender.block', arg: email, icon: 'block', keywords: ['sender', 'trash', 'ban', 'never', email], hint: 'Future mail to Trash' }))
+    const bundled = c.bundleIds?.includes(`sender:${email.toLowerCase()}`)
+    out.push(item({ group: 'Actions', label: bundled ? `Stop bundling ${name} in Inbox` : `Bundle ${name} in Inbox`, cmd: 'bundle.sender', arg: email, icon: 'layers', keywords: ['collapse', 'group', 'sender'], secondary: true }))
+  }
   if (c.canUndo) out.push(item({ group: 'Actions', label: 'Undo last action', cmd: 'thread.undo', icon: 'undo', keywords: ['revert'] }))
 
   // ---- Navigate
@@ -87,6 +100,8 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
     if (seen.has(k)) continue
     seen.add(k)
     out.push(item({ group: 'Navigate', label: `Go to ${l.name}`, cmd: 'go.label', arg: l.id, icon: 'label', labelColor: l.color ?? 'gray', keywords: ['label'], hint: 'Label' }))
+    const bundled = c.bundleIds?.includes(`label:${k}`)
+    out.push(item({ group: 'Settings', label: bundled ? `Stop bundling ${l.name} in Inbox` : `Bundle ${l.name} in Inbox`, cmd: 'bundle.label', arg: l.id, icon: 'layers', keywords: ['collapse', 'group', 'label', 'bundle'], secondary: true }))
   }
   if (c.accounts.length > 1) {
     out.push(item({ group: 'Navigate', label: 'All accounts', cmd: 'go.account', arg: 'all', icon: 'users', binding: 'ctrl+0', keywords: ['switch account', 'everything'], hint: c.accountId === 'all' ? 'Current' : undefined }))

@@ -1,6 +1,6 @@
 import type {
   Account, AppSettings, Contact, Counts, Draft, Label, OutgoingMessage, ProviderKind,
-  ScheduledSend, SyncEvent, ThreadAction, ThreadListResult, ThreadQuery, ThreadWithMessages, View
+  ScheduledSend, Rule, RuleAction, RuleCondition, RuleStep, SyncEvent, ThreadAction, ThreadListResult, ThreadQuery, ThreadWithMessages, View
 } from './types'
 
 /**
@@ -60,6 +60,17 @@ export interface MailApi {
   'drafts.delete'(id: string): Promise<void>
   'contacts.suggest'(prefix: string, limit?: number): Promise<Contact[]>
 
+  // local rules (never pushed to Gmail / Outlook)
+  'rules.list'(): Promise<Rule[]>
+  'rules.save'(rule: Rule): Promise<Rule>
+  'rules.delete'(ruleId: string): Promise<void>
+  /** New run order (ids listed first, in order). */
+  'rules.reorder'(ruleIds: string[]): Promise<void>
+  /** Stored conversations a (possibly unsaved) rule would match: count plus ids, capped. */
+  'rules.preview'(rule: { accountId: string | null; conditions: RuleCondition[]; actions: RuleAction[] }): Promise<{ count: number; threadIds: string[] }>
+  /** Run a rule over the conversations it matches now. Returns the steps taken, for undo. */
+  'rules.applyExisting'(rule: Rule): Promise<{ threadCount: number; steps: RuleStep[] }>
+
   // sync / app
   'sync.now'(accountId?: string): Promise<void>
   'settings.get'(): Promise<AppSettings>
@@ -78,6 +89,7 @@ export const API_METHODS: ApiMethod[] = [
   'messages.inlineImages', 'attachments.getText', 'attachments.getDataUrl',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled', 'compose.retry',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
+  'rules.list', 'rules.save', 'rules.delete', 'rules.reorder', 'rules.preview', 'rules.applyExisting',
   'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform',
   'attachments.dragOut'
 ]

@@ -2,6 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } fr
 import { useApp } from '@/lib/store'
 import { usePreviewStore } from '@/features/preview'
 import { Row } from './Row'
+import { BundleRow } from './Bundle'
+import { buildEntries, buildItems, navStateOf } from './bundles'
+import { publishBundleNav, useBundleUi } from './bundleNav'
+import { readAccountMarker, readBundles } from '../rules/prefs'
+import { dedupeLabels, expandLabelIds } from '@/lib/labels'
 import { FilterBar } from './FilterBar'
 import { BulkBar } from './BulkBar'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
@@ -64,11 +69,28 @@ export function ThreadList(): JSX.Element {
   }, [loading])
 
   const metrics = DENSITY[settings.density]
-  const visible = useMemo(() => applyChips(threads, chips), [threads, chips])
+  // Same-named labels across accounts are one label in the "All accounts" view, so a label chip
+  // must match any of them.
+  const visible = useMemo(() => applyChips(threads, {
+    ...chips, labelIds: chips.labelIds.flatMap((id) => expandLabelIds(labels, id, accountId))
+  }), [threads, chips, labels, accountId])
+  const myEmails = useMemo(() => new Set(accounts.map((a) => a.email.toLowerCase())), [accounts])
+
+  // Opt-in bundles (Settings -> Rules, or a label's menu): only ever in the Inbox.
+  const bundleDefs = useMemo(() => readBundles(settings), [settings])
+  const bundling = bundleDefs.length > 0 && nav.kind === 'role' && nav.role === 'inbox'
+  const expanded = useBundleUi((s) => s.expanded)
   const items = useMemo(
-    () => flatten(groupThreads(visible, settings.groupByDate)),
-    [visible, settings.groupByDate]
+    () => bundling
+      ? buildItems(buildEntries(visible, bundleDefs, labels, myEmails), settings.groupByDate, expanded)
+      : flatten(groupThreads(visible, settings.groupByDate)),
+    [bundling, visible, bundleDefs, labels, myEmails, settings.groupByDate, expanded]
   )
+  // Tell the keyboard layer what is on screen (j/k stops, what `e` and Enter mean on a bundle).
+  useEffect(() => {
+    publishBundleNav(bundling ? navStateOf(items) : null)
+    return () => publishBundleNav(null)
+  }, [bundling, items])
   const offsets = useMemo(() => offsetsOf(items, metrics), [items, metrics])
   const win = useMemo(
     () => windowRange(items, offsets, scrollTop, viewportH, metrics),
@@ -138,7 +160,9 @@ export function ThreadList(): JSX.Element {
   useEffect(() => {
     const el = scroller.current
     if (!el || !focusedId) return
-    const idx = items.findIndex((it) => it.kind === 'row' && it.thread.id === focusedId)
+    let idx = items.findIndex((it) => it.kind === 'row' && it.thread.id === focusedId)
+    // Cursor on a member of a collapsed bundle: scroll to the bundle row.
+    if (idx < 0) idx = items.findIndex((it) => it.kind === 'bundle' && !it.expanded && it.bundle.threads.some((t) => t.id === focusedId))
     if (idx < 0) return
     const to = scrollOffsetFor(offsets, idx, metrics.rowH, el.scrollTop, el.clientHeight)
     if (to !== null) el.scrollTo({ top: to })
@@ -146,21 +170,24 @@ export function ThreadList(): JSX.Element {
 
   const head = listTitle(nav, views, labels)
   const filtered = chipCount(chips) > 0
-  const myEmails = useMemo(() => new Set(accounts.map((a) => a.email.toLowerCase())), [accounts])
   const accountById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts])
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
   const selectedThreads = useMemo(() => visible.filter((t) => selectedSet.has(t.id)), [visible, selectedSet])
   const userLabels = useMemo(
-    () => labels.filter((l) => l.kind === 'user' && (accountId === 'all' || l.accountId === accountId)),
+    () => dedupeLabels(labels.filter((l) => l.kind === 'user' && (accountId === 'all' || l.accountId === accountId)), accountId),
     [labels, accountId]
   )
   const showAccount = accountId === 'all' && accounts.length > 1
+  // A tiny account-colour dot per row, only when several accounts are mixed and the avatar
+  // (which already carries the account tint) is not showing.
+  const marker = showAccount && readAccountMarker(settings) && !settings.showAvatars
   const viewName = nav.kind === 'view' ? views.find((v) => v.id === nav.viewId)?.name : undefined
   const count = filtered ? visible.length : total
   const empty = emptyCopy(nav, viewName, filtered)
 
   return (
-    <section className="tl" data-density={settings.density} aria-label={head.title}>
+    <section className="tl" data-density={settings.density} data-acct-marker={marker} aria-label={head.title}>
+      {marker && <style>{accountMarkerCss(accounts)}</style>}
       <header className="tl__bar">
         <h1 className="tl__title">
           {head.emoji && VIEW_ICONS[head.emoji] && (() => { const Icon = VIEW_ICONS[head.emoji!]; return <Icon size={16} className="tl__emoji" /> })()}
@@ -185,7 +212,13 @@ export function ThreadList(): JSX.Element {
             {items.slice(win.start, win.end).map((it) =>
               it.kind === 'header' ? (
                 <GroupHeader key={it.key} label={it.label} count={it.count} />
+              ) : it.kind === 'bundle' ? (
+                <BundleRow
+                  key={it.key} bundle={it.bundle} expanded={it.expanded}
+                  focused={!it.expanded && it.bundle.threads.some((t) => t.id === focusedId)}
+                />
               ) : (
+                <ChildWrap key={it.key} child={!!it.child}>
                 <Row
                   key={it.key}
                   thread={it.thread}
@@ -199,6 +232,7 @@ export function ThreadList(): JSX.Element {
                   onSelect={onSelect}
                   onOpen={onOpen}
                 />
+                </ChildWrap>
               )
             )}
             {win.padBottom > 0 && <div style={{ height: win.padBottom }} aria-hidden />}
@@ -209,6 +243,24 @@ export function ThreadList(): JSX.Element {
       <BulkBar selected={selectedThreads} labels={labels} />
     </section>
   )
+}
+
+/** Members of an open bundle sit under a guide line; plain rows render untouched. */
+function ChildWrap({ child, children }: { child: boolean; children: JSX.Element }): JSX.Element {
+  return child ? <div className="tbundle__child">{children}</div> : children
+}
+
+/**
+ * One rule per account: rows carry their account in the id (`trow-<account>:<thread>`), so the
+ * marker colour is set from here without touching Row. Account colours are user data (like the
+ * sidebar's account dot), not theme tokens, hence the hex check before they reach a stylesheet.
+ */
+function accountMarkerCss(accounts: { id: string; color: string }[]): string {
+  const esc = (v: string): string => v.replace(/["\\]/g, '\\$&')
+  return accounts
+    .filter((a) => /^#[0-9a-f]{3,8}$/i.test(a.color))
+    .map((a) => `.tl[data-acct-marker='true'] .trow[id^="trow-${esc(a.id)}:"]{--acct:${a.color}}`)
+    .join('\n')
 }
 
 function GroupHeader({ label, count }: { label: string; count: number }): JSX.Element {

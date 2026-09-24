@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import type { AppSettings } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
+import { accountMarkerPatch, readAccountMarker } from '@/features/rules/prefs'
 import { extPatch, readExt, type Accent, type AutoAdvance, type ThreadStyle } from '../lib/settings-ext'
 import { ACCENTS } from '../lib/appearance'
 
@@ -73,6 +74,7 @@ export function AppearanceSection(): JSX.Element {
         <Row label="Mark as read when opened" description="A thread becomes read as soon as you open it."><Switch label="Mark as read when opened" checked={settings.markReadOnOpen} onChange={(markReadOnOpen) => set({ markReadOnOpen })} /></Row>
         <Row label="Block remote images" description="Images in email are loaded only when you allow them. Protects against tracking pixels."><Switch label="Block remote images" checked={settings.blockRemoteImages} onChange={(blockRemoteImages) => set({ blockRemoteImages })} /></Row>
         <Row label="Show avatars" description="Sender and recipient photos in the thread list and reader, via Gravatar. Off by default — Notion Mail didn't show them either, and it's one more thing pinging an outside service per contact."><Switch label="Show avatars" checked={settings.showAvatars} onChange={(showAvatars) => set({ showAvatars })} /></Row>
+        <Row label="Show account marker in All accounts" description="A small coloured dot on each conversation showing which account it belongs to, when you are viewing several accounts together."><Switch label="Show account marker in All accounts" checked={readAccountMarker(settings)} onChange={(on) => set(accountMarkerPatch(on))} /></Row>
         <Row label="Auto-advance" description="Where to go after you archive, trash or snooze the open thread.">
           <Segmented<AutoAdvance> label="Auto-advance" value={ext.autoAdvance} onChange={(autoAdvance) => set(extPatch({ autoAdvance }))} options={[
             { value: 'next', label: 'Next' }, { value: 'previous', label: 'Previous' }, { value: 'close', label: 'Close' }
