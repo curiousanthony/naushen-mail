@@ -4,6 +4,7 @@ import type { PersonInfo } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, listTime } from '@/lib/format'
 import { Keys } from '../commands/Keycaps'
+import { useTooltipStore } from '../tooltip/tooltipStore'
 import { PersonAvatar } from './Avatar'
 import { allMailFrom, composeTo, copyAddress } from './actions'
 import { getPersonInfo } from './data'
@@ -31,6 +32,8 @@ function CardBody(): JSX.Element | null {
   const byKey = card.via === 'key'
   const accounts = useApp((s) => s.accounts)
   const isMe = accounts.some((a) => a.email.toLowerCase() === card.email.toLowerCase())
+
+  useEffect(() => { useTooltipStore.getState().hide() }, [])
 
   useEffect(() => {
     let live = true

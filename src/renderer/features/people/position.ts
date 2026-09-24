@@ -1,6 +1,6 @@
 import type { AnchorRect } from './store'
 
-export const CARD_W = 320
+export const CARD_W = 340
 export const GAP = 6
 export const MARGIN = 8
 

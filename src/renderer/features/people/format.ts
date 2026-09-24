@@ -17,5 +17,5 @@ export function conversationsLine(count: number, lastAt: number, now = Date.now(
   const n = `${count} ${count === 1 ? 'conversation' : 'conversations'}`
   const last = lastSeenLabel(lastAt, now)
   if (!last) return n
-  return `${n} · ${last === 'today' || last === 'yesterday' ? `last ${last}` : last}`
+  return `${n} · ${last}`
 }

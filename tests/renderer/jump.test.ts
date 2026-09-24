@@ -92,15 +92,15 @@ describe('sender card copy', () => {
   })
   it('builds the summary line', () => {
     expect(conversationsLine(12, new Date(2026, 8, 22, 9).getTime(), now)).toBe('12 conversations · last Tue')
-    expect(conversationsLine(1, now - 1000, now)).toBe('1 conversation · last today')
+    expect(conversationsLine(1, now - 1000, now)).toBe('1 conversation · today')
     expect(conversationsLine(0, 0, now)).toBe('No conversations yet')
   })
 })
 
 describe('which-key', () => {
-  it('drops a shared "Go to" verb and sorts by key', () => {
+  it('drops a shared "Go to" verb and keeps table order', () => {
     const out = tidyOptions([{ keys: 't', label: 'Go to Sent' }, { keys: 'i', label: 'Go to Inbox' }, { keys: 'a', label: 'Go to All Mail' }])
-    expect(out).toEqual([{ keys: 'a', label: 'All Mail' }, { keys: 'i', label: 'Inbox' }, { keys: 't', label: 'Sent' }])
+    expect(out).toEqual([{ keys: 't', label: 'Sent' }, { keys: 'i', label: 'Inbox' }, { keys: 'a', label: 'All Mail' }])
   })
   it('leaves mixed labels alone', () => {
     expect(tidyOptions([{ keys: 'x', label: 'Archive' }, { keys: 'y', label: 'Go to Sent' }]).map((o) => o.label)).toEqual(['Archive', 'Go to Sent'])

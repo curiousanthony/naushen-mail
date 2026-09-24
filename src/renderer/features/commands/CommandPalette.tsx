@@ -83,6 +83,12 @@ function Hl({ text, query }: { text: string; query: string }): JSX.Element {
   )
 }
 
+/** The other party: first participant that is not one of your own addresses. */
+function leadName(th: Thread, mine: Set<string>): string {
+  const p = th.participants.find((x) => !mine.has(x.email.toLowerCase())) ?? th.participants[0]
+  return p ? displayName(p) : 'Unknown'
+}
+
 interface Entry { key: string; group: JumpGroup; score: number; node: JSX.Element }
 
 function PaletteBody(): JSX.Element {
@@ -100,6 +106,7 @@ function PaletteBody(): JSX.Element {
 
   const s = useApp()
   const target = targetThreads()
+  const mine = useMemo(() => new Set(s.accounts.map((a) => a.email.toLowerCase())), [s.accounts])
   const ids = targetIds(s)
 
   const all = useMemo(() => buildPaletteItems({
@@ -221,7 +228,7 @@ function PaletteBody(): JSX.Element {
   const threadNodes = results.threads.map((th) => (
     <Command.Item key={th.id} value={`thread:${th.id}`} onSelect={() => openResult(th)} className="cmd-item cmd-item--thread">
       <span className="cmd-item__icon">{th.unread ? <span className="cmd-unread" /> : <Mail size={16} strokeWidth={1.5} />}</span>
-      <span className="cmd-item__sender"><Hl text={th.participants[0] ? displayName(th.participants[0]) : 'Unknown'} query={q} /></span>
+      <span className="cmd-item__sender"><Hl text={leadName(th, mine)} query={q} /></span>
       <span className="cmd-item__subject"><Hl text={th.subject || '(no subject)'} query={q} /></span>
       {th.snippet && <span className="cmd-item__snippet">{th.snippet}</span>}
       <span className="cmd-item__time">{listTime(th.lastMessageAt)}</span>

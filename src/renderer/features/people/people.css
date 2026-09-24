@@ -34,7 +34,7 @@
 
 .ppl-card__actions { display: flex; gap: 4px; margin: 8px -6px 0; padding: 8px 0 0; border-top: 1px solid var(--c-divider); }
 .ppl-act {
-  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 8px; border-radius: var(--radius-md);
+  flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 6px; white-space: nowrap; border-radius: var(--radius-md);
   color: var(--c-text-2); font-size: 12.5px; transition: background var(--t-fast), color var(--t-fast);
 }
 .ppl-act:hover, .ppl-act:focus-visible { background: var(--c-bg-hover); color: var(--c-text); outline: 0; }
