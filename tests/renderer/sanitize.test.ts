@@ -211,15 +211,16 @@ describe('sanitizeEmailHtml — images', () => {
     expect(r.html).toContain('https://cdn.test/hero.png')
   })
 
-  it('removes tracking pixels only while blocking', () => {
+  // Changed by the privacy shield: "load images" loads pictures, never the open beacon.
+  it('removes tracking pixels whether or not images are allowed', () => {
     const px = '<p>hi</p><img src="https://track.test/o.gif" width="1" height="1">'
     const blocked = sanitizeEmailHtml(px)
     expect(blocked.blockedTrackerCount).toBe(1)
     expect(blocked.html).not.toContain('<img')
 
     const allowed = sanitizeEmailHtml(px, { allowRemoteImages: true })
-    expect(allowed.blockedTrackerCount).toBe(0)
-    expect(allowed.html).toContain('<img')
+    expect(allowed.blockedTrackerCount).toBe(1)
+    expect(allowed.html).not.toContain('<img')
   })
 
   it('detects pixel-sized images declared in CSS', () => {

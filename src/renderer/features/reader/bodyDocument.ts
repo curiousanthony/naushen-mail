@@ -40,6 +40,12 @@ export interface BodyDocumentOptions {
   dark: boolean
   /** The mail sets its own colours, so keep it on a light surface. */
   paper: boolean
+  /**
+   * Dark mode only, and only for `paper` mail: re-colour the light page to the app's dark
+   * surface with a filter instead of showing it on a white sheet. Off by default — "Original"
+   * is always the faithful rendering, "Adapted" is a per-message opt-in (see MessageBody).
+   */
+  adapt?: boolean
 }
 
 const escapeAttr = (s: string): string => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
@@ -59,6 +65,7 @@ export function buildBodyCss(o: BodyDocumentOptions): string {
    * #191919. Matching the app token exactly makes the frame disappear.
    */
   const surface = o.paper ? t['--reader-paper-bg'] : t['--c-bg-raised']
+  const adapt = o.paper && o.dark && !!o.adapt
 
   return `
 :root { color-scheme: ${scheme}; }
@@ -90,7 +97,18 @@ ${o.dark && !o.paper ? `/*
 [data-mr-fg] { color: ${text} !important; }
 a[data-mr-fg] { color: ${accent} !important; }
 ` : ''}
-a { color: ${accent}; text-decoration: underline; text-underline-offset: 2px; }
+${adapt ? `/*
+ * "Adapted": the mail stays exactly as designed (white page, dark text) and the whole canvas is
+ * filtered. invert(0.9) - not 1 - maps white to ~#1a1a1a, the app's own dark surface, so the
+ * frame disappears into the peek instead of being pure black. hue-rotate(180deg) puts the hues
+ * back after the invert. Images are pre-corrected with the exact inverse (hue first, then
+ * invert(1) + contrast(1.25) undoes the parent's 0.9-invert) so photos and logos keep their
+ * colours. Nothing here parses or rewrites the mail's own colours, so it cannot produce the
+ * grey-on-grey a colour-by-colour remap does.
+ */
+html { filter: invert(0.9) hue-rotate(180deg); }
+img, video { filter: hue-rotate(180deg) invert(1) contrast(1.25); }
+` : ''}a { color: ${accent}; text-decoration: underline; text-underline-offset: 2px; }
 a:hover { text-decoration-thickness: 2px; }
 p { margin: 0 0 12px; }
 h1, h2, h3, h4 { line-height: 1.3; margin: 20px 0 8px; font-weight: 600; }
@@ -103,7 +121,8 @@ pre { font-family: ${t['--font-mono']}; font-size: 13px; background: ${fill}; pa
 pre code { background: none; padding: 0; }
 blockquote { margin: 10px 0; padding: 2px 0 2px 14px; border-left: 2px solid ${divider}; color: ${muted}; }
 .mr-plain { white-space: normal; }
-.mr-plain > div { min-height: 1.55em; }
+/* Plain text keeps its own spacing (indents, ASCII tables, signatures) but still wraps. */
+.mr-plain > div { min-height: 1.55em; white-space: pre-wrap; }
 
 /* Blocked remote image: keep the box so layout survives, show it is missing. */
 img[data-mr-blocked], img[data-mr-cid] {
@@ -130,7 +149,7 @@ img[data-mr-blocked], img[data-mr-cid] {
 export function buildBodyDocument(o: BodyDocumentOptions): string {
   return [
     '<!doctype html>',
-    `<html lang="en" data-mr-scheme="${escapeAttr(o.paper ? 'paper' : o.dark ? 'dark' : 'light')}">`,
+    `<html lang="en" data-mr-scheme="${escapeAttr(o.paper ? (o.adapt && o.dark ? 'adapted' : 'paper') : o.dark ? 'dark' : 'light')}">`,
     '<head><meta charset="utf-8">',
     // Belt and braces: even if a <base>/<meta refresh> slipped through, this CSP forbids
     // every network fetch the document could attempt on its own.

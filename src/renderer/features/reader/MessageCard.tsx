@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, CornerUpLeft, CornerUpRight, Paperclip, ReplyAll } from 'lucide-react'
 import type { Address, Message } from '@shared/types'
+import type { TrackerHit } from '@shared/sanitize'
 import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
 import { gravatarUrl } from '@/lib/avatar'
@@ -9,6 +10,9 @@ import { MessageBody } from './MessageBody'
 import { Attachments } from './Attachments'
 import { visibleAttachments } from './fileKinds'
 import { InviteCard, findInvite } from './InviteCard'
+import { TrackerShield } from './shield'
+import { CodeChip, useActiveCode } from './CodeChip'
+import { messageCodeText } from './codes'
 
 const AVATAR_TINTS = ['blue', 'green', 'orange', 'purple', 'pink', 'red', 'yellow', 'brown'] as const
 
@@ -39,6 +43,8 @@ interface Props {
 export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: Props): JSX.Element {
   const [showDetail, setShowDetail] = useState(false)
   const [avatarFailed, setAvatarFailed] = useState(false)
+  const [trackers, setTrackers] = useState<TrackerHit[]>([])
+  const code = useActiveCode(() => messageCodeText(message), message.date)
   const showAvatars = useApp((s) => s.settings.showAvatars)
   const openComposer = useApp((s) => s.openComposer)
   const tint = avatarTint(message.from.email)
@@ -86,6 +92,7 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
         )}
       </span>
       <span className="msg__aside">
+        {expanded && <TrackerShield trackers={trackers} />}
         {attachments.length > 0 && (
           <Tooltip label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
             <span className="msg__clip" role="img" aria-label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
@@ -154,8 +161,9 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
 
       {expanded && (
         <div className="msg__body-wrap selectable">
+          {code && <CodeChip code={code.code} variant="message" />}
           {invite && <InviteCard message={message} attachment={invite} />}
-          <MessageBody message={message} blockRemoteImages={blockRemoteImages} />
+          <MessageBody message={message} blockRemoteImages={blockRemoteImages} onTrackers={setTrackers} />
           <Attachments messageId={message.id} attachments={message.attachments} />
         </div>
       )}

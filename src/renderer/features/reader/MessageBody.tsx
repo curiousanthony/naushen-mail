@@ -1,10 +1,38 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ChevronDown, ImageOff } from 'lucide-react'
+import { ChevronDown, ImageOff, Moon, Sun } from 'lucide-react'
 import type { Attachment, Message } from '@shared/types'
-import { sanitizeEmailHtml } from '@shared/sanitize'
+import { sanitizeEmailHtml, type TrackerHit } from '@shared/sanitize'
 import { plainTextToHtml } from '@shared/sanitize/text'
 import { Tooltip } from '@/features/tooltip'
 import { buildBodyDocument, readThemeTokens, type ThemeTokens } from './bodyDocument'
+import { LinkMenu, LinkPill, LinkWarning, useLinkGuard } from './linkGuard'
+import './shield.css'
+
+/**
+ * Per-machine preference for dark mode: show mail that ships its own light page as designed
+ * ("Original") or re-coloured to the dark surface ("Adapted"). Same store as the peek width
+ * (`mailroom.reader.*` in localStorage): a UI preference, not app data.
+ */
+const ADAPT_KEY = 'mailroom.reader.adaptDark'
+function loadAdapt(): boolean {
+  try { return localStorage.getItem(ADAPT_KEY) === '1' } catch { return false }
+}
+function saveAdapt(on: boolean): void {
+  try { localStorage.setItem(ADAPT_KEY, on ? '1' : '0') } catch { /* private mode: session only */ }
+}
+
+/**
+ * Scale a wider-than-the-peek document down to fit, instead of a horizontal scrollbar.
+ * `zoom` (unlike `transform`) is layout-affecting, so the height the parent measures stays true.
+ * Bounded below: past ~55% the text is unreadable and scrolling is the better failure.
+ */
+export const MIN_FIT_SCALE = 0.55
+export function fitScale(contentWidth: number, viewWidth: number): number {
+  if (!(contentWidth > 0) || !(viewWidth > 0) || contentWidth <= viewWidth + 1) return 1
+  // One pixel of slack, rounded down: otherwise sub-pixel rounding leaves a 1px overflow and a
+  // horizontal scrollbar appears for content that "fits".
+  return Math.max(MIN_FIT_SCALE, Math.floor(((viewWidth - 1) / contentWidth) * 1000) / 1000)
+}
 
 /**
  * Whether a message is worth a `messages.inlineImages` round trip: it carries at least one
@@ -47,6 +75,9 @@ const READER_KEYS = new Set(['Escape', 'r', 'a', 'f'])
 function contentHeight(doc: Document): number {
   const body = doc.body
   if (!body) return doc.documentElement?.scrollHeight ?? 0
+  // Under `zoom` (fit-to-width) scrollHeight/offsetHeight stay in the body's own unscaled units
+  // while the frame needs the visual height; getBoundingClientRect() is the one that is scaled.
+  if (body.style.zoom) return Math.ceil(body.getBoundingClientRect().height)
   return Math.max(body.scrollHeight, body.offsetHeight, body.getBoundingClientRect().height)
 }
 
@@ -54,6 +85,8 @@ interface Props {
   message: Message
   /** App-level setting; a per-message override wins. */
   blockRemoteImages: boolean
+  /** Reports the trackers removed from this body (for the header's shield). */
+  onTrackers?(trackers: TrackerHit[]): void
 }
 
 /**
@@ -63,10 +96,11 @@ interface Props {
  * script engine the same-origin grant cannot be abused, and it is what lets the parent measure
  * the content, intercept link clicks and toggle quoted text without reloading the document.
  */
-export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element {
+export function MessageBody({ message, blockRemoteImages, onTrackers }: Props): JSX.Element {
   const { tokens, dark } = useThemeTokens()
   const [loadImages, setLoadImages] = useState(false)
   const [showQuote, setShowQuote] = useState(false)
+  const [adapt, setAdapt] = useState(loadAdapt)
   // Small, not zero: enough that a slow document is not invisible, small enough that the
   // correction after the first measure is not a visible jump.
   const [height, setHeight] = useState(28)
@@ -104,34 +138,31 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
     return {
       html: plain.html, hasQuotedText: plain.hasQuotedText,
       hasAuthoredColors: false, hasAuthoredBackground: false,
-      remoteImageCount: 0, blockedImageCount: 0, blockedTrackerCount: 0, unresolvedCidCount: 0,
+      remoteImageCount: 0, blockedImageCount: 0, blockedTrackerCount: 0, trackers: [], unresolvedCidCount: 0,
       isEmpty: !(message.bodyText ?? '').trim()
     }
   }, [message.bodyHtml, message.bodyText, allowRemote, cidMap])
 
+  const paper = dark && result.hasAuthoredBackground
   const srcDoc = useMemo(
-    () => buildBodyDocument({ html: result.html, tokens, dark, paper: dark && result.hasAuthoredBackground }),
-    [result.html, tokens, dark]
+    () => buildBodyDocument({ html: result.html, tokens, dark, paper, adapt: paper && adapt }),
+    [result.html, tokens, dark, paper, adapt]
   )
+
+  useEffect(() => { onTrackers?.(result.trackers) }, [result.trackers, onTrackers])
+
+  const guard = useLinkGuard(frame, srcDoc, message.id)
+  const [pillHost, setPillHost] = useState<HTMLElement | null>(null)
+  useEffect(() => { setPillHost((frame.current?.closest('.reader') as HTMLElement | null) ?? null) }, [srcDoc])
 
   // Measure content, intercept clicks. Re-runs on every srcdoc change (the iframe reloads).
   useEffect(() => {
     const el = frame.current
     if (!el) return
     let observer: ResizeObserver | null = null
+    let frameObserver: ResizeObserver | null = null
     let timers: ReturnType<typeof setTimeout>[] = []
     let imgs: HTMLImageElement[] = []
-
-    const onClick = (e: Event): void => {
-      const target = e.target as Element | null
-      const anchor = target?.closest?.('a[href]') as HTMLAnchorElement | null
-      if (!anchor) return
-      const href = anchor.getAttribute('href') ?? ''
-      e.preventDefault()
-      e.stopPropagation()
-      if (!href || href.startsWith('#')) return
-      void window.api.invoke('app.openExternal', href)
-    }
 
     /**
      * A keypress inside the iframe never reaches the parent's window listener, so clicking into
@@ -154,35 +185,54 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
       if (h > 0) setHeight(h)
     }
 
+    // Wide mail (fixed 800px tables, unresponsive layouts) is scaled to the frame's width. Reset,
+    // measure the natural width, then apply — so widening the peek scales back up again.
+    const fit = (): void => {
+      const doc = el.contentDocument
+      const body = doc?.body
+      if (!doc || !body) return
+      body.style.zoom = ''
+      const scale = fitScale(doc.documentElement.scrollWidth, doc.documentElement.clientWidth)
+      if (scale < 1) body.style.zoom = String(scale)
+      measure()
+    }
+
     const onLoad = (): void => {
       const doc = el.contentDocument
       if (!doc) return
-      measure()
+      fit()
       observer?.disconnect()
       observer = new ResizeObserver(measure)
+      frameObserver?.disconnect()
+      // Only a change of *width* re-fits. Our own height updates also resize this element and
+      // must not re-enter fit (that is a feedback loop waiting to happen).
+      let lastW = el.clientWidth
+      frameObserver = new ResizeObserver(() => {
+        if (el.clientWidth === lastW) return
+        lastW = el.clientWidth
+        fit()
+      })
+      frameObserver.observe(el)
       // `documentElement`'s box tracks the iframe (whose height we drive from out here), so on
       // its own it never reports content growth. `body` is the element that actually grows.
       if (doc.body) observer.observe(doc.body)
       if (doc.documentElement) observer.observe(doc.documentElement)
-      doc.addEventListener('click', onClick, true)
-      doc.addEventListener('auxclick', onClick, true)
       doc.addEventListener('keydown', onKeyIn, true)
-      for (const img of imgs) img.removeEventListener('load', measure) // a re-fired load event: drop the old set first
+      for (const img of imgs) img.removeEventListener('load', fit) // a re-fired load event: drop the old set first
       imgs = Array.from(doc.images)
-      for (const img of imgs) img.addEventListener('load', measure)
+      for (const img of imgs) img.addEventListener('load', fit)
       // Fonts and late layout settle after the load event.
-      timers = [setTimeout(measure, 80), setTimeout(measure, 400)]
+      timers = [setTimeout(fit, 80), setTimeout(fit, 400)]
     }
 
     el.addEventListener('load', onLoad)
     if (el.contentDocument?.readyState === 'complete') onLoad()
     return () => {
       el.removeEventListener('load', onLoad)
-      el.contentDocument?.removeEventListener('click', onClick, true)
-      el.contentDocument?.removeEventListener('auxclick', onClick, true)
       el.contentDocument?.removeEventListener('keydown', onKeyIn, true)
-      for (const img of imgs) img.removeEventListener('load', measure)
+      for (const img of imgs) img.removeEventListener('load', fit)
       observer?.disconnect()
+      frameObserver?.disconnect()
       for (const t of timers) clearTimeout(t)
     }
   }, [srcDoc])
@@ -199,20 +249,16 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
     return () => cancelAnimationFrame(id)
   }, [showQuote, srcDoc])
 
-  const blockedCount = result.blockedImageCount + result.blockedTrackerCount
+  const blockedCount = result.blockedImageCount
 
   return (
     <div className="msgbody">
+      {guard.pending && <LinkWarning pending={guard.pending} onOpen={guard.openPending} onCancel={guard.cancelPending} />}
       {blockedCount > 0 && (
         <div className="msgbody__banner" role="status">
           <ImageOff size={15} aria-hidden />
           <span className="msgbody__banner-text">
             {blockedCount === 1 ? 'Remote image blocked' : `${blockedCount} remote images blocked`}
-            {result.blockedTrackerCount > 0 && (
-              <em className="msgbody__banner-note">
-                {' · '}{result.blockedTrackerCount} {result.blockedTrackerCount === 1 ? 'tracker' : 'trackers'} removed
-              </em>
-            )}
           </span>
           <button className="msgbody__banner-btn" onClick={() => setLoadImages(true)}>Load images</button>
           <button
@@ -236,6 +282,24 @@ export function MessageBody({ message, blockRemoteImages }: Props): JSX.Element 
           style={{ height }}
         />
       )}
+
+      {paper && !result.isEmpty && (
+        <Tooltip label={adapt ? 'Show as designed' : 'Adapt to dark mode'}>
+          <button
+            type="button"
+            className="msgbody__adapt"
+            aria-pressed={adapt}
+            aria-label={adapt ? 'Show original colours' : 'Adapt colours to dark mode'}
+            onClick={() => { const next = !adapt; setAdapt(next); saveAdapt(next) }}
+          >
+            {adapt ? <Sun size={13} aria-hidden /> : <Moon size={13} aria-hidden />}
+            <span>{adapt ? 'Original' : 'Adapt'}</span>
+          </button>
+        </Tooltip>
+      )}
+
+      <LinkPill link={guard.hover} host={pillHost} />
+      <LinkMenu menu={guard.menu} onClose={guard.closeMenu} />
 
       {result.hasQuotedText && (
         // The label span is visually hidden while collapsed (see msgbody__quote-label in
