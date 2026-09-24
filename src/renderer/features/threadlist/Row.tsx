@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { TimeChips } from '@/features/time/TimeChips'
 import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -141,6 +142,7 @@ function RowImpl({
       </span>
 
       <span className="trow__meta">
+        <TimeChips thread={t} />
         {chips.map((l) => (
           <span key={l.id} className="trow__chip" style={chipStyle(l.color)}>{l.name}</span>
         ))}

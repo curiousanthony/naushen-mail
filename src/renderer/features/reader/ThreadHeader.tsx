@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { TimeChips } from '@/features/time/TimeChips'
 import {
   Archive, BellOff, ChevronsRight, Clock, MailOpen, MoreHorizontal, ShieldAlert, Star, Tag, Trash2, X
 } from 'lucide-react'
@@ -216,8 +217,9 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
 
         <h1 className="reader__subject selectable">{thread.subject || '(no subject)'}</h1>
 
-        {(threadLabels.length > 0 || thread.messageCount > 1) && (
+        {(threadLabels.length > 0 || thread.messageCount > 1 || thread.snoozedUntil || thread.reminderAt || thread.followUpFiredAt) && (
           <div className="reader__meta">
+            <TimeChips thread={thread} />
             {threadLabels.map((l) => (
               <span key={l.id} className="reader__chip" style={chipStyle(l.color)}>{l.name}</span>
             ))}

@@ -1,6 +1,7 @@
 import type { Account, Label, OutgoingMessage, SyncEvent, ThreadAction } from '@shared/types'
 import type { ProviderAdapter } from '../providers/types'
 import type { Repo } from '../db/repo'
+import { FollowUps } from './followups'
 
 const LOCAL_ONLY = new Set<ThreadAction['type']>(['snooze', 'unsnooze', 'remind'])
 
@@ -14,7 +15,11 @@ export class SyncEngine {
   private timer: NodeJS.Timeout | null = null
   private listeners = new Set<(e: SyncEvent) => void>()
 
-  constructor(private repo: Repo) {}
+  readonly followups: FollowUps
+  /** Sent-message follow-ups waiting for the provider to report the new thread. */
+  private pendingFollowUps: Array<{ accountId: string; subject: string; sentAt: number; at: number }> = []
+
+  constructor(private repo: Repo) { this.followups = new FollowUps(repo) }
 
   onEvent(cb: (e: SyncEvent) => void): () => void {
     this.listeners.add(cb)
@@ -34,8 +39,16 @@ export class SyncEngine {
     this.timer = setInterval(() => {
       const woke = this.repo.wakeSnoozed()
       if (woke.length) this.emit({ type: 'changed', threadIds: woke })
-      void this.syncAll()
+      // Settle after the sync so a reply that just arrived clears the follow-up instead of racing it.
+      void this.syncAll().finally(() => this.settleFollowUps())
     }, intervalMs)
+  }
+
+  /** Advance "follow up if no reply" state (fire due ones, drop answered ones) and tell the UI. */
+  settleFollowUps(): void {
+    const { fired, cleared } = this.followups.settle()
+    const ids = [...fired, ...cleared]
+    if (ids.length) this.emit({ type: 'changed', threadIds: ids })
   }
   stop(): void { if (this.timer) clearInterval(this.timer); this.timer = null }
 
@@ -71,10 +84,12 @@ export class SyncEngine {
         if (page.deletedRemoteThreadIds.length) this.repo.deleteThreadsByRemote(accountId, page.deletedRemoteThreadIds)
         cursor = page.cursor
         this.repo.patchAccount(accountId, { syncCursor: cursor })
+        this.attachPendingFollowUps(accountId)
         this.emit({ type: 'changed', accountId })
         if (!page.hasMore) break
       }
       this.setStatus(accountId, { status: 'ok', statusMessage: undefined, lastSyncAt: Date.now() })
+      this.settleFollowUps()
     } catch (e) {
       this.failStatus(accountId, e)
     } finally {
@@ -101,6 +116,7 @@ export class SyncEngine {
   /** Optimistic: apply locally, notify UI, then push to provider (re-sync on failure). */
   async act(threadIds: string[], action: ThreadAction): Promise<void> {
     const touched = this.repo.applyLocal(threadIds, action)
+    if (action.type === 'remind') this.settleFollowUps() // a deadline that is already due fires right away
     this.emit({ type: 'changed', threadIds })
     if (LOCAL_ONLY.has(action.type)) return
     const byAccount = new Map<string, typeof touched>()
@@ -121,8 +137,28 @@ export class SyncEngine {
   async send(msg: OutgoingMessage): Promise<void> {
     const adapter = this.adapters.get(msg.accountId)
     if (!adapter) throw new Error('Account not connected')
+    const sentAt = Date.now()
     await adapter.send(msg)
     this.repo.bumpContacts([...msg.to, ...msg.cc, ...msg.bcc])
+    if (msg.followUpDays && msg.followUpDays > 0) {
+      const at = sentAt + msg.followUpDays * 86_400_000
+      if (msg.inReplyTo && msg.inReplyTo.mode !== 'forward') this.followups.set([msg.inReplyTo.threadId], at)
+      else this.pendingFollowUps.push({ accountId: msg.accountId, subject: msg.subject || '(no subject)', sentAt, at })
+    }
     void this.syncAccount(msg.accountId)
+  }
+
+  /** New messages have no thread id until the provider reports it; attach the follow-up when it shows up. */
+  private attachPendingFollowUps(accountId: string): void {
+    if (!this.pendingFollowUps.length) return
+    const stale = Date.now() - 15 * 60_000
+    this.pendingFollowUps = this.pendingFollowUps.filter((p) => {
+      if (p.sentAt < stale) return false
+      if (p.accountId !== accountId) return true
+      const id = this.repo.findRecentThreadBySubject(accountId, p.subject, p.sentAt - 60_000)
+      if (!id) return true
+      this.followups.set([id], p.at)
+      return false
+    })
   }
 }

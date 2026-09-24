@@ -1,0 +1,56 @@
+/* Time feature: typed-time field, reminder / follow-up chips. Tokens only. */
+
+/* ---------------------------------------------------------------- "Type a time…" field */
+.tw { padding: 0 12px; }
+.tw__box {
+  display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px; border-radius: var(--radius-md);
+  background: var(--c-bg-input); box-shadow: inset 0 0 0 1px var(--c-divider); cursor: text;
+  transition: box-shadow var(--t-fast);
+}
+.tw__box:focus-within { box-shadow: inset 0 0 0 1.5px var(--c-accent), 0 0 0 3px var(--c-focus-ring); }
+.tw__icon { color: var(--c-text-3); flex: none; }
+.tw__input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--c-text);
+  font: inherit; font-size: 14px; user-select: text;
+}
+.tw__input::placeholder { color: var(--c-text-3); }
+.tw__preview {
+  display: flex; align-items: center; gap: 6px; min-height: 20px; padding: 3px 2px 0 10px; font-size: 12px; color: var(--c-text-3);
+}
+.tw__preview[data-state='ok'] { color: var(--c-text); }
+.tw__preview[data-state='ok'] svg { color: var(--c-text-3); margin-left: auto; }
+.tw__when { font-weight: 500; }
+.tw__preview[data-state='empty'] { visibility: hidden; }
+
+/* Send menu (composer): typed time on top, follow-up toggle at the bottom. */
+.cmp-pop__when { padding: 2px 0 4px; }
+.cmp-pop__when .tw { padding: 0 4px; }
+.tf-sep { height: 1px; margin: 4px 4px; background: var(--c-divider); }
+.tf-followup { color: var(--c-text-2); gap: 8px; }
+.tf-followup__box {
+  flex: none; width: 15px; height: 15px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 1.5px var(--c-border); color: var(--c-accent-text); transition: background var(--t-fast), box-shadow var(--t-fast);
+}
+.tf-followup__box[data-on='true'] { background: var(--c-accent); box-shadow: none; }
+
+/* ---------------------------------------------------------------- quiet chips (row + reader) */
+.tf-chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 17px; padding: 0 6px; border-radius: 3px; flex: none;
+  font-size: 11px; line-height: 1; white-space: nowrap; color: var(--c-text-2); background: var(--c-bg-hover);
+  transition: background var(--t-fast), color var(--t-fast);
+}
+button.tf-chip { cursor: pointer; }
+button.tf-chip:hover { background: var(--c-bg-hover-strong); color: var(--c-text); }
+button.tf-chip:focus-visible { outline: 2px solid var(--c-focus-ring); outline-offset: 1px; }
+/* "No reply yet" is the only one that asks for attention: accent-tinted, still small. */
+.tf-chip--alert { color: var(--c-accent); background: var(--c-bg-selected); }
+button.tf-chip--alert:hover { background: var(--c-bg-selected); color: var(--c-accent-hover); }
+.tf-chip svg { flex: none; }
+/* Cancel / dismiss affordance: hidden until the chip is hovered or focused, so it never adds noise. */
+.tf-chip__x { display: none; }
+button.tf-chip:hover .tf-chip__x, button.tf-chip:focus-visible .tf-chip__x { display: inline-flex; }
+/* Reader header: a touch larger to match the header's own chips. */
+.reader__meta .tf-chip { height: 20px; padding: 0 8px; font-size: 12px; }
+
+@media (max-width: 900px) { .trow__meta .tf-chip { display: none; } }
+@media (prefers-reduced-motion: reduce) { .tw__box, .tf-chip { transition: none; } }
