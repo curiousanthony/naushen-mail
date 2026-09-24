@@ -3,7 +3,7 @@ import { useApp } from '@/lib/store'
 import { KeyMatcher, eventToCombo, isEditableElement, normalizeBinding } from './keys'
 import { SHORTCUTS, activeBindings, isGlobalBinding } from './shortcuts'
 import { MENU_COMMANDS, runCommand } from './runner'
-import { useCommandUi } from './ui-store'
+import { clearHint as clearWhichKey, scheduleHint } from '../whichkey'
 
 const isMac = (): boolean => (typeof navigator !== 'undefined' ? /mac/i.test(navigator.platform || navigator.userAgent) : true)
 
@@ -24,11 +24,12 @@ export function useGlobalShortcuts(): void {
     const clearHint = (): void => {
       if (hintTimer) { clearTimeout(hintTimer); hintTimer = null }
       matcher.reset()
-      useCommandUi.getState().setHint(null)
+      clearWhichKey()
     }
     const showHint = (prefix: string[]): void => {
       const labels = new Map(SHORTCUTS.map((s) => [s.id, s.label]))
-      useCommandUi.getState().setHint({ prefix, options: matcher.continuations().map((c) => ({ keys: c.keys, label: labels.get(c.id) ?? c.id })) })
+      // Shown by features/whichkey only if the user pauses (~350ms); experts never see it.
+      scheduleHint(prefix, matcher.continuations().map((c) => ({ keys: c.keys, label: labels.get(c.id) ?? c.id })))
       if (hintTimer) clearTimeout(hintTimer)
       hintTimer = setTimeout(clearHint, 1500)
     }

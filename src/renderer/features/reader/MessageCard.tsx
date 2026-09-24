@@ -6,6 +6,7 @@ import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials, listTime } from '@/lib/format'
 import { gravatarUrl } from '@/lib/avatar'
 import { Tooltip } from '@/features/tooltip'
+import { SenderName } from '../people'
 import { MessageBody } from './MessageBody'
 import { Attachments } from './Attachments'
 import { visibleAttachments } from './fileKinds'
@@ -48,7 +49,6 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
   const showAvatars = useApp((s) => s.settings.showAvatars)
   const openComposer = useApp((s) => s.openComposer)
   const tint = avatarTint(message.from.email)
-  const name = displayName(message.from)
   const recipients = [...message.to, ...message.cc]
   const attachments = visibleAttachments(message.attachments)
   const invite = findInvite(message.attachments)
@@ -70,7 +70,7 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       </span>
       <span className="msg__headtext">
         <span className="msg__line">
-          <span className="msg__from">{name}</span>
+          <SenderName address={message.from} className="msg__from" />
           {message.unread && <span className="msg__unread-dot" aria-label="Unread" />}
           {!expanded && <span className="msg__snippet">{message.snippet}</span>}
         </span>

@@ -8,6 +8,7 @@ import { useCommandUi } from './ui-store'
 import { copyVerificationCode } from '@/features/reader/codeCommand'
 import { bundleStops, collapseBundleAt, expandBundleAt } from '../threadlist/bundleNav'
 import { archiveAllFrom, blockSender, openRuleForFocused, toggleLabelBundle, toggleSenderBundle, unsubscribeAndArchive } from '../rules/actions'
+import { toggleSenderInfo } from '../people'
 
 /**
  * Command implementations, keyed by the ids in shortcuts.ts. Used by the keyboard hook, the
@@ -268,7 +269,8 @@ export const HANDLERS: Record<string, Handler> = {
   'msg.replyAll': () => composeFor('replyAll'),
   'msg.forward': () => composeFor('forward'),
   'msg.copyCode': copyVerificationCode,
-  'compose.new': () => { S().openComposer() }
+  'compose.new': () => { S().openComposer() },
+  'person.info': toggleSenderInfo
 }
 
 /** Run a command by id. Unknown ids are ignored. */

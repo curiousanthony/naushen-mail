@@ -139,3 +139,14 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
 export function groupItems(items: PaletteItem[]): { group: PaletteGroup; items: PaletteItem[] }[] {
   return GROUP_ORDER.map((group) => ({ group, items: items.filter((i) => i.group === group) })).filter((g) => g.items.length)
 }
+
+/**
+ * Where an item lives in the universal jump bar once the user types: contextual Actions,
+ * Navigate (folders, views, labels), or Commands (compose, settings, account switching).
+ * With an empty query the palette keeps the four classic headings instead.
+ */
+export function jumpGroupOf(i: PaletteItem): 'Actions' | 'Navigate' | 'Commands' {
+  if (i.group === 'Actions') return 'Actions'
+  if (i.cmd.startsWith('go.') && i.cmd !== 'go.account') return 'Navigate'
+  return 'Commands'
+}

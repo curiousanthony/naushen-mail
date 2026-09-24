@@ -1,0 +1,17 @@
+/* Universal jump bar additions (people rows, highlights, selected-row hints). Tokens only. */
+.cmd-hl { background: none; color: inherit; font-weight: 650; text-decoration: underline; text-decoration-color: var(--c-accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+
+.cmd-item--person { min-height: 40px; }
+.cmd-item--person .cmd-item__label { display: flex; align-items: baseline; gap: 8px; }
+.cmd-person__name { flex: none; max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.cmd-person__email { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--c-text-3); }
+.cmd-item__hint--idle { font-variant-numeric: tabular-nums; }
+.cmd-item[data-selected='true'] .cmd-item__hint--idle { display: none; }
+
+/* Enter / Tab affordances appear only on the selected person row (no persistent chrome). */
+.cmd-item__acts { display: none; flex: none; align-items: center; gap: 12px; font-size: 12px; color: var(--c-text-2); }
+.cmd-item[data-selected='true'] .cmd-item__acts { display: inline-flex; }
+.cmd-act { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+
+.cmd-item--searchall .cmd-item__label { color: var(--c-text-2); }
+.cmd-item--searchall .cmd-item__hint--key .cmd-keys { margin-left: 0; }

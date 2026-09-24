@@ -344,6 +344,19 @@ export interface RuleStep {
   inverse: ThreadAction | null
 }
 
+/** A person seen in the local store (participants of synced threads), for the palette and sender card. */
+export interface PersonHit extends Address {
+  /** Threads this address appears in (as sender or recipient). */
+  threadCount: number
+  /** Most recent activity with them (ms). */
+  lastAt: number
+}
+
+export interface PersonInfo extends PersonHit {
+  /** Their most recent threads, newest first. */
+  recent: Thread[]
+}
+
 export type SyncEvent =
   | { type: 'changed'; accountId?: string; threadIds?: string[] }
   | { type: 'account-status'; accountId: string }
