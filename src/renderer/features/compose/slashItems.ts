@@ -83,7 +83,7 @@ export const BACKGROUND_COLORS: ColorChoice[] = [
 /** Emoji offered by the callout block and the `:` suggestion fallback. */
 export const CALLOUT_EMOJI = ['💡', '📌', '✅', '⚠️', '🔥', '📝', '🎯', '🚀', '❤️', '🙏', '👀', '🎉']
 
-export interface SnippetItemSource { id: string; name: string }
+export interface SnippetItemSource { id: string; name: string; shortcut?: string }
 
 /**
  * Filter the catalogue for a `/` query. Snippets are appended as their own group so
@@ -99,7 +99,8 @@ export function filterSlashItems(query: string, snippets: SnippetItemSource[] = 
     description: 'Insert snippet',
     icon: 'Braces',
     group: 'Snippets' as const,
-    keywords: ['snippet', s.name.toLowerCase()],
+    keywords: ['snippet', s.name.toLowerCase(), ...(s.shortcut ? [s.shortcut.toLowerCase()] : [])],
+    ...(s.shortcut ? { hint: `;${s.shortcut}` } : {}),
     snippetId: s.id
   }))
   const all = [...SLASH_ITEMS, ...snippetItems]

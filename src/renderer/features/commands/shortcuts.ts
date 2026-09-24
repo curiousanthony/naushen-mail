@@ -86,6 +86,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'compose.attach', label: 'Add attachment', section: 'Compose window', keys: ['mod+shift+a'], owner: 'compose' },
   { id: 'compose.h', label: 'Text / Heading 1–3', section: 'Compose window', keys: ['mod+alt+0'], owner: 'compose', display: [['⌘', '⌥', '0–3']] },
   { id: 'compose.lists', label: 'Checklist / bullets / numbered / quote', section: 'Compose window', keys: ['mod+alt+4'], owner: 'compose', display: [['⌘', '⌥', '4–7']] },
+  { id: 'compose.link', label: 'Insert or edit link', section: 'Compose window', keys: ['mod+shift+l'], owner: 'compose' },
 
   // ---- Global
   { id: 'compose.new', label: 'Compose', section: 'Global', keys: ['c'], keywords: ['new message', 'write'] },

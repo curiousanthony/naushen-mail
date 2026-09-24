@@ -13,7 +13,10 @@ import { gitHubEmojis } from '@tiptap/extension-emoji'
 import { buildExtensions } from './extensions'
 import { SlashMenu, type MenuAnchor } from './SlashMenu'
 import { SelectionToolbar } from './SelectionToolbar'
-import { detectEmojiTrigger, detectSlashTrigger, searchEmoji, type EmojiEntry } from './trigger'
+import { detectEmojiTrigger, detectSlashTrigger, detectSnippetTrigger, searchEmoji, type EmojiEntry } from './trigger'
+import { cleanPastedHtml } from '@shared/emailhtml'
+import { LinkPopover, type LinkAnchor } from './LinkPopover'
+import type { SnippetContext } from './snippetVars'
 import { BLOCK_SHORTCUTS } from './slashItems'
 import { applyBlockAction } from './SlashMenu'
 import { fileToDataUri, isImageType } from './attachments'
@@ -26,10 +29,14 @@ export interface ComposerEditorOptions {
   content?: unknown
   onUpdate?: (editor: Editor) => void
   editable?: boolean
+  /** Smart quotes / dashes / ellipsis on? Read per keystroke so the setting applies live. */
+  smartTypography?: () => boolean
 }
 
-export function useComposerEditor({ content, onUpdate, editable = true }: ComposerEditorOptions): Editor | null {
-  const extensions = useMemo(() => buildExtensions(), [])
+export function useComposerEditor({ content, onUpdate, editable = true, smartTypography }: ComposerEditorOptions): Editor | null {
+  const smartRef = useRef(smartTypography)
+  smartRef.current = smartTypography
+  const extensions = useMemo(() => buildExtensions(undefined, { smartTypography: () => smartRef.current?.() ?? true }), [])
   return useEditor({
     extensions,
     content: (content as never) ?? '',
@@ -39,9 +46,16 @@ export function useComposerEditor({ content, onUpdate, editable = true }: Compos
     immediatelyRender: true,
     editorProps: {
       attributes: { class: 'cmp-prose', spellcheck: 'true' },
+      // Word / Docs / web copies: strip colours, junk wrappers and fake lists. ProseMirror's own
+      // slices (`data-pm-slice`) keep everything — callouts, colours and image sizes round-trip.
+      transformPastedHTML: (html) => (html.includes('data-pm-slice') ? html : cleanPastedHtml(html)),
       handlePaste: (view, event) => {
-        const files = Array.from(event.clipboardData?.files ?? []).filter((f) => isImageType(f.type))
+        const cd = event.clipboardData
+        const files = Array.from(cd?.files ?? []).filter((f) => isImageType(f.type))
         if (!files.length) return false
+        // Word, Excel and Pages put a rendered bitmap in `files` *next to* the real HTML/text;
+        // only a bare image (screenshot, "Copy image") should become an inline picture.
+        if (cd?.getData('text/plain').trim()) return false
         event.preventDefault()
         void insertImageFiles(view, files)
         return true
@@ -75,22 +89,26 @@ interface SurfaceProps {
   snippets: Snippet[]
   /** Called when the user picks "Image" so the composer can open its file picker. */
   onRequestImage: () => void
+  /** Recipient / sender facts for `{{first_name}}` & co, read at insert time. */
+  snippetContext?: () => SnippetContext
 }
 
 interface TriggerState {
-  kind: 'slash' | 'emoji'
+  kind: 'slash' | 'emoji' | 'snippet'
   query: string
   /** Document position of the trigger character. */
   from: number
   anchor: MenuAnchor
 }
 
-export function EditorSurface({ editor, snippets, onRequestImage }: SurfaceProps): JSX.Element {
+export function EditorSurface({ editor, snippets, onRequestImage, snippetContext }: SurfaceProps): JSX.Element {
   const [trigger, setTrigger] = useState<TriggerState | null>(null)
   const [selRect, setSelRect] = useState<SelectionToolbarRect | null>(null)
   const [emojiActive, setEmojiActive] = useState(0)
-  const [linkRequest, setLinkRequest] = useState(0)
+  const [linkPop, setLinkPop] = useState<LinkAnchor | null>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
+  const snippetsRef = useRef(snippets)
+  snippetsRef.current = snippets
 
   const emojiMatches = useMemo(
     () => (trigger?.kind === 'emoji' ? searchEmoji(EMOJI_LIST, trigger.query) : []),
@@ -117,13 +135,16 @@ export function EditorSurface({ editor, snippets, onRequestImage }: SurfaceProps
     const textBefore = state.doc.textBetween(Math.max(0, from - 80), from, '\n', '\n')
     const slash = detectSlashTrigger(textBefore)
     const emoji = slash ? null : detectEmojiTrigger(textBefore)
-    const match = slash ?? emoji
+    // `;sig` only opens when a snippet actually has that shortcut, so plain prose never triggers.
+    const snip = slash || emoji ? null : detectSnippetTrigger(textBefore)
+    const snipOk = snip && snippetsRef.current.some((s) => s.shortcut?.toLowerCase().startsWith(snip.query.toLowerCase()))
+    const match = slash ?? emoji ?? (snipOk ? snip : null)
     if (!match) { setTrigger(null); return }
 
     const triggerPos = from - match.from
     const coords = view.coordsAtPos(triggerPos)
     setTrigger({
-      kind: slash ? 'slash' : 'emoji',
+      kind: slash ? 'slash' : emoji ? 'emoji' : 'snippet',
       query: match.query,
       from: triggerPos,
       anchor: { x: coords.left, y: coords.top, bottom: coords.bottom }
@@ -165,28 +186,56 @@ export function EditorSurface({ editor, snippets, onRequestImage }: SurfaceProps
     return () => window.removeEventListener('keydown', onKey, true)
   }, [trigger, emojiMatches, emojiActive, insertEmoji])
 
-  /** Block shortcuts (cmd+alt+0-7) and cmd+k, which TipTap does not bind. */
+  /** Open the link popover at the selection (or, on a link, over the whole link). */
+  const openLinkPopover = useCallback(() => {
+    const { view, state } = editor
+    if (state.selection.empty && editor.isActive('link')) editor.commands.extendMarkRange('link')
+    const { from, to } = editor.state.selection
+    const a = view.coordsAtPos(from)
+    const b = view.coordsAtPos(to)
+    setLinkPop({ left: Math.min(a.left, b.left), top: Math.min(a.top, b.top), bottom: Math.max(a.bottom, b.bottom) })
+  }, [editor])
+
+  // Typing, moving away or clicking elsewhere in the document leaves nothing stale on screen.
+  const closeLinkPopover = useCallback(() => setLinkPop(null), [])
+
+  /** Block shortcuts (cmd+alt+0-7), the link popover (cmd+shift+L / cmd+K) and `;` snippet expansion. */
   const onKeyDownCapture = (e: React.KeyboardEvent): void => {
     if (!(e.metaKey || e.ctrlKey)) return
     if (e.altKey && BLOCK_SHORTCUTS[e.key]) {
       e.preventDefault()
-      applyBlockAction(editor, BLOCK_SHORTCUTS[e.key], { snippets, onRequestImage, onRequestLink: () => undefined })
+      applyBlockAction(editor, BLOCK_SHORTCUTS[e.key], { snippets, onRequestImage, onRequestLink: openLinkPopover, snippetContext })
       return
     }
-    if (e.key.toLowerCase() === 'k' && !e.shiftKey) {
+    const k = e.key.toLowerCase()
+    if ((k === 'k' && !e.shiftKey) || (k === 'l' && e.shiftKey && !e.altKey)) {
       e.preventDefault()
-      // Opening the toolbar's link panel needs a selection; select the word under the caret.
-      if (editor.state.selection.empty) editor.chain().focus().extendMarkRange('link').run()
-      setLinkRequest((n) => n + 1)
+      e.stopPropagation()
+      openLinkPopover()
     }
   }
 
+  /** Cmd-click follows a link; a plain click on one opens its popover (edit / open / remove). */
+  const onClick = (e: React.MouseEvent): void => {
+    const a = (e.target as HTMLElement).closest?.('a[href]') as HTMLAnchorElement | null
+    if (!a || !wrapRef.current?.contains(a)) return
+    if (e.metaKey || e.ctrlKey) { e.preventDefault(); void window.api.invoke('app.openExternal', a.getAttribute('href') ?? ''); return }
+    requestAnimationFrame(() => {
+      if (!editor.isActive('link')) return
+      const r = a.getBoundingClientRect()
+      editor.commands.extendMarkRange('link')
+      setLinkPop({ left: r.left, top: r.top, bottom: r.bottom })
+    })
+  }
+
   return (
-    <div className="cmp-editor" ref={wrapRef} onKeyDownCapture={onKeyDownCapture}>
+    <div className="cmp-editor" ref={wrapRef} onKeyDownCapture={onKeyDownCapture} onClick={onClick}>
       <EditorContent editor={editor} />
 
-      {trigger?.kind === 'slash' && (
+      {(trigger?.kind === 'slash' || trigger?.kind === 'snippet') && (
         <SlashMenu
+          mode={trigger.kind === 'snippet' ? 'snippet' : 'slash'}
+          snippetContext={snippetContext}
           editor={editor}
           query={trigger.query}
           anchor={trigger.anchor}
@@ -194,7 +243,7 @@ export function EditorSurface({ editor, snippets, onRequestImage }: SurfaceProps
           onClose={() => setTrigger(null)}
           onConsume={consumeTrigger}
           onRequestImage={onRequestImage}
-          onRequestLink={() => setLinkRequest((n) => n + 1)}
+          onRequestLink={openLinkPopover}
         />
       )}
 
@@ -215,9 +264,11 @@ export function EditorSurface({ editor, snippets, onRequestImage }: SurfaceProps
         </div>
       )}
 
-      {selRect && !trigger && (
-        <SelectionToolbar key={linkRequest} editor={editor} rect={selRect} onRequestImage={onRequestImage} />
+      {selRect && !trigger && !linkPop && (
+        <SelectionToolbar editor={editor} rect={selRect} onRequestImage={onRequestImage} />
       )}
+
+      {linkPop && <LinkPopover editor={editor} anchor={linkPop} onClose={closeLinkPopover} />}
     </div>
   )
 }

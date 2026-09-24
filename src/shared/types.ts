@@ -269,6 +269,8 @@ export interface AppSettings {
   dockBadge?: boolean
   /** How often each reminder / send-later / follow-up preset was picked (drives "most used" ordering). Optional: older settings lack it. */
   timePresetUsage?: Record<string, number>
+  /** Composer: curl quotes, turn `--` into an em dash and `...` into an ellipsis. Missing = on. */
+  smartTypography?: boolean
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {

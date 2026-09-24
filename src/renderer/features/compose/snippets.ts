@@ -23,6 +23,8 @@ export interface Snippet {
   name: string
   /** TipTap document fragment: the blocks inserted at the cursor. */
   doc: DocNode
+  /** Typed as `;shortcut` in the editor (and `/shortcut` in the slash menu). Set in Settings. */
+  shortcut?: string
   createdAt: number
   updatedAt: number
 }
@@ -89,6 +91,7 @@ function fromStored(s: StoredSnippet): Snippet {
   const now = Date.now()
   return {
     id: s.id, name: s.title, doc: s.doc ?? htmlToDoc(s.html ?? ''),
+    ...(s.shortcut ? { shortcut: s.shortcut } : {}),
     createdAt: s.createdAt ?? now, updatedAt: s.updatedAt ?? now
   }
 }
@@ -99,7 +102,11 @@ function toHtml(doc: DocNode): string {
 }
 
 function toStored(s: Snippet): StoredSnippet {
-  return { id: s.id, title: s.name, html: toHtml(s.doc), doc: s.doc, createdAt: s.createdAt, updatedAt: s.updatedAt }
+  return {
+    id: s.id, title: s.name, html: toHtml(s.doc), doc: s.doc,
+    ...(s.shortcut ? { shortcut: s.shortcut } : {}),
+    createdAt: s.createdAt, updatedAt: s.updatedAt
+  }
 }
 
 export function saveSnippets(list: Snippet[], storage: SnippetStorage = defaultStorage()): void {
@@ -131,12 +138,21 @@ export function deleteSnippet(id: string, storage: SnippetStorage = defaultStora
 
 const eqName = (a: string, b: string): boolean => a.trim().toLowerCase() === b.trim().toLowerCase()
 
+/** Snippets whose `;shortcut` starts with what was typed after the `;`, exact match first. */
+export function findByShortcut(list: Snippet[], query: string): Snippet[] {
+  const q = query.trim().toLowerCase()
+  if (!q) return []
+  return list
+    .filter((s) => !!s.shortcut && s.shortcut.toLowerCase().startsWith(q))
+    .sort((a, b) => Number(b.shortcut === q) - Number(a.shortcut === q) || (a.shortcut ?? '').length - (b.shortcut ?? '').length)
+}
+
 /** Snippets matching a slash-menu query, best match first. */
 export function findSnippets(list: Snippet[], query: string): Snippet[] {
   const q = query.trim().toLowerCase()
   if (!q) return list
   return list
-    .map((s) => ({ s, score: fuzzyScore(s.name.toLowerCase(), q) }))
+    .map((s) => ({ s, score: Math.max(fuzzyScore(s.name.toLowerCase(), q), s.shortcut ? fuzzyScore(s.shortcut.toLowerCase(), q) : 0) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score || a.s.name.localeCompare(b.s.name))
     .map((x) => x.s)

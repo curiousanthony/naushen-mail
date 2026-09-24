@@ -42,6 +42,16 @@ export function detectEmojiTrigger(textBefore: string): TriggerMatch | null {
   return m
 }
 
+/**
+ * `;sig` -> `{ query: 'sig' }`. The caller only opens the menu when some snippet's shortcut
+ * starts with the query, so ordinary prose (`well; ok`, `;)`) never pops anything.
+ */
+export function detectSnippetTrigger(textBefore: string): TriggerMatch | null {
+  const m = detect(textBefore, ';', 32)
+  if (!m || m.query.length < 1) return null
+  return /^[a-zA-Z0-9_-]+$/.test(m.query) ? m : null
+}
+
 export interface EmojiEntry { name: string; emoji: string; shortcodes?: string[] }
 
 /** Emoji whose name or shortcode starts with / contains the query, best match first. */

@@ -18,6 +18,7 @@ import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-detai
 import { createLowlight, common } from 'lowlight'
 import { Callout } from './Callout'
 import { ImageBlock } from './ImageBlock'
+import { SmartTypography } from './smartTypography'
 
 export const PLACEHOLDER = "Write, or press '/' for blocks"
 
@@ -46,7 +47,12 @@ const MarkdownAliases = Extension.create({
   }
 })
 
-export function buildExtensions(placeholder: string = PLACEHOLDER): ReturnType<typeof StarterKit.configure>[] {
+export interface BuildOptions {
+  /** Smart quotes / dashes / ellipsis on? Read per keystroke. Default: on. */
+  smartTypography?: () => boolean
+}
+
+export function buildExtensions(placeholder: string = PLACEHOLDER, opts: BuildOptions = {}): ReturnType<typeof StarterKit.configure>[] {
   const lowlight = createLowlight(common)
 
   return [
@@ -65,6 +71,7 @@ export function buildExtensions(placeholder: string = PLACEHOLDER): ReturnType<t
       trailingNode: false
     }),
     MarkdownAliases,
+    SmartTypography.configure({ enabled: opts.smartTypography ?? (() => true) }),
     TaskList,
     TaskItem.configure({ nested: true }),
     CodeBlockLowlight.configure({ lowlight, defaultLanguage: null }),

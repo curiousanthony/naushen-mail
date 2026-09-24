@@ -1,0 +1,202 @@
+/* Composer that prevents mistakes: inline notes, confirm bar, link popover, recipient polish.
+   Everything here is quiet by default (text-2 on the surface, no boxes) and tokens-only. */
+
+/* ---------------------------------------------------------------- recipient chips */
+
+.cmp-chip { cursor: grab; }
+.cmp-chip.is-dragging { opacity: 0.45; }
+.cmp-chip.is-suspect {
+  box-shadow: inset 0 -1.5px 0 var(--chip-orange-fg);
+}
+.cmp-chips { transition: background var(--t-fast), box-shadow var(--t-fast); }
+.cmp-chips.is-drop-target {
+  background: var(--c-bg-selected);
+  box-shadow: inset 0 0 0 1.5px var(--c-accent);
+}
+
+.cmp-suggest__head {
+  padding: 4px 8px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--c-text-3);
+  text-transform: uppercase;
+}
+
+/* Deterministic tint per contact: the hue comes from the address, lightness/alpha keep it
+   legible on both surfaces (the letter uses the normal text token). */
+.cmp-suggest__avatar.cmpx-avatar {
+  background: hsl(var(--hue, 210) 55% 55% / 0.22);
+  color: var(--c-text);
+}
+
+/* ---------------------------------------------------------------- inline notes */
+
+.cmpx-notes { display: flex; flex-direction: column; gap: 1px; padding: 0 12px 2px 64px; }
+
+.cmpx-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-2);
+  animation: cmpx-in var(--t-med) both;
+}
+.cmpx-note__icon { flex: none; color: var(--chip-orange-fg); }
+.cmpx-note__text { flex: 1; min-width: 0; }
+.cmpx-note__text b { font-weight: 600; color: var(--c-text); }
+.cmpx-note .cmp-link { color: var(--c-accent); font-weight: 500; }
+.cmpx-note .cmp-link:hover { background: var(--c-bg-selected); color: var(--c-accent); }
+.cmpx-note .cmp-iconbtn { width: 20px; height: 20px; opacity: 0.6; }
+.cmpx-note .cmp-iconbtn:hover { opacity: 1; }
+
+@keyframes cmpx-in {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------- send-time confirm bar */
+
+.cmpx-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 7px 10px 7px 14px;
+  border-top: 1px solid var(--c-divider);
+  background: var(--c-bg-hover);
+  color: var(--c-text);
+  font-size: 13px;
+  animation: cmpx-in var(--t-med) both;
+}
+.cmpx-confirm__icon { flex: none; color: var(--chip-orange-fg); }
+.cmpx-confirm__text { flex: 1; min-width: 0; }
+.cmpx-confirm__actions { display: flex; align-items: center; gap: 4px; flex: none; }
+.cmpx-confirm__btn {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--c-text-2);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.cmpx-confirm__btn:hover { background: var(--c-bg-hover-strong); color: var(--c-text); }
+.cmpx-confirm__btn--primary { color: var(--c-accent); font-weight: 500; }
+.cmpx-confirm__btn--primary:hover { background: var(--c-bg-selected); color: var(--c-accent); }
+.cmpx-confirm kbd {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-text-3);
+}
+.cmpx-confirm__text { flex: 1 1 180px; }
+.cmpx-confirm.is-error { background: var(--chip-red-bg); color: var(--chip-red-fg); }
+
+/* ---------------------------------------------------------------- link popover */
+
+.cmpx-link {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 340px;
+  max-width: calc(100vw - 16px);
+  padding: 4px 4px 4px 10px;
+  background: var(--c-bg-popover);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  animation: cmpx-in var(--t-fast) both;
+}
+.cmpx-link__input {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 4px;
+  background: none;
+  border: 0;
+  color: var(--c-text);
+  font: inherit;
+  font-size: 13px;
+}
+.cmpx-link__input:focus { outline: none; }
+.cmpx-link__input::placeholder { color: var(--c-text-3); }
+
+/* ---------------------------------------------------------------- From menu */
+
+.cmpx-from-row { display: flex; align-items: center; gap: 10px; }
+.cmpx-from-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-accent-text);
+  overflow: hidden;
+}
+.cmpx-from-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cmpx-from-tag {
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 11px;
+  color: var(--c-text-3);
+}
+.cmpx-from-check { flex: none; color: var(--c-accent); }
+
+/* ---------------------------------------------------------------- setting row in the help popover */
+
+.cmpx-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--c-text);
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.cmpx-toggle:hover { background: var(--c-bg-hover); }
+.cmpx-toggle__track {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 15px;
+  border-radius: 8px;
+  background: var(--c-bg-pressed);
+  transition: background var(--t-fast);
+}
+.cmpx-toggle__track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--c-accent-text);
+  transition: transform var(--t-fast);
+}
+.cmpx-toggle[aria-checked='true'] .cmpx-toggle__track { background: var(--c-accent); }
+.cmpx-toggle[aria-checked='true'] .cmpx-toggle__track::after { transform: translateX(11px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cmpx-note, .cmpx-confirm, .cmpx-link { animation: none; }
+  .cmpx-toggle__track, .cmpx-toggle__track::after, .cmp-chips { transition: none; }
+}
