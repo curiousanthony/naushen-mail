@@ -11,6 +11,7 @@
 import DOMPurify from 'dompurify'
 import { attributeNames, type El } from './dom'
 import { markQuotedText } from './quote'
+import { classifyTrackerUrl, parseHttpUrl, type TrackerHit } from './trackers'
 import {
   TRANSPARENT_GIF, cidOf, isRemoteImageSrc, isSafeDataImage, isSafeLink,
   scrubInlineStyle, scrubStyleSheet
@@ -18,6 +19,7 @@ import {
 
 export { TRANSPARENT_GIF, formatBytes } from './urls'
 export type { El } from './dom'
+export type { TrackerHit } from './trackers'
 
 export interface SanitizeOptions {
   /** Load `http(s)` images. When false they are replaced by a placeholder and counted. */
@@ -34,8 +36,13 @@ export interface SanitizedEmail {
   remoteImageCount: number
   /** Remote images replaced with a placeholder. */
   blockedImageCount: number
-  /** Tracking-pixel-sized images removed outright. */
+  /**
+   * Tracking images removed outright (known tracker host or beacon path, 1x1 pixel, hidden
+   * image). Unlike ordinary remote images these are dropped even when the user loads images.
+   */
   blockedTrackerCount: number
+  /** One entry per removed tracker, for the header's privacy shield. */
+  trackers: TrackerHit[]
   /** Inline `cid:` images that could not be resolved. */
   unresolvedCidCount: number
   /** The author set a colour or a background of any kind. */
@@ -85,7 +92,7 @@ interface Ctx {
   cidMap: Record<string, string>
   remoteImages: number
   blockedImages: number
-  blockedTrackers: number
+  trackers: TrackerHit[]
   unresolvedCid: number
   authoredColors: boolean
   authoredBackground: boolean
@@ -107,23 +114,38 @@ let purifier: typeof DOMPurify | null = null
 function newCtx(allowRemote: boolean, cidMap: Record<string, string>): Ctx {
   return {
     allowRemote, cidMap,
-    remoteImages: 0, blockedImages: 0, blockedTrackers: 0, unresolvedCid: 0,
+    remoteImages: 0, blockedImages: 0, trackers: [], unresolvedCid: 0,
     authoredColors: false, authoredBackground: false
   }
 }
 
-/** Width/height ≤ 3px in either an attribute or an inline style — i.e. an open-tracker beacon. */
+/**
+ * An open-tracker beacon by geometry: both dimensions ≤ 3px (or one is ≤ 3px and the other is
+ * unset), declared in an attribute or an inline style. A lone `height="1"` beside a real width is
+ * a spacer / rule image, not a beacon, and is left to the ordinary remote-image policy. An image
+ * hidden with `display:none` / `visibility:hidden` / `opacity:0` has no purpose except being
+ * fetched, so it counts too.
+ */
 function isTrackingPixel(node: El): boolean {
-  const small = (v: string | null): boolean => {
-    if (!v) return false
-    const n = parseFloat(v)
-    return Number.isFinite(n) && n <= 3
-  }
-  if (small(node.getAttribute('width')) || small(node.getAttribute('height'))) return true
   const style = node.getAttribute('style') ?? ''
-  const w = /(?:^|;)\s*width\s*:\s*([\d.]+)\s*px/i.exec(style)
-  const h = /(?:^|;)\s*height\s*:\s*([\d.]+)\s*px/i.exec(style)
-  return (!!w && parseFloat(w[1]) <= 3) || (!!h && parseFloat(h[1]) <= 3)
+  if (/(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0(?:\.0+)?\s*(?:;|$))/i.test(style)) return true
+  const num = (v: string | null | undefined): number | null => {
+    if (!v) return null
+    const n = parseFloat(v)
+    return Number.isFinite(n) ? n : null
+  }
+  // A declared non-pixel size (`100%`, `auto`, `10em`) counts as "large": a full-width 1px rule.
+  const px = (prop: string): number | null => {
+    const m = new RegExp(`(?:^|;)\\s*${prop}\\s*:\\s*([^;]+)`, 'i').exec(style)
+    if (!m) return null
+    const v = /^\s*([\d.]+)\s*px\s*$/i.exec(m[1])
+    return v ? num(v[1]) : 9999
+  }
+  const w = num(node.getAttribute('width')) ?? px('width')
+  const h = num(node.getAttribute('height')) ?? px('height')
+  const small = (n: number | null): boolean => n !== null && n <= 3
+  if (small(w) && small(h)) return true
+  return (small(w) && h === null) || (small(h) && w === null)
 }
 
 /**
@@ -187,8 +209,13 @@ function handleImage(node: El): void {
 
   if (isRemoteImageSrc(src)) {
     ctx.remoteImages++
+    // Trackers are dropped whether or not the user has allowed images: "Load images" means the
+    // pictures, never the beacon that reports the open.
+    const hit = classifyTrackerUrl(src) ?? (isTrackingPixel(node)
+      ? { host: parseHttpUrl(src)?.host ?? 'unknown', service: null, reason: 'pixel' as const }
+      : null)
+    if (hit) { ctx.trackers.push(hit); node.remove(); return }
     if (ctx.allowRemote) return
-    if (isTrackingPixel(node)) { ctx.blockedTrackers++; node.remove(); return }
     node.setAttribute('data-mr-blocked', '1')
     node.setAttribute('src', TRANSPARENT_GIF)
     pinDeclaredSize(node)
@@ -287,7 +314,7 @@ function getPurifier(): typeof DOMPurify {
  */
 export function sanitizeEmailHtml(html: string, opts: SanitizeOptions = {}): SanitizedEmail {
   const empty: SanitizedEmail = {
-    html: '', remoteImageCount: 0, blockedImageCount: 0, blockedTrackerCount: 0,
+    html: '', remoteImageCount: 0, blockedImageCount: 0, blockedTrackerCount: 0, trackers: [],
     unresolvedCidCount: 0, hasAuthoredColors: false, hasAuthoredBackground: false,
     hasQuotedText: false, isEmpty: true
   }
@@ -324,7 +351,8 @@ export function sanitizeEmailHtml(html: string, opts: SanitizeOptions = {}): San
     html: out,
     remoteImageCount: ctx.remoteImages,
     blockedImageCount: ctx.blockedImages,
-    blockedTrackerCount: ctx.blockedTrackers,
+    blockedTrackerCount: ctx.trackers.length,
+    trackers: ctx.trackers,
     unresolvedCidCount: ctx.unresolvedCid,
     hasAuthoredColors: ctx.authoredColors,
     hasAuthoredBackground: ctx.authoredBackground,
