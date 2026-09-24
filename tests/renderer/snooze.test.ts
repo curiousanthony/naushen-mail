@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultCustom, formatReminderDate, getFollowUpPresets, getSnoozePresets, orderByUsage, parseCustomDateTime, USAGE_THRESHOLD } from '@/features/commands/snooze'
+import { defaultCustom, formatReminderDate, getSnoozePresets, parseCustomDateTime } from '@/features/commands/snooze'
 
 const d = (y: number, m: number, day: number, h = 0, mi = 0): Date => new Date(y, m - 1, day, h, mi, 0, 0)
 // 2026-09-21 is a Monday.
