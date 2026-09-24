@@ -13,7 +13,11 @@
   color: var(--c-text-2); background: var(--c-bg-hover);
   box-shadow: 0 0 0 6px var(--c-bg-cursor), inset 0 0 0 var(--hairline) var(--c-divider);
 }
-.es__scene { display: block; margin-bottom: 8px; overflow: visible; }
+.es__scene {
+  display: block; margin-bottom: 8px;
+  /* Soft vignette so the hills dissolve into the page instead of ending in a hard edge. */
+  -webkit-mask-image: radial-gradient(ellipse 58% 74% at 50% 46%, #000 58%, transparent 100%);
+}
 .es__halo { fill: var(--c-bg-selected); }
 .es__sun { fill: var(--c-accent); opacity: 0.9; }
 .es__stars circle { fill: var(--c-text-3); }

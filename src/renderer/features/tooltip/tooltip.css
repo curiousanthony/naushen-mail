@@ -20,7 +20,7 @@
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
-  animation: tooltip-in 100ms ease-out;
+  animation: tooltip-in var(--dur-1) var(--ease-out);
 }
 
 .tooltip__label { overflow: hidden; text-overflow: ellipsis; }

@@ -5,7 +5,7 @@
 :root {
   --sb-row-h: 30px;      /* sidebar rows */
   --sb-sec-gap: 14px;    /* space between sidebar sections */
-  --msg-pad-y: 16px;     /* reader message card vertical padding */
+  --msg-pad-y: 14px;     /* reader message card vertical padding */
 }
 :root[data-density='compact'] {
   --sb-row-h: 26px;

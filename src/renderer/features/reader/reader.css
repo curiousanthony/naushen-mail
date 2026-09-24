@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--c-bg);
+  background: var(--c-bg-raised);
   color: var(--c-text);
 }
 
@@ -36,7 +36,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  border-left: 1px solid var(--c-divider);
+  border-left: var(--hairline) solid var(--c-divider);
   box-shadow: var(--shadow-peek);
   animation: reader-slide-in var(--t-med);
 }
@@ -55,7 +55,7 @@
   align-items: center;
   justify-content: center;
   padding: 44px 24px 24px;
-  background: rgba(15, 15, 15, 0.32);
+  background: var(--c-scrim);
   animation: reader-fade-in var(--t-med);
 }
 
@@ -127,8 +127,8 @@
   /* No horizontal padding: the divider spans the full width while the content inside lines up
      with the message column. */
   padding: 10px 0 12px;
-  border-bottom: 1px solid var(--c-divider);
-  background: var(--c-bg);
+  border-bottom: var(--hairline) solid var(--c-divider);
+  background: var(--c-bg-raised);
 }
 
 /* Same max-width and gutters as .reader__inner, so subject and messages share a left edge
@@ -176,10 +176,11 @@
 
 .reader__subject {
   margin: 0;
-  font-size: 25px;
-  line-height: 1.25;
+  font-size: 24px;
+  line-height: 1.22;
   font-weight: 600;
-  letter-spacing: -0.012em;
+  letter-spacing: -0.021em;
+  text-wrap: balance;
   color: var(--c-text);
   overflow-wrap: break-word;
 }
@@ -259,7 +260,7 @@
 /* ------------------------------------------------------------------ message card */
 
 .msg {
-  border-bottom: 1px solid var(--c-divider);
+  border-bottom: var(--hairline) solid var(--c-divider);
 }
 
 .msg:last-of-type { border-bottom: 0; }
@@ -269,7 +270,7 @@
   align-items: flex-start;
   gap: 10px;
   width: 100%;
-  padding: 14px 8px;
+  padding: var(--msg-pad-y) 8px;
   margin: 0 -8px;
   border-radius: var(--radius-md);
   text-align: left;
@@ -388,7 +389,7 @@
 .msg__detail {
   margin: 2px 0 0 40px;
   padding: 8px 10px;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-md);
   background: var(--c-bg-input);
   font-size: 12.5px;
@@ -429,7 +430,7 @@
   gap: 8px;
   margin: 0 0 12px;
   padding: 7px 8px 7px 10px;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-md);
   background: var(--c-bg-input);
   font-size: 12.5px;
@@ -460,7 +461,7 @@
   gap: 10px;
   margin: 0 0 14px;
   padding: 12px 14px;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-lg);
   background: var(--c-bg-input);
 }
@@ -488,7 +489,7 @@
   display: inline-flex; align-items: center; gap: 5px;
   height: 26px;
   padding: 0 12px;
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   border-radius: var(--radius-md);
   font-size: 12.5px;
   font-weight: 500;
@@ -508,9 +509,9 @@
   align-items: center;
   gap: 6px;
   height: 22px;
-  margin-top: 4px;
-  padding: 0 8px;
-  border-radius: var(--radius-sm);
+  margin-top: 6px;
+  padding: 0 9px;
+  border-radius: 11px;
   background: var(--c-bg-hover);
   color: var(--c-text-3);
   font-size: 12px;
@@ -519,6 +520,7 @@
 }
 
 .msgbody__quote:hover { background: var(--c-bg-hover-strong); color: var(--c-text-2); }
+.msgbody__quote.is-open { background: var(--c-bg-selected); color: var(--c-accent); }
 .msgbody__dots { letter-spacing: 1px; font-size: 9px; }
 .msgbody__quote:not(.is-open) .msgbody__quote-label {
   position: absolute;
@@ -543,7 +545,7 @@
   gap: 8px;
   max-width: 260px;
   padding: 6px 10px 6px 8px;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-md);
   background: var(--c-bg);
   text-align: left;
@@ -594,7 +596,7 @@
   gap: 7px;
   height: 32px;
   padding: 0 12px;
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   border-radius: var(--radius-lg);
   font-size: 13px;
   font-weight: 500;
@@ -610,7 +612,7 @@
   font-family: var(--font-mono);
   font-size: 10.5px;
   color: var(--c-text-3);
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: 3px;
   padding: 0 3px;
   line-height: 14px;
@@ -631,7 +633,8 @@
   border-radius: var(--radius-lg);
   background: var(--c-bg-popover);
   box-shadow: var(--shadow-popover);
-  animation: reader-menu-in var(--t-fast);
+  transform-origin: top right;
+  animation: reader-menu-in var(--dur-2) var(--ease-out);
 }
 
 @keyframes reader-menu-in {
@@ -668,7 +671,7 @@
 
 .attprev__scrim {
   position: fixed; inset: 0; z-index: 80; display: grid; place-items: center;
-  background: rgba(15, 15, 15, 0.4); animation: ve-fade 120ms ease-out;
+  background: var(--c-scrim-strong); animation: ve-fade 120ms ease-out;
 }
 
 .attprev {
@@ -680,7 +683,7 @@
 
 .attprev__head {
   flex: none; display: flex; align-items: center; gap: 6px;
-  height: 48px; padding: 0 10px 0 16px; border-bottom: 1px solid var(--c-divider);
+  height: 48px; padding: 0 10px 0 16px; border-bottom: var(--hairline) solid var(--c-divider);
 }
 .attprev__title { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
 .attprev__name { font-size: 13.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

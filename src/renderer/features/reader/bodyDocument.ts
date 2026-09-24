@@ -15,7 +15,7 @@
 /** Token names read from the parent document, in the order used below. */
 const TOKENS = [
   '--font-ui', '--font-mono',
-  '--c-bg',
+  '--c-bg', '--c-bg-raised',
   '--c-text', '--c-text-2', '--c-text-3', '--c-accent', '--c-divider', '--c-border',
   '--c-bg-hover', '--c-bg-input',
   '--reader-paper-bg', '--reader-paper-text', '--reader-paper-text-2',
@@ -58,7 +58,7 @@ export function buildBodyCss(o: BodyDocumentOptions): string {
    * the browser paint its own dark canvas (#121212), which reads as a panel against the app's
    * #191919. Matching the app token exactly makes the frame disappear.
    */
-  const surface = o.paper ? t['--reader-paper-bg'] : t['--c-bg']
+  const surface = o.paper ? t['--reader-paper-bg'] : t['--c-bg-raised']
 
   return `
 :root { color-scheme: ${scheme}; }
