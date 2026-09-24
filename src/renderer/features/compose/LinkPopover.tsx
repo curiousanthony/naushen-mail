@@ -32,7 +32,7 @@ export function LinkPopover({ editor, anchor, onClose }: Props): JSX.Element {
   const [href, setHref] = useState<string>(() => (editor.getAttributes('link').href as string | undefined) ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
-  const [pos, setPos] = useState<React.CSSProperties>({ left: anchor.left, top: anchor.bottom + 8, visibility: 'hidden' })
+  const [pos, setPos] = useState<React.CSSProperties>({ left: anchor.left, top: anchor.bottom + 8 })
 
   useEffect(() => {
     inputRef.current?.focus()

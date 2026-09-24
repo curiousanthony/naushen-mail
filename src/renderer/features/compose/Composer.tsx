@@ -745,13 +745,14 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
             {problems.errors.length ? problems.errors.join(' ') : problems.nudges.map((n) => n.text).join(' ')}
           </span>
           <div className="cmpx-confirm__actions">
-            {!problems.errors.length && problems.nudges.some((n) => n.id === 'attachment') && (
+            {/* One contextual fix, for the most important problem; "Send anyway" covers the rest. */}
+            {!problems.errors.length && problems.nudges[0]?.id === 'attachment' && (
               <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); fileInput.current?.click() }}>Attach a file</button>
             )}
-            {!problems.errors.length && problems.nudges.some((n) => n.id === 'subject') && (
+            {!problems.errors.length && problems.nudges[0]?.id === 'subject' && (
               <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); subjectRef.current?.focus() }}>Add subject</button>
             )}
-            {!problems.errors.length && typos[0] && problems.nudges.some((n) => n.id === 'typo') && (
+            {!problems.errors.length && typos[0] && problems.nudges[0]?.id === 'typo' && (
               <button type="button" className="cmpx-confirm__btn" onClick={() => fixTypo(typos[0])}>Use {typos[0].suggestedDomain}</button>
             )}
             {!problems.errors.length && (
@@ -875,16 +876,6 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
         {menu === 'help' && (
           <div className="cmp-pop cmp-pop--help">
-            <div className="cmp-menu__group">Formatting</div>
-            {[
-              ['/', 'Insert a block'], [':', 'Emoji'], ['⌘B / ⌘I / ⌘U', 'Bold, italic, underline'],
-              ['⌘⇧S', 'Strikethrough'], ['⌘E', 'Code'], ['⌘K / ⌘⇧L', 'Link'], [';name', 'Snippet'], ['⌥⌘1–3', 'Headings'],
-              ['# ## ###', 'Headings'], ['- or *', 'Bulleted list'], ['1.', 'Numbered list'],
-              ['[]', 'To-do'], ['>', 'Quote'], ['```', 'Code block'], ['---', 'Divider'],
-              ['⌘↵', 'Send'], ['⌘⇧↵', 'Send & archive'], ['esc', 'Save draft & close']
-            ].map(([k, v]) => (
-              <div key={k} className="cmp-help__row"><kbd>{k}</kbd><span>{v}</span></div>
-            ))}
             <div className="cmp-menu__group">Typing</div>
             <button
               type="button"
@@ -896,6 +887,16 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
               <span>Smart quotes, dashes and ellipsis</span>
               <span className="cmpx-toggle__track" />
             </button>
+            <div className="cmp-menu__group">Formatting</div>
+            {[
+              ['/', 'Insert a block'], [':', 'Emoji'], ['⌘B / ⌘I / ⌘U', 'Bold, italic, underline'],
+              ['⌘⇧S', 'Strikethrough'], ['⌘E', 'Code'], ['⌘K / ⌘⇧L', 'Link'], [';name', 'Snippet'], ['⌥⌘1–3', 'Headings'],
+              ['# ## ###', 'Headings'], ['- or *', 'Bulleted list'], ['1.', 'Numbered list'],
+              ['[]', 'To-do'], ['>', 'Quote'], ['```', 'Code block'], ['---', 'Divider'],
+              ['⌘↵', 'Send'], ['⌘⇧↵', 'Send & archive'], ['esc', 'Save draft & close']
+            ].map(([k, v]) => (
+              <div key={k} className="cmp-help__row"><kbd>{k}</kbd><span>{v}</span></div>
+            ))}
           </div>
         )}
       </footer>

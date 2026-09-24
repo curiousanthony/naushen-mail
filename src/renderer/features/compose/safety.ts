@@ -212,7 +212,7 @@ export function sendNudges(input: {
   if (nothingWritten) out.push({ id: 'empty', text: 'This message is empty.' })
   if (input.typos.length) {
     const t = input.typos[0]
-    out.push({ id: 'typo', text: `${t.typedDomain} looks like a typo of ${t.suggestedDomain}.` })
+    out.push({ id: 'typo', text: `${t.typedDomain} may be a typo.` })
   }
   if (!input.attachmentCount && !input.hasInlineImage) {
     const m = findAttachmentMention(input.bodyText)

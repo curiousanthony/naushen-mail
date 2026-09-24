@@ -25,7 +25,7 @@
 
 /* Deterministic tint per contact: the hue comes from the address, lightness/alpha keep it
    legible on both surfaces (the letter uses the normal text token). */
-.cmpx-avatar {
+.cmp-suggest__avatar.cmpx-avatar {
   background: hsl(var(--hue, 210) 55% 55% / 0.22);
   color: var(--c-text);
 }
@@ -88,11 +88,16 @@
 .cmpx-confirm__btn--primary { color: var(--c-accent); font-weight: 500; }
 .cmpx-confirm__btn--primary:hover { background: var(--c-bg-selected); color: var(--c-accent); }
 .cmpx-confirm kbd {
-  margin-left: 4px;
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--c-text-3);
 }
+.cmpx-confirm__text { flex: 1 1 180px; }
 .cmpx-confirm.is-error { background: var(--chip-red-bg); color: var(--chip-red-fg); }
 
 /* ---------------------------------------------------------------- link popover */
