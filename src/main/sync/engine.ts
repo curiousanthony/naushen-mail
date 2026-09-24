@@ -166,7 +166,9 @@ export class SyncEngine {
       if (!adapter) return
       const labels: Label[] = this.repo.labelsForAccount(accountId)
       try {
-        for (const t of threads) await adapter.applyAction(t.remoteId, action, { labels })
+        // Muting is a local flag; the provider just sees archive / move-to-inbox.
+        const remote: ThreadAction = action.type === 'mute' ? { type: 'archive' } : action.type === 'unmute' ? { type: 'unarchive' } : action
+        for (const t of threads) await adapter.applyAction(t.remoteId, remote, { labels })
       } catch (e) {
         this.failStatus(accountId, e, 'Action failed: ')
         void this.syncAccount(accountId) // reconcile local state with the server

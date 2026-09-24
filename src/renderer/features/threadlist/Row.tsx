@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { TimeChips } from '@/features/time/TimeChips'
-import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, Star, Trash2 } from 'lucide-react'
+import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, RotateCcw, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { initials, listTime } from '@/lib/format'
@@ -8,8 +8,15 @@ import { chipStyle } from '@/lib/labels'
 import { gravatarUrl } from '@/lib/avatar'
 import { Tooltip } from '@/features/tooltip'
 import { usePreviewStore } from '@/features/preview'
+import { perform } from '@/features/commands/runner'
+import { toastText } from '@/features/commands/undo'
+import { HOVER_INTENT_MS, warmThread } from '@/features/gestures/threadCache'
+import { useRowSwipe } from '@/features/gestures/useRowSwipe'
+import { dragPayload, endThreadDrag, startThreadDrag } from '@/features/gestures/dnd'
+import { swipeArchiveAction } from '@/features/gestures/plan'
 import { rowLabels, senderText } from './lib'
 import { CodeChip, useActiveCode } from '@/features/reader/CodeChip'
+import '@/features/gestures/gestures.css'
 
 export interface RowProps {
   thread: Thread
@@ -53,6 +60,8 @@ function RowImpl({
   const focus = useApp((s) => s.focus)
   const setOverlay = useApp((s) => s.setOverlay)
   const showAvatars = useApp((s) => s.settings.showAvatars)
+  // Extension setting (see settings/lib/settings-ext.ts): absent means on.
+  const swipeOn = useApp((s) => (s.settings as unknown as { swipeGestures?: boolean }).swipeGestures !== false)
   const chips = rowLabels(t, labels, 2)
   const sender = senderText(t, myEmails)
   // Verification code (<10 min old): a "Copy 482913" chip shown on hover / focus.
@@ -66,6 +75,57 @@ function RowImpl({
 
   const remind = (): void => { focus(t.id); setOverlay('snooze') }
 
+  // ---- swipe (trackpad two-finger): left = archive (or restore in Trash/Spam), right = remind.
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
+  const navRole = (): 'trash' | 'spam' | null => {
+    const n = useApp.getState().nav
+    return n.kind === 'role' && (n.role === 'trash' || n.role === 'spam') ? n.role : null
+  }
+  const leftKind = swipeArchiveAction(navRole())
+  /** A row inside a multi-selection swipes the whole selection; otherwise just itself. */
+  const swipeIds = (): string[] => {
+    const sel = useApp.getState().selectedIds
+    return sel.length > 1 && sel.includes(t.id) ? sel : [t.id]
+  }
+  const swipe = useRowSwipe({
+    enabled: swipeOn,
+    rowRef, wrapRef,
+    slidesOut: (side) => side === 'left',
+    onCommit: (side) => {
+      const ids = swipeIds()
+      if (side === 'left') {
+        const k = swipeArchiveAction(navRole())
+        const n = ids.length
+        const msg = k.action.type === 'archive' ? toastText('archive', n) : k.action.type === 'untrash' ? toastText('untrash', n) : toastText('notSpam', n)
+        void perform(k.action, msg, { ids })
+      } else {
+        // The reminder picker targets the selection, so make this row (or its selection) the target.
+        const before = useApp.getState().selectedIds
+        // Targets resolve selection > open thread > cursor: only force a selection when another
+        // thread is open (or several are selected), otherwise the cursor alone is enough.
+        const open = useApp.getState().openThreadId
+        useApp.setState({ focusedId: t.id, selectedIds: ids.length > 1 || (open && open !== t.id) ? ids : [] })
+        setOverlay('snooze')
+        // Cancelling the picker must not leave this row selected (and the bulk bar up).
+        const off = useApp.subscribe((s) => {
+          if (s.overlay === 'snooze') return
+          off()
+          if (s.selectedIds.length === ids.length && ids.every((i) => s.selectedIds.includes(i))) useApp.setState({ selectedIds: before })
+        })
+      }
+    }
+  })
+
+  // ---- warm the thread body so opening it is instant: on hover intent and when the j/k cursor lands.
+  const warmTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (!focused) return undefined
+    const id = setTimeout(() => warmThread(t.id), 60) // skip the rows a held j/k flies past
+    return () => clearTimeout(id)
+  }, [focused, t.id])
+  useEffect(() => () => { if (warmTimer.current) clearTimeout(warmTimer.current) }, [])
+
   // Row preview: hover this row for a moment and a floating card tracking the cursor shows a
   // richer preview (see features/preview). Cursor updates are coalesced to one per animation
   // frame so a fast mousemove sweep doesn't hammer the shared store while the card is following.
@@ -78,6 +138,8 @@ function RowImpl({
   }
   const onRowMouseEnter = (e: MouseEvent): void => {
     usePreviewStore.getState().scheduleShow(t.id, e.clientX, e.clientY)
+    if (warmTimer.current) clearTimeout(warmTimer.current)
+    warmTimer.current = setTimeout(() => warmThread(t.id), HOVER_INTENT_MS)
   }
   const onRowMouseMove = (e: MouseEvent): void => {
     pendingRef.current = { x: e.clientX, y: e.clientY }
@@ -85,6 +147,7 @@ function RowImpl({
   }
   const onRowMouseLeave = (): void => {
     if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
+    if (warmTimer.current) { clearTimeout(warmTimer.current); warmTimer.current = null }
     usePreviewStore.getState().hide(t.id)
   }
   // A row can unmount mid-hover (the list is virtualized — see threadlist/index.tsx's
@@ -96,7 +159,21 @@ function RowImpl({
   }, [t.id])
 
   return (
+    <div className="trow-wrap" role="presentation" ref={wrapRef} data-swipe={swipe?.side} data-armed={swipe?.armed || undefined}>
+      {swipe && (
+        <div
+          className="trow__reveal" data-side={swipe.side} data-armed={swipe.armed} aria-hidden
+          data-kind={swipe.side === 'right' ? 'remind' : leftKind.action.type === 'archive' ? 'archive' : 'restore'}
+        >
+          <span className="trow__revealbody">
+            {swipe.side === 'right'
+              ? <><AlarmClock size={16} /><span>Remind</span></>
+              : <>{leftKind.action.type === 'archive' ? <Archive size={16} /> : <RotateCcw size={16} />}<span>{leftKind.label}</span></>}
+          </span>
+        </div>
+      )}
     <div
+      ref={rowRef}
       className="trow" role="option" aria-selected={selected} id={`trow-${t.id}`}
       data-unread={t.unread} data-selected={selected} data-focused={focused} data-open={open}
       onClick={(e) => onOpen(t.id, e)}
@@ -108,6 +185,13 @@ function RowImpl({
       // happens without the cursor ever leaving the row. The select checkbox and hover actions
       // stop propagation on their own mousedown, so this only fires for the row body itself.
       onMouseDown={() => usePreviewStore.getState().hide(t.id)}
+      draggable
+      onDragStart={(e) => {
+        usePreviewStore.getState().hide()
+        const s = useApp.getState()
+        startThreadDrag(e, dragPayload(t, s.selectedIds, s.threads))
+      }}
+      onDragEnd={endThreadDrag}
     >
       <span className="trow__lead">
         <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />
@@ -168,6 +252,7 @@ function RowImpl({
           <Action label="Move to trash" onClick={() => void act({ type: 'trash' }, [t.id], 'Moved to trash')}><Trash2 size={14} /></Action>
         </span>
       </span>
+    </div>
     </div>
   )
 }

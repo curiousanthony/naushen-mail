@@ -4,6 +4,7 @@ import {
   Archive, Clock, CornerDownLeft, FileText, Forward, History, Inbox, Keyboard, Layers, Mail, MailOpen, MailX, Monitor, Moon, PanelLeft,
   ListFilter, RefreshCw, Reply, ReplyAll, Search, Send, Settings, ShieldAlert, ShieldBan, SquarePen, Star, StarOff, Sun, Tag, Trash2, Undo2, User, UserPlus, Users, X
 } from 'lucide-react'
+import { BellOff, FolderInput, SquareCheck } from 'lucide-react'
 import type { Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, listTime } from '@/lib/format'
@@ -18,6 +19,7 @@ import { Keys } from './Keycaps'
 import { Overlay } from './Overlay'
 import { SnoozePicker } from './SnoozePicker'
 import { LabelPicker } from './LabelPicker'
+import { MovePicker } from '../gestures/MovePicker'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
 import { focusedSender } from '../rules/actions'
 import { readBundles } from '../rules/prefs'
@@ -28,7 +30,8 @@ const ICONS: Record<string, Icon> = {
   archive: Archive, trash: Trash2, spam: ShieldAlert, mail: Mail, 'mail-open': MailOpen, inbox: Inbox, clock: Clock, tag: Tag, star: Star,
   'star-off': StarOff, undo: Undo2, unsubscribe: MailX, reply: Reply, 'reply-all': ReplyAll, forward: Forward, pencil: SquarePen, send: Send,
   file: FileText, layers: Layers, settings: Settings, keyboard: Keyboard, sidebar: PanelLeft, refresh: RefreshCw, 'user-plus': UserPlus,
-  user: User, users: Users, sun: Sun, moon: Moon, monitor: Monitor, view: Layers, label: Tag, rule: ListFilter, block: ShieldBan
+  user: User, users: Users, sun: Sun, moon: Moon, monitor: Monitor, view: Layers, label: Tag, rule: ListFilter, block: ShieldBan,
+  'folder-input': FolderInput, 'bell-off': BellOff, 'check-square': SquareCheck
 }
 
 const MAX_RESULTS = 8
@@ -42,6 +45,7 @@ export function Pickers(): JSX.Element {
     <>
       <SnoozePicker />
       <LabelPicker />
+      <MovePicker />
     </>
   )
 }
@@ -86,7 +90,8 @@ function PaletteBody(): JSX.Element {
     navRole: s.nav.kind === 'role' ? s.nav.role : null,
     accountId: s.accountId, accounts: s.accounts, views: s.views, labels: s.labels,
     theme: s.settings.theme, sidebarCollapsed: s.sidebarCollapsed, canUndo: undoStack.size > 0,
-    sender: focusedSender(), bundleIds: readBundles(s.settings).map((b) => b.id)
+    sender: focusedSender(), bundleIds: readBundles(s.settings).map((b) => b.id),
+    targetMuted: target.threads.length > 0 && target.threads.every((t) => t.muted), listCount: s.threads.length
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [ids.join('|'), s.threads, s.openThreadId, s.focusedId, s.nav, s.accountId, s.accounts, s.views, s.labels, s.settings.theme, s.sidebarCollapsed, s.settings])
 

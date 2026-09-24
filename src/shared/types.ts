@@ -113,6 +113,8 @@ export interface Thread {
   reminderAt: number | null
   /** Local-only: set once a "follow up if no reply" deadline passed without an inbound reply ("No reply yet"). */
   followUpFiredAt?: number | null
+  /** Local-only: replies to this conversation skip the inbox (see ThreadAction 'mute'). */
+  muted?: boolean
 }
 
 export interface ThreadWithMessages extends Thread {
@@ -188,6 +190,10 @@ export type ThreadAction =
   | { type: 'unsnooze' } // local only
   | { type: 'remind'; at: number | null } // local only
   | { type: 'deleteForever' }
+  /** Local: replies skip the inbox. Also archives (Gmail-style). */
+  | { type: 'mute' }
+  /** Local: stop muting and put the thread back in the inbox. */
+  | { type: 'unmute' }
 
 // ---------------------------------------------------------------- Compose
 

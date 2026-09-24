@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ThreadWithMessages } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { fetchThread, peekThread } from '@/features/gestures/threadCache'
 import { ThreadHeader } from './ThreadHeader'
 import { MessageCard } from './MessageCard'
 import { ReplyBar } from './ReplyBar'
@@ -40,11 +41,15 @@ export function Reader(): JSX.Element | null {
 
   // -------------------------------------------------------------- data
 
-  useEffect(() => {
+  // Layout effect: a warmed thread must land before the first paint, and a cold one must show the
+  // skeleton on that first paint (not a one-frame "no longer available").
+  useLayoutEffect(() => {
     if (!openThreadId) { setThread(null); return }
     let alive = true
-    setLoading(true)
-    void window.api.invoke('threads.get', openThreadId).then((t) => {
+    // Warmed on hover / cursor focus (gestures/threadCache): paint instantly, then revalidate.
+    const warm = peekThread(openThreadId)
+    if (warm) { setThread(warm); setLoading(false) } else setLoading(true)
+    void fetchThread(openThreadId).then((t) => {
       if (!alive) return
       setThread(t)
       setLoading(false)

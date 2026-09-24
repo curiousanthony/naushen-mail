@@ -16,9 +16,11 @@ export interface SettingsExt {
   signatureInReplies: boolean
   /** Accent colour (design stream). Drives `data-accent` on <html>; see styles/accents.css. */
   accent: Accent
+  /** Two-finger trackpad swipe on a thread row: left archives, right sets a reminder. */
+  swipeGestures: boolean
 }
 
-export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'next', signatureInReplies: true, accent: 'blue' }
+export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'next', signatureInReplies: true, accent: 'blue', swipeGestures: true }
 
 export const THREAD_STYLES: readonly ThreadStyle[] = ['side', 'center', 'full']
 export const ACCENT_VALUES: readonly Accent[] = ['blue', 'violet', 'pink', 'orange', 'green', 'teal', 'neutral']
@@ -30,7 +32,8 @@ export function readExt(settings: AppSettings): SettingsExt {
     threadStyle: THREAD_STYLES.includes(raw.threadStyle as ThreadStyle) ? (raw.threadStyle as ThreadStyle) : EXT_DEFAULTS.threadStyle,
     autoAdvance: AUTO_ADVANCE.includes(raw.autoAdvance as AutoAdvance) ? (raw.autoAdvance as AutoAdvance) : EXT_DEFAULTS.autoAdvance,
     signatureInReplies: typeof raw.signatureInReplies === 'boolean' ? raw.signatureInReplies : EXT_DEFAULTS.signatureInReplies,
-    accent: ACCENT_VALUES.includes(raw.accent as Accent) ? (raw.accent as Accent) : EXT_DEFAULTS.accent
+    accent: ACCENT_VALUES.includes(raw.accent as Accent) ? (raw.accent as Accent) : EXT_DEFAULTS.accent,
+    swipeGestures: typeof raw.swipeGestures === 'boolean' ? raw.swipeGestures : EXT_DEFAULTS.swipeGestures
   }
 }
 

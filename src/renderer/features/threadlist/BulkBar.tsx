@@ -1,12 +1,20 @@
-import { AlarmClock, Archive, Mail, MailOpen, Tag, Trash2, X } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { AlarmClock, Archive, FolderInput, Mail, MailOpen, Tag, Trash2, X } from 'lucide-react'
 import type { Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Tooltip } from '@/features/tooltip'
 import { Popover, useAnchor } from '@/features/sidebar/Popover'
+import { performSteps } from '@/features/commands/runner'
+import '@/features/gestures/gestures.css'
 
 export interface BulkBarProps {
   selected: Thread[]
   labels: Label[]
+}
+
+/** A quiet keycap after a button label: the shortcut is discoverable without adding chrome. */
+function Hint({ children }: { children: ReactNode }): JSX.Element {
+  return <kbd className="bulk__kbd" aria-hidden>{children}</kbd>
 }
 
 /** Actions for the current multi-selection. Slides up while anything is selected. */
@@ -30,22 +38,25 @@ export function BulkBar({ selected, labels }: BulkBarProps): JSX.Element | null 
       <span className="bulk__count">{n} selected</span>
       <span className="bulk__sep" />
       <button className="bulk__btn" onClick={() => void act({ type: 'archive' }, ids, `${plural} archived`)}>
-        <Archive size={14} /> Archive
+        <Archive size={14} /> Archive <Hint>E</Hint>
       </button>
       <button className="bulk__btn" onClick={() => void act({ type: 'trash' }, ids, `${plural} moved to trash`)}>
-        <Trash2 size={14} /> Trash
+        <Trash2 size={14} /> Trash <Hint>#</Hint>
       </button>
       <button className="bulk__btn" onClick={() => void act(anyUnread ? { type: 'markRead' } : { type: 'markUnread' }, ids)}>
-        {anyUnread ? <MailOpen size={14} /> : <Mail size={14} />} {anyUnread ? 'Mark read' : 'Mark unread'}
+        {anyUnread ? <MailOpen size={14} /> : <Mail size={14} />} {anyUnread ? 'Mark read' : 'Mark unread'} <Hint>{anyUnread ? '⇧I' : 'U'}</Hint>
       </button>
       <button className="bulk__btn" onClick={toggle} aria-haspopup="menu" aria-expanded={!!anchor} disabled={!applicable.length}>
-        <Tag size={14} /> Label
+        <Tag size={14} /> Label <Hint>L</Hint>
+      </button>
+      <button className="bulk__btn" onClick={() => setOverlay('move-picker')}>
+        <FolderInput size={14} /> Move <Hint>V</Hint>
       </button>
       <button className="bulk__btn" onClick={() => setOverlay('snooze')}>
-        <AlarmClock size={14} /> Remind
+        <AlarmClock size={14} /> Remind <Hint>H</Hint>
       </button>
       <span className="bulk__sep" />
-      <Tooltip label="Clear selection">
+      <Tooltip label="Clear selection" shortcut="Esc">
         <button className="bulk__btn bulk__btn--icon" onClick={clearSelection} aria-label="Clear selection">
           <X size={14} />
         </button>
@@ -57,7 +68,12 @@ export function BulkBar({ selected, labels }: BulkBarProps): JSX.Element | null 
           {applicable.map((l) => (
             <button
               key={l.id} className="menu__item" data-menuitem
-              onClick={() => { close(); void act({ type: 'addLabel', labelId: l.id }, ids, `Labelled “${l.name}”`) }}
+              onClick={() => {
+                close()
+                // A label belongs to one account: only that account's conversations get it.
+                const mine = selected.filter((t) => t.accountId === l.accountId).map((t) => t.id)
+                void performSteps([{ ids: mine, action: { type: 'addLabel', labelId: l.id } }], `Labelled “${l.name}”`)
+              }}
             >
               <span className="menu__icon"><span className="dot" style={{ background: `var(--chip-${l.color ?? 'gray'}-fg)` }} /></span>
               <span className="menu__label"><span className="menu__title">{l.name}</span></span>

@@ -55,13 +55,32 @@ export async function perform(action: ThreadAction, message: string | null, opts
   S().toast({ message, actionLabel: entry ? 'Undo' : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
 }
 
+/**
+ * Apply several actions as ONE undoable step (Move to label = add label + archive). Each step
+ * targets its own ids; a single toast / `z` reverses them all, last step first.
+ */
+export async function performSteps(steps: { ids: string[]; action: ThreadAction }[], message: string): Promise<void> {
+  const live = steps.filter((st) => st.ids.length)
+  if (!live.length) return
+  const inverses: { ids: string[]; action: ThreadAction }[] = []
+  for (const st of live) {
+    await S().act(st.action, st.ids)
+    const inv = invertAction(st.action)
+    if (inv) inverses.unshift({ ids: st.ids, action: inv })
+  }
+  const [first, ...rest] = inverses
+  const entry = first ? undoStack.push(first.ids, first.action, message, rest) : null
+  S().toast({ message, actionLabel: entry ? 'Undo' : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
+}
+
 async function undoEntry(entryId: number): Promise<void> {
   const entry = undoStack.take(entryId)
   if (entry) await applyUndo(entry)
 }
 
-async function applyUndo(entry: { ids: string[]; inverse: ThreadAction }): Promise<void> {
+async function applyUndo(entry: { ids: string[]; inverse: ThreadAction; extra?: { ids: string[]; action: ThreadAction }[] }): Promise<void> {
   await window.api.invoke('threads.act', entry.ids, entry.inverse)
+  for (const x of entry.extra ?? []) await window.api.invoke('threads.act', x.ids, x.action)
   await S().refreshThreads()
   if (entry.ids[0]) { S().focus(entry.ids[0]); reveal(entry.ids[0]) }
 }
@@ -114,6 +133,7 @@ function togglePalette(): void {
 }
 
 const unreadTarget = (): boolean => { const { threads } = targetThreads(); return threads.length > 0 && threads.every((t) => t.unread) }
+const mutedTarget = (): boolean => { const { threads } = targetThreads(); return threads.length > 0 && threads.every((t) => t.muted) }
 const starredTarget = (): boolean => { const { threads } = targetThreads(); return threads.length > 0 && threads.every((t) => t.starred) }
 
 function move(delta: number): void {
@@ -190,6 +210,20 @@ export const HANDLERS: Record<string, Handler> = {
   'sel.toggle': () => { const s = S(); if (s.focusedId) s.toggleSelect(s.focusedId) },
   'sel.extendDown': () => extend(1),
   'sel.extendUp': () => extend(-1),
+  'sel.all': () => {
+    const s = S()
+    if (s.overlay) return
+    // Focus in the reader (not a text field, those never reach here): behave like the OS.
+    const ae = typeof document !== 'undefined' ? document.activeElement : null
+    if (ae && ae.closest('.reader')) { document.execCommand('selectAll'); return }
+    const ids = s.threads.map((t) => t.id)
+    if (!ids.length) return
+    // Second press clears, like Finder / Gmail's select-all toggle.
+    const all = ids.every((i) => s.selectedIds.includes(i))
+    useApp.setState({ selectedIds: all ? [] : ids })
+    // The native Edit > Select All menu item also fires on a real ⌘A and would paint the whole page blue.
+    requestAnimationFrame(() => window.getSelection()?.removeAllRanges())
+  },
 
   'thread.archive': () => { const n = targetIds(S()).length; if (n) return perform({ type: 'archive' }, toastText('archive', n)) },
   'thread.trash': () => { const n = targetIds(S()).length; if (n) return perform({ type: 'trash' }, toastText('trash', n)) },
@@ -223,6 +257,12 @@ export const HANDLERS: Record<string, Handler> = {
   'sender.unsubscribeArchive': ({ arg }) => unsubscribeAndArchive(arg),
   'bundle.label': ({ arg }) => toggleLabelBundle(arg),
   'bundle.sender': ({ arg }) => toggleSenderBundle(arg),
+  'thread.move': () => { if (targetIds(S()).length) S().setOverlay('move-picker') },
+  'thread.mute': () => {
+    const n = targetIds(S()).length
+    if (!n) return
+    return mutedTarget() ? perform({ type: 'unmute' }, toastText('unmute', n)) : perform({ type: 'mute' }, toastText('mute', n))
+  },
 
   'msg.reply': () => composeFor('reply'),
   'msg.replyAll': () => composeFor('replyAll'),
@@ -253,4 +293,4 @@ export const MENU_COMMANDS: Record<string, string> = {
 /** Rotate through label colours so new labels are visually distinct. */
 export const nextLabelColor = (existing: number): (typeof LABEL_COLORS)[number] => LABEL_COLORS[existing % LABEL_COLORS.length]
 
-export { unreadTarget, starredTarget }
+export { unreadTarget, starredTarget, mutedTarget }

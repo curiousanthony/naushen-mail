@@ -56,11 +56,15 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'thread.star', label: 'Star / unstar', section: 'Threads', keys: ['s'], keywords: ['favorite'] },
   { id: 'thread.unsubscribe', label: 'Unsubscribe', section: 'Threads', keys: ['mod+u'], keywords: ['newsletter', 'mailing list'] },
   { id: 'rule.create', label: 'Create rule from thread', section: 'Threads', keys: ['mod+shift+r'], keywords: ['filter', 'automate', 'sender', 'skip inbox'] },
+  { id: 'thread.move', label: 'Move to…', section: 'Threads', keys: ['v'], keywords: ['folder', 'label', 'file', 'archive to'] },
+  { id: 'thread.mute', label: 'Mute / unmute conversation', section: 'Threads', keys: ['m'], keywords: ['silence', 'ignore', 'skip inbox'] },
+  { id: 'thread.markRead', label: 'Mark as read', section: 'Threads', keys: ['shift+i'], keywords: ['read', 'seen'] },
 
   // ---- Selection
   { id: 'sel.toggle', label: 'Select / unselect conversation', section: 'Selection', keys: ['x'], keywords: ['check', 'multi'] },
   { id: 'sel.extendDown', label: 'Extend selection down', section: 'Selection', keys: ['shift+down'], keywords: ['multi-select'] },
   { id: 'sel.extendUp', label: 'Extend selection up', section: 'Selection', keys: ['shift+up'], keywords: ['multi-select'] },
+  { id: 'sel.all', label: 'Select all conversations', section: 'Selection', keys: ['mod+a'], keywords: ['everything', 'multi-select'] },
 
   // ---- Messages
   { id: 'msg.reply', label: 'Reply', section: 'Messages', keys: ['r'] },
