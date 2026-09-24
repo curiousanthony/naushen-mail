@@ -97,8 +97,15 @@ function RowImpl({
         void perform(k.action, msg, { ids })
       } else {
         // The reminder picker targets the selection, so make this row (or its selection) the target.
+        const before = useApp.getState().selectedIds
         useApp.setState({ focusedId: t.id, selectedIds: ids })
         setOverlay('snooze')
+        // Cancelling the picker must not leave this row selected (and the bulk bar up).
+        const off = useApp.subscribe((s) => {
+          if (s.overlay === 'snooze') return
+          off()
+          if (s.selectedIds.length === ids.length && ids.every((i) => s.selectedIds.includes(i))) useApp.setState({ selectedIds: before })
+        })
       }
     }
   })

@@ -105,7 +105,7 @@ describe('planMove', () => {
       { ids: ['a1'], action: { type: 'addLabel', labelId: 'a:travel' } },
       { ids: ['a1'], action: { type: 'archive' } }
     ])
-    expect(skippedNote(p, { kind: 'label', labelId: 'a:travel', accountId: 'a' })).toContain('other accounts skipped')
+    expect(skippedNote(p, { kind: 'label', labelId: 'a:travel', accountId: 'a' })).toContain('from another account left as is')
   })
   it('a thread already labelled and archived is left alone; labelled but in inbox just leaves it', () => {
     const done = th('a3', 'a', ['a:travel'])

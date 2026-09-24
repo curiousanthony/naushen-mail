@@ -41,7 +41,9 @@ export function Reader(): JSX.Element | null {
 
   // -------------------------------------------------------------- data
 
-  useEffect(() => {
+  // Layout effect: a warmed thread must land before the first paint, and a cold one must show the
+  // skeleton on that first paint (not a one-frame "no longer available").
+  useLayoutEffect(() => {
     if (!openThreadId) { setThread(null); return }
     let alive = true
     // Warmed on hover / cursor focus (gestures/threadCache): paint instantly, then revalidate.

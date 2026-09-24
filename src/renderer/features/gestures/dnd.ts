@@ -144,17 +144,26 @@ export function useDropTarget(dest: Dest | null): { props: Record<string, unknow
 export function useSpringLoad(collapsed: boolean, open: () => void): { props: Record<string, unknown>; dragging: boolean } {
   const dragging = useDrag((s) => !!s.threads)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const opened = useRef(false) // this drag sprang the section open: close it again afterwards
 
   const clear = (): void => { if (timer.current) { clearTimeout(timer.current); timer.current = null } }
   useEffect(() => clear, [])
-  useEffect(() => { if (!dragging) clear() }, [dragging])
+  useEffect(() => {
+    if (dragging) return undefined
+    clear()
+    if (!opened.current) return undefined
+    opened.current = false
+    const t = setTimeout(open, 400) // Finder-style: a spring-loaded folder closes again after the drop
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dragging])
   const props = {
     onDragEnter: (e: DragEvent): void => {
       if (!collapsed || !useDrag.getState().threads) return
       e.preventDefault()
       clear()
 
-      timer.current = setTimeout(() => { timer.current = null; open() }, SPRING_LOAD_MS)
+      timer.current = setTimeout(() => { timer.current = null; opened.current = true; open() }, SPRING_LOAD_MS)
     },
     onDragOver: (e: DragEvent): void => { if (collapsed && useDrag.getState().threads) e.preventDefault() },
     onDragLeave: clear

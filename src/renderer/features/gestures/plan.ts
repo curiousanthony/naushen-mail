@@ -96,8 +96,8 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
 /** Toast copy when part of a multi-account selection was skipped. */
 export function skippedNote(plan: MovePlan, dest: Dest): string {
   if (!plan.skipped || !plan.apply.length) return plan.message
-  const why = dest.kind === 'label' ? 'other accounts skipped' : 'already there'
-  return `${plan.message} (${plan.skipped} ${why})`
+  const why = dest.kind === 'label' ? `${plan.skipped} from another account left as is` : `${plan.skipped} already there`
+  return `${plan.message} (${why})`
 }
 
 /** The action a right-to-left swipe (and its reveal strip) performs, given the mailbox. */
