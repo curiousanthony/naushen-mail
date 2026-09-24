@@ -8,6 +8,7 @@ import { SettingsModal } from '@/features/settings'
 import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/features/commands'
 import { TooltipHost } from '@/features/tooltip'
 import { PreviewHost } from '@/features/preview'
+import { useNativeBridge } from '@/features/native'
 
 /**
  * Shell composition only. Each region is owned by a feature folder (see docs/04-workstreams.md);
@@ -18,6 +19,7 @@ export function App(): JSX.Element {
   const ready = useApp((s) => s.ready)
   useEffect(() => { void init() }, [init])
   useGlobalShortcuts()
+  useNativeBridge()
 
   // The OS opened Naushen Mail for a `mailto:` link (Naushen Mail registers the scheme).
   useEffect(() => window.api.onMailto((init) => { useApp.getState().openComposer({ init }) }), [])

@@ -7,6 +7,7 @@ import type { Repo } from './db/repo'
 import type { SyncEngine } from './sync/engine'
 import type { Outbox } from './sync/outbox'
 import { connectAccount, removeAccount } from './accounts'
+import { dragOutAttachment } from './dragout'
 
 export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): void {
   const impl: MailApi = {
@@ -135,10 +136,13 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'settings.set': async (patch) => {
       const next = repo.setSettings(patch)
       if (patch.theme) nativeTheme.themeSource = patch.theme
+      if ('dockBadge' in patch) engine.emit({ type: 'changed' }) // re-derives the Dock badge
       return next
     },
     'app.openExternal': async (url) => { if (/^(https?:|mailto:)/i.test(url)) await shell.openExternal(url) },
-    'app.platform': async () => ({ platform: process.platform, version: app.getVersion() })
+    'app.platform': async () => ({ platform: process.platform, version: app.getVersion() }),
+    'attachments.dragOut': (messageId, attachmentId, start) =>
+      dragOutAttachment(repo, engine, (BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0])?.webContents, messageId, attachmentId, start)
   }
 
   for (const name of API_METHODS) {

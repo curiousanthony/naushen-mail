@@ -12,6 +12,7 @@ import './providers/register'
 import { userDataPath } from './paths'
 import { applyUserDataOverride, attachE2E } from './e2e'
 import { connectAccount } from './accounts'
+import { loadWindowBounds, setupNative, trackWindowBounds } from './native'
 
 applyUserDataOverride()
 
@@ -36,19 +37,43 @@ function parseMailto(url: string): { to: { email: string }[]; cc: { email: strin
 }
 
 function handleMailto(url: string): void {
-  if (!win) { pendingMailto = url; return }
+  if (!win || win.isDestroyed()) { pendingMailto = url; if (app.isReady()) summon(); return }
   win.webContents.send('mailto', parseMailto(url))
   win.show()
   win.focus()
+}
+
+let repoRef: Repo | null = null
+
+/** Bring the app forward from anywhere (recreating the window if it was closed), then run a menu command. */
+function summon(cmd?: string): void {
+  const run = (): void => {
+    if (!win || win.isDestroyed()) return
+    if (win.isMinimized()) win.restore()
+    win.show(); win.focus(); app.focus({ steal: true })
+    if (cmd) win.webContents.send('menu', cmd)
+  }
+  if (!win || win.isDestroyed()) {
+    if (!repoRef) return
+    win = createWindow(repoRef)
+    win.webContents.once('did-finish-load', () => setTimeout(() => {
+      if (pendingMailto) { handleMailto(pendingMailto); pendingMailto = null }
+      run()
+    }, 500))
+    return
+  }
+  run()
 }
 
 // Registered before `whenReady` so a cold launch via a mailto: link (macOS calls this instead of
 // passing argv) is captured even though the window doesn't exist yet.
 app.on('open-url', (event, url) => { event.preventDefault(); handleMailto(url) })
 
-function createWindow(): BrowserWindow {
+function createWindow(repo: Repo): BrowserWindow {
+  const saved = loadWindowBounds(repo)
   const w = new BrowserWindow({
-    width: 1280, height: 820, minWidth: 900, minHeight: 560,
+    width: saved?.width ?? 1280, height: saved?.height ?? 820, minWidth: 900, minHeight: 560,
+    ...(saved ? { x: saved.x, y: saved.y } : {}),
     show: false,
     title: 'Naushen Mail',
     titleBarStyle: 'hiddenInset',
@@ -61,7 +86,9 @@ function createWindow(): BrowserWindow {
       contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: true
     }
   })
-  w.once('ready-to-show', () => w.show())
+  trackWindowBounds(w, repo)
+  w.once('ready-to-show', () => { if (saved?.maximized) w.maximize(); w.show() })
+  w.on('closed', () => { if (win === w) win = null })
   w.webContents.setWindowOpenHandler(({ url }) => {
     if (/^(https?:|mailto:)/i.test(url)) void shell.openExternal(url)
     return { action: 'deny' }
@@ -88,11 +115,13 @@ app.whenReady().then(async () => {
     await connectAccount('mock', repo, engine)
     await connectAccount('mock', repo, engine)
   }
-  win = createWindow()
+  repoRef = repo
+  win = createWindow(repo)
   attachE2E(win)
-  const send = (channel: string, payload: unknown): void => { win?.webContents.send(channel, payload) }
+  const send = (channel: string, payload: unknown): void => { if (win && !win.isDestroyed()) win.webContents.send(channel, payload) }
   engine.onEvent((e) => send('event', e))
   Menu.setApplicationMenu(buildMenu((cmd) => send('menu', cmd)))
+  setupNative({ repo, engine, summon, getWindow: () => win, send })
   nativeTheme.themeSource = repo.getSettings().theme
 
   win.webContents.once('did-finish-load', () => { if (pendingMailto) { handleMailto(pendingMailto); pendingMailto = null } })
@@ -101,7 +130,7 @@ app.whenReady().then(async () => {
   outbox.start()
   void engine.syncAll()
 
-  app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) win = createWindow() })
+  app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) summon() })
 })
 
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit() })

@@ -72,6 +72,9 @@ export function Attachments({ messageId, attachments }: Props): JSX.Element | nu
             <button
               className="att"
               onClick={() => open(a)}
+              draggable
+              onMouseEnter={() => void window.api.invoke('attachments.dragOut', messageId, a.id, false)}
+              onDragStart={(e) => { e.preventDefault(); void window.api.invoke('attachments.dragOut', messageId, a.id, true) }}
               disabled={busy === a.id}
             >
               <span

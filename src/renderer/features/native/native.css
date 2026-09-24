@@ -1,0 +1,14 @@
+/* macOS vibrancy: the BrowserWindow uses `vibrancy: 'sidebar'` (src/main/index.ts), so a
+   translucent sidebar lets the desktop tint show through. Only when the document is flagged
+   vibrant (macOS); everywhere else the opaque --c-bg-sidebar from tokens.css stays. */
+:root {
+  --c-bg-sidebar-vibrant: rgba(247, 247, 245, 0.42);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --c-bg-sidebar-vibrant: rgba(32, 32, 32, 0.38); }
+}
+:root[data-vibrancy='on'] .sidebar { background: var(--c-bg-sidebar-vibrant); }
+/* "Reduce transparency" / "Increase contrast" get the solid surface. */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root[data-vibrancy='on'] .sidebar { background: var(--c-bg-sidebar); }
+}

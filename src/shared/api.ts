@@ -44,6 +44,9 @@ export interface MailApi {
   'attachments.getText'(messageId: string, attachmentId: string): Promise<string | null>
   /** The attachment's bytes as a `data:` URL, for previewing in-app without a save dialog. */
   'attachments.getDataUrl'(messageId: string, attachmentId: string): Promise<string | null>
+  /** Drag an attachment out to Finder/Desktop. `start: false` only pre-fetches (call on hover);
+   *  `start: true` (from dragstart) begins the OS drag. Resolves true once the drag started/was cached. */
+  'attachments.dragOut'(messageId: string, attachmentId: string, start: boolean): Promise<boolean>
 
   // compose
   'compose.send'(msg: OutgoingMessage): Promise<void>
@@ -75,7 +78,8 @@ export const API_METHODS: ApiMethod[] = [
   'messages.inlineImages', 'attachments.getText', 'attachments.getDataUrl',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled', 'compose.retry',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
-  'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'
+  'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform',
+  'attachments.dragOut'
 ]
 
 /** Parsed from an OS-level `mailto:` link (Naushen Mail registers the scheme). Unsupported mailto

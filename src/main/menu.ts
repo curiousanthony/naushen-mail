@@ -15,7 +15,7 @@ export function buildMenu(emit: (cmd: string) => void): Menu {
       { role: 'zoomIn' }, { role: 'zoomOut' }, { role: 'resetZoom' }
     ] },
     { label: 'Mailbox', submenu: [
-      item('Go to Inbox', 'go-inbox', 'Cmd+1'), item('Sync Now', 'sync', 'Cmd+Shift+R')
+      item('Go to Inbox', 'go-inbox', 'Cmd+1'), item('Check Mail Now', 'sync', 'Cmd+Shift+R')
     ] },
     { role: 'windowMenu' }
   ])
