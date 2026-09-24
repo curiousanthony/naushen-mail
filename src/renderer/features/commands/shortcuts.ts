@@ -68,6 +68,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'msg.prev', label: 'Previous message in thread', section: 'Messages', keys: ['p'], owner: 'reader' },
   { id: 'msg.toggle', label: 'Expand / collapse message', section: 'Messages', keys: ['o'], owner: 'reader' },
   { id: 'msg.toggleAll', label: 'Expand / collapse all', section: 'Messages', keys: ['shift+o'], owner: 'reader' },
+  { id: 'person.info', label: 'Sender info', section: 'Messages', keys: ['i'], keywords: ['contact', 'person', 'who', 'profile'] },
   { id: 'msg.attachments', label: 'Open attachments', section: 'Messages', keys: ['mod+o'], owner: 'reader' },
 
   // ---- Compose window (handled by the compose feature; listed for reference)

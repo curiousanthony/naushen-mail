@@ -46,3 +46,39 @@ export function filterRank<T>(items: T[], query: string, get: (t: T) => { label:
     .sort((a, b) => b.s - a.s || a.i - b.i)
     .map((x) => x.item)
 }
+
+/**
+ * Split `text` into runs, marking the parts that matched a query token (case/diacritic
+ * insensitive; each token's word-start occurrence preferred; overlaps merged). Used for match
+ * highlighting. When normalisation changes the string length the indices would not map, so
+ * the text is returned unhighlighted.
+ */
+export function highlightSegments(text: string, query: string): { text: string; hit: boolean }[] {
+  const tokens = norm(query).split(/\s+/).filter(Boolean)
+  if (!tokens.length || !text) return [{ text, hit: false }]
+  const lower = norm(text)
+  if (lower.length !== text.length) return [{ text, hit: false }]
+  const spans: [number, number][] = []
+  for (const t of tokens) {
+    const m = new RegExp(`(^|[^a-z0-9])(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`).exec(lower)
+    const at = m ? m.index + m[1].length : lower.indexOf(t)
+    if (at >= 0) spans.push([at, at + t.length])
+  }
+  if (!spans.length) return [{ text, hit: false }]
+  spans.sort((a, b) => a[0] - b[0])
+  const merged: [number, number][] = []
+  for (const s of spans) {
+    const last = merged[merged.length - 1]
+    if (last && s[0] <= last[1]) last[1] = Math.max(last[1], s[1])
+    else merged.push([s[0], s[1]])
+  }
+  const out: { text: string; hit: boolean }[] = []
+  let pos = 0
+  for (const [a, b] of merged) {
+    if (a > pos) out.push({ text: text.slice(pos, a), hit: false })
+    out.push({ text: text.slice(a, b), hit: true })
+    pos = b
+  }
+  if (pos < text.length) out.push({ text: text.slice(pos), hit: false })
+  return out
+}

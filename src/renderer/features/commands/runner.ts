@@ -5,6 +5,7 @@ import { extendSelection, lastMessage, moveFocus, targetIds } from './selection'
 import { UndoStack, invertAction, toastText } from './undo'
 import { parseListUnsubscribe } from './unsubscribe'
 import { useCommandUi } from './ui-store'
+import { toggleSenderInfo } from '../people'
 
 /**
  * Command implementations, keyed by the ids in shortcuts.ts. Used by the keyboard hook, the
@@ -213,7 +214,8 @@ export const HANDLERS: Record<string, Handler> = {
   'msg.reply': () => composeFor('reply'),
   'msg.replyAll': () => composeFor('replyAll'),
   'msg.forward': () => composeFor('forward'),
-  'compose.new': () => { S().openComposer() }
+  'compose.new': () => { S().openComposer() },
+  'person.info': toggleSenderInfo
 }
 
 /** Run a command by id. Unknown ids are ignored. */

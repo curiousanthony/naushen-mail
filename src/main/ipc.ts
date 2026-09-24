@@ -51,7 +51,9 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     },
     'threads.act': (ids, action) => engine.act(ids, action),
     'threads.counts': async () => repo.counts(),
-    'threads.search': async (text, accountIds) => repo.listThreads({ filter: { text, accountIds }, limit: 100 }),
+    'threads.search': async (text, accountIds, limit) => repo.listThreads({ filter: { text, accountIds }, limit: limit ?? 100 }),
+    'people.search': async (query, limit, accountIds) => repo.searchPeople(query, limit, accountIds),
+    'people.info': async (email, accountIds) => repo.personInfo(email, accountIds),
     'attachments.save': async (messageId, attachmentId) => {
       const row = repo.db.prepare('SELECT account_id, remote_id, thread_id, attachments_json FROM messages WHERE id = ?').get(messageId) as
         { account_id: string; remote_id: string; attachments_json: string } | undefined

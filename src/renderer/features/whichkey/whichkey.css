@@ -1,0 +1,13 @@
+/* Which-key hint: bottom-left, below overlays' scrim so it never competes with them. */
+.wk {
+  position: fixed; left: 16px; bottom: 16px; z-index: 900; min-width: 168px; padding: 8px 10px 8px; border-radius: var(--radius-lg);
+  background: var(--c-bg-popover); border: 1px solid var(--c-border); box-shadow: var(--shadow-popover);
+  color: var(--c-text); font: 13px var(--font-ui); pointer-events: none; animation: wk-in 90ms ease-out;
+}
+.wk__prefix { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; color: var(--c-text-3); font-size: 11.5px; }
+.wk__prefix span { margin-left: 2px; }
+.wk__opts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.wk__opt { display: flex; align-items: center; gap: 10px; height: 22px; }
+.wk__opt .cmd-key { min-width: 20px; justify-content: center; }
+@keyframes wk-in { from { opacity: 0; transform: translateY(3px) } to { opacity: 1; transform: none } }
+@media (prefers-reduced-motion: reduce) { .wk { animation: none; } }

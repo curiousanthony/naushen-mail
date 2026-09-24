@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { useApp, type Toast } from '@/lib/store'
-import { useCommandUi } from './ui-store'
 import { Keys } from './Keycaps'
 import './commands.css'
 
@@ -84,21 +83,6 @@ export function Toaster(): JSX.Element {
           </div>
         ))}
       </div>
-      <SequenceHint />
     </>
-  )
-}
-
-/** "g …" pill listing what the pending key sequence can continue with. */
-function SequenceHint(): JSX.Element | null {
-  const hint = useCommandUi((s) => s.hint)
-  if (!hint) return null
-  return (
-    <div className="cmd-hint" role="status">
-      <div className="cmd-hint__prefix">{hint.prefix.map((p) => <kbd key={p} className="cmd-key">{p.toUpperCase()}</kbd>)}<span>then…</span></div>
-      <div className="cmd-hint__opts">
-        {hint.options.map((o) => <div key={o.keys} className="cmd-hint__opt"><kbd className="cmd-key">{o.keys.toUpperCase()}</kbd><span>{o.label}</span></div>)}
-      </div>
-    </div>
   )
 }

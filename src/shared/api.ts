@@ -1,5 +1,5 @@
 import type {
-  Account, AppSettings, Contact, Counts, Draft, Label, OutgoingMessage, ProviderKind,
+  Account, AppSettings, Contact, Counts, PersonHit, PersonInfo, Draft, Label, OutgoingMessage, ProviderKind,
   ScheduledSend, SyncEvent, ThreadAction, ThreadListResult, ThreadQuery, ThreadWithMessages, View
 } from './types'
 
@@ -30,7 +30,11 @@ export interface MailApi {
   'threads.get'(threadId: string): Promise<ThreadWithMessages | null>
   'threads.act'(threadIds: string[], action: ThreadAction): Promise<void>
   'threads.counts'(): Promise<Counts>
-  'threads.search'(text: string, accountIds?: string[]): Promise<ThreadListResult>
+  'threads.search'(text: string, accountIds?: string[], limit?: number): Promise<ThreadListResult>
+  /** People (participants of local threads, excluding your own addresses) matching name/email. */
+  'people.search'(query: string, limit?: number, accountIds?: string[]): Promise<PersonHit[]>
+  /** Local-only stats + the 3 most recent threads with one address. */
+  'people.info'(email: string, accountIds?: string[]): Promise<PersonInfo>
   'attachments.save'(messageId: string, attachmentId: string): Promise<string | null>
   /**
    * Resolves every `inline: true` attachment on a message to a displayable `data:` URL, keyed
@@ -75,7 +79,8 @@ export const API_METHODS: ApiMethod[] = [
   'messages.inlineImages', 'attachments.getText', 'attachments.getDataUrl',
   'compose.send', 'compose.schedule', 'compose.cancelScheduled', 'compose.listScheduled', 'compose.retry',
   'drafts.save', 'drafts.list', 'drafts.get', 'drafts.delete', 'contacts.suggest',
-  'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform'
+  'sync.now', 'settings.get', 'settings.set', 'app.openExternal', 'app.platform',
+  'people.search', 'people.info'
 ]
 
 /** Parsed from an OS-level `mailto:` link (Naushen Mail registers the scheme). Unsupported mailto

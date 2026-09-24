@@ -1,6 +1,6 @@
 import type { SQLInputValue } from 'node:sqlite'
 import type {
-  Account, Address, AppSettings, Attachment, Contact, Counts, Draft, Label, Message, ScheduledSend,
+  Account, Address, AppSettings, Attachment, Contact, Counts, Draft, Label, Message, PersonHit, PersonInfo, ScheduledSend,
   SystemRole, Thread, ThreadAction, ThreadFilter, ThreadListResult, ThreadQuery, ThreadWithMessages, View
 } from '@shared/types'
 import { DEFAULT_SETTINGS } from '@shared/types'
@@ -392,6 +392,42 @@ export class Repo {
       `SELECT * FROM contacts WHERE email LIKE ? ESCAPE '\\' OR LOWER(COALESCE(name,'')) LIKE ? ESCAPE '\\'
        ORDER BY use_count DESC, last_used_at DESC LIMIT ?`
     ).all(q, q, limit) as Row[]).map((r) => ({ email: r.email, name: r.name ?? undefined, lastUsedAt: r.last_used_at, useCount: r.use_count }))
+  }
+
+  // ------------------------------------------------------------ people (derived from thread participants)
+  /**
+   * Distinct addresses across local threads matching `query` by name or email (your own account
+   * addresses excluded), most-conversed first. Pure local SQL over `threads.participants`.
+   */
+  searchPeople(query: string, limit = 40, accountIds?: string[]): PersonHit[] {
+    const q = `%${likeEsc(query.trim().toLowerCase())}%`
+    const acct = accountIds?.length ? `AND t.account_id IN (${accountIds.map(() => '?').join(',')})` : ''
+    const rows = this.db.prepare(
+      `SELECT lower(json_extract(p.value,'$.email')) AS email, MAX(json_extract(p.value,'$.name')) AS name,
+              COUNT(DISTINCT t.id) AS c, MAX(t.last_message_at) AS last
+       FROM threads t, json_each(t.participants) p
+       WHERE json_extract(p.value,'$.email') LIKE '%@%' ${acct}
+         AND (lower(json_extract(p.value,'$.email')) LIKE ? ESCAPE '\\' OR lower(COALESCE(json_extract(p.value,'$.name'),'')) LIKE ? ESCAPE '\\')
+         AND lower(json_extract(p.value,'$.email')) NOT IN (SELECT lower(email) FROM accounts)
+       GROUP BY email ORDER BY c DESC, last DESC LIMIT ?`
+    ).all(...(accountIds ?? []), q, q, limit) as Row[]
+    return rows.map((r) => ({ email: r.email, name: r.name || undefined, threadCount: r.c, lastAt: r.last }))
+  }
+
+  personInfo(email: string, accountIds?: string[]): PersonInfo {
+    const e = email.trim().toLowerCase()
+    const acct = accountIds?.length ? `AND t.account_id IN (${accountIds.map(() => '?').join(',')})` : ''
+    const has = `EXISTS (SELECT 1 FROM json_each(t.participants) p WHERE lower(json_extract(p.value,'$.email')) = ?)`
+    const notTrash = `NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role IN ('trash','spam'))`
+    const args = [...(accountIds ?? []), e]
+    const st = this.db.prepare(`SELECT COUNT(*) c, MAX(t.last_message_at) last FROM threads t WHERE ${has} AND ${notTrash} ${acct}`).get(...args.slice(-1), ...args.slice(0, -1)) as Row
+    const rows = this.db.prepare(`SELECT t.* FROM threads t WHERE ${has} AND ${notTrash} ${acct} ORDER BY t.last_message_at DESC LIMIT 3`)
+      .all(...args.slice(-1), ...args.slice(0, -1)) as Row[]
+    const recent = this.hydrate(rows)
+    const name = this.db.prepare(
+      `SELECT MAX(json_extract(p.value,'$.name')) n FROM threads t, json_each(t.participants) p WHERE lower(json_extract(p.value,'$.email')) = ?`
+    ).get(e) as Row | undefined
+    return { email: e, name: name?.n || undefined, threadCount: st.c ?? 0, lastAt: st.last ?? 0, recent }
   }
 
   // ------------------------------------------------------------ settings (kv)
