@@ -256,7 +256,13 @@ export interface AppSettings {
     microsoftClientId: string
   }
   markReadOnOpen: boolean
+  /** Master switch for native new-mail notifications (Off = false). */
   notifications: boolean
+  /** Optional so older saved settings load; a missing value means 'all'. 'people' skips
+   *  newsletters / noreply / List-Unsubscribe mail. */
+  notifyScope?: 'all' | 'people'
+  /** Show the unread Inbox count on the Dock icon. Missing = on. */
+  dockBadge?: boolean
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -270,7 +276,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
   signatureHtml: {},
   oauth: { googleClientId: '', googleClientSecret: '', microsoftClientId: '' },
   markReadOnOpen: true,
-  notifications: true
+  notifications: true,
+  notifyScope: 'all',
+  dockBadge: true
 }
 
 // ---------------------------------------------------------------- Helpers

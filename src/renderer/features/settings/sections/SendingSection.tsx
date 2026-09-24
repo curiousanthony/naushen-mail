@@ -16,8 +16,14 @@ export function SendingSection(): JSX.Element {
         </Row>
       </Group>
       <Group title="Notifications">
-        <Row label="Desktop notifications" description="Show a macOS notification when new mail arrives in your inbox.">
-          <Switch label="Desktop notifications" checked={settings.notifications} onChange={(notifications) => void update({ notifications })} />
+        <Row label="Desktop notifications" description="Show a macOS notification when new mail arrives in your inbox. Bursts are grouped into one; nothing fires while you are looking at that inbox.">
+          <Segmented<'off' | 'all' | 'people'> label="Desktop notifications"
+            value={!settings.notifications ? 'off' : settings.notifyScope === 'people' ? 'people' : 'all'}
+            onChange={(v) => void update(v === 'off' ? { notifications: false } : { notifications: true, notifyScope: v })}
+            options={[{ value: 'off', label: 'Off' }, { value: 'all', label: 'All new mail' }, { value: 'people', label: 'People only' }]} />
+        </Row>
+        <Row label="Dock badge" description="Show the number of unread Inbox messages on the Dock icon.">
+          <Switch label="Dock badge" checked={settings.dockBadge !== false} onChange={(dockBadge) => void update({ dockBadge })} />
         </Row>
       </Group>
     </div>
