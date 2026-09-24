@@ -219,7 +219,7 @@ describe('visibleAttachments', () => {
 
 const tokens: ThemeTokens = {
   '--font-ui': 'system-ui', '--font-mono': 'monospace',
-  '--c-bg': '#191919',
+  '--c-bg': '#191919', '--c-bg-raised': '#222222',
   '--c-text': '#111', '--c-text-2': '#555', '--c-text-3': '#999', '--c-accent': '#2383e2',
   '--c-divider': '#eee', '--c-border': '#ddd', '--c-bg-hover': '#f5f5f5', '--c-bg-input': '#fafafa',
   '--reader-paper-bg': '#ffffff', '--reader-paper-text': '#37352f', '--reader-paper-text-2': '#666',
@@ -272,8 +272,8 @@ describe('buildBodyDocument', () => {
   it('names the surface explicitly so the frame does not show a UA canvas', () => {
     // `transparent` here lets a dark color-scheme paint #121212 over the app's own background.
     const css = buildBodyCss({ html: '', tokens, dark: true, paper: false })
-    expect(css).toContain(`html { background: ${tokens['--c-bg']}`)
-    expect(css).toContain(`background: ${tokens['--c-bg']}`)
+    expect(css).toContain(`html { background: ${tokens['--c-bg-raised']}`)
+    expect(css).toContain(`background: ${tokens['--c-bg-raised']}`)
     expect(css).not.toMatch(/background:\s*transparent/)
   })
 

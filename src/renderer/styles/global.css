@@ -1,10 +1,16 @@
 @import './tokens.css';
+@import './accents.css';
+@import './density.css';
 *, *::before, *::after { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 body {
   font-family: var(--font-ui); font-size: 14px; line-height: 1.5; color: var(--c-text); background: var(--c-bg);
-  -webkit-font-smoothing: antialiased; overflow: hidden; user-select: none; -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility; font-kerning: normal;
+  overflow: hidden; user-select: none; -webkit-user-select: none;
 }
+/* Numbers that change or align in columns never jitter: times, counts, badges. */
+time, [class*='count'], [class*='badge'], [class*='time'], kbd { font-variant-numeric: tabular-nums; }
 /* Notion Mail (like most Electron/web-shell apps) used a pointer cursor on clickable elements,
    not macOS's native "no pointer on buttons" convention. Match that; opt out per element with
    `.cursor-default` where a button is genuinely disabled or purely informational. */
@@ -14,14 +20,37 @@ a, select, summary, [role='button'], [role='menuitem'], [role='option'], [role='
 label:has(input[type='checkbox']), label:has(input[type='radio']) { cursor: pointer; }
 .cursor-default { cursor: default; }
 input, textarea { font: inherit; color: inherit; }
-::selection { background: rgba(35, 131, 226, 0.25); }
+::selection { background: var(--c-selection); }
 .selectable, .selectable * { user-select: text; -webkit-user-select: text; }
 .drag { -webkit-app-region: drag; }
 .no-drag { -webkit-app-region: no-drag; }
-:focus-visible { outline: 2px solid var(--c-focus-ring); outline-offset: 1px; }
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: transparent; border-radius: 10px; border: 2px solid transparent; background-clip: content-box; }
-*:hover::-webkit-scrollbar-thumb { background-color: var(--c-bg-pressed); }
+/* Keyboard focus only (never on mouse click): a crisp accent ring, distinct from the soft hover fill. */
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--c-accent) 75%, transparent); outline-offset: 1px; }
+
+/* Thin overlay-style scrollbars: invisible until the container is hovered, then a slim rounded thumb. */
+::-webkit-scrollbar { width: 12px; height: 12px; background: transparent; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: transparent; border-radius: 10px; border: 3.5px solid transparent; background-clip: content-box;
+  transition: background-color var(--dur-2);
+}
+*:hover::-webkit-scrollbar-thumb { background-color: var(--c-scrollbar); }
+*::-webkit-scrollbar-thumb:hover { background-color: var(--c-scrollbar-hover); }
+*::-webkit-scrollbar-thumb:active { background-color: var(--c-scrollbar-hover); }
 
 .app { display: grid; grid-template-columns: var(--sidebar-w) 1fr; grid-template-rows: minmax(0, 1fr); height: 100%; }
 .app__main { position: relative; min-width: 0; display: flex; flex-direction: column; background: var(--c-bg); }
+
+/* Reduced motion, everywhere (including feature CSS written by other streams). Durations collapse
+   to 1ms rather than `animation: none` so JS waiting on `animationend` (toast exit) still fires. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

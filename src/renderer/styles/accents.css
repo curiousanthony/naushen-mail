@@ -1,0 +1,34 @@
+/* Accent colour choices (Settings > Appearance). `data-accent` is set on <html> by
+   `features/settings/lib/appearance.ts`. Only --c-accent and --c-accent-text are set here:
+   hover, selection tint, focus ring, unread dot and ::selection are derived in tokens.css via
+   color-mix(). Blue is the default and is defined in tokens.css (no attribute needed).
+   Dark overrides live in the media query at the same specificity, after the light ones.
+   Light values are picked so white text on the accent reaches >= 4.5:1 where the hue allows it;
+   in dark mode the lighter hues carry dark text. Neutral is near-black in light, near-white in dark. */
+:root[data-accent='violet'] { --c-accent: #6b57d6; }
+:root[data-accent='pink'] { --c-accent: #cf3a7d; }
+:root[data-accent='orange'] { --c-accent: #c9540c; }
+:root[data-accent='green'] { --c-accent: #2a8558; }
+:root[data-accent='teal'] { --c-accent: #0f7f8a; }
+:root[data-accent='neutral'] { --c-accent: #37352f; }
+
+@media (prefers-color-scheme: dark) {
+  :root[data-accent='violet'] { --c-accent: #8b7af0; }
+  :root[data-accent='pink'] { --c-accent: #ee5b98; }
+  :root[data-accent='orange'] { --c-accent: #f0873a; --c-accent-text: #1c1408; }
+  :root[data-accent='green'] { --c-accent: #3fb47e; --c-accent-text: #04140c; }
+  :root[data-accent='teal'] { --c-accent: #36b5c2; --c-accent-text: #041416; }
+  :root[data-accent='neutral'] { --c-accent: #dcdcdc; --c-accent-text: #191919; }
+}
+
+/* Swatch preview colours for the settings picker (same values as above, addressable by name). */
+:root {
+  --sw-blue: #2383e2; --sw-violet: #6b57d6; --sw-pink: #cf3a7d; --sw-orange: #c9540c;
+  --sw-green: #2a8558; --sw-teal: #0f7f8a; --sw-neutral: #37352f;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sw-blue: #3b96ee; --sw-violet: #8b7af0; --sw-pink: #ee5b98; --sw-orange: #f0873a;
+    --sw-green: #3fb47e; --sw-teal: #36b5c2; --sw-neutral: #dcdcdc;
+  }
+}

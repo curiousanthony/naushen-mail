@@ -5,7 +5,7 @@
 .cmp {
   display: flex;
   flex-direction: column;
-  background: var(--c-bg);
+  background: var(--c-bg-raised);
   color: var(--c-text);
   font-family: var(--font-ui);
   font-size: 14px;
@@ -33,7 +33,7 @@
 }
 
 .cmp--inline {
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-lg);
   margin: 8px 0 16px;
   min-height: 320px;
@@ -58,7 +58,7 @@
   height: 40px;
   padding: 0 8px 0 14px;
   background: var(--c-bg-sidebar);
-  border-bottom: 1px solid var(--c-divider);
+  border-bottom: var(--hairline) solid var(--c-divider);
   flex: none;
 }
 
@@ -84,7 +84,7 @@
   height: 40px;
   padding: 0 6px 0 14px;
   background: var(--c-bg-sidebar);
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-bottom: 0;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   box-shadow: var(--shadow-popover);
@@ -114,7 +114,7 @@
   align-items: flex-start;
   gap: 8px;
   padding: 3px 14px;
-  border-bottom: 1px solid var(--c-divider);
+  border-bottom: var(--hairline) solid var(--c-divider);
   min-height: 34px;
 }
 
@@ -343,14 +343,14 @@
 .cmp-prose hr {
   margin: 12px 0;
   border: 0;
-  border-top: 1px solid var(--c-divider);
+  border-top: var(--hairline) solid var(--c-divider);
 }
 
 .cmp-prose pre {
   margin: 6px 0;
   padding: 12px 14px;
   background: var(--c-bg-input);
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-md);
   font-family: var(--font-mono);
   font-size: 13px;
@@ -397,7 +397,7 @@
   height: 34px;
   margin-top: -17px;
   background: var(--c-bg);
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   border-radius: 4px;
   box-shadow: var(--shadow-popover);
   cursor: ew-resize;
@@ -415,7 +415,7 @@
   gap: 2px;
   padding: 3px;
   background: var(--c-bg-popover);
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-popover);
 }
@@ -440,7 +440,7 @@
   overflow: hidden;
 }
 .cmp-prose th, .cmp-prose td {
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   padding: 6px 10px;
   text-align: left;
   vertical-align: top;
@@ -596,7 +596,7 @@
   gap: 6px;
   flex: none;
   padding: 8px 14px;
-  border-top: 1px solid var(--c-divider);
+  border-top: var(--hairline) solid var(--c-divider);
 }
 
 .cmp-att {
@@ -607,7 +607,7 @@
   height: 26px;
   padding: 0 4px 0 10px;
   background: var(--c-bg-input);
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-md);
   font-size: 12px;
 }
@@ -652,7 +652,7 @@
   gap: 8px;
   flex: none;
   padding: 8px 10px 8px 14px;
-  border-top: 1px solid var(--c-divider);
+  border-top: var(--hairline) solid var(--c-divider);
   background: var(--chip-yellow-bg);
   color: var(--chip-yellow-fg);
   font-size: 13px;
@@ -672,7 +672,7 @@
   flex: none;
   min-height: 48px;
   padding: 8px 10px 8px 8px;
-  border-top: 1px solid var(--c-divider);
+  border-top: var(--hairline) solid var(--c-divider);
   background: var(--c-bg);
 }
 
@@ -771,7 +771,7 @@
 .cmp-pop__custom { display: flex; flex-direction: column; gap: 6px; padding: 6px 8px 8px; }
 .cmp-pop__custom label { font-size: 12px; color: var(--c-text-2); }
 .cmp-pop__custom .cmp-input {
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   padding: 4px 6px;
   border-radius: var(--radius-md);
   font-size: 13px;
@@ -845,7 +845,7 @@
   width: 30px;
   height: 30px;
   flex: none;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-sm);
   color: var(--c-text-2);
   background: var(--c-bg);
@@ -871,7 +871,7 @@
   width: 24px;
   height: 24px;
   flex: none;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
@@ -933,7 +933,7 @@
 .cmp-input--link {
   flex: 1;
   padding: 5px 8px;
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   border-radius: var(--radius-md);
   font-size: 13px;
 }
@@ -943,7 +943,7 @@
 
 .cmp-swatch {
   height: 28px;
-  border: 1px solid var(--c-divider);
+  border: var(--hairline) solid var(--c-divider);
   border-radius: var(--radius-sm);
   background: var(--c-bg);
   font-size: 13px;

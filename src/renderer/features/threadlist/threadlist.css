@@ -128,6 +128,7 @@
   padding: 0 6px;
   font-size: 11.5px;
   font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--c-text-3);
   background: var(--c-bg);
 }
@@ -149,19 +150,26 @@
 .trow:hover { background: var(--c-bg-hover); }
 .trow[data-selected='true'] { background: var(--c-bg-selected); }
 .trow[data-open='true'] { background: var(--c-bg-hover-strong); }
-.trow[data-selected='true']:hover { background: var(--c-bg-selected); }
+.trow[data-selected='true']:hover { background: var(--c-bg-selected-strong); }
 
-/* keyboard cursor */
+/* Keyboard cursor: a faint fill plus an accent bar that grows in. Deliberately different from the
+   mouse hover (a stronger fill, no bar), so the two never read as the same thing. */
+.trow[data-focused='true'] { background: var(--c-bg-cursor); }
+.trow[data-focused='true']:hover { background: var(--c-bg-hover); }
+.trow[data-selected='true'][data-focused='true'] { background: var(--c-bg-selected); }
+.trow[data-open='true'][data-focused='true'] { background: var(--c-bg-hover-strong); }
 .trow[data-focused='true']::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 4px;
-  bottom: 4px;
+  top: 5px;
+  bottom: 5px;
   width: 2px;
   border-radius: 2px;
   background: var(--c-accent);
+  animation: trow-cursor var(--dur-2) var(--ease-out);
 }
+@keyframes trow-cursor { from { transform: scaleY(0.3); opacity: 0; } }
 
 /* lead: unread dot + avatar, with the checkbox laid over the avatar */
 .trow__lead { position: relative; display: flex; align-items: center; gap: 7px; flex: none; }
@@ -172,9 +180,10 @@
   border-radius: 50%;
   background: var(--c-unread-dot);
   opacity: 0;
-  transition: opacity var(--t-fast);
+  transform: scale(0.3);
+  transition: opacity var(--t-fast), transform var(--dur-3) var(--ease-spring);
 }
-.trow__unread[data-on='true'] { opacity: 1; }
+.trow__unread[data-on='true'] { opacity: 1; transform: none; }
 .trow__avatar {
   position: relative;
   width: 22px;
@@ -212,17 +221,20 @@
   background: var(--c-bg);
   color: var(--c-accent-text);
   opacity: 0;
+  transform: scale(0.82);
   pointer-events: none;
-  transition: opacity var(--t-fast), background var(--t-fast), border-color var(--t-fast);
+  transition: opacity var(--t-fast), transform var(--dur-3) var(--ease-spring), background var(--t-fast), border-color var(--t-fast);
 }
 .trow:hover .trow__box,
 .trow[data-selected='true'] .trow__box,
-.trow__box:focus-visible { opacity: 1; pointer-events: auto; }
+.trow__box:focus-visible { opacity: 1; transform: none; pointer-events: auto; }
 .trow:hover .trow__avatar,
 .trow[data-selected='true'] .trow__avatar { opacity: 0; }
 .trow:hover .trow__unread,
 .trow[data-selected='true'] .trow__unread { opacity: 0; }
 .trow[data-selected='true'] .trow__box { background: var(--c-accent); border-color: var(--c-accent); }
+@keyframes trow-check { from { transform: scale(0.4); opacity: 0; } }
+.trow__box svg { animation: trow-check var(--dur-3) var(--ease-spring); }
 
 /* text */
 .trow__sender {
@@ -304,7 +316,7 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.trow[data-unread='true'] .trow__time { color: var(--c-text-2); }
+.trow[data-unread='true'] .trow__time { color: var(--c-text-2); font-weight: 500; }
 .trow__actions { display: none; align-items: center; gap: 1px; }
 .trow:hover .trow__time,
 .trow:focus-within .trow__time { display: none; }
@@ -324,51 +336,6 @@
 .trow__act:active { background: var(--c-bg-pressed); }
 .trow__act[data-on='true'] { color: var(--c-star); }
 
-/* ---------------------------------------------------------------- empty & loading */
-
-.tl__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-height: 58%;
-  padding: 40px 24px;
-  text-align: center;
-}
-.tl__emptyicon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin-bottom: 10px;
-  border-radius: 50%;
-  background: var(--c-bg-hover);
-  color: var(--c-text-3);
-}
-.tl__emptytitle { margin: 0; font-size: 14.5px; font-weight: 500; }
-.tl__emptybody { margin: 0; font-size: 13px; color: var(--c-text-3); }
-
-.tl__skel { padding-top: 4px; }
-.tl__skelrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: var(--row-h);
-  padding: 0 7px;
-}
-.tl__skelavatar, .tl__skelbar {
-  background: var(--c-bg-hover);
-  border-radius: var(--radius-sm);
-  animation: tl-pulse 1.4s ease-in-out infinite;
-}
-.tl__skelavatar { width: 22px; height: 22px; flex: none; border-radius: 50%; }
-.tl__skelbar { height: 9px; }
-.tl__skelbar--wide { flex: none; }
-.tl__skelrow:nth-child(2n) .tl__skelbar { animation-delay: 140ms; }
-.tl__skelrow:nth-child(3n) .tl__skelbar { animation-delay: 280ms; }
-@keyframes tl-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
-
 /* ---------------------------------------------------------------- bulk bar */
 
 .bulk {
@@ -385,7 +352,7 @@
   border-radius: var(--radius-lg);
   background: var(--c-bg-popover);
   box-shadow: var(--shadow-popover);
-  animation: bulk-in 160ms ease-out;
+  animation: bulk-in var(--dur-3) var(--ease-out);
 }
 @keyframes bulk-in {
   from { opacity: 0; transform: translate(-50%, 8px); }
@@ -432,5 +399,4 @@
     transition: none;
     animation: none;
   }
-  .tl__skelavatar, .tl__skelbar { animation: none; }
 }

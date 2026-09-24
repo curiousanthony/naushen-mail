@@ -10,11 +10,11 @@
   padding: 12px 14px;
   border-radius: var(--radius-lg);
   background: var(--c-bg-popover);
-  border: 1px solid var(--c-border);
+  border: var(--hairline) solid var(--c-border);
   box-shadow: var(--shadow-popover);
   pointer-events: none;
   user-select: none;
-  animation: preview-in 100ms ease-out;
+  animation: preview-in var(--dur-1) var(--ease-out);
 }
 
 .preview__header {
@@ -128,7 +128,7 @@
   gap: 6px;
   margin-top: 10px;
   padding-top: 8px;
-  border-top: 1px solid var(--c-divider);
+  border-top: var(--hairline) solid var(--c-divider);
 }
 
 .preview__chip {
