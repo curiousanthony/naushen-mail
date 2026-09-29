@@ -5,9 +5,10 @@ import { Row } from './Row'
 import { BundleRow } from './Bundle'
 import { buildEntries, buildItems, navStateOf } from './bundles'
 import { publishBundleNav, useBundleUi } from './bundleNav'
-import { readAccountMarker, readBundles } from '../rules/prefs'
+import { readBundles } from '../rules/prefs'
 import { dedupeLabels, expandLabelIds } from '@/lib/labels'
 import { FilterBar } from './FilterBar'
+import { EmptyTrashButton } from './EmptyTrash'
 import { BulkBar } from './BulkBar'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
 import {
@@ -177,23 +178,22 @@ export function ThreadList(): JSX.Element {
     () => dedupeLabels(labels.filter((l) => l.kind === 'user' && (accountId === 'all' || l.accountId === accountId)), accountId),
     [labels, accountId]
   )
+  // In "All accounts", the sender's own account is a hover tooltip on the avatar (see Row.tsx),
+  // never a colour -- a per-account tint or dot was cognitively noisy across a long list.
   const showAccount = accountId === 'all' && accounts.length > 1
-  // A tiny account-colour dot per row, only when several accounts are mixed and the avatar
-  // (which already carries the account tint) is not showing.
-  const marker = showAccount && readAccountMarker(settings) && !settings.showAvatars
   const viewName = nav.kind === 'view' ? views.find((v) => v.id === nav.viewId)?.name : undefined
   const count = filtered ? visible.length : total
   const empty = emptyCopy(nav, viewName, filtered)
 
   return (
-    <section className="tl" data-density={settings.density} data-acct-marker={marker} aria-label={head.title}>
-      {marker && <style>{accountMarkerCss(accounts)}</style>}
+    <section className="tl" data-density={settings.density} aria-label={head.title}>
       <header className="tl__bar">
         <h1 className="tl__title">
           {head.emoji && VIEW_ICONS[head.emoji] && (() => { const Icon = VIEW_ICONS[head.emoji!]; return <Icon size={16} className="tl__emoji" /> })()}
           <span className="tl__titletext">{head.title}</span>
           {count > 0 && <span className="tl__count">{count}</span>}
         </h1>
+        {nav.kind === 'role' && nav.role === 'trash' && <EmptyTrashButton />}
         <FilterBar chips={chips} onChange={setChips} labels={userLabels} />
       </header>
 
@@ -248,19 +248,6 @@ export function ThreadList(): JSX.Element {
 /** Members of an open bundle sit under a guide line; plain rows render untouched. */
 function ChildWrap({ child, children }: { child: boolean; children: JSX.Element }): JSX.Element {
   return child ? <div className="tbundle__child">{children}</div> : children
-}
-
-/**
- * One rule per account: rows carry their account in the id (`trow-<account>:<thread>`), so the
- * marker colour is set from here without touching Row. Account colours are user data (like the
- * sidebar's account dot), not theme tokens, hence the hex check before they reach a stylesheet.
- */
-function accountMarkerCss(accounts: { id: string; color: string }[]): string {
-  const esc = (v: string): string => v.replace(/["\\]/g, '\\$&')
-  return accounts
-    .filter((a) => /^#[0-9a-f]{3,8}$/i.test(a.color))
-    .map((a) => `.tl[data-acct-marker='true'] .trow[id^="trow-${esc(a.id)}:"]{--acct:${a.color}}`)
-    .join('\n')
 }
 
 function GroupHeader({ label, count }: { label: string; count: number }): JSX.Element {

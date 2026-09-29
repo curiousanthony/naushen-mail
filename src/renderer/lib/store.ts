@@ -104,13 +104,29 @@ export function navToFilter(nav: Nav, accountId: string, views: View[], labels: 
 let toastSeq = 1
 let refreshTimer: ReturnType<typeof setTimeout> | null = null
 
+// Which account (or 'all') was last focused, so relaunching the app returns to it instead of
+// always resetting to "All accounts" -- guarded like every other localStorage read/write here
+// (sidebar's collapsed-sections, the reader's adapt-dark flag): a private window or blocked site
+// data must never crash the app, just fall back silently.
+const LAST_ACCOUNT_KEY = 'mailroom.lastAccountId'
+function loadLastAccount(): string {
+  try { return globalThis.localStorage?.getItem(LAST_ACCOUNT_KEY) || 'all' } catch { return 'all' }
+}
+function saveLastAccount(id: string): void {
+  try { globalThis.localStorage?.setItem(LAST_ACCOUNT_KEY, id) } catch { /* ignore */ }
+}
+
 export const useApp = create<AppState>((set, get) => ({
   ready: false, accounts: [], labels: [], views: [], settings: DEFAULT_SETTINGS, counts: { unread: {} },
-  accountId: 'all', nav: { kind: 'role', role: 'inbox' }, threads: [], total: 0, loading: false,
+  accountId: loadLastAccount(), nav: { kind: 'role', role: 'inbox' }, threads: [], total: 0, loading: false,
   focusedId: null, selectedIds: [], openThreadId: null, composers: [], toasts: [], overlay: null, sidebarCollapsed: false,
 
   async init() {
     await get().refreshMeta()
+    // The persisted account may since have been removed (or never existed, e.g. first launch) --
+    // fall back to 'all' rather than querying threads for an id nothing recognises.
+    const { accountId, accounts } = get()
+    if (accountId !== 'all' && !accounts.some((a) => a.id === accountId)) set({ accountId: 'all' })
     await get().refreshThreads()
     set({ ready: true })
     window.api.onEvent((e) => {
@@ -150,7 +166,7 @@ export const useApp = create<AppState>((set, get) => ({
   },
 
   setNav(nav) { set({ nav, selectedIds: [], openThreadId: null, focusedId: null }); void get().refreshThreads() },
-  setAccount(id) { set({ accountId: id, selectedIds: [], openThreadId: null }); void get().refreshThreads() },
+  setAccount(id) { saveLastAccount(id); set({ accountId: id, selectedIds: [], openThreadId: null }); void get().refreshThreads() },
   focus(id) { set({ focusedId: id }) },
   toggleSelect(id) { set((s) => ({ selectedIds: s.selectedIds.includes(id) ? s.selectedIds.filter((x) => x !== id) : [...s.selectedIds, id] })) },
   clearSelection() { set({ selectedIds: [] }) },

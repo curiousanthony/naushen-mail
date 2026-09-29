@@ -50,20 +50,6 @@
   to { opacity: 1; transform: none; }
 }
 
-/* "All accounts" account marker: a quiet dot in the (otherwise empty) avatar slot. The colour is
-   set per account from index.tsx via --acct. The avatar fades on hover, taking the dot with it. */
-.tl[data-acct-marker='true'] .trow__avatar[data-empty='true']::after {
-  content: '';
-  display: block;
-  /* A ring, not a disc: the unread dot beside it is solid and may share the account's colour. */
-  box-sizing: border-box;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1.75px solid var(--acct, transparent);
-  opacity: 0.9;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .tbundle__child { animation: none; }
   .tbundle__chev { transition: none; }

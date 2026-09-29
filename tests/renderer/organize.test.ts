@@ -11,7 +11,7 @@ import { bundleStops, collapseBundleAt, expandBundleAt, expandBundleTargets, pub
 import { flatten, groupThreads, offsetsOf, windowRange } from '../../src/renderer/features/threadlist/lib'
 import { targetIds } from '../../src/renderer/features/commands/selection'
 import { moveFocus } from '../../src/renderer/features/commands/selection'
-import { readAccountMarker, readBundles, toggleBundle } from '../../src/renderer/features/rules/prefs'
+import { readBundles, toggleBundle } from '../../src/renderer/features/rules/prefs'
 import { draftToRule, isDraftComplete, ruleToDraft, seedDraft, summarizeSteps, toggleAction, withField } from '../../src/renderer/features/rules/draft'
 import { suggestRule } from '../../src/shared/rules'
 
@@ -208,11 +208,6 @@ describe('feature preferences', () => {
     expect(readBundles(s({ bundles: 'x' }))).toEqual([])
     expect(readBundles(s({ bundles: [null, { kind: 'label' }, { kind: 'nope', match: 'a' }, { kind: 'label', match: ' Receipts ', name: 'Receipts' }, { kind: 'label', match: 'receipts' }] })))
       .toEqual([{ id: 'label:receipts', kind: 'label', match: 'receipts', name: 'Receipts' }])
-  })
-  it('account marker is on unless switched off', () => {
-    expect(readAccountMarker(DEFAULT_SETTINGS)).toBe(true)
-    expect(readAccountMarker(s({ showAccountMarker: false }))).toBe(false)
-    expect(readAccountMarker(s({ showAccountMarker: 'no' }))).toBe(true)
   })
   it('toggling adds then removes, keyed by lower-cased match', () => {
     const on = toggleBundle([], 'label', 'Newsletters', 'Newsletters')

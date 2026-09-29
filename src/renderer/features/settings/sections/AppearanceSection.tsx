@@ -3,7 +3,6 @@ import clsx from 'clsx'
 import type { AppSettings } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
-import { accountMarkerPatch, readAccountMarker } from '@/features/rules/prefs'
 import { extPatch, readExt, type Accent, type AutoAdvance, type ThreadStyle } from '../lib/settings-ext'
 import { ACCENTS } from '../lib/appearance'
 
@@ -18,6 +17,19 @@ function StylePreview({ kind }: { kind: ThreadStyle }): JSX.Element {
     <span className={clsx('st-tprev', `st-tprev--${kind}`)} aria-hidden>
       <span className="st-tprev__rows"><i /><i /><i /><i /></span>
       <span className="st-tprev__panel"><b /><em /><em /></span>
+    </span>
+  )
+}
+
+const DENSITIES: { value: 'comfortable' | 'compact'; label: string; desc: string }[] = [
+  { value: 'comfortable', label: 'Comfortable', desc: 'More breathing room in the list, sidebar and reader' },
+  { value: 'compact', label: 'Compact', desc: 'Tighter rows — more conversations on screen' }
+]
+
+function DensityPreview({ kind }: { kind: 'comfortable' | 'compact' }): JSX.Element {
+  return (
+    <span className={clsx('st-dprev', `st-dprev--${kind}`)} aria-hidden>
+      <i /><i /><i /><i />
     </span>
   )
 }
@@ -40,11 +52,16 @@ export function AppearanceSection(): JSX.Element {
             { value: 'system', label: 'System', icon: <Monitor size={14} strokeWidth={1.5} /> }
           ]} />
         </Row>
-        <Row label="Density" description="Comfortable, or Compact for tighter rows in the list, sidebar and reader.">
-          <Segmented label="Density" value={settings.density} onChange={(density) => set({ density })} options={[
-            { value: 'comfortable', label: 'Comfortable' }, { value: 'compact', label: 'Compact' }
-          ]} />
-        </Row>
+        <div className="st-tstyle st-tstyle--pair" role="radiogroup" aria-label="Density">
+          {DENSITIES.map((o) => (
+            <button key={o.value} type="button" role="radio" aria-checked={settings.density === o.value}
+              className={clsx('st-tstyle__card', settings.density === o.value && 'is-active')} onClick={() => set({ density: o.value })}>
+              <DensityPreview kind={o.value} />
+              <span className="st-tstyle__label">{o.label}</span>
+              <span className="st-tstyle__desc">{o.desc}</span>
+            </button>
+          ))}
+        </div>
         <Row label="Accent colour" description="Selection, focus, unread dots and primary buttons.">
           <div className="st-accents" role="radiogroup" aria-label="Accent colour">
             {ACCENTS.map((a) => (
@@ -74,7 +91,6 @@ export function AppearanceSection(): JSX.Element {
         <Row label="Mark as read when opened" description="A thread becomes read as soon as you open it."><Switch label="Mark as read when opened" checked={settings.markReadOnOpen} onChange={(markReadOnOpen) => set({ markReadOnOpen })} /></Row>
         <Row label="Block remote images" description="Images in email are loaded only when you allow them. Protects against tracking pixels."><Switch label="Block remote images" checked={settings.blockRemoteImages} onChange={(blockRemoteImages) => set({ blockRemoteImages })} /></Row>
         <Row label="Show avatars" description="Sender and recipient photos in the thread list and reader, via Gravatar. Off by default — Notion Mail didn't show them either, and it's one more thing pinging an outside service per contact."><Switch label="Show avatars" checked={settings.showAvatars} onChange={(showAvatars) => set({ showAvatars })} /></Row>
-        <Row label="Show account marker in All accounts" description="A small coloured dot on each conversation showing which account it belongs to, when you are viewing several accounts together."><Switch label="Show account marker in All accounts" checked={readAccountMarker(settings)} onChange={(on) => set(accountMarkerPatch(on))} /></Row>
         <Row label="Swipe gestures" description="Two-finger swipe on a conversation: left archives, right sets a reminder. Trackpads only."><Switch label="Swipe gestures" checked={ext.swipeGestures} onChange={(swipeGestures) => set(extPatch({ swipeGestures }))} /></Row>
         <Row label="Auto-advance" description="Where to go after you archive, trash or snooze the open thread.">
           <Segmented<AutoAdvance> label="Auto-advance" value={ext.autoAdvance} onChange={(autoAdvance) => set(extPatch({ autoAdvance }))} options={[

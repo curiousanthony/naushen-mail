@@ -241,6 +241,13 @@
 .st-tprev--full .st-tprev__panel b { width: 40%; height: 7px; }
 .st-tprev--full .st-tprev__panel em { height: 5px; }
 
+.st-tstyle--pair { grid-template-columns: repeat(2, 1fr); max-width: 360px; }
+.st-dprev { display: flex; flex-direction: column; justify-content: center; gap: 9px; height: 76px; padding: 0 12px; border-radius: var(--radius-md); background: var(--c-bg); box-shadow: inset 0 0 0 1px var(--c-divider); }
+.st-dprev i { display: block; height: 10px; border-radius: 3px; background: var(--c-bg-hover-strong); }
+.st-dprev i:nth-child(2) { width: 88%; } .st-dprev i:nth-child(3) { width: 94%; } .st-dprev i:nth-child(4) { width: 70%; }
+.st-dprev--compact { gap: 5px; }
+.st-dprev--compact i { height: 7px; }
+
 /* ---------------------------------------------------------------- rich text editor + signature */
 .st-rte { border-radius: var(--radius-lg); box-shadow: inset 0 0 0 1px var(--c-border); background: var(--c-bg); transition: box-shadow var(--t-fast); overflow: hidden; }
 .st-rte:focus-within { box-shadow: inset 0 0 0 1px var(--c-accent), 0 0 0 3px var(--c-focus-ring); }

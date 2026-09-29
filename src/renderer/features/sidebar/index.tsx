@@ -187,6 +187,10 @@ function AccountSwitcher({ accounts, accountId, counts }: {
             <span className="menu__icon"><Plus size={14} /></span>
             <span className="menu__label"><span className="menu__title">Add account</span></span>
           </button>
+          <button className="menu__item" data-menuitem onClick={() => { close(); setOverlay('settings') }}>
+            <span className="menu__icon"><SettingsIcon size={14} /></span>
+            <span className="menu__label"><span className="menu__title">Settings</span></span>
+          </button>
         </Popover>
       )}
     </>

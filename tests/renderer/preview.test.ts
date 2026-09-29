@@ -64,16 +64,17 @@ describe('usePreviewStore', () => {
     expect(usePreviewStore.getState().visible).toBe(true)
   })
 
-  it('tracks cursor updates for the currently hovered thread once visible', () => {
+  it('tracks horizontal cursor updates for the currently hovered thread once visible', () => {
     usePreviewStore.getState().scheduleShow('t1', 10, 20)
     vi.advanceTimersByTime(450)
-    usePreviewStore.getState().updateCursor('t1', 50, 60)
-    expect(usePreviewStore.getState()).toMatchObject({ x: 50, y: 60 })
+    usePreviewStore.getState().updateCursor('t1', 50)
+    // y never moves: the card is anchored to the row it was shown for, not the cursor.
+    expect(usePreviewStore.getState()).toMatchObject({ x: 50, y: 20 })
   })
 
   it('ignores a cursor update for a thread that is no longer the active hover', () => {
     usePreviewStore.getState().scheduleShow('t1', 10, 20)
-    usePreviewStore.getState().updateCursor('t2', 999, 999)
+    usePreviewStore.getState().updateCursor('t2', 999)
     expect(usePreviewStore.getState()).toMatchObject({ x: 10, y: 20, threadId: 't1' })
   })
 

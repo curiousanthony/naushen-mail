@@ -30,6 +30,7 @@ export function ViewEditor(): JSX.Element | null {
   const refreshMeta = useApp((s) => s.refreshMeta)
   const toast = useApp((s) => s.toast)
   const editingId = useViewEditor((s) => s.viewId)
+  const seed = useViewEditor((s) => s.seed)
   const close = useViewEditor((s) => s.close)
 
   const base = useMemo(() => views.find((v) => v.id === editingId) ?? null, [views, editingId])
@@ -49,20 +50,33 @@ export function ViewEditor(): JSX.Element | null {
 
   useEffect(() => {
     if (!open) return
+    // Editing an existing view: its own saved filter is the only source. Creating one fresh: a
+    // caller can seed it (e.g. "Save as view" from the thread list's filter chips); nothing seeds
+    // it, and it starts at the Inbox default, same as always.
     const f: ThreadFilter = base?.filter ?? { role: 'inbox' }
     setName(base?.name ?? '')
     setIcon(base?.emoji && base.emoji in VIEW_ICONS ? base.emoji : 'inbox')
     setColor(base?.color ?? '')
-    setAccountId(f.accountIds?.length === 1 ? f.accountIds[0] : 'all')
-    setRole(f.role ?? 'any')
-    setLabelIds(f.labelIds ?? [])
-    setFrom(first(f.from))
-    setSubject(first(f.subjectContains))
-    setUnread(!!f.unread)
-    setAttachment(!!f.hasAttachment)
+    if (base) {
+      setAccountId(f.accountIds?.length === 1 ? f.accountIds[0] : 'all')
+      setRole(f.role ?? 'any')
+      setLabelIds(f.labelIds ?? [])
+      setFrom(first(f.from))
+      setSubject(first(f.subjectContains))
+      setUnread(!!f.unread)
+      setAttachment(!!f.hasAttachment)
+    } else {
+      setAccountId(seed?.accountId ?? 'all')
+      setRole(seed?.role ?? 'inbox')
+      setLabelIds(seed?.labelIds ?? [])
+      setFrom(seed?.from ?? '')
+      setSubject('')
+      setUnread(!!seed?.unread)
+      setAttachment(!!seed?.attachment)
+    }
     setBusy(false)
     setTimeout(() => nameRef.current?.select(), 0)
-  }, [open, base])
+  }, [open, base, seed])
 
   useEffect(() => {
     if (!open) return

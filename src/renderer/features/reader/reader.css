@@ -145,7 +145,7 @@
 .reader__actions {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   margin-bottom: 10px;
 }
 
@@ -159,9 +159,9 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 28px;
-  min-width: 28px;
-  padding: 0 6px;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 8px;
   border-radius: var(--radius-md);
   color: var(--c-text-2);
   transition: background var(--t-fast), color var(--t-fast);
@@ -620,52 +620,6 @@
 
 /* The compose branch mounts its inline composer here. */
 #reader-inline-compose-slot:not(:empty) { padding: 12px 0 4px 40px; }
-
-/* ------------------------------------------------------------------ menu */
-
-.reader__menu {
-  position: absolute;
-  top: 34px;
-  right: 0;
-  z-index: 40;
-  min-width: 210px;
-  padding: 4px;
-  border-radius: var(--radius-lg);
-  background: var(--c-bg-popover);
-  box-shadow: var(--shadow-popover);
-  transform-origin: top right;
-  animation: reader-menu-in var(--dur-2) var(--ease-out);
-}
-
-@keyframes reader-menu-in {
-  from { opacity: 0; transform: scale(0.97) translateY(-3px); }
-  to { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) { .reader__menu { animation: none; } }
-
-.reader__menu-wrap { position: relative; }
-
-.reader__menu-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  height: 28px;
-  padding: 0 8px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: var(--c-text);
-  text-align: left;
-  transition: background var(--t-fast);
-}
-
-.reader__menu-item:hover { background: var(--c-bg-hover); }
-.reader__menu-item.is-danger { color: var(--c-danger); }
-.reader__menu-item svg { color: var(--c-text-3); }
-.reader__menu-item.is-danger svg { color: var(--c-danger); }
-.reader__menu-key { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--c-text-3); }
-.reader__menu-sep { height: 1px; margin: 4px 6px; background: var(--c-divider); }
 
 /* ---------------------------------------------------------------- attachment preview */
 

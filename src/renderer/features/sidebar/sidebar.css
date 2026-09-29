@@ -205,6 +205,21 @@
 .menu__field input:focus { border-color: var(--c-accent); background: var(--c-bg); }
 .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
 
+/* An inline "are you sure" inside a popover (e.g. Empty trash) rather than a second modal on
+   top of the first. */
+.menu__confirm { padding: 8px; }
+.menu__confirm p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.5; color: var(--c-text-2); }
+.menu__confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.menu__confirm-cancel, .menu__confirm-danger {
+  height: 28px; padding: 0 12px; border-radius: var(--radius-md); font-size: 12.5px; font-weight: 500;
+  transition: background var(--t-fast), opacity var(--t-fast);
+}
+.menu__confirm-cancel { color: var(--c-text-2); }
+.menu__confirm-cancel:hover { background: var(--c-bg-hover); color: var(--c-text); }
+.menu__confirm-danger { background: var(--c-danger); color: #fff; }
+.menu__confirm-danger:hover { opacity: 0.9; }
+.menu__confirm-cancel:disabled, .menu__confirm-danger:disabled { opacity: 0.6; pointer-events: none; }
+
 /* ---------------------------------------------------------------- view editor */
 
 .ve__scrim {

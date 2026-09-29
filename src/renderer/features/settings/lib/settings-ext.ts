@@ -20,7 +20,7 @@ export interface SettingsExt {
   swipeGestures: boolean
 }
 
-export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'next', signatureInReplies: true, accent: 'blue', swipeGestures: true }
+export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'close', signatureInReplies: true, accent: 'blue', swipeGestures: true }
 
 export const THREAD_STYLES: readonly ThreadStyle[] = ['side', 'center', 'full']
 export const ACCENT_VALUES: readonly Accent[] = ['blue', 'violet', 'pink', 'orange', 'green', 'teal', 'neutral']

@@ -76,8 +76,24 @@ export function Popover({ anchor, onClose, children, align = 'start', width = 24
   )
 }
 
-/** Opens a popover anchored to the element that was clicked. */
+/**
+ * Opens a popover anchored to the element that was clicked.
+ *
+ * `e.currentTarget` is read into a local *before* it reaches `setAnchor`, not inside the
+ * updater passed to it: a DOM `MouseEvent`'s `currentTarget` is only valid while the event is
+ * actively dispatching, and the browser resets it to `null` the moment dispatch finishes.
+ * `setAnchor(cur => cur ? null : e.currentTarget)` reads `e.currentTarget` when React invokes
+ * that function during its next render, not when this handler runs — usually a tick later, by
+ * which point `currentTarget` had already gone back to `null`. Most of the time React's render
+ * lands soon enough that it still worked; occasionally (a slower frame, another update ahead of
+ * it in the batch) it didn't, and the button did nothing. Capturing the element eagerly removes
+ * the race entirely, regardless of how or when React chooses to invoke the updater.
+ */
 export function useAnchor(): [HTMLElement | null, (e: { currentTarget: HTMLElement }) => void, () => void] {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
-  return [anchor, (e) => setAnchor((cur) => (cur ? null : e.currentTarget)), () => setAnchor(null)]
+  return [
+    anchor,
+    (e) => { const el = e.currentTarget; setAnchor((cur) => (cur ? null : el)) },
+    () => setAnchor(null)
+  ]
 }

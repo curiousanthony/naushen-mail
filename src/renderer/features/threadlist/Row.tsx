@@ -22,7 +22,7 @@ export interface RowProps {
   thread: Thread
   labels: Label[]
   account?: Account
-  /** Tint the avatar with the account colour (only meaningful when viewing all accounts). */
+  /** In "All accounts", shown as a quiet tooltip on the avatar (never a colour — see decisions.md). */
   showAccount: boolean
   myEmails: Set<string>
   selected: boolean
@@ -130,19 +130,22 @@ function RowImpl({
   // richer preview (see features/preview). Cursor updates are coalesced to one per animation
   // frame so a fast mousemove sweep doesn't hammer the shared store while the card is following.
   const rafRef = useRef<number | null>(null)
-  const pendingRef = useRef<{ x: number; y: number } | null>(null)
+  const pendingRef = useRef<number | null>(null)
   const flushCursor = (): void => {
     rafRef.current = null
-    const p = pendingRef.current
-    if (p) usePreviewStore.getState().updateCursor(t.id, p.x, p.y)
+    const x = pendingRef.current
+    if (x !== null) usePreviewStore.getState().updateCursor(t.id, x)
   }
   const onRowMouseEnter = (e: MouseEvent): void => {
-    usePreviewStore.getState().scheduleShow(t.id, e.clientX, e.clientY)
+    // The card is anchored to the row, not the cursor, vertically: it never bobs up and down as
+    // you move within a tall row, only left/right (see PreviewHost.tsx / position.ts).
+    const rowY = rowRef.current?.getBoundingClientRect().top ?? e.clientY
+    usePreviewStore.getState().scheduleShow(t.id, e.clientX, rowY)
     if (warmTimer.current) clearTimeout(warmTimer.current)
     warmTimer.current = setTimeout(() => warmThread(t.id), HOVER_INTENT_MS)
   }
   const onRowMouseMove = (e: MouseEvent): void => {
-    pendingRef.current = { x: e.clientX, y: e.clientY }
+    pendingRef.current = e.clientX
     if (rafRef.current === null) rafRef.current = requestAnimationFrame(flushCursor)
   }
   const onRowMouseLeave = (): void => {
@@ -195,23 +198,25 @@ function RowImpl({
     >
       <span className="trow__lead">
         <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />
-        <span
-          className="trow__avatar"
-          data-empty={!showAvatars || undefined}
-          style={showAvatars && showAccount && account ? { background: account.color, color: '#fff' } : undefined}
-          title={showAvatars && account ? account.email : undefined}
-        >
-          {showAvatars && (lead ? initials(lead) : '—')}
-          {showAvatars && avatarEmail && !avatarFailed && (
-            <img
-              className="trow__avatarimg" src={gravatarUrl(avatarEmail, 44)} alt=""
-              loading="lazy" onError={() => setFailedFor(avatarEmail)}
-            />
-          )}
-        </span>
-        {/* Overlays the avatar on hover / when selected. */}
+        {showAvatars && (
+          // No account colour here (removed — a different colour per account read as visual
+          // noise, not signal, across a long list). The account is still one hover away: the
+          // title tooltip below.
+          <span className="trow__avatar" title={showAccount && account ? account.email : undefined}>
+            {lead ? initials(lead) : '—'}
+            {avatarEmail && !avatarFailed && (
+              <img
+                className="trow__avatarimg" src={gravatarUrl(avatarEmail, 44)} alt=""
+                loading="lazy" onError={() => setFailedFor(avatarEmail)}
+              />
+            )}
+          </span>
+        )}
+        {/* Avatars off: no circle is rendered at all, so the checkbox doesn't overlay anything
+            -- it's a normal flush-left flex item (trow__box--bare in threadlist.css) instead of
+            reserving a blank 22px circle's worth of space for nothing. */}
         <button
-          className="trow__box" role="checkbox" aria-checked={selected}
+          className="trow__box" data-bare={!showAvatars || undefined} role="checkbox" aria-checked={selected}
           aria-label={selected ? 'Deselect conversation' : 'Select conversation'}
           onClick={(e) => { e.stopPropagation(); onSelect(t.id, e) }}
           onMouseDown={(e) => e.stopPropagation()}

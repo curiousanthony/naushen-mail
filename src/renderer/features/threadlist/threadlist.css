@@ -22,6 +22,7 @@
 
 .tl__bar {
   flex: none;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -66,6 +67,7 @@
 .tl__tool:hover { background: var(--c-bg-hover); color: var(--c-text); }
 .tl__tool:active { background: var(--c-bg-pressed); }
 .tl__tool[data-on='true'] { color: var(--c-accent); background: var(--c-bg-selected); }
+.tl__tool--danger:hover { color: var(--c-danger); }
 
 .tl__activechip {
   display: inline-flex;
@@ -105,6 +107,132 @@
   transition: background var(--t-fast), color var(--t-fast);
 }
 .tl__clear:hover { background: var(--c-bg-hover); color: var(--c-text); }
+
+/* ---------------------------------------------------------------- filter panel */
+
+/* Inline, not portalled -- anchored to .tl__bar (position:relative, above), directly under the
+   Filter button, sitting above the conversation rows the way it visually always has. Closes on
+   its own outside-click/Escape listener (FilterBar.tsx), not a shared popover primitive: one
+   boolean, nothing to race. */
+.tl__filterpanel {
+  position: absolute;
+  top: 100%;
+  right: var(--gutter);
+  z-index: 20;
+  width: 296px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: var(--radius-lg);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+  animation: filterpanel-in var(--dur-1) var(--ease-out);
+}
+@keyframes filterpanel-in { from { opacity: 0; transform: scale(0.98) translateY(-3px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tl__filterpanel { animation: none; } }
+
+.tl__filterrow { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* A pill that starts neutral (outlined, quiet) and fills solid once applied -- Notion-database
+   filter chips, not a hidden checkbox list. */
+.tl__filterpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 8px;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px var(--c-border);
+  font-size: 12.5px;
+  color: var(--c-text-2);
+  transition: background var(--t-fast), box-shadow var(--t-fast), color var(--t-fast);
+}
+.tl__filterpill:hover { background: var(--c-bg-hover); }
+.tl__filterpill[data-on='true'] { box-shadow: none; background: var(--c-bg-selected); color: var(--c-accent); }
+.tl__filterpill-check { display: grid; place-items: center; width: 12px; height: 12px; color: inherit; }
+.tl__filterpill-neutral { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--c-border); }
+
+.tl__filterfrom { position: relative; display: flex; flex-direction: column; gap: 5px; }
+.tl__filterfrom > input {
+  height: 30px;
+  padding: 0 9px;
+  border-radius: var(--radius-md);
+  background: var(--c-bg-input);
+  border: 1px solid transparent;
+  font-size: 13px;
+  outline: none;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.tl__filterfrom > input:focus { border-color: var(--c-accent); background: var(--c-bg); }
+.tl__filterhint { margin: 0; font-size: 11px; line-height: 1.4; color: var(--c-text-3); }
+
+.tl__filtersuggest {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--c-bg-popover);
+  box-shadow: var(--shadow-popover);
+}
+.tl__filtersuggest > button {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: background var(--t-fast);
+}
+.tl__filtersuggest > button:hover { background: var(--c-bg-hover); }
+.tl__filtersuggest-name { font-size: 12.5px; color: var(--c-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl__filtersuggest-email { flex: 1; min-width: 0; font-size: 11px; color: var(--c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tl__filterlabels {
+  display: flex;
+  flex-direction: column;
+  max-height: 168px;
+  overflow-y: auto;
+  padding-top: 4px;
+  border-top: var(--hairline) solid var(--c-divider);
+}
+.tl__filterlabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  transition: background var(--t-fast);
+}
+.tl__filterlabel:hover { background: var(--c-bg-hover); }
+.tl__filterlabel[data-on='true'] .tl__filterlabel-name { font-weight: 600; }
+.tl__filterlabel-check { display: grid; place-items: center; width: 16px; flex: none; color: var(--c-accent); }
+.tl__filterlabel-name { flex: 1; min-width: 0; font-size: 13px; color: var(--c-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tl__filtersave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  border-top: var(--hairline) solid var(--c-divider);
+  padding-top: 10px;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-accent);
+  transition: opacity var(--t-fast);
+}
+.tl__filtersave:hover { opacity: 0.8; }
 
 /* ---------------------------------------------------------------- scroller & groups */
 
@@ -149,16 +277,22 @@
 }
 .trow:hover { background: var(--c-bg-hover); }
 .trow[data-selected='true'] { background: var(--c-bg-selected); }
-.trow[data-open='true'] { background: var(--c-bg-hover-strong); }
 .trow[data-selected='true']:hover { background: var(--c-bg-selected-strong); }
 
-/* Keyboard cursor: a faint fill plus an accent bar that grows in. Deliberately different from the
-   mouse hover (a stronger fill, no bar), so the two never read as the same thing. */
+/* Keyboard cursor: a faint fill only -- no bar, no accent colour. It moves with every j/k press
+   (and lands on row 0 the instant a list loads, before anything was ever opened), so anything
+   louder than a quiet fill reads as "this is the open conversation", which it usually isn't. */
 .trow[data-focused='true'] { background: var(--c-bg-cursor); }
 .trow[data-focused='true']:hover { background: var(--c-bg-hover); }
 .trow[data-selected='true'][data-focused='true'] { background: var(--c-bg-selected); }
+
+/* The conversation actually open in the reader: a stronger fill *and* the accent bar -- the one
+   and only state that bar means. It survives losing keyboard focus (e.g. clicking into the
+   reader) and disappears the instant the reader closes, because both read straight off
+   `openThreadId` (see threadlist/index.tsx), not off any auto-focus fallback. */
+.trow[data-open='true'] { background: var(--c-bg-hover-strong); }
 .trow[data-open='true'][data-focused='true'] { background: var(--c-bg-hover-strong); }
-.trow[data-focused='true']::before {
+.trow[data-open='true']::before {
   content: '';
   position: absolute;
   left: 0;
@@ -199,11 +333,6 @@
   transition: opacity var(--t-fast);
   overflow: hidden;
 }
-/* Settings -> Appearance -> "Show avatars" off: no circle, no initials, no colour -- matches
-   Notion Mail, which never showed one either. The row keeps the same footprint so nothing
-   reflows, and the selection checkbox (positioned within .trow__lead, not .trow__avatar) still
-   overlays the same spot on hover. */
-.trow__avatar[data-empty='true'] { background: transparent; }
 /* Covers the initials once it loads; onError removes it from the DOM, so the initials underneath
    are always the fallback -- never a broken-image icon. */
 .trow__avatarimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
@@ -225,6 +354,10 @@
   pointer-events: none;
   transition: opacity var(--t-fast), transform var(--dur-3) var(--ease-spring), background var(--t-fast), border-color var(--t-fast);
 }
+/* Settings -> Appearance -> "Show avatars" off: Row.tsx doesn't render .trow__avatar at all, so
+   there's no 22px circle left reserving blank space -- the checkbox becomes a normal flush-left
+   flex item (not overlaid on anything) and the row starts that much earlier. */
+.trow__box[data-bare='true'] { position: static; margin: 0; }
 .trow:hover .trow__box,
 .trow[data-selected='true'] .trow__box,
 .trow__box:focus-visible { opacity: 1; transform: none; pointer-events: auto; }
