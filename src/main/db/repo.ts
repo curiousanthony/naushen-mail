@@ -12,6 +12,7 @@ const j = <T>(s: string | null | undefined, fallback: T): T => (s ? (JSON.parse(
 
 const rowToAccount = (r: Row): Account => ({
   id: r.id, provider: r.provider, email: r.email, name: r.name, color: r.color,
+  avatarUrl: r.avatar_url ?? undefined,
   createdAt: r.created_at, syncCursor: r.sync_cursor, lastSyncAt: r.last_sync_at,
   status: r.status, statusMessage: r.status_message ?? undefined
 })
@@ -36,12 +37,12 @@ export class Repo {
   }
   upsertAccount(a: Account): void {
     this.db.prepare(
-      `INSERT INTO accounts (id, provider, email, name, color, created_at, sync_cursor, last_sync_at, status, status_message)
-       VALUES (?,?,?,?,?,?,?,?,?,?)
-       ON CONFLICT(id) DO UPDATE SET email=excluded.email, name=excluded.name, color=excluded.color,
+      `INSERT INTO accounts (id, provider, email, name, color, avatar_url, created_at, sync_cursor, last_sync_at, status, status_message)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?)
+       ON CONFLICT(id) DO UPDATE SET email=excluded.email, name=excluded.name, color=excluded.color, avatar_url=excluded.avatar_url,
          sync_cursor=excluded.sync_cursor, last_sync_at=excluded.last_sync_at, status=excluded.status,
          status_message=excluded.status_message`
-    ).run(a.id, a.provider, a.email, a.name, a.color, a.createdAt, a.syncCursor, a.lastSyncAt, a.status, a.statusMessage ?? null)
+    ).run(a.id, a.provider, a.email, a.name, a.color, a.avatarUrl ?? null, a.createdAt, a.syncCursor, a.lastSyncAt, a.status, a.statusMessage ?? null)
   }
   patchAccount(id: string, patch: Partial<Account>): void {
     const cur = this.getAccount(id)

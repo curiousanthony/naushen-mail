@@ -73,6 +73,12 @@ describe('repo', () => {
     const aUnread = repo.listThreads({ filter: { role: 'all', unread: true, accountIds: ['a'] } }).total
     expect(repo.counts().unread['a:all']).toBe(aUnread)
   })
+  it('upsertAccount round-trips avatarUrl through getAccount', () => {
+    repo.upsertAccount({ ...acct('a'), avatarUrl: 'https://i.pravatar.cc/150?img=12' })
+    expect(repo.getAccount('a')?.avatarUrl).toBe('https://i.pravatar.cc/150?img=12')
+    repo.upsertAccount(acct('a'))
+    expect(repo.getAccount('a')?.avatarUrl).toBeUndefined()
+  })
   it('settings merge nested oauth', () => {
     repo.setSettings({ oauth: { googleClientId: 'x', googleClientSecret: '', microsoftClientId: '' } })
     expect(repo.getSettings().oauth.googleClientId).toBe('x')
