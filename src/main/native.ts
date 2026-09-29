@@ -25,8 +25,9 @@ export function setupNative(ctx: Ctx): void {
   // read/archive/snooze/sync from any path lowers it, and turning the setting off clears it.
   let badgeTimer: NodeJS.Timeout | null = null
   const updateBadge = (): void => {
-    const enabled = repo.getSettings().dockBadge !== false
-    const text = badgeText(repo.counts().unread['all:inbox'] ?? 0, enabled)
+    const settings = repo.getSettings()
+    const enabled = settings.dockBadge !== false
+    const text = badgeText(repo.counts({ excludeCategories: !!settings.hideCategoriesFromInbox }).unread['all:inbox'] ?? 0, enabled)
     if (process.platform === 'darwin') app.dock?.setBadge(text)
     else app.setBadgeCount(Number(text) || 0)
   }

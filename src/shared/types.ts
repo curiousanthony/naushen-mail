@@ -47,7 +47,10 @@ export interface Label {
   name: string
   /** One of the Notion-ish label colours (see LABEL_COLORS) or undefined. */
   color?: LabelColor
-  kind: 'system' | 'user'
+  /** 'category' = a Gmail inbox-tab label (Social/Promotions/Updates/Forums/Primary) — extra tags
+   *  Gmail's own tabbed UI uses; a thread keeps its normal INBOX label too. Gmail-only; Outlook
+   *  never emits these. */
+  kind: 'system' | 'user' | 'category'
   role?: SystemRole
 }
 
@@ -153,6 +156,9 @@ export interface ThreadFilter {
   onlySnoozed?: boolean
   after?: number
   before?: number
+  /** Inbox only: drop threads whose only category tag is Social/Promotions/Updates/Forums
+   *  (CATEGORY_PERSONAL/Primary always stays). Driven by AppSettings.hideCategoriesFromInbox. */
+  excludeCategories?: boolean
 }
 
 export interface ThreadQuery {
@@ -277,6 +283,10 @@ export interface AppSettings {
   timePresetUsage?: Record<string, number>
   /** Composer: curl quotes, turn `--` into an em dash and `...` into an ellipsis. Missing = on. */
   smartTypography?: boolean
+  /** Gmail only: keep Social/Promotions/Updates/Forums out of the Inbox (still browsable under
+   *  Categories in the sidebar). Primary (CATEGORY_PERSONAL) always stays in the Inbox. Missing/false
+   *  = off, i.e. the Inbox shows everything, exactly like before this setting existed. */
+  hideCategoriesFromInbox?: boolean
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -292,7 +302,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   markReadOnOpen: true,
   notifications: true,
   notifyScope: 'all',
-  dockBadge: true
+  dockBadge: true,
+  hideCategoriesFromInbox: false
 }
 
 // ---------------------------------------------------------------- Helpers

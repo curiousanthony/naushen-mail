@@ -100,6 +100,31 @@ export function mergedLabels(labels: Label[], accountId: string): LabelGroup[] {
 export const unreadForGroup = (counts: Counts, accountId: string, g: LabelGroup): number =>
   g.ids.reduce((n, id) => n + unreadFor(counts, accountId, id), 0)
 
+// ---------------------------------------------------------------- categories (Gmail only)
+
+/** Gmail's inbox-tab category names in Gmail's own tab order. Mirrors main/providers/gmail/labels.ts. */
+export const CATEGORY_ORDER = ['CATEGORY_PERSONAL', 'CATEGORY_SOCIAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
+
+/**
+ * Category labels for the sidebar's "Categories" section, one row per distinct category
+ * (grouped by `remoteId`, not name — the friendly name is fixed, not user text), in Gmail's tab
+ * order. Only ever populated from Gmail-synced mail (Outlook never emits `kind: 'category'`
+ * labels), so an empty result here is exactly how the section knows to hide itself.
+ */
+export function categoryGroups(labels: Label[], accountId: string): LabelGroup[] {
+  const own = labels.filter((l) => l.kind === 'category' && (accountId === 'all' || l.accountId === accountId))
+  const groups = new Map<string, LabelGroup>()
+  for (const l of own) {
+    const g = groups.get(l.remoteId)
+    if (!g) groups.set(l.remoteId, { key: l.remoteId, name: l.name, color: l.color, ids: [l.id], accountIds: [l.accountId] })
+    else {
+      g.ids.push(l.id)
+      if (!g.accountIds.includes(l.accountId)) g.accountIds.push(l.accountId)
+    }
+  }
+  return CATEGORY_ORDER.map((remoteId) => groups.get(remoteId)).filter((g): g is LabelGroup => !!g)
+}
+
 /**
  * Label names carried by more than one account. Viewing "All accounts" lists each account's
  * label separately (threads are never merged across accounts), so these rows need the owning

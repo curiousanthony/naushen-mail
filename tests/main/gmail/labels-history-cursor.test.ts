@@ -14,25 +14,39 @@ describe('label mapping', () => {
     { id: 'IMPORTANT', name: 'IMPORTANT', type: 'system' as const },
     { id: 'STARRED', name: 'STARRED', type: 'system' as const },
     { id: 'UNREAD', name: 'UNREAD', type: 'system' as const },
+    { id: 'CATEGORY_PERSONAL', name: 'CATEGORY_PERSONAL', type: 'system' as const },
+    { id: 'CATEGORY_SOCIAL', name: 'CATEGORY_SOCIAL', type: 'system' as const },
     { id: 'CATEGORY_PROMOTIONS', name: 'CATEGORY_PROMOTIONS', type: 'system' as const },
+    { id: 'CATEGORY_UPDATES', name: 'CATEGORY_UPDATES', type: 'system' as const },
+    { id: 'CATEGORY_FORUMS', name: 'CATEGORY_FORUMS', type: 'system' as const },
     { id: 'CHAT', name: 'CHAT', type: 'system' as const },
     { id: 'Label_2', name: 'Clients/Acme', type: 'user' as const, color: { backgroundColor: '#16a766', textColor: '#ffffff' } },
     { id: 'Label_1', name: 'Alpha', type: 'user' as const }
   ]
-  it('maps system labels to roles, drops UNREAD/CHAT/CATEGORY_*, sorts users by name', () => {
+  it('maps system labels to roles, keeps CATEGORY_* as friendly-named category labels in tab order, drops UNREAD/CHAT, sorts users by name', () => {
     const l = mapLabels('gmail-a', raw)
     expect(l.filter((x) => x.kind === 'system').map((x) => [x.remoteId, x.role, x.name])).toEqual([
       ['INBOX', 'inbox', 'Inbox'], ['SENT', 'sent', 'Sent'], ['DRAFT', 'drafts', 'Drafts'], ['TRASH', 'trash', 'Trash'],
       ['SPAM', 'spam', 'Spam'], ['IMPORTANT', 'important', 'Important'], ['STARRED', 'starred', 'Starred']
     ])
+    expect(l.filter((x) => x.kind === 'category').map((x) => [x.remoteId, x.name])).toEqual([
+      ['CATEGORY_PERSONAL', 'Primary'], ['CATEGORY_SOCIAL', 'Social'], ['CATEGORY_PROMOTIONS', 'Promotions'],
+      ['CATEGORY_UPDATES', 'Updates'], ['CATEGORY_FORUMS', 'Forums']
+    ])
+    expect(l.some((x) => x.remoteId === 'UNREAD' || x.remoteId === 'CHAT')).toBe(false)
     expect(l.filter((x) => x.kind === 'user')).toEqual([
       { id: 'gmail-a:Label_1', accountId: 'gmail-a', remoteId: 'Label_1', name: 'Alpha', color: undefined, kind: 'user' },
       { id: 'gmail-a:Label_2', accountId: 'gmail-a', remoteId: 'Label_2', name: 'Clients/Acme', color: 'green', kind: 'user' }
     ])
   })
-  it('keeps thread label ids consistent with listLabels (hidden ids never referenced)', () => {
+  it('keeps thread label ids consistent with listLabels (hidden ids never referenced, known categories pass through)', () => {
     const listed = new Set(mapLabels('a', raw).map((l) => l.id))
-    for (const id of mapLabelIds('a', ['INBOX', 'UNREAD', 'CATEGORY_UPDATES', 'CHAT', 'Label_1', 'STARRED'])) expect(listed.has(id)).toBe(true)
+    for (const id of mapLabelIds('a', ['INBOX', 'UNREAD', 'CATEGORY_UPDATES', 'CATEGORY_SOCIAL', 'CHAT', 'Label_1', 'STARRED'])) expect(listed.has(id)).toBe(true)
+  })
+  it('still hides an unknown CATEGORY_* id (no friendly name) from both listLabels and mapLabelIds', () => {
+    const l = mapLabels('a', raw)
+    expect(l.some((x) => x.remoteId === 'CATEGORY_UNKNOWN_FUTURE_TAB')).toBe(false)
+    expect(mapLabelIds('a', ['CATEGORY_UNKNOWN_FUTURE_TAB'])).toEqual([])
   })
   it('resolves local label ids to Gmail ids', () => {
     const labels = mapLabels('gmail-a', raw)

@@ -1,8 +1,8 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import type { Counts, Label, View } from '../../src/shared/types'
 import {
-  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, filterSummary, loadCollapsed,
-  mailNav, navEquals, saveCollapsed, sidebarLabels, sidebarViews, unreadFor
+  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, categoryGroups, filterSummary, loadCollapsed,
+  mailNav, navEquals, saveCollapsed, sidebarLabels, sidebarViews, unreadFor, unreadForGroup
 } from '../../src/renderer/features/sidebar/lib'
 
 const label = (id: string, accountId: string, name: string, kind: Label['kind'] = 'user'): Label =>
@@ -153,5 +153,42 @@ describe('accountTags', () => {
       { id: 'a', email: 'anthony@acme.example' },
       { id: 'b', email: 'anthony@acme.other' }
     ])).toEqual({ a: 'anthony@acme.example', b: 'anthony@acme.other' })
+  })
+})
+
+describe('categoryGroups (Gmail Categories sidebar section)', () => {
+  const cat = (id: string, accountId: string, remoteId: string, name: string): Label =>
+    ({ id, accountId, remoteId, name, kind: 'category' })
+  const labels: Label[] = [
+    // Deliberately out of Gmail's tab order, to prove categoryGroups re-sorts.
+    cat('a:CATEGORY_FORUMS', 'a', 'CATEGORY_FORUMS', 'Forums'),
+    cat('a:CATEGORY_PROMOTIONS', 'a', 'CATEGORY_PROMOTIONS', 'Promotions'),
+    cat('a:CATEGORY_PERSONAL', 'a', 'CATEGORY_PERSONAL', 'Primary'),
+    cat('b:CATEGORY_PROMOTIONS', 'b', 'CATEGORY_PROMOTIONS', 'Promotions'),
+    label('a:INBOX', 'a', 'Inbox', 'system'),
+    label('a:L1', 'a', 'Newsletters', 'user')
+  ]
+
+  it('returns only category-kind labels, in Gmail\'s fixed tab order, never alphabetical', () => {
+    expect(categoryGroups(labels, 'a').map((g) => g.name)).toEqual(['Primary', 'Promotions', 'Forums'])
+  })
+
+  it('groups the same category across accounts by remoteId when viewing "all"', () => {
+    const rows = categoryGroups(labels, 'all')
+    const promo = rows.find((g) => g.key === 'CATEGORY_PROMOTIONS')!
+    expect(promo.ids.sort()).toEqual(['a:CATEGORY_PROMOTIONS', 'b:CATEGORY_PROMOTIONS'])
+    expect(promo.accountIds.sort()).toEqual(['a', 'b'])
+  })
+
+  it('is empty for an account with no category labels (Outlook, or a Gmail account never synced) — the section hides itself', () => {
+    expect(categoryGroups(labels, 'b').map((g) => g.name)).toEqual(['Promotions'])
+    expect(categoryGroups(labels, 'c')).toEqual([])
+    expect(categoryGroups(labels.filter((l) => l.kind !== 'category'), 'all')).toEqual([])
+  })
+
+  it('sums unread the same way a merged label row does', () => {
+    const counts: Counts = { unread: { 'all:a:CATEGORY_PROMOTIONS': 3, 'all:b:CATEGORY_PROMOTIONS': 2 } }
+    const promo = categoryGroups(labels, 'all').find((g) => g.key === 'CATEGORY_PROMOTIONS')!
+    expect(unreadForGroup(counts, 'all', promo)).toBe(5)
   })
 })

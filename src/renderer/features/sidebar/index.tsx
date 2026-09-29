@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
-  AlarmClock, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, Layers, MoreHorizontal,
-  PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star, Trash2, X
+  AlarmClock, Bell, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, Layers, MessagesSquare,
+  MoreHorizontal, PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star, Tag,
+  Trash2, User, Users, X
 } from 'lucide-react'
 import type { Account, Counts, View } from '@shared/types'
 import { bundlesPatch, isBundled, readBundles, toggleBundle } from '@/features/rules/prefs'
@@ -12,7 +13,7 @@ import { Popover, useAnchor } from './Popover'
 import { ViewEditor } from './ViewEditor'
 import { useViewEditor } from './viewEditorState'
 import {
-  MAIL_ITEMS, accountLabel, accountTags, loadCollapsed, mailNav, mergedLabels, navEquals,
+  MAIL_ITEMS, accountLabel, accountTags, categoryGroups, loadCollapsed, mailNav, mergedLabels, navEquals,
   saveCollapsed, sidebarViews, unreadFor, unreadForGroup, type LabelGroup
 } from './lib'
 import { VIEW_ICONS } from './viewIcons'
@@ -26,6 +27,12 @@ import './sidebar.css'
 const MAIL_ICON: Record<string, ReactNode> = {
   all: <Layers size={16} />, starred: <Star size={16} />, sent: <Send size={16} />, drafts: <FileText size={16} />,
   snoozed: <AlarmClock size={16} />, trash: <Trash2 size={16} />, spam: <ShieldAlert size={16} />
+}
+
+/** Icon per Gmail category, keyed by remote id (CATEGORY_SOCIAL etc. — see sidebar/lib.ts). */
+const CATEGORY_ICON: Record<string, ReactNode> = {
+  CATEGORY_PERSONAL: <User size={16} />, CATEGORY_SOCIAL: <Users size={16} />, CATEGORY_PROMOTIONS: <Tag size={16} />,
+  CATEGORY_UPDATES: <Bell size={16} />, CATEGORY_FORUMS: <MessagesSquare size={16} />
 }
 
 /** Which "Mail" rows accept a dropped conversation (Sent, Drafts and Reminders do not). */
@@ -55,6 +62,9 @@ export function Sidebar(): JSX.Element {
   const aux = useAuxCounts(views, accountId, counts)
   // "All accounts": same-named labels across accounts are one row (per-account rows otherwise).
   const labelRows = useMemo(() => mergedLabels(labels, accountId), [labels, accountId])
+  // Gmail only; empty (and the section hidden) for Outlook-only setups — see categoryGroups.
+  const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId])
+  const categoryCounts = useCategoryCounts(categoryRows, accountId, counts)
   const tags = useMemo(() => accountTags(accounts), [accounts])
   const shownViews = useMemo(() => sidebarViews(views), [views])
   const go = useCallback((n: Nav) => setNav(n), [setNav])
@@ -107,6 +117,20 @@ export function Sidebar(): JSX.Element {
               />
             ))}
           </Section>
+
+          {categoryRows.length > 0 && (
+            <Section id="categories" title="Categories" collapsed={!!sections.categories} onToggle={toggleSection}>
+              {categoryRows.map((g) => (
+                <Row
+                  key={g.key} icon={CATEGORY_ICON[g.key]} label={g.name}
+                  count={categoryCounts[g.key] ?? 0}
+                  active={nav.kind === 'label' && g.ids.includes(nav.labelId)}
+                  onClick={() => go({ kind: 'label', labelId: g.ids[0] })}
+                  title={`${g.name} · Inbox`}
+                />
+              ))}
+            </Section>
+          )}
 
           {labelRows.length > 0 && (
             <Section id="labels" title="Labels" collapsed={!!sections.labels} onToggle={toggleSection}>
@@ -472,6 +496,29 @@ interface Aux { views: Record<string, number>; hasSnoozed: boolean }
  * separate COUNT(*), so a single row crosses IPC per view. Recomputed whenever the store's counts
  * object changes, which happens on every sync event.
  */
+/**
+ * Unread count per category row, scoped to the Inbox (Gmail tabs are always is:inbox — see
+ * navToFilter's 'label' branch for a category). `Repo.counts()` bumps categories by raw label
+ * membership (archived mail included), which is why this asks `threads.list` directly instead,
+ * the same `limit: 1`-for-the-total trick `useAuxCounts` uses for Views.
+ */
+function useCategoryCounts(rows: LabelGroup[], accountId: string, counts: Counts): Record<string, number> {
+  const [out, setOut] = useState<Record<string, number>>({})
+  useEffect(() => {
+    if (!rows.length) { setOut({}); return }
+    let cancelled = false
+    const scope = accountId === 'all' ? {} : { accountIds: [accountId] }
+    void (async () => {
+      const results = await Promise.all(rows.map(async (g) =>
+        [g.key, (await window.api.invoke('threads.list', { filter: { ...scope, role: 'inbox' as const, labelIds: g.ids, unread: true }, limit: 1 })).total] as const))
+      if (cancelled) return
+      setOut(Object.fromEntries(results))
+    })()
+    return () => { cancelled = true }
+  }, [rows, accountId, counts])
+  return out
+}
+
 function useAuxCounts(views: View[], accountId: string, counts: Counts): Aux {
   const [aux, setAux] = useState<Aux>({ views: {}, hasSnoozed: false })
   useEffect(() => {

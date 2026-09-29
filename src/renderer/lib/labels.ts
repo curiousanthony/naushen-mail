@@ -11,13 +11,23 @@ const nameKey = (name: string): string => name.trim().toLowerCase()
  * account selected it is that account's own label of that name. Pure, so both the sidebar and
  * `navToFilter` agree — which also means switching account while viewing a label keeps working
  * instead of querying a label id that belongs to the account you just left.
+ *
+ * Category labels (Gmail's Social/Promotions/Updates/Forums/Primary) group the same way, but by
+ * `remoteId` (CATEGORY_SOCIAL etc.) rather than name — the friendly name is fixed, not user text.
  */
 export function expandLabelIds(labels: Label[], labelId: string, accountId: string): string[] {
   const l = labels.find((x) => x.id === labelId)
-  if (!l || l.kind !== 'user') return [labelId]
-  const key = nameKey(l.name)
-  const same = labels.filter((x) => x.kind === 'user' && nameKey(x.name) === key && (accountId === 'all' || x.accountId === accountId))
-  return same.length ? same.map((x) => x.id) : [labelId]
+  if (!l) return [labelId]
+  if (l.kind === 'user') {
+    const key = nameKey(l.name)
+    const same = labels.filter((x) => x.kind === 'user' && nameKey(x.name) === key && (accountId === 'all' || x.accountId === accountId))
+    return same.length ? same.map((x) => x.id) : [labelId]
+  }
+  if (l.kind === 'category') {
+    const same = labels.filter((x) => x.kind === 'category' && x.remoteId === l.remoteId && (accountId === 'all' || x.accountId === accountId))
+    return same.length ? same.map((x) => x.id) : [labelId]
+  }
+  return [labelId]
 }
 
 /** One entry per distinct label name (first wins) when viewing all accounts; unchanged otherwise. */

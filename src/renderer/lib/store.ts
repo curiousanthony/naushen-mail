@@ -82,11 +82,24 @@ interface AppState {
 }
 
 /** Translate the current nav to a ThreadFilter. Pure; exported for tests and for features. */
-export function navToFilter(nav: Nav, accountId: string, views: View[], labels: Label[] = []): ThreadFilter {
+export function navToFilter(
+  nav: Nav, accountId: string, views: View[], labels: Label[] = [], settings?: AppSettings
+): ThreadFilter {
   const base: ThreadFilter = accountId === 'all' ? {} : { accountIds: [accountId] }
   switch (nav.kind) {
-    case 'role': return { ...base, role: nav.role }
-    case 'label': return { ...base, labelIds: expandLabelIds(labels, nav.labelId, accountId) }
+    case 'role':
+      return {
+        ...base, role: nav.role,
+        ...(nav.role === 'inbox' && settings?.hideCategoriesFromInbox ? { excludeCategories: true } : {})
+      }
+    case 'label': {
+      const ids = expandLabelIds(labels, nav.labelId, accountId)
+      // A Gmail category (Social/Promotions/…) is a tab *within* the Inbox, not its own mailbox —
+      // Gmail only ever shows it scoped to is:inbox. Scoping it here too means archiving a thread
+      // from a category view removes it from that view immediately, matching Gmail's own tabs.
+      const target = labels.find((l) => l.id === nav.labelId)
+      return target?.kind === 'category' ? { ...base, role: 'inbox', labelIds: ids } : { ...base, labelIds: ids }
+    }
     case 'snoozed': return { ...base, onlySnoozed: true }
     case 'search': {
       // Gmail/Notion-Mail-style operators (from:, to:, subject:, has:attachment, is:unread,
@@ -153,9 +166,9 @@ export const useApp = create<AppState>((set, get) => ({
   },
 
   async refreshThreads() {
-    const { nav, accountId, views, labels } = get()
+    const { nav, accountId, views, labels, settings } = get()
     set({ loading: true })
-    const res = await window.api.invoke('threads.list', { filter: navToFilter(nav, accountId, views, labels), limit: 300 })
+    const res = await window.api.invoke('threads.list', { filter: navToFilter(nav, accountId, views, labels, settings), limit: 300 })
     // Drop stale selection.
     const ids = new Set(res.threads.map((t) => t.id))
     set((s) => ({

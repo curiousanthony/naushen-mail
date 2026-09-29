@@ -225,7 +225,14 @@ export class Repo {
 
     switch (f.role) {
       // A fired follow-up ("No reply yet") resurfaces in the Inbox until it is archived or dismissed.
-      case 'inbox': w.push(`(${roleExists('inbox')} OR t.followup_fired_at IS NOT NULL)`); break
+      case 'inbox':
+        w.push(`(${roleExists('inbox')} OR t.followup_fired_at IS NOT NULL)`)
+        // "Hide Promotions/Social/Updates/Forums from Inbox": a thread stays if it carries no
+        // category label at all, or only CATEGORY_PERSONAL (Primary, i.e. normal 1:1 mail).
+        if (f.excludeCategories) {
+          w.push(`NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.kind = 'category' AND l.remote_id != 'CATEGORY_PERSONAL')`)
+        }
+        break
       case 'sent': w.push(roleExists('sent')); break
       case 'drafts': w.push(roleExists('drafts')); break
       case 'trash': w.push(roleExists('trash')); break
@@ -273,14 +280,25 @@ export class Repo {
     return { threads: this.hydrate(rows), total }
   }
 
-  counts(): Counts {
+  /**
+   * `opts.excludeCategories` mirrors buildWhere's role:'inbox' exclusion (see the "hide
+   * Promotions/Social/Updates/Forums from Inbox" setting) so the Inbox badge, the account-switcher
+   * badges and the Dock badge never show a count higher than what the Inbox itself displays.
+   */
+  counts(opts?: { excludeCategories?: boolean }): Counts {
     const unread: Record<string, number> = {}
     const bump = (k: string, c: number): void => { unread[k] = (unread[k] ?? 0) + c }
     const now = Date.now()
+    const excludeCategories = !!opts?.excludeCategories
+    // '1=1' when the setting is off, so the extra AND is a no-op and behaviour is unchanged.
+    const categoryOk = excludeCategories
+      ? `NOT EXISTS (SELECT 1 FROM thread_labels tl2 JOIN labels l2 ON l2.id = tl2.label_id WHERE tl2.thread_id = t.id AND l2.kind = 'category' AND l2.remote_id != 'CATEGORY_PERSONAL')`
+      : '1=1'
     const rows = this.db.prepare(
       `SELECT t.account_id a, l.id lid, l.role role, COUNT(*) c
        FROM threads t JOIN thread_labels tl ON tl.thread_id = t.id JOIN labels l ON l.id = tl.label_id
        WHERE t.unread = 1 AND (t.snoozed_until IS NULL OR t.snoozed_until <= ?)
+         AND (l.role IS NULL OR l.role != 'inbox' OR ${categoryOk})
        GROUP BY t.account_id, l.id`
     ).all(now) as Row[]
     for (const r of rows) {
@@ -305,7 +323,8 @@ export class Repo {
       `SELECT t.account_id a, il.id lid FROM threads t JOIN labels il ON il.account_id = t.account_id AND il.role = 'inbox'
        WHERE t.unread = 1 AND t.followup_fired_at IS NOT NULL
          AND NOT EXISTS (SELECT 1 FROM thread_labels tl WHERE tl.thread_id = t.id AND tl.label_id = il.id)
-         AND NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role IN ('trash','spam'))`
+         AND NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.role IN ('trash','spam'))
+         AND ${categoryOk}`
     ).all() as Row[]
     for (const r of fired) { bump(`${r.a}:${r.lid}`, 1); bump(`${r.a}:inbox`, 1); bump('all:inbox', 1); bump(`all:${r.lid}`, 1) }
     return { unread }

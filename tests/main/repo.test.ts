@@ -78,4 +78,41 @@ describe('repo', () => {
     expect(repo.getSettings().oauth.googleClientId).toBe('x')
     expect(repo.getSettings().theme).toBe('system')
   })
+
+  describe('Gmail categories', () => {
+    // Account 'a' is the mock's "personal" flavor, which carries category labels; 'b' ("work") has none.
+    const catLabel = (remoteId: string): string => repo.listLabels().find((l) => l.accountId === 'a' && l.remoteId === remoteId)!.id
+
+    it('mock fixtures tag the personal account with category labels, and leave the work account without', () => {
+      expect(repo.listLabels().filter((l) => l.accountId === 'a' && l.kind === 'category').map((l) => l.remoteId).sort())
+        .toEqual(['CATEGORY_FORUMS', 'CATEGORY_PERSONAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_SOCIAL', 'CATEGORY_UPDATES'])
+      expect(repo.listLabels().filter((l) => l.accountId === 'b' && l.kind === 'category')).toHaveLength(0)
+    })
+
+    it('excludeCategories keeps Primary in the Inbox but drops Social/Promotions/Updates/Forums', () => {
+      const all = repo.listThreads({ filter: { role: 'inbox', accountIds: ['a'] } }).threads
+      const filtered = repo.listThreads({ filter: { role: 'inbox', accountIds: ['a'], excludeCategories: true } }).threads
+      expect(filtered.length).toBeLessThan(all.length)
+      const promo = catLabel('CATEGORY_PROMOTIONS')
+      const primary = catLabel('CATEGORY_PERSONAL')
+      expect(filtered.some((t) => t.labelIds.includes(promo))).toBe(false)
+      expect(filtered.some((t) => t.labelIds.includes(primary))).toBe(true)
+      expect(all.some((t) => t.labelIds.includes(promo))).toBe(true) // sanity: the setting off (default) shows everything
+    })
+
+    it('excludeCategories is a no-op for an account with no category labels (Outlook / work mock)', () => {
+      const all = repo.listThreads({ filter: { role: 'inbox', accountIds: ['b'] } }).threads.length
+      const filtered = repo.listThreads({ filter: { role: 'inbox', accountIds: ['b'], excludeCategories: true } }).threads.length
+      expect(filtered).toBe(all)
+    })
+
+    it('counts().unread["all:inbox"] with excludeCategories matches listThreads with the same filter (no drift in the Inbox/Dock badge)', () => {
+      const expected = repo.listThreads({ filter: { role: 'inbox', unread: true, excludeCategories: true } }).total
+      expect(repo.counts({ excludeCategories: true }).unread['all:inbox'] ?? 0).toBe(expected)
+      // and the setting off matches the unrestricted total, unchanged from before this feature
+      const expectedOff = repo.listThreads({ filter: { role: 'inbox', unread: true } }).total
+      expect(repo.counts().unread['all:inbox'] ?? 0).toBe(expectedOff)
+      expect(expected).toBeLessThan(expectedOff)
+    })
+  })
 })

@@ -67,6 +67,42 @@ describe('merging same-named labels across accounts', () => {
   })
 })
 
+// ------------------------------------------------------------------ Gmail categories
+
+describe('Gmail categories', () => {
+  const catLabels = [
+    lab('a:CATEGORY_SOCIAL', 'a', 'Social', 'category'),
+    lab('b:CATEGORY_SOCIAL', 'b', 'Social', 'category'),
+    lab('a:CATEGORY_PROMOTIONS', 'a', 'Promotions', 'category'),
+    lab('a:INBOX', 'a', 'Inbox', 'system')
+  ]
+
+  it('expandLabelIds groups a category by remoteId across accounts, same as a user label groups by name', () => {
+    expect(expandLabelIds(catLabels, 'a:CATEGORY_SOCIAL', 'all').sort()).toEqual(['a:CATEGORY_SOCIAL', 'b:CATEGORY_SOCIAL'])
+    expect(expandLabelIds(catLabels, 'a:CATEGORY_SOCIAL', 'a')).toEqual(['a:CATEGORY_SOCIAL'])
+    // Switching to account b while viewing (what was) a's Social row queries b's own Social label.
+    expect(expandLabelIds(catLabels, 'a:CATEGORY_SOCIAL', 'b')).toEqual(['b:CATEGORY_SOCIAL'])
+    expect(expandLabelIds(catLabels, 'a:CATEGORY_PROMOTIONS', 'all')).toEqual(['a:CATEGORY_PROMOTIONS'])
+  })
+
+  it('navToFilter scopes a category nav to the Inbox (Gmail tabs are always is:inbox) so archiving removes a thread from the view', () => {
+    const f = navToFilter({ kind: 'label', labelId: 'a:CATEGORY_SOCIAL' }, 'all', [], catLabels)
+    expect(f.role).toBe('inbox')
+    expect(f.labelIds?.sort()).toEqual(['a:CATEGORY_SOCIAL', 'b:CATEGORY_SOCIAL'])
+    // A plain user-label nav is untouched: no implicit role.
+    const userNav = navToFilter({ kind: 'label', labelId: 'a:L1' }, 'all', [], [...catLabels, lab('a:L1', 'a', 'Travel')])
+    expect(userNav.role).toBeUndefined()
+  })
+
+  it('navToFilter adds excludeCategories to the Inbox role nav only when the setting is on', () => {
+    const on: AppSettings = { ...DEFAULT_SETTINGS, hideCategoriesFromInbox: true }
+    expect(navToFilter({ kind: 'role', role: 'inbox' }, 'all', [], [], on).excludeCategories).toBe(true)
+    expect(navToFilter({ kind: 'role', role: 'inbox' }, 'all', [], [], DEFAULT_SETTINGS).excludeCategories).toBeUndefined()
+    // Only the Inbox role is affected — e.g. Starred never gets the flag.
+    expect(navToFilter({ kind: 'role', role: 'starred' }, 'all', [], [], on).excludeCategories).toBeUndefined()
+  })
+})
+
 // ------------------------------------------------------------------ bundles
 
 const T = (id: string, at: number, over: Partial<Thread> = {}): Thread => ({

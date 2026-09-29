@@ -131,8 +131,9 @@ describe('normalizeMessage', () => {
       replyTo: { name: 'Support', email: 's@x.io' }, messageIdHeader: '<m1@mail>', inReplyTo: '<p@mail>', references: ['<r@mail>', '<p@mail>'],
       listUnsubscribe: '<https://u.example/x>, <mailto:u@x.io>', unread: true, isDraft: false
     })
-    // UNREAD and CATEGORY_* never leak into labelIds; STARRED/INBOX/user labels do.
-    expect(m.labelIds.sort()).toEqual(['gmail-a:INBOX', 'gmail-a:Label_9', 'gmail-a:STARRED'])
+    // UNREAD never leaks into labelIds; STARRED/INBOX/user labels do, and so does a known
+    // CATEGORY_* tab (it's a real Gmail tag now, not a dropped artefact — see gmail/labels.ts).
+    expect(m.labelIds.sort()).toEqual(['gmail-a:CATEGORY_UPDATES', 'gmail-a:INBOX', 'gmail-a:Label_9', 'gmail-a:STARRED'])
   })
   it('falls back to the Date header when internalDate is missing and decodes encoded subjects', () => {
     const m = normalizeMessage('a', msg('m', 't', { internalDate: undefined, headers: [hdr('Date', 'Tue, 14 Nov 2023 22:13:20 +0000')] }))

@@ -52,7 +52,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
       return t
     },
     'threads.act': (ids, action) => engine.act(ids, action),
-    'threads.counts': async () => repo.counts(),
+    'threads.counts': async () => repo.counts({ excludeCategories: !!repo.getSettings().hideCategoriesFromInbox }),
     'threads.search': async (text, accountIds, limit) => repo.listThreads({ filter: { text, accountIds }, limit: limit ?? 100 }),
     'people.search': async (query, limit, accountIds) => repo.searchPeople(query, limit, accountIds),
     'people.info': async (email, accountIds) => repo.personInfo(email, accountIds),
@@ -155,6 +155,8 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
       const next = repo.setSettings(patch)
       if (patch.theme) nativeTheme.themeSource = patch.theme
       if ('dockBadge' in patch) engine.emit({ type: 'changed' }) // re-derives the Dock badge
+      // Changes what the Inbox query returns — re-derive counts and, if Inbox is open, the list itself.
+      if ('hideCategoriesFromInbox' in patch) engine.emit({ type: 'changed' })
       return next
     },
     'app.openExternal': async (url) => { if (/^(https?:|mailto:)/i.test(url)) await shell.openExternal(url) },

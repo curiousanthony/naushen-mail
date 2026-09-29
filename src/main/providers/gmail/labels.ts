@@ -13,13 +13,26 @@ export const SYSTEM_ROLES: Record<string, { role: SystemRole; name: string }> = 
   STARRED: { role: 'starred', name: 'Starred' }
 }
 
+/** Gmail's inbox-tab category labels, friendly name and fixed display order (Gmail's own tab order). */
+export const CATEGORY_NAMES: Record<string, string> = {
+  CATEGORY_PERSONAL: 'Primary',
+  CATEGORY_SOCIAL: 'Social',
+  CATEGORY_PROMOTIONS: 'Promotions',
+  CATEGORY_UPDATES: 'Updates',
+  CATEGORY_FORUMS: 'Forums'
+}
+export const CATEGORY_ORDER = Object.keys(CATEGORY_NAMES)
+
 /**
- * Gmail system labels that carry no navigable mailbox meaning here. UNREAD is a boolean on Message/Thread,
- * CHAT/CATEGORY_* are Gmail-tab artefacts. They are excluded from BOTH listLabels() and thread.labelIds so
- * the store (which prunes thread_labels of labels missing from listLabels) stays consistent.
+ * Gmail system labels that carry no navigable mailbox meaning here. UNREAD is a boolean on
+ * Message/Thread, CHAT is a Gmail-tab artefact with no mail-client analogue, and any CATEGORY_*
+ * beyond the five known tabs (Gmail hasn't added one in years, but stay defensive) has no friendly
+ * name to show. They are excluded from BOTH listLabels() and thread.labelIds so the store (which
+ * prunes thread_labels of labels missing from listLabels) stays consistent. The five known
+ * CATEGORY_* ids are handled separately in mapLabels (kind: 'category') and are NOT hidden here.
  */
 export function isHiddenLabelId(id: string): boolean {
-  return id === 'UNREAD' || id === 'CHAT' || id.startsWith('CATEGORY_')
+  return id === 'UNREAD' || id === 'CHAT' || (id.startsWith('CATEGORY_') && !(id in CATEGORY_NAMES))
 }
 
 export function mapLabelIds(accountId: string, remoteIds: Iterable<string>): string[] {
@@ -38,9 +51,14 @@ export function toRemoteLabelId(accountId: string, labels: Label[], localOrRemot
 
 export function mapLabels(accountId: string, raw: GmailLabel[]): Label[] {
   const system: Label[] = []
+  const category: Label[] = []
   const user: Label[] = []
   for (const l of raw) {
-    if (l.type === 'system' || SYSTEM_ROLES[l.id]) {
+    // CATEGORY_* labels report type:'system' from the API, so this check must come before the
+    // system-role branch below — otherwise they'd be mistaken for an unmapped system label and dropped.
+    if (l.id in CATEGORY_NAMES) {
+      category.push({ id: makeId(accountId, l.id), accountId, remoteId: l.id, name: CATEGORY_NAMES[l.id], kind: 'category' })
+    } else if (l.type === 'system' || SYSTEM_ROLES[l.id]) {
       const meta = SYSTEM_ROLES[l.id]
       if (!meta) continue // hidden / unmapped system label
       system.push({ id: makeId(accountId, l.id), accountId, remoteId: l.id, name: meta.name, kind: 'system', role: meta.role })
@@ -53,8 +71,9 @@ export function mapLabels(accountId: string, raw: GmailLabel[]): Label[] {
   }
   const order = Object.keys(SYSTEM_ROLES)
   system.sort((a, b) => order.indexOf(a.remoteId) - order.indexOf(b.remoteId))
+  category.sort((a, b) => CATEGORY_ORDER.indexOf(a.remoteId) - CATEGORY_ORDER.indexOf(b.remoteId))
   user.sort((a, b) => a.name.localeCompare(b.name))
-  return [...system, ...user]
+  return [...system, ...category, ...user]
 }
 
 // ------------------------------------------------------------------ colours

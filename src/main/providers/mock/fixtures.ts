@@ -1,6 +1,7 @@
 import type { Address, Label, LabelColor, Message, SystemRole } from '@shared/types'
 import { makeId } from '@shared/types'
 import type { NormalizedThread } from '../types'
+import { CATEGORY_NAMES, CATEGORY_ORDER } from '../gmail/labels'
 
 /** `${remoteMessageId}:${attachmentId}` -> raw content, for attachments whose `attach` entry set `content`. */
 export const MOCK_ATTACHMENT_CONTENT = new Map<string, string>()
@@ -13,6 +14,8 @@ interface Tpl {
   subject: string
   labels?: string[] // user label names
   roles?: SystemRole[]
+  /** Gmail inbox-tab category (CATEGORY_SOCIAL etc.) — personal-flavor mailbox only, see buildMockMailbox. */
+  category?: keyof typeof CATEGORY_NAMES
   unread?: boolean
   starred?: boolean
   ago: number // ms ago for last message
@@ -67,31 +70,35 @@ export const USER_LABELS: { name: string; color: LabelColor }[] = [
 
 function personalTemplates(me: Address): Tpl[] {
   return [
-    { key: 'p1', subject: 'Dinner Saturday?', labels: ['Personal'], unread: true, ago: 25 * 60_000, roles: ['inbox'],
+    { key: 'p1', subject: 'Dinner Saturday?', labels: ['Personal'], category: 'CATEGORY_PERSONAL', unread: true, ago: 25 * 60_000, roles: ['inbox'],
       msgs: [{ from: p('Léa Martin', 'lea.martin@example.com'), html: wrap('<p>Hey! Are you free Saturday evening? A few of us are trying the new place on rue Oberkampf around 8pm. 🍝</p><p>Let me know!<br>Léa</p>') }] },
-    { key: 'p2', subject: 'Your flight to Lisbon is confirmed', labels: ['Travel', 'Receipts'], unread: true, starred: true, ago: 3 * H, roles: ['inbox'],
+    { key: 'p2', subject: 'Your flight to Lisbon is confirmed', labels: ['Travel', 'Receipts'], category: 'CATEGORY_UPDATES', unread: true, starred: true, ago: 3 * H, roles: ['inbox'],
       attach: [{ filename: 'boarding-pass.pdf', mimeType: 'application/pdf', size: 184_320 }],
       msgs: [{ from: p('Air Meridian', 'no-reply@airmeridian.example'), html: wrap('<h2 style="margin:0 0 8px">Booking confirmed ✈️</h2><table cellpadding="6" style="border-collapse:collapse"><tr><td>Flight</td><td><b>AM 412</b></td></tr><tr><td>Route</td><td>CDG → LIS</td></tr><tr><td>Departure</td><td>Fri 14 Nov, 07:35</td></tr><tr><td>Booking ref</td><td><code>X7Q2LM</code></td></tr></table><p>Have a great trip!</p>') }] },
-    { key: 'p3', subject: 'The Sunday Digest — issue #212', labels: ['Newsletters', 'To read'], ago: 9 * H, roles: ['inbox'],
+    { key: 'p3', subject: 'The Sunday Digest — issue #212', labels: ['Newsletters', 'To read'], category: 'CATEGORY_PROMOTIONS', ago: 9 * H, roles: ['inbox'],
       msgs: [{ from: p('The Sunday Digest', 'digest@sundaydigest.example'), unsubscribe: '<https://example.com/unsub>', html: newsletterHtml('Why slow software feels fast', 'Great interfaces respect attention. This week we look at optimistic updates, keyboard-first design, and why the best tools disappear.') }] },
-    { key: 'p4', subject: 'Receipt from Corner Coffee', labels: ['Receipts'], ago: 1 * D + 2 * H, roles: ['inbox'],
+    { key: 'p4', subject: 'Receipt from Corner Coffee', labels: ['Receipts'], category: 'CATEGORY_UPDATES', ago: 1 * D + 2 * H, roles: ['inbox'],
       msgs: [{ from: p('Corner Coffee', 'receipts@cornercoffee.example'), html: wrap('<p>Thanks for stopping by!</p><table cellpadding="4"><tr><td>Flat white</td><td align="right">€3.80</td></tr><tr><td>Croissant</td><td align="right">€2.40</td></tr><tr><td><b>Total</b></td><td align="right"><b>€6.20</b></td></tr></table>') }] },
-    { key: 'p5', subject: 'Re: Apartment viewing on Thursday', unread: false, ago: 1 * D + 6 * H, roles: ['inbox'],
+    { key: 'p5', subject: 'Re: Apartment viewing on Thursday', category: 'CATEGORY_PERSONAL', unread: false, ago: 1 * D + 6 * H, roles: ['inbox'],
       msgs: [
         { from: me, to: [p('Camille Roy', 'camille.roy@example.com')], agoOffset: 4 * H, html: wrap('<p>Hi Camille, would Thursday at 6pm work for a viewing of the 2-bedroom?</p>') },
         { from: p('Camille Roy', 'camille.roy@example.com'), to: [me], agoOffset: 2 * H, html: wrap('<p>Thursday 6pm is perfect. I\'ll meet you at the front door — the code is <b>4471</b>.</p><blockquote style="border-left:3px solid #ddd;margin:8px 0;padding-left:12px;color:#666">Hi Camille, would Thursday at 6pm work for a viewing of the 2-bedroom?</blockquote>') },
         { from: me, to: [p('Camille Roy', 'camille.roy@example.com')], agoOffset: 0, html: wrap('<p>Great, see you then!</p>') }
       ] },
-    { key: 'p6', subject: 'Your monthly statement is ready', labels: ['Receipts'], ago: 2 * D, roles: ['inbox'], attach: [{ filename: 'statement-october.pdf', mimeType: 'application/pdf', size: 402_112 }],
+    { key: 'p6', subject: 'Your monthly statement is ready', labels: ['Receipts'], category: 'CATEGORY_UPDATES', ago: 2 * D, roles: ['inbox'], attach: [{ filename: 'statement-october.pdf', mimeType: 'application/pdf', size: 402_112 }],
       msgs: [{ from: p('Nordbank', 'statements@nordbank.example'), html: wrap('<p>Your October statement is now available. Log in to view it securely.</p>') }] },
-    { key: 'p7', subject: 'Photos from the weekend 📸', labels: ['Personal'], ago: 3 * D, roles: ['inbox'],
+    { key: 'p7', subject: 'Photos from the weekend 📸', labels: ['Personal'], category: 'CATEGORY_PERSONAL', ago: 3 * D, roles: ['inbox'],
       attach: [{ filename: 'IMG_2041.jpg', mimeType: 'image/jpeg', size: 2_402_112 }, { filename: 'IMG_2042.jpg', mimeType: 'image/jpeg', size: 2_012_004 }],
       msgs: [{ from: p('Marc Dubois', 'marc.dubois@example.com'), html: wrap('<p>Here are the best ones. The sunset one is my favorite!</p>') }] },
-    { key: 'p8', subject: 'Security alert: new sign-in from Chrome on Mac', unread: false, ago: 4 * D, roles: ['inbox'],
+    { key: 'p8', subject: 'Security alert: new sign-in from Chrome on Mac', category: 'CATEGORY_UPDATES', unread: false, ago: 4 * D, roles: ['inbox'],
       msgs: [{ from: p('Accounts', 'security@accounts.example'), html: wrap('<p>We noticed a new sign-in to your account from Chrome on macOS in Paris, France. If this was you, no action is needed.</p>') }] },
-    { key: 'p9', subject: 'Welcome to Loom & Co.', labels: ['Newsletters'], ago: 6 * D, roles: ['archive'],
+    { key: 'p8b', subject: 'Jordan Lee and 3 others reacted to your post', category: 'CATEGORY_SOCIAL', unread: true, ago: 6 * H, roles: ['inbox'],
+      msgs: [{ from: p('PixShare', 'notify@pixshare.example'), html: wrap('<p><b>Jordan Lee</b>, <b>Amara O.</b> and 2 others reacted to your photo from Lisbon. <a href="https://example.com">See the reactions</a>.</p>') }] },
+    { key: 'p8c', subject: '[r/houseplants] Best soil mix for a monstera?', labels: ['To read'], category: 'CATEGORY_FORUMS', ago: 1 * D + 3 * H, roles: ['inbox'],
+      msgs: [{ from: p('r/houseplants', 'digest@forumhub.example'), unsubscribe: '<https://example.com/unsub>', html: wrap('<p><b>u/plantparent22</b> asks: what soil mix has worked best for your monstera indoors? 14 replies so far.</p>') }] },
+    { key: 'p9', subject: 'Welcome to Loom & Co.', labels: ['Newsletters'], category: 'CATEGORY_PROMOTIONS', ago: 6 * D, roles: ['archive'],
       msgs: [{ from: p('Loom & Co.', 'hello@loomco.example'), unsubscribe: '<https://example.com/unsub>', html: newsletterHtml('Welcome aboard!', 'Here is a 10% discount for your first order. Handcrafted textiles, delivered.') }] },
-    { key: 'p10', subject: 'Weekend hike — trail map attached', ago: 8 * D, roles: ['archive'], starred: true, attach: [{ filename: 'trail-map.png', mimeType: 'image/png', size: 892_000 }],
+    { key: 'p10', subject: 'Weekend hike — trail map attached', category: 'CATEGORY_PERSONAL', ago: 8 * D, roles: ['archive'], starred: true, attach: [{ filename: 'trail-map.png', mimeType: 'image/png', size: 892_000 }],
       msgs: [{ from: p('Théo Bernard', 'theo.bernard@example.com'), html: wrap('<p>Here is the route we discussed. About 14km with 600m of elevation. Bring water!</p>') }] },
     { key: 'p11', subject: 'You won a free cruise!!!', ago: 5 * D, roles: ['spam'], unread: true,
       msgs: [{ from: p('Prize Center', 'winner@prizes-now.example'), html: wrap('<p>Click here to claim your prize.</p>') }] },
@@ -150,6 +157,11 @@ export function buildMockMailbox(accountId: string, email: string, name: string,
   ]
   const labels: Label[] = [
     ...roles.map((r) => ({ id: makeId(accountId, r.role.toUpperCase()), accountId, remoteId: r.role.toUpperCase(), name: r.name, kind: 'system' as const, role: r.role })),
+    // Category (Gmail inbox-tab) labels: only the "personal" demo account gets them, so switching
+    // to the "work" account demonstrates the no-categories path (Outlook accounts never get any).
+    ...(flavor === 'personal'
+      ? CATEGORY_ORDER.map((remoteId) => ({ id: makeId(accountId, remoteId), accountId, remoteId, name: CATEGORY_NAMES[remoteId], kind: 'category' as const }))
+      : []),
     ...USER_LABELS.map((u) => ({ id: makeId(accountId, `L_${u.name}`), accountId, remoteId: `L_${u.name}`, name: u.name, color: u.color, kind: 'user' as const }))
   ]
   const roleId = (r: SystemRole): string => makeId(accountId, r.toUpperCase())
@@ -159,7 +171,8 @@ export function buildMockMailbox(accountId: string, email: string, name: string,
     const tid = makeId(accountId, `T_${t.key}`)
     const labelIds = [
       ...(t.roles ?? ['inbox']).filter((r) => r !== 'archive').map(roleId),
-      ...(t.labels ?? []).map((n) => makeId(accountId, `L_${n}`))
+      ...(t.labels ?? []).map((n) => makeId(accountId, `L_${n}`)),
+      ...(flavor === 'personal' && t.category ? [makeId(accountId, t.category)] : [])
     ]
     const messages: Message[] = t.msgs.map((m, i) => {
       const date = now - t.ago - (m.agoOffset ?? 0) + (t.msgs.length - 1 - i === 0 ? 0 : 0)
