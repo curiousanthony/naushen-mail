@@ -2,12 +2,12 @@ import { DatabaseSync } from 'node:sqlite'
 
 export type DB = DatabaseSync
 
-const SCHEMA_VERSION = 1
+const SCHEMA_VERSION = 2
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS accounts (
   id TEXT PRIMARY KEY, provider TEXT NOT NULL, email TEXT NOT NULL, name TEXT NOT NULL,
-  color TEXT NOT NULL, created_at INTEGER NOT NULL, sync_cursor TEXT, last_sync_at INTEGER,
+  color TEXT NOT NULL, avatar_url TEXT, created_at INTEGER NOT NULL, sync_cursor TEXT, last_sync_at INTEGER,
   status TEXT NOT NULL DEFAULT 'ok', status_message TEXT
 );
 CREATE TABLE IF NOT EXISTS labels (
@@ -59,12 +59,21 @@ CREATE TABLE IF NOT EXISTS contacts (
 CREATE TABLE IF NOT EXISTS kv (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `
 
+/** Per-version migrations, applied in order after SCHEMA (which only CREATEs missing tables). */
+const MIGRATIONS: Record<number, (db: DB) => void> = {
+  2: (db) => {
+    const cols = db.prepare('PRAGMA table_info(accounts)').all() as { name: string }[]
+    if (!cols.some((c) => c.name === 'avatar_url')) db.exec('ALTER TABLE accounts ADD COLUMN avatar_url TEXT')
+  }
+}
+
 export function openDb(path: string): DB {
   const db = new DatabaseSync(path)
   db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA synchronous = NORMAL;')
   const row = db.prepare('PRAGMA user_version').get() as { user_version: number }
   if (row.user_version < SCHEMA_VERSION) {
     db.exec(SCHEMA)
+    for (let v = row.user_version + 1; v <= SCHEMA_VERSION; v++) MIGRATIONS[v]?.(db)
     db.exec(`PRAGMA user_version = ${SCHEMA_VERSION}`)
   }
   return db
