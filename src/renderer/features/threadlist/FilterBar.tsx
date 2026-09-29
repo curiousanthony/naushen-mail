@@ -11,6 +11,9 @@ export interface FilterBarProps {
   chips: Chips
   onChange(next: Chips): void
   labels: Label[]
+  /** Hide the Date/No-groups toggle -- the Categories nav has its own fixed grouping, not a
+   *  user-togglable one (see threadlist/index.tsx). Defaults on everywhere else. */
+  showGroupToggle?: boolean
 }
 
 /**
@@ -23,7 +26,7 @@ export interface FilterBarProps {
  * here), not a portalled popover with a document-level outside-click listener: simpler state
  * (one boolean), nothing to race.
  */
-export function FilterBar({ chips, onChange, labels }: FilterBarProps): JSX.Element {
+export function FilterBar({ chips, onChange, labels, showGroupToggle = true }: FilterBarProps): JSX.Element {
   const settings = useApp((s) => s.settings)
   const accounts = useApp((s) => s.accounts)
   const nav = useApp((s) => s.nav)
@@ -98,9 +101,11 @@ export function FilterBar({ chips, onChange, labels }: FilterBarProps): JSX.Elem
         <ListFilter size={14} /> Filter{n > 0 ? ` · ${n}` : ''}
       </button>
 
-      <button className="tl__tool" onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })} title="Group conversations by date">
-        <LayoutList size={14} /> {settings.groupByDate ? 'Date' : 'No groups'}
-      </button>
+      {showGroupToggle && (
+        <button className="tl__tool" onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })} title="Group conversations by date">
+          <LayoutList size={14} /> {settings.groupByDate ? 'Date' : 'No groups'}
+        </button>
+      )}
 
       {open && (
         <div ref={panelRef} className="tl__filterpanel" role="dialog" aria-label="Filter conversations">

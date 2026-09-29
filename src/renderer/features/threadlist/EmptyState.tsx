@@ -14,6 +14,7 @@ function glyphFor(nav: Nav, filtered: boolean): LucideIcon {
   if (filtered) return Filter
   switch (nav.kind) {
     case 'role': return GLYPH[nav.role] ?? Inbox
+    case 'categories': return Tag
     case 'snoozed': return Clock
     case 'label': return Tag
     case 'search': return Search

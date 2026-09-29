@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
-  AlarmClock, Bell, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, Layers, MessagesSquare,
-  MoreHorizontal, PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star, Tag,
-  Trash2, User, Users, X
+  AlarmClock, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, LayoutGrid, Layers,
+  MoreHorizontal, PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star,
+  Trash2, X
 } from 'lucide-react'
 import type { Account, Counts, View } from '@shared/types'
 import { bundlesPatch, isBundled, readBundles, toggleBundle } from '@/features/rules/prefs'
@@ -29,11 +29,6 @@ const MAIL_ICON: Record<string, ReactNode> = {
   snoozed: <AlarmClock size={16} />, trash: <Trash2 size={16} />, spam: <ShieldAlert size={16} />
 }
 
-/** Icon per Gmail category, keyed by remote id (CATEGORY_SOCIAL etc. — see sidebar/lib.ts). */
-const CATEGORY_ICON: Record<string, ReactNode> = {
-  CATEGORY_PERSONAL: <User size={16} />, CATEGORY_SOCIAL: <Users size={16} />, CATEGORY_PROMOTIONS: <Tag size={16} />,
-  CATEGORY_UPDATES: <Bell size={16} />, CATEGORY_FORUMS: <MessagesSquare size={16} />
-}
 
 /** Which "Mail" rows accept a dropped conversation (Sent, Drafts and Reminders do not). */
 const MAIL_DROP: Record<string, Dest> = {
@@ -62,9 +57,10 @@ export function Sidebar(): JSX.Element {
   const aux = useAuxCounts(views, accountId, counts)
   // "All accounts": same-named labels across accounts are one row (per-account rows otherwise).
   const labelRows = useMemo(() => mergedLabels(labels, accountId), [labels, accountId])
-  // Gmail only; empty (and the section hidden) for Outlook-only setups — see categoryGroups.
+  // Gmail only; empty (and the row hidden) for Outlook-only setups — see categoryGroups.
   const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId])
   const categoryCounts = useCategoryCounts(categoryRows, accountId, counts)
+  const categoryUnread = useMemo(() => Object.values(categoryCounts).reduce((a, b) => a + b, 0), [categoryCounts])
   const tags = useMemo(() => accountTags(accounts), [accounts])
   const shownViews = useMemo(() => sidebarViews(views), [views])
   const go = useCallback((n: Nav) => setNav(n), [setNav])
@@ -98,6 +94,15 @@ export function Sidebar(): JSX.Element {
               onClick={() => go({ kind: 'role', role: 'inbox' })}
               dest={{ kind: 'inbox' }}
             />
+            {categoryRows.length > 0 && (
+              // Gmail's tabs (Primary/Social/Promotions/Updates/Forums) as one row, not five --
+              // see threadlist/lib.ts's `groupByCategory` for how the list itself groups them.
+              <Row
+                icon={<LayoutGrid size={16} />} label="Categories" count={categoryUnread}
+                active={nav.kind === 'categories'} onClick={() => go({ kind: 'categories' })}
+                title="Mail grouped by Gmail's Social / Promotions / Updates / Forums tabs"
+              />
+            )}
             {shownViews.map((v) => (
               <ViewRow
                 key={v.id} view={v} count={aux.views[v.id] ?? 0}
@@ -118,19 +123,6 @@ export function Sidebar(): JSX.Element {
             ))}
           </Section>
 
-          {categoryRows.length > 0 && (
-            <Section id="categories" title="Categories" collapsed={!!sections.categories} onToggle={toggleSection}>
-              {categoryRows.map((g) => (
-                <Row
-                  key={g.key} icon={CATEGORY_ICON[g.key]} label={g.name}
-                  count={categoryCounts[g.key] ?? 0}
-                  active={nav.kind === 'label' && g.ids.includes(nav.labelId)}
-                  onClick={() => go({ kind: 'label', labelId: g.ids[0] })}
-                  title={`${g.name} · Inbox`}
-                />
-              ))}
-            </Section>
-          )}
 
           {labelRows.length > 0 && (
             <Section id="labels" title="Labels" collapsed={!!sections.labels} onToggle={toggleSection}>

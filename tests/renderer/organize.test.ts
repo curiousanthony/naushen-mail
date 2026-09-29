@@ -8,7 +8,7 @@ import {
   assignBundle, buildEntries, buildItems, bundleCount, navStateOf, senderSummary, type BundleDef
 } from '../../src/renderer/features/threadlist/bundles'
 import { bundleStops, collapseBundleAt, expandBundleAt, expandBundleTargets, publishBundleNav, useBundleUi } from '../../src/renderer/features/threadlist/bundleNav'
-import { flatten, groupThreads, offsetsOf, windowRange } from '../../src/renderer/features/threadlist/lib'
+import { flatten, groupByCategory, groupThreads, offsetsOf, windowRange } from '../../src/renderer/features/threadlist/lib'
 import { targetIds } from '../../src/renderer/features/commands/selection'
 import { moveFocus } from '../../src/renderer/features/commands/selection'
 import { readBundles, toggleBundle } from '../../src/renderer/features/rules/prefs'
@@ -100,6 +100,41 @@ describe('Gmail categories', () => {
     expect(navToFilter({ kind: 'role', role: 'inbox' }, 'all', [], [], DEFAULT_SETTINGS).excludeCategories).toBeUndefined()
     // Only the Inbox role is affected — e.g. Starred never gets the flag.
     expect(navToFilter({ kind: 'role', role: 'starred' }, 'all', [], [], on).excludeCategories).toBeUndefined()
+  })
+
+  it("navToFilter's 'categories' nav scopes to the Inbox and never applies excludeCategories, even when the hide setting is on", () => {
+    const on: AppSettings = { ...DEFAULT_SETTINGS, hideCategoriesFromInbox: true }
+    const f = navToFilter({ kind: 'categories' }, 'all', [], [], on)
+    expect(f.role).toBe('inbox')
+    expect(f.excludeCategories).toBeUndefined()
+  })
+
+  it('groupByCategory buckets threads by category, in Gmail tab order, dropping empty categories', () => {
+    const labels = [
+      lab('a:CATEGORY_PERSONAL', 'a', 'Primary', 'category'),
+      lab('a:CATEGORY_SOCIAL', 'a', 'Social', 'category'),
+      lab('a:CATEGORY_PROMOTIONS', 'a', 'Promotions', 'category'),
+      lab('a:CATEGORY_UPDATES', 'a', 'Updates', 'category')
+      // Forums deliberately absent: no thread and no label for it -- must not appear.
+    ]
+    const threads = [
+      T('promo1', NOW - 1000, { labelIds: ['a:CATEGORY_PROMOTIONS'] }),
+      T('social1', NOW - 2000, { labelIds: ['a:CATEGORY_SOCIAL'] }),
+      T('promo2', NOW - 3000, { labelIds: ['a:CATEGORY_PROMOTIONS'] }),
+      // No category label at all (not yet re-synced): falls back to Primary rather than vanishing.
+      T('uncat', NOW - 4000, { labelIds: [] })
+    ]
+    const groups = groupByCategory(threads, labels, 'a')
+    expect(groups.map((g) => g.label)).toEqual(['Primary', 'Social', 'Promotions'])
+    expect(groups.find((g) => g.label === 'Promotions')?.threads.map((t) => t.id)).toEqual(['promo1', 'promo2'])
+    expect(groups.find((g) => g.label === 'Social')?.threads.map((t) => t.id)).toEqual(['social1'])
+    expect(groups.find((g) => g.label === 'Primary')?.threads.map((t) => t.id)).toEqual(['uncat'])
+  })
+
+  it('groupByCategory falls back to one ungrouped bucket when the account has no category labels at all', () => {
+    const threads = [T('t1', NOW - 1000), T('t2', NOW - 2000)]
+    const groups = groupByCategory(threads, [], 'a')
+    expect(groups).toEqual([{ key: 'all', label: '', threads }])
   })
 })
 

@@ -13,6 +13,9 @@ export type Nav =
   | { kind: 'label'; labelId: string }
   | { kind: 'snoozed' }
   | { kind: 'search'; text: string }
+  /** Gmail's inbox tabs (Primary/Social/Promotions/Updates/Forums), one grouped view -- see
+   *  threadlist/lib.ts's `groupByCategory`. Sidebar has one "Categories" row for this, not five. */
+  | { kind: 'categories' }
 
 export interface Toast {
   id: number
@@ -100,6 +103,9 @@ export function navToFilter(
       const target = labels.find((l) => l.id === nav.labelId)
       return target?.kind === 'category' ? { ...base, role: 'inbox', labelIds: ids } : { ...base, labelIds: ids }
     }
+    // Same underlying set as Inbox, deliberately *not* applying `excludeCategories` -- this is
+    // the one place categorized mail is always visible, hidden-from-inbox or not.
+    case 'categories': return { ...base, role: 'inbox' }
     case 'snoozed': return { ...base, onlySnoozed: true }
     case 'search': {
       // Gmail/Notion-Mail-style operators (from:, to:, subject:, has:attachment, is:unread,

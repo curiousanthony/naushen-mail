@@ -12,7 +12,7 @@ import { EmptyTrashButton } from './EmptyTrash'
 import { BulkBar } from './BulkBar'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
 import {
-  EMPTY_CHIPS, WINDOW_THRESHOLD, applyChips, chipCount, emptyCopy, flatten, groupThreads,
+  EMPTY_CHIPS, WINDOW_THRESHOLD, applyChips, chipCount, emptyCopy, flatten, groupByCategory, groupThreads,
   listTitle, offsetsOf, rangeIds, scrollOffsetFor, unionIds, windowRange,
   type Chips, type Metrics
 } from './lib'
@@ -82,10 +82,12 @@ export function ThreadList(): JSX.Element {
   const bundling = bundleDefs.length > 0 && nav.kind === 'role' && nav.role === 'inbox'
   const expanded = useBundleUi((s) => s.expanded)
   const items = useMemo(
-    () => bundling
-      ? buildItems(buildEntries(visible, bundleDefs, labels, myEmails), settings.groupByDate, expanded)
-      : flatten(groupThreads(visible, settings.groupByDate)),
-    [bundling, visible, bundleDefs, labels, myEmails, settings.groupByDate, expanded]
+    () => nav.kind === 'categories'
+      ? flatten(groupByCategory(visible, labels, accountId))
+      : bundling
+        ? buildItems(buildEntries(visible, bundleDefs, labels, myEmails), settings.groupByDate, expanded)
+        : flatten(groupThreads(visible, settings.groupByDate)),
+    [nav.kind, bundling, visible, bundleDefs, labels, myEmails, settings.groupByDate, expanded, accountId]
   )
   // Tell the keyboard layer what is on screen (j/k stops, what `e` and Enter mean on a bundle).
   useEffect(() => {
@@ -194,7 +196,7 @@ export function ThreadList(): JSX.Element {
           {count > 0 && <span className="tl__count">{count}</span>}
         </h1>
         {nav.kind === 'role' && nav.role === 'trash' && <EmptyTrashButton />}
-        <FilterBar chips={chips} onChange={setChips} labels={userLabels} />
+        <FilterBar chips={chips} onChange={setChips} labels={userLabels} showGroupToggle={nav.kind !== 'categories'} />
       </header>
 
       <div

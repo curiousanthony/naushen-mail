@@ -5,6 +5,7 @@
 import type { Label, SystemRole, Thread, View } from '@shared/types'
 import { groupLabel, displayName } from '@/lib/format'
 import type { Nav } from '@/lib/store'
+import { categoryGroups } from '../sidebar/lib'
 import type { BundleGroup } from './bundles'
 
 // ---------------------------------------------------------------- filter chips
@@ -53,6 +54,30 @@ export function groupThreads(threads: Thread[], byDate: boolean, now = Date.now(
     else out.push({ key: label, label, threads: [t] })
   }
   return out
+}
+
+/**
+ * The "Categories" nav: every category's mail in one list, grouped under a header per category
+ * (Primary / Social / Promotions / Updates / Forums, Gmail's own tab order — see
+ * `categoryGroups`), each bucket in the same last-message-first order the query returned. A
+ * thread with no category label yet (not re-synced since this feature shipped) buckets under
+ * Primary rather than vanishing — see `categoryGroups`'s doc for why that's the safe default.
+ * Empty categories are omitted, same as an empty date bucket never rendering a header.
+ */
+export function groupByCategory(threads: Thread[], labels: Label[], accountId: string): Group[] {
+  const rows = categoryGroups(labels, accountId)
+  if (!rows.length) return groupThreads(threads, false)
+  const remoteIdOf = new Map<string, string>()
+  for (const l of labels) if (l.kind === 'category') remoteIdOf.set(l.id, l.remoteId)
+  const buckets = new Map<string, Thread[]>()
+  for (const t of threads) {
+    const remoteId = t.labelIds.map((id) => remoteIdOf.get(id)).find((x): x is string => !!x) ?? 'CATEGORY_PERSONAL'
+    const bucket = buckets.get(remoteId)
+    if (bucket) bucket.push(t); else buckets.set(remoteId, [t])
+  }
+  return rows
+    .map((g) => ({ key: g.key, label: g.name, threads: buckets.get(g.key) ?? [] }))
+    .filter((g) => g.threads.length > 0)
 }
 
 // ---------------------------------------------------------------- windowing
@@ -182,6 +207,7 @@ const ROLE_TITLE: Record<SystemRole, string> = {
 export function listTitle(nav: Nav, views: View[], labels: Label[]): { emoji?: string; title: string } {
   switch (nav.kind) {
     case 'role': return { title: ROLE_TITLE[nav.role] }
+    case 'categories': return { title: 'Categories' }
     case 'snoozed': return { title: 'Reminders' }
     case 'search': return { title: nav.text ? `Search: ${nav.text}` : 'Search' }
     case 'label': return { title: labels.find((l) => l.id === nav.labelId)?.name ?? 'Label' }
@@ -208,6 +234,7 @@ export function emptyCopy(nav: Nav, viewName?: string, filtered = false): EmptyC
         case 'starred': return { title: 'No starred conversations', body: 'Star a conversation to find it quickly.' }
         default: return { title: 'No mail here', body: 'This mailbox is empty.' }
       }
+    case 'categories': return { title: 'Nothing categorized', body: 'Social, Promotions, Updates and Forums mail will group here as it arrives.' }
     case 'snoozed': return { title: 'No reminders', body: 'Conversations you snooze will come back here.' }
     case 'label': return { title: 'No conversations', body: 'Nothing carries this label yet.' }
     case 'search': return { title: 'No results', body: `Nothing matches “${nav.text}”.` }
