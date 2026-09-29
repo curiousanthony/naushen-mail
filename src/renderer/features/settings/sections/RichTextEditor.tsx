@@ -10,9 +10,14 @@ type Cmd = 'bold' | 'italic' | 'underline'
 /**
  * Small contentEditable editor (bold / italic / underline / link) used for signatures and snippets.
  * Uncontrolled: `initialHtml` is applied on mount and whenever `resetKey` changes.
+ *
+ * `sanitize` defaults to `sanitizeRich` (snippets keep that, unchanged). The signature editor
+ * passes `sanitizeSignature` instead — a wider allowlist for real signature layouts (tables,
+ * images, inline styles). See `../lib/signatureSanitize.ts`.
  */
-export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, label, minHeight = 120 }: {
+export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, label, minHeight = 120, sanitize = sanitizeRich }: {
   initialHtml: string; resetKey: string; onChange: (html: string) => void; placeholder: string; label: string; minHeight?: number
+  sanitize?: (html: string) => string
 }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null)
   const savedRange = useRef<Range | null>(null)
@@ -23,7 +28,7 @@ export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, l
   const [linkBad, setLinkBad] = useState(false)
 
   useEffect(() => {
-    if (ref.current) { ref.current.innerHTML = sanitizeRich(initialHtml); setEmpty(!ref.current.textContent) }
+    if (ref.current) { ref.current.innerHTML = sanitize(initialHtml); setEmpty(!ref.current.textContent) }
     setLinkOpen(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey])
@@ -32,8 +37,8 @@ export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, l
     const el = ref.current
     if (!el) return
     setEmpty(!el.textContent)
-    onChange(sanitizeRich(el.innerHTML))
-  }, [onChange])
+    onChange(sanitize(el.innerHTML))
+  }, [onChange, sanitize])
 
   const refreshActive = useCallback(() => {
     const el = ref.current
@@ -74,7 +79,7 @@ export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, l
   const onPaste = (e: React.ClipboardEvent): void => {
     e.preventDefault()
     const html = e.clipboardData.getData('text/html')
-    if (html) document.execCommand('insertHTML', false, sanitizeRich(html))
+    if (html) document.execCommand('insertHTML', false, sanitize(html))
     else document.execCommand('insertText', false, e.clipboardData.getData('text/plain'))
     emit()
   }

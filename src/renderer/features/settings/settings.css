@@ -248,6 +248,34 @@
 .st-dprev--compact { gap: 5px; }
 .st-dprev--compact i { height: 7px; }
 
+/* ---------------------------------------------------------------- signature template gallery */
+.st-sig-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding-top: 6px; margin-bottom: 4px; }
+.st-sig-card { display: flex; flex-direction: column; gap: 2px; padding: 8px 8px 10px; border-radius: var(--radius-lg); box-shadow: inset 0 0 0 1px var(--c-divider); text-align: left; transition: background var(--t-fast), box-shadow var(--t-fast); }
+.st-sig-card:hover { background: var(--c-bg-hover); box-shadow: inset 0 0 0 1px var(--c-border); }
+.st-sig-card__label { font-weight: 500; font-size: 13.5px; padding: 6px 4px 0; }
+.st-sig-card__desc { font-size: 11.5px; color: var(--c-text-2); padding: 0 4px; line-height: 1.4; }
+.st-sig-prev { position: relative; display: block; height: 64px; border-radius: var(--radius-md); background: var(--c-bg); box-shadow: inset 0 0 0 1px var(--c-divider); overflow: hidden; padding: 10px; }
+.st-sig-prev i { display: block; height: 6px; border-radius: 3px; background: var(--c-bg-hover-strong); }
+.st-sig-prev em { display: block; height: 5px; border-radius: 3px; background: var(--c-text-3); font-style: normal; }
+/* minimal: name line + shorter muted title line */
+.st-sig-prev--minimal i { width: 62%; margin-bottom: 6px; }
+.st-sig-prev--minimal em { width: 42%; }
+/* photo: circle avatar + two lines beside it */
+.st-sig-prev--photo { display: flex; align-items: center; gap: 8px; }
+.st-sig-prev--photo b { width: 30px; height: 30px; border-radius: 50%; background: var(--c-accent); flex: none; }
+.st-sig-prev--photo .st-sig-prev__lines { flex: 1; min-width: 0; }
+.st-sig-prev--photo i { width: 80%; margin-bottom: 6px; }
+.st-sig-prev--photo em { width: 55%; }
+/* compact: one line, three dot-separated segments */
+.st-sig-prev--compact { display: flex; align-items: center; gap: 5px; }
+.st-sig-prev--compact i, .st-sig-prev--compact em { display: inline-block; height: 6px; width: 24%; }
+.st-sig-prev--compact span { color: var(--c-text-3); font-size: 10px; }
+/* classic: name + title + a divider rule + a muted contact line */
+.st-sig-prev--classic i:first-child { width: 55%; margin-bottom: 6px; }
+.st-sig-prev--classic em { width: 70%; margin-bottom: 8px; }
+.st-sig-prev--classic .st-sig-prev__rule { height: var(--hairline); background: var(--c-divider); margin-bottom: 8px; }
+.st-sig-prev--classic i:last-child { width: 45%; margin-bottom: 0; }
+
 /* ---------------------------------------------------------------- rich text editor + signature */
 .st-rte { border-radius: var(--radius-lg); box-shadow: inset 0 0 0 1px var(--c-border); background: var(--c-bg); transition: box-shadow var(--t-fast); overflow: hidden; }
 .st-rte:focus-within { box-shadow: inset 0 0 0 1px var(--c-accent), 0 0 0 3px var(--c-focus-ring); }
@@ -333,6 +361,7 @@ kbd { min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place
   .st-pane__inner { padding: 24px 24px 40px; }
   .st-connect { grid-template-columns: 1fr; }
   .st-tstyle { grid-template-columns: 1fr; }
+  .st-sig-gallery { grid-template-columns: 1fr; }
   .st-keys { grid-template-columns: 1fr; }
 }
 
