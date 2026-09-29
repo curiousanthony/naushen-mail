@@ -124,8 +124,8 @@ const account: Account = { id: 'm1', provider: 'mock', email: 'me@x.io', name: '
 
 describe('RulesStore', () => {
   it('creates its own table on a database that is already at the current schema version', () => {
-    const db = openDb(':memory:') // user_version is already 1: SCHEMA will not run again
-    expect((db.prepare('PRAGMA user_version').get() as { user_version: number }).user_version).toBe(1)
+    const db = openDb(':memory:') // user_version is already current: SCHEMA will not run again
+    expect((db.prepare('PRAGMA user_version').get() as { user_version: number }).user_version).toBe(2)
     const store = new RulesStore(db)
     new RulesStore(db) // idempotent
     expect(store.list()).toEqual([])
