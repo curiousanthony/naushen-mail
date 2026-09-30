@@ -1,0 +1,217 @@
+{
+  "window": {
+    "newMessage": "Neue Nachricht",
+    "composer": "Nachrichteneditor",
+    "minimise": "Minimieren",
+    "maximise": "Maximieren",
+    "restore": "Wiederherstellen",
+    "expand": "Aufklappen",
+    "close": "Schließen"
+  },
+  "fields": {
+    "from": "Von",
+    "to": "An",
+    "cc": "Cc",
+    "bcc": "Bcc",
+    "subject": "Betreff",
+    "noAccount": "Kein Account",
+    "sendFrom": "Senden von",
+    "signature": "Signatur"
+  },
+  "recipients": {
+    "remove": "{{email}} entfernen",
+    "frequent": "Häufig"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> sieht nach einem Tippfehler aus, gemeint ist wohl <b>{{suggested}}</b>",
+    "useDomain": "{{domain}} verwenden",
+    "keepAsTyped": "Beibehalten",
+    "mailingList": "Das scheint eine <b>Mailingliste</b> zu sein; die Antwort geht an alle darauf.",
+    "replyingTo_one": "Antwort an <b>{{count}} Person</b>.",
+    "replyingTo_other": "Antwort an <b>{{count}} Personen</b>.",
+    "replySenderOnly": "Nur dem Absender antworten",
+    "dismiss": "Ausblenden"
+  },
+  "quote": {
+    "show": "Zitierten Text einblenden"
+  },
+  "attachments": {
+    "remove": "{{name}} entfernen",
+    "totalOver": "{{size}} — über dem Limit von 25 MB",
+    "drop": "Dateien hier ablegen, um sie anzuhängen",
+    "bytes_one": "{{count}} Byte",
+    "bytes_other": "{{count}} Byte",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Datei anhängen",
+    "addSubject": "Betreff hinzufügen",
+    "sendAnyway": "Trotzdem senden"
+  },
+  "validation": {
+    "noRecipient": "Mindestens einen Empfänger hinzufügen.",
+    "invalidAddress_one": "{{email}} ist keine gültige E-Mail-Adresse.",
+    "invalidAddress_other": "{{count}} Empfänger sind keine gültigen E-Mail-Adressen.",
+    "noSubject": "Diese Nachricht hat keinen Betreff.",
+    "empty": "Diese Nachricht ist leer.",
+    "missingAttachment": "Ein Anhang wird erwähnt, es ist aber nichts angehängt."
+  },
+  "nudge": {
+    "empty": "Diese Nachricht ist leer.",
+    "typo": "{{domain}} ist möglicherweise ein Tippfehler.",
+    "attachment": "„{{word}}“ steht im Text, es ist aber nichts angehängt.",
+    "noSubject": "Kein Betreff."
+  },
+  "toolbar": {
+    "snippets": "Textbausteine",
+    "attach": "Dateien anhängen",
+    "discard": "Entwurf verwerfen",
+    "help": "Formatierungshilfe",
+    "draftSaved": "Entwurf gesichert",
+    "send": "Senden"
+  },
+  "schedule": {
+    "title": "Senden planen",
+    "timePlaceholder": "Zeit eingeben… tomorrow 9am",
+    "timeLabel": "Sendezeit eingeben",
+    "confirm": "Planen",
+    "pickFuture": "Einen Zeitpunkt in der Zukunft wählen",
+    "followUp_one": "Erinnern, wenn nach {{count}} Tag keine Antwort kommt",
+    "followUp_other": "Erinnern, wenn nach {{count}} Tagen keine Antwort kommt",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "Heute Vormittag",
+    "thisAfternoon": "Heute Nachmittag",
+    "tomorrowMorning": "Morgen Vormittag",
+    "tomorrowAfternoon": "Morgen Nachmittag",
+    "nextWeek": "Nächste Woche",
+    "pickDateTime": "Datum & Uhrzeit wählen",
+    "scheduledFor": "Geplant für {{when}}"
+  },
+  "toast": {
+    "discarded": "Entwurf verworfen",
+    "archived": "Unterhaltung archiviert",
+    "sending": "Wird gesendet…",
+    "sent": "Gesendet",
+    "sentFollowUp_one": "Gesendet · Nachfassen nach {{count}} Tag, falls keine Antwort kommt",
+    "sentFollowUp_other": "Gesendet · Nachfassen nach {{count}} Tagen, falls keine Antwort kommt",
+    "scheduledFollowUp_one": "{{scheduled}} · Nachfassen nach {{count}} Tag",
+    "scheduledFollowUp_other": "{{scheduled}} · Nachfassen nach {{count}} Tagen",
+    "notSent": "Nicht gesendet: {{reason}}",
+    "sendFailed": "Die Nachricht konnte nicht gesendet werden",
+    "cancel": "Abbrechen",
+    "undo": "Rückgängig"
+  },
+  "snippets": {
+    "none": "Noch keine Textbausteine",
+    "newFromDraft": "+ Neuer Textbaustein aus diesem Entwurf",
+    "nameLabel": "Name des Textbausteins",
+    "namePlaceholder": "Link zur Website",
+    "untitled": "Unbenannter Textbaustein"
+  },
+  "help": {
+    "typing": "Tippen",
+    "smartTypography": "Typografische Anführungszeichen, Striche und Auslassungspunkte",
+    "formatting": "Formatierung",
+    "insertBlock": "Block einfügen",
+    "emoji": "Emoji",
+    "textStyles": "Fett, kursiv, unterstrichen",
+    "strikethrough": "Durchgestrichen",
+    "code": "Code",
+    "link": "Link",
+    "snippet": "Textbaustein",
+    "headings": "Überschriften",
+    "bulletKeys": "- oder *",
+    "bulletList": "Aufzählung",
+    "numberedList": "Nummerierte Liste",
+    "todo": "Aufgabe",
+    "quote": "Zitat",
+    "codeBlock": "Codeblock",
+    "divider": "Trennlinie",
+    "send": "Senden",
+    "sendArchive": "Senden & archivieren",
+    "saveClose": "Entwurf sichern & schließen"
+  },
+  "editor": {
+    "placeholder": "Schreiben oder „/“ für Blöcke eingeben",
+    "placeholderShort": "Schreiben oder „/“ eingeben",
+    "toggle": "Aufklappbereich",
+    "heading": "Überschrift {{level}}"
+  },
+  "slash": {
+    "noMatch": "Keine passenden Blöcke",
+    "insertSnippet": "Textbaustein einfügen",
+    "colour": "Farbe",
+    "background": "Hintergrund",
+    "groups": {
+      "basic": "Basisblöcke",
+      "media": "Medien",
+      "advanced": "Erweitert",
+      "snippets": "Textbausteine"
+    },
+    "items": {
+      "text": { "title": "Text", "description": "Einfach mit normalem Text losschreiben." },
+      "h1": { "title": "Überschrift 1", "description": "Große Abschnittsüberschrift." },
+      "h2": { "title": "Überschrift 2", "description": "Mittlere Abschnittsüberschrift." },
+      "h3": { "title": "Überschrift 3", "description": "Kleine Abschnittsüberschrift." },
+      "bulletList": { "title": "Aufzählung", "description": "Eine einfache Aufzählung erstellen." },
+      "orderedList": { "title": "Nummerierte Liste", "description": "Eine Liste mit Nummerierung erstellen." },
+      "taskList": { "title": "Aufgabenliste", "description": "Aufgaben mit einer Checkliste verfolgen." },
+      "toggle": { "title": "Aufklappliste", "description": "Details in einem einklappbaren Bereich verbergen." },
+      "quote": { "title": "Zitat", "description": "Ein Zitat festhalten." },
+      "divider": { "title": "Trennlinie", "description": "Blöcke optisch trennen." },
+      "callout": { "title": "Hinweisbox", "description": "Text hervorheben." },
+      "code": { "title": "Code", "description": "Einen Codeausschnitt festhalten." },
+      "table": { "title": "Tabelle", "description": "Eine einfache Tabelle hinzufügen." },
+      "image": { "title": "Bild", "description": "Ein Bild hochladen oder hineinziehen." },
+      "link": { "title": "Link", "description": "Auf eine Webseite verlinken." },
+      "emoji": { "title": "Emoji", "description": "Ein Emoji suchen und einfügen." },
+      "textColor": { "title": "Textfarbe", "description": "Den ausgewählten Text einfärben." },
+      "backgroundColor": { "title": "Hintergrundfarbe", "description": "Den ausgewählten Text hervorheben." }
+    },
+    "colors": {
+      "default": "Standard",
+      "gray": "Grau",
+      "brown": "Braun",
+      "orange": "Orange",
+      "yellow": "Gelb",
+      "green": "Grün",
+      "blue": "Blau",
+      "purple": "Violett",
+      "pink": "Rosa",
+      "red": "Rot"
+    }
+  },
+  "selection": {
+    "turnInto": "Umwandeln in",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "strikethrough": "Durchgestrichen",
+    "code": "Code",
+    "link": "Link",
+    "colour": "Farbe",
+    "text": "Text",
+    "background": "Hintergrund",
+    "pasteLink": "Link einfügen…",
+    "apply": "Anwenden",
+    "openLink": "Link öffnen",
+    "removeLink": "Link entfernen"
+  },
+  "link": {
+    "dialog": "Link bearbeiten",
+    "placeholder": "Link einfügen oder eingeben",
+    "urlLabel": "Link-URL",
+    "apply": "Anwenden",
+    "applyLink": "Link anwenden",
+    "open": "Link öffnen",
+    "remove": "Link entfernen"
+  },
+  "image": {
+    "alignLeft": "Linksbündig",
+    "alignCenter": "Zentriert",
+    "alignRight": "Rechtsbündig"
+  },
+  "callout": {
+    "changeIcon": "Symbol der Hinweisbox ändern"
+  }
+}

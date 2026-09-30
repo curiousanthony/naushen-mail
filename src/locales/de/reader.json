@@ -1,0 +1,139 @@
+{
+  "thread": {
+    "fallbackTitle": "Unterhaltung",
+    "loading": "Unterhaltung wird geladen",
+    "unavailableTitle": "Diese Unterhaltung ist nicht mehr verfügbar.",
+    "unavailableHint": "Sie wurde möglicherweise gelöscht oder verschoben.",
+    "resize": "Größe des Unterhaltungsbereichs ändern"
+  },
+  "header": {
+    "collapse": "Einklappen",
+    "collapseThread": "Unterhaltung einklappen",
+    "archive": "Archivieren",
+    "archived": "Unterhaltung archiviert",
+    "markUnread": "Als ungelesen markieren",
+    "markedUnread": "Als ungelesen markiert",
+    "setReminder": "Erinnerung festlegen",
+    "star": "Markieren",
+    "unstar": "Markierung entfernen",
+    "label": "Label",
+    "unsubscribe": "Abbestellen",
+    "unsubscribeWeb": "Wird im Browser geöffnet",
+    "unsubscribeMail": "Sendet eine E-Mail",
+    "reportSpam": "Als Spam melden",
+    "reportedSpam": "Als Spam gemeldet",
+    "trash": "In den Papierkorb",
+    "trashed": "In den Papierkorb verschoben",
+    "noSubject": "(kein Betreff)",
+    "messageCount_one": "{{count}} Nachricht",
+    "messageCount_other": "{{count}} Nachrichten"
+  },
+  "replyBar": {
+    "reply": "Antworten",
+    "replyAll": "Allen antworten",
+    "forward": "Weiterleiten"
+  },
+  "message": {
+    "unread": "Ungelesen",
+    "expand": "Nachricht aufklappen",
+    "showDetails": "Details einblenden",
+    "hideDetails": "Details ausblenden",
+    "showRecipientDetails": "Empfängerdetails einblenden",
+    "hideRecipientDetails": "Empfängerdetails ausblenden",
+    "toLine": "an {{recipients}}",
+    "toMe": "mich",
+    "attachmentCount_one": "{{count}} Anhang",
+    "attachmentCount_other": "{{count}} Anhänge",
+    "reply": "Antworten",
+    "replyAll": "Allen antworten",
+    "forward": "Weiterleiten",
+    "copyField": "{{label}} kopieren",
+    "copyAddress_one": "{{label}}-Adresse kopieren",
+    "copyAddress_other": "{{label}}-Adressen kopieren",
+    "copied": "Kopiert",
+    "detail": {
+      "from": "Von",
+      "replyTo": "Antwort an",
+      "to": "An",
+      "cc": "Cc",
+      "bcc": "Bcc",
+      "date": "Datum"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_one": "Externes Bild blockiert",
+    "remoteImageBlocked_other": "{{count}} externe Bilder blockiert",
+    "loadImages": "Bilder laden",
+    "alwaysLoad": "Immer laden",
+    "empty": "Diese Nachricht hat keinen Inhalt.",
+    "frameTitle": "Nachricht von {{sender}}",
+    "showAsDesigned": "Wie gestaltet anzeigen",
+    "adaptToDark": "An den Dunkelmodus anpassen",
+    "showOriginalColours": "Originalfarben anzeigen",
+    "adaptColours": "Farben an den Dunkelmodus anpassen",
+    "original": "Original",
+    "adapt": "Anpassen",
+    "showQuote": "Zitierten Text einblenden",
+    "hideQuote": "Zitierten Text ausblenden"
+  },
+  "attachments": {
+    "preview": "{{name}} ansehen",
+    "download": "{{name}} laden — {{size}}"
+  },
+  "preview": {
+    "loading": "Vorschau wird geladen…",
+    "failed": "Für diese Datei konnte keine Vorschau geladen werden.",
+    "unavailable": "Für diesen Dateityp ist keine Vorschau verfügbar.",
+    "download": "Laden",
+    "close": "Schließen",
+    "closePreview": "Vorschau schließen"
+  },
+  "invite": {
+    "loading": "Einladung wird gelesen…",
+    "sending": "Wird gesendet…",
+    "yes": "Ja",
+    "maybe": "Vielleicht",
+    "no": "Nein",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}, {{name}}.",
+    "sent": {
+      "accepted": "Antwort gesendet — Zusage vermerkt",
+      "tentative": "Antwort gesendet — vorläufige Zusage vermerkt",
+      "declined": "Antwort gesendet — Absage vermerkt"
+    },
+    "failed": "Die Antwort konnte nicht gesendet werden. Bitte erneut versuchen."
+  },
+  "code": {
+    "copyTooltip": "Bestätigungscode kopieren",
+    "copyAria": "Bestätigungscode {{code}} kopieren",
+    "copy": "<b>{{code}}</b> kopieren",
+    "copied": "{{code}} kopiert",
+    "copyFailed": "Der Code konnte nicht kopiert werden",
+    "none": "Hier ist kein aktueller Bestätigungscode"
+  },
+  "shield": {
+    "blocked_one": "{{count}} Tracker blockiert",
+    "blocked_other": "{{count}} Tracker blockiert",
+    "trackingPixel": "Tracking-Pixel",
+    "note": "Tracker melden, dass diese Nachricht geöffnet wurde. Sie bleiben auch dann blockiert, wenn Bilder geladen werden."
+  },
+  "link": {
+    "mailTo": "E-Mail an",
+    "call": "anrufen",
+    "trackingStripped_one": "{{count}} Tracking-Parameter beim Öffnen entfernt",
+    "trackingStripped_other": "{{count}} Tracking-Parameter beim Öffnen entfernt",
+    "warningLabel": "Link prüfen",
+    "warning": "Dieser Link führt zu <b>{{actual}}</b>, nicht zu <b>{{shown}}</b>.",
+    "openAnyway": "Trotzdem öffnen",
+    "cancel": "Abbrechen",
+    "writeTo": "An diese Adresse schreiben",
+    "open": "Link öffnen",
+    "copyAddress": "Adresse kopieren",
+    "copyLink": "Link kopieren",
+    "copyLinkClean": "Link kopieren (ohne Tracking)",
+    "copyFailed": "Der Link konnte nicht kopiert werden",
+    "copiedClean": "Link ohne Tracking-Parameter kopiert",
+    "addressCopied": "Adresse kopiert",
+    "copied": "Link kopiert"
+  }
+}

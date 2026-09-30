@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "previous7": "Letzte 7 Tage",
+    "previous30": "Letzte 30 Tage"
+  },
+  "actions": {
+    "cancel": "Abbrechen",
+    "save": "Sichern",
+    "retry": "Erneut versuchen",
+    "undo": "Rückgängig"
+  },
+  "toast": {
+    "sendFailed": "Die Nachricht konnte nicht gesendet werden.",
+    "sendFailedWithReason": "Senden fehlgeschlagen: {{error}}"
+  },
+  "noSubject": "(kein Betreff)",
+  "role": {
+    "inbox": "Posteingang",
+    "sent": "Gesendet",
+    "drafts": "Entwürfe",
+    "trash": "Papierkorb",
+    "spam": "Spam",
+    "archive": "Archiv",
+    "starred": "Markiert",
+    "important": "Wichtig",
+    "all": "Alle E-Mails",
+    "reminders": "Erinnerungen"
+  },
+  "category": {
+    "social": "Soziale Netzwerke",
+    "promotions": "Werbung",
+    "updates": "Benachrichtigungen",
+    "forums": "Foren"
+  },
+  "color": {
+    "gray": "grau",
+    "brown": "braun",
+    "orange": "orange",
+    "yellow": "gelb",
+    "green": "grün",
+    "blue": "blau",
+    "purple": "violett",
+    "pink": "rosa",
+    "red": "rot"
+  },
+  "searchOperators": {
+    "from": "Name oder Adresse des Absenders",
+    "to": "Name oder Adresse des Empfängers",
+    "subject": "Wörter im Betreff",
+    "label": "Name des Labels",
+    "hasAttachment": "mit Anhang",
+    "isUnread": "nur ungelesen",
+    "isStarred": "nur markiert",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

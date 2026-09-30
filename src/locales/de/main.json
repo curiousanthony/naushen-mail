@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "settings": "Einstellungen…",
+    "file": "Ablage",
+    "newMessage": "Neue Nachricht",
+    "addAccount": "Account hinzufügen…",
+    "edit": "Bearbeiten",
+    "view": "Darstellung",
+    "commandMenu": "Befehlsmenü",
+    "search": "Suchen",
+    "toggleSidebar": "Seitenleiste ein-/ausblenden",
+    "reloadWindow": "Fenster neu laden",
+    "mailbox": "Postfach",
+    "goToInbox": "Zum Posteingang",
+    "checkMail": "Jetzt abrufen"
+  },
+  "notify": {
+    "archive": "Archivieren",
+    "markRead": "Als gelesen markieren",
+    "dismiss": "Schließen",
+    "noSubject": "(kein Betreff)",
+    "burstTitle_one": "{{count}} neue Nachricht",
+    "burstTitle_other": "{{count}} neue Nachrichten",
+    "burstBody": "{{names}} und {{others}} weitere"
+  },
+  "oauth": {
+    "connectedTitle": "Verbunden",
+    "connectedBody": "Dieser Tab kann geschlossen werden. Weiter geht es in Naushen Mail.",
+    "failedTitle": "Etwas ist schiefgelaufen",
+    "invalidResponse": "Ungültige Antwort.",
+    "authFailed": "Autorisierung fehlgeschlagen: {{error}}",
+    "authInvalid": "Ungültige Autorisierungsantwort",
+    "timedOut": "Zeitüberschreitung bei der Anmeldung"
+  },
+  "errors": {
+    "notSignedIn": "Nicht angemeldet",
+    "sessionExpired": "Die Sitzung ist abgelaufen. Bitte erneut anmelden.",
+    "threadNotFound": "Unterhaltung nicht gefunden",
+    "accountNotConnected": "Account nicht verbunden",
+    "connectorUnavailable": "Der {{provider}}-Connector ist in dieser Version nicht verfügbar.",
+    "providerUnavailable": "Anbieter nicht verfügbar",
+    "actionFailed": "Aktion fehlgeschlagen: {{message}}",
+    "attachmentNotFound": "Anhang nicht gefunden",
+    "attachmentEmpty": "Der Anhang hat keinen Inhalt"
+  },
+  "gmail": {
+    "missingClient": "Die Google-Anmeldung ist in dieser Version nicht eingerichtet. Eigene Google-OAuth-Client-ID und eigenes Secret unter Einstellungen → Accounts → OAuth-Einrichtung eintragen (siehe docs/google-setup.md).",
+    "noRefreshToken": "Google hat kein Refresh-Token ausgegeben. Naushen Mail unter myaccount.google.com/permissions entfernen und erneut versuchen.",
+    "missingScope": "Naushen Mail benötigt die Berechtigung, Gmail zu lesen und zu verwalten. Erneut verbinden und alle Berechtigungen angehakt lassen.",
+    "profileFailed": "Das Google-Profil konnte nicht gelesen werden (HTTP {{status}}).",
+    "noEmail": "Google hat für diesen Account keine E-Mail-Adresse zurückgegeben.",
+    "authRejected": "Google hat die gespeicherten Zugangsdaten abgelehnt. Bitte erneut anmelden.",
+    "network": "Netzwerkfehler bei der Verbindung zu Gmail: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "Zuerst die Microsoft-Anwendungs-ID (Client-ID) eintragen: Einstellungen → Accounts → OAuth-Einrichtung.",
+    "noEmail": "Microsoft hat für diesen Account keine E-Mail-Adresse zurückgegeben.",
+    "noInbox": "Der Posteingang dieses Postfachs wurde nicht gefunden.",
+    "deltaIncomplete": "Outlook-Delta-Abgleich wurde nicht abgeschlossen",
+    "categoryOnly": "Nur Outlook-Kategorien können bearbeitet werden",
+    "categoryGone": "Die Kategorie „{{name}}“ existiert nicht mehr",
+    "attachmentUpload": "Anhang konnte nicht hochgeladen werden ({{status}})"
+  }
+}
