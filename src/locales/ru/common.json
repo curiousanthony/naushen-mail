@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "previous7": "Последние 7 дней",
+    "previous30": "Последние 30 дней"
+  },
+  "actions": {
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "retry": "Повторить",
+    "undo": "Отменить"
+  },
+  "toast": {
+    "sendFailed": "Не удалось отправить письмо.",
+    "sendFailedWithReason": "Не удалось отправить: {{error}}"
+  },
+  "noSubject": "(без темы)",
+  "role": {
+    "inbox": "Входящие",
+    "sent": "Отправленные",
+    "drafts": "Черновики",
+    "trash": "Корзина",
+    "spam": "Спам",
+    "archive": "Архив",
+    "starred": "Помеченные",
+    "important": "Важные",
+    "all": "Вся почта",
+    "reminders": "Напоминания"
+  },
+  "category": {
+    "social": "Соцсети",
+    "promotions": "Промоакции",
+    "updates": "Оповещения",
+    "forums": "Форумы"
+  },
+  "color": {
+    "gray": "серый",
+    "brown": "коричневый",
+    "orange": "оранжевый",
+    "yellow": "жёлтый",
+    "green": "зелёный",
+    "blue": "синий",
+    "purple": "фиолетовый",
+    "pink": "розовый",
+    "red": "красный"
+  },
+  "searchOperators": {
+    "from": "имя или адрес отправителя",
+    "to": "имя или адрес получателя",
+    "subject": "слова в теме",
+    "label": "название ярлыка",
+    "hasAttachment": "есть вложение",
+    "isUnread": "только непрочитанные",
+    "isStarred": "только помеченные",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

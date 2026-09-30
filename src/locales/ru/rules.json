@@ -1,0 +1,161 @@
+{
+  "summary": {
+    "archived_one": "Архивировано: {{count}}",
+    "archived_few": "Архивировано: {{count}}",
+    "archived_many": "Архивировано: {{count}}",
+    "archived_other": "Архивировано: {{count}}",
+    "trashed_one": "В корзину: {{count}}",
+    "trashed_few": "В корзину: {{count}}",
+    "trashed_many": "В корзину: {{count}}",
+    "trashed_other": "В корзину: {{count}}",
+    "rescued_one": "Спасено из спама: {{count}}",
+    "rescued_few": "Спасено из спама: {{count}}",
+    "rescued_many": "Спасено из спама: {{count}}",
+    "rescued_other": "Спасено из спама: {{count}}",
+    "markedRead_one": "Отмечено прочитанным: {{count}}",
+    "markedRead_few": "Отмечено прочитанным: {{count}}",
+    "markedRead_many": "Отмечено прочитанным: {{count}}",
+    "markedRead_other": "Отмечено прочитанным: {{count}}",
+    "starred_one": "Помечено: {{count}}",
+    "starred_few": "Помечено: {{count}}",
+    "starred_many": "Помечено: {{count}}",
+    "starred_other": "Помечено: {{count}}",
+    "labelled_one": "Ярлык «{{name}}»: {{count}}",
+    "labelled_few": "Ярлык «{{name}}»: {{count}}",
+    "labelled_many": "Ярлык «{{name}}»: {{count}}",
+    "labelled_other": "Ярлык «{{name}}»: {{count}}",
+    "labelFallback": "ярлык"
+  },
+  "describe": {
+    "from": "От {{value}}",
+    "fromDomain": "От @{{value}}",
+    "subject": "Тема содержит «{{value}}»",
+    "noActions": "Нет действий",
+    "actions": {
+      "archive": "пропустить Входящие",
+      "markRead": "отметить прочитанным",
+      "star": "пометить",
+      "trash": "переместить в корзину",
+      "neverSpam": "не отправлять в спам",
+      "label": "ярлык «{{name}}»"
+    }
+  },
+  "form": {
+    "whenMailIs": "Если письмо",
+    "matchOn": "Условие",
+    "matchValue": "Значение",
+    "field": {
+      "from": { "label": "От", "placeholder": "name@example.com", "hint": "Именно этот отправитель." },
+      "fromDomain": { "label": "Домен", "placeholder": "example.com", "hint": "Любой адрес в этом домене, включая поддомены." },
+      "subject": { "label": "Тема", "placeholder": "Слова в теме", "hint": "Любая тема, содержащая этот текст." }
+    },
+    "moreConditions_one": "Ещё {{count}} условие.",
+    "moreConditions_few": "Ещё {{count}} условия.",
+    "moreConditions_many": "Ещё {{count}} условий.",
+    "moreConditions_other": "Ещё {{count}} условия.",
+    "then": "Тогда",
+    "actionsAria": "Действия",
+    "actions": {
+      "archive": "Пропустить Входящие",
+      "markRead": "Отметить прочитанным",
+      "star": "Пометить",
+      "trash": "В корзину",
+      "neverSpam": "Не отправлять в спам"
+    },
+    "applyLabel": "Добавить ярлык",
+    "none": "Нет",
+    "appliesTo": "Применяется к",
+    "allAccounts": "Все учётные записи"
+  },
+  "section": {
+    "title": "Правила",
+    "description": "Фильтры для новой почты внутри Naushen Mail. Они хранятся только на этом Mac: в Gmail ничего не создаётся, а при закрытом приложении они не работают.",
+    "description_outlook": "Фильтры для новой почты внутри Naushen Mail. Они хранятся только на этом Mac: в Gmail и Outlook ничего не создаётся, а при закрытом приложении они не работают.",
+    "empty": {
+      "title": "Правил пока нет",
+      "body": "Откройте цепочку и нажмите <k1>⌘</k1><k2>⇧</k2><k3>R</k3>, чтобы автоматически сортировать почту от этого отправителя."
+    },
+    "removedAccount": "Удалённая учётная запись",
+    "allAccounts": "Все учётные записи",
+    "ruleAria": "Правило: {{condition}}",
+    "and": " и ",
+    "moveUp": "Выше",
+    "moveDown": "Ниже",
+    "edit": "Изменить правило",
+    "delete": "Удалить правило",
+    "deleteConfirm": "Удалить это правило? Уже отсортированная почта останется на месте.",
+    "deleteAction": "Удалить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "order": "Правила выполняются сверху вниз; применяются все подходящие."
+  },
+  "bundles": {
+    "title": "Группы во Входящих",
+    "collapse": {
+      "label": "Сворачивать неважную почту",
+      "desc": "Сгруппированный ярлык или отправитель превращается в одну строку во Входящих (например, «Рассылки · 7 новых»). Помеченная почта никогда не группируется. Пока вы ничего не добавите, группировки нет."
+    },
+    "kindLabel": "Ярлык",
+    "kindSender": "Отправитель",
+    "stop": "Не группировать",
+    "bundleLabel": "Сгруппировать ярлык",
+    "bundleLabelDesc": "Или щёлкните ярлык в боковой панели правой кнопкой.",
+    "chooseLabel": "Выберите ярлык…"
+  },
+  "host": {
+    "title": "Создать правило",
+    "from": "из «{{subject}}»",
+    "noSubject": "(без темы)",
+    "cancel": "Отмена",
+    "create": "Создать правило",
+    "createApply_one": "Создать и применить к {{count}}",
+    "createApply_few": "Создать и применить к {{count}}",
+    "createApply_many": "Создать и применить к {{count}}",
+    "createApply_other": "Создать и применить к {{count}}",
+    "undo": "Отменить",
+    "note": "Только в Naushen Mail: в Gmail ничего не создаётся.",
+    "note_outlook": "Только в Naushen Mail: в Gmail и Outlook ничего не создаётся.",
+    "match": {
+      "incomplete": "Добавьте значение и действие",
+      "checking": "Проверка имеющейся почты…",
+      "none": "Подходящих цепочек нет",
+      "some_one": "Подходит {{count}} цепочка",
+      "some_few": "Подходят {{count}} цепочки",
+      "some_many": "Подходят {{count}} цепочек",
+      "some_other": "Подходят {{count}} цепочки"
+    },
+    "toast": {
+      "createdApplied": "Правило создано · {{summary}}",
+      "existedApplied": "Такое правило уже есть · {{summary}}",
+      "createdNothing": "Правило создано · менять ничего не пришлось",
+      "existedNothing": "Такое правило уже есть · менять ничего не пришлось",
+      "alreadyHave": "Такое правило уже есть",
+      "created": "Правило создано. Оно фильтрует новую почту на этом Mac.",
+      "viewRules": "Показать правила",
+      "failed": "Не удалось создать правило",
+      "failedWith": "Не удалось создать правило: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "В этой цепочке нет входящих писем, на основе которых можно создать правило.",
+    "undo": "Отменить",
+    "ran": "Правило: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "Архивировано от {{name}}: {{count}}",
+    "archivedFrom_few": "Архивировано от {{name}}: {{count}}",
+    "archivedFrom_many": "Архивировано от {{name}}: {{count}}",
+    "archivedFrom_other": "Архивировано от {{name}}: {{count}}",
+    "nothingFrom": "Во Входящих нет писем от {{name}}",
+    "blocked": "{{name}} заблокирован. Новые письма будут попадать в корзину.",
+    "blockedMoved_one": "{{name}} заблокирован · в корзину перемещено: {{count}}. Новые письма будут попадать в корзину.",
+    "blockedMoved_few": "{{name}} заблокирован · в корзину перемещено: {{count}}. Новые письма будут попадать в корзину.",
+    "blockedMoved_many": "{{name}} заблокирован · в корзину перемещено: {{count}}. Новые письма будут попадать в корзину.",
+    "blockedMoved_other": "{{name}} заблокирован · в корзину перемещено: {{count}}. Новые письма будут попадать в корзину.",
+    "archivedFromSender_one": "Архивировано от этого отправителя: {{count}}",
+    "archivedFromSender_few": "Архивировано от этого отправителя: {{count}}",
+    "archivedFromSender_many": "Архивировано от этого отправителя: {{count}}",
+    "archivedFromSender_other": "Архивировано от этого отправителя: {{count}}",
+    "bundling": "{{name}} группируется во Входящих",
+    "stoppedBundling": "Группировка {{name}} отключена"
+  }
+}

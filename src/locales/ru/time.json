@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "Вернётся {{time}}",
+    "tomorrow": "Вернётся завтра {{time}}",
+    "weekday": "Вернётся {{day}} {{time}}",
+    "date": "Вернётся {{date}}"
+  },
+  "in": {
+    "minutes": "{{count}} мин",
+    "hours": "{{count}} ч",
+    "days": "{{count}} дн."
+  },
+  "chip": {
+    "reschedule": "Перенести напоминание",
+    "rescheduleAria": "{{when}}. Перенести напоминание",
+    "cancel": "Отменить напоминание об ответе",
+    "cancelAria": "Напоминание об ответе через {{in}}. Отменить",
+    "cancelled": "Напоминание об ответе отменено",
+    "followUpIn": "Напомнить об ответе через {{in}}",
+    "noReply": "Ответа пока нет",
+    "noReplyTitle": "Ответа пока нет. Нажмите, чтобы скрыть",
+    "noReplyAria": "Ответа пока нет. Скрыть",
+    "dismissed": "Скрыто"
+  },
+  "when": {
+    "placeholder": "Введите время… tomorrow 3pm",
+    "ariaLabel": "Введите время",
+    "past": "Это время уже прошло",
+    "unknown": "Попробуйте “tomorrow 3pm”, “fri”, “in 2 days” или “oct 12”"
+  }
+}

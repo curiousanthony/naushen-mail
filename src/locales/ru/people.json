@@ -1,0 +1,28 @@
+{
+  "card": {
+    "about": "О контакте {{name}}",
+    "you": "вы",
+    "compose": "Написать",
+    "allMail": "Вся почта",
+    "copy": "Копировать",
+    "close": "закрыть"
+  },
+  "lastSeen": {
+    "today": "сегодня",
+    "yesterday": "вчера",
+    "weekday": "последнее: {{day}}"
+  },
+  "conversations": {
+    "none": "Пока нет цепочек",
+    "count_one": "{{count}} цепочка",
+    "count_few": "{{count}} цепочки",
+    "count_many": "{{count}} цепочек",
+    "count_other": "{{count}} цепочки",
+    "countWithLast_one": "{{count}} цепочка · {{last}}",
+    "countWithLast_few": "{{count}} цепочки · {{last}}",
+    "countWithLast_many": "{{count}} цепочек · {{last}}",
+    "countWithLast_other": "{{count}} цепочки · {{last}}"
+  },
+  "selectFirst": "Выберите цепочку, чтобы увидеть, с кем она",
+  "addressCopied": "Адрес скопирован"
+}

@@ -1,0 +1,66 @@
+{
+  "menu": {
+    "settings": "Настройки…",
+    "file": "Файл",
+    "newMessage": "Новое письмо",
+    "addAccount": "Добавить учётную запись…",
+    "edit": "Правка",
+    "view": "Вид",
+    "commandMenu": "Меню команд",
+    "search": "Поиск",
+    "toggleSidebar": "Показать или скрыть боковую панель",
+    "reloadWindow": "Перезагрузить окно",
+    "mailbox": "Почта",
+    "goToInbox": "Перейти во Входящие",
+    "checkMail": "Проверить почту"
+  },
+  "notify": {
+    "archive": "Архивировать",
+    "markRead": "Прочитано",
+    "dismiss": "Закрыть",
+    "noSubject": "(без темы)",
+    "burstTitle_one": "{{count}} новое письмо",
+    "burstTitle_few": "{{count}} новых письма",
+    "burstTitle_many": "{{count}} новых писем",
+    "burstTitle_other": "{{count}} новых письма",
+    "burstBody": "{{names}} и ещё {{others}}"
+  },
+  "oauth": {
+    "connectedTitle": "Подключение выполнено",
+    "connectedBody": "Можно закрыть эту вкладку и вернуться в Naushen Mail.",
+    "failedTitle": "Что-то пошло не так",
+    "invalidResponse": "Недопустимый ответ.",
+    "authFailed": "Не удалось авторизоваться: {{error}}",
+    "authInvalid": "Недопустимый ответ авторизации",
+    "timedOut": "Время входа истекло"
+  },
+  "errors": {
+    "notSignedIn": "Вход не выполнен",
+    "sessionExpired": "Сеанс истёк. Войдите снова.",
+    "threadNotFound": "Цепочка не найдена",
+    "accountNotConnected": "Учётная запись не подключена",
+    "connectorUnavailable": "Коннектор {{provider}} недоступен в этой сборке.",
+    "providerUnavailable": "Провайдер недоступен",
+    "actionFailed": "Не удалось выполнить действие: {{message}}",
+    "attachmentNotFound": "Вложение не найдено",
+    "attachmentEmpty": "Вложение пусто"
+  },
+  "gmail": {
+    "missingClient": "Вход через Google не настроен в этой сборке. Добавьте свои идентификатор и секрет клиента Google OAuth в разделе «Настройки → Учётные записи → Настройка OAuth» (см. docs/google-setup.md).",
+    "noRefreshToken": "Google не выдал токен обновления. Удалите Naushen Mail на странице myaccount.google.com/permissions и повторите попытку.",
+    "missingScope": "Naushen Mail нужно разрешение на чтение и управление вашей почтой Gmail. Подключитесь снова и оставьте отмеченными все разрешения.",
+    "profileFailed": "Не удалось прочитать профиль Google (HTTP {{status}}).",
+    "noEmail": "Google не вернул адрес электронной почты для этой учётной записи.",
+    "authRejected": "Google отклонил сохранённые учётные данные. Войдите снова.",
+    "network": "Сетевая ошибка при обращении к Gmail: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "Сначала добавьте идентификатор приложения (клиента) Microsoft: Настройки → Учётные записи → Настройка OAuth.",
+    "noEmail": "Microsoft не вернул адрес электронной почты для этой учётной записи.",
+    "noInbox": "Не удалось найти папку «Входящие» в этом почтовом ящике.",
+    "deltaIncomplete": "Синхронизация Outlook не завершена",
+    "categoryOnly": "Можно изменять только категории Outlook",
+    "categoryGone": "Категории «{{name}}» больше не существует",
+    "attachmentUpload": "Не удалось загрузить вложение ({{status}})"
+  }
+}
