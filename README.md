@@ -113,7 +113,7 @@ npm install
 npm run dev
 ```
 
-Needs Node.js 24. See [docs/building.md](docs/building.md) for packaging and [docs/provider-setup-advanced.md](docs/provider-setup-advanced.md)
+Needs Node.js 24. See [docs/building.md](docs/building.md) for packaging and [docs/google-setup.md](docs/google-setup.md)
 if you want to use your own Google OAuth client. Try the **Demo** account (Settings, Add account, Demo) to explore offline.
 
 ## Contributing

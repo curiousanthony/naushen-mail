@@ -61,7 +61,7 @@ is expected (it is).
 
 ## Microsoft
 Outlook support is implemented but hidden by `OUTLOOK_ENABLED` in `src/shared/features.ts`. To enable it: create a Microsoft Entra
-app registration (public client, PKCE, redirect `http://localhost`, scopes in [provider-setup-advanced.md](provider-setup-advanced.md)),
+app registration (public client, PKCE, redirect `http://localhost`, scopes in [google-setup.md](google-setup.md)),
 wire its client ID into the build, complete publisher verification if required, then flip the flag and update the README.
 
 ## GitHub Pages

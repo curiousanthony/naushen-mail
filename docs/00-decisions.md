@@ -57,8 +57,7 @@ the 7-day refresh-token expiry requires full Google verification, including a pa
 for a restricted scope (an earlier version of this doc, and the in-app guide, said otherwise — corrected
 2026-09-24). The correct, Google-sanctioned path for personal use: stay in **Testing**, add yourself as a
 **test user**, and expect to click **Reauthorize** roughly every 7 days (a quick Google sign-in, not a full
-re-setup — the app already surfaces a `reauth` account status for this). Official builds embed a Google desktop OAuth client (see `docs/maintainers.md`); self-builders can use their own
-(`docs/provider-setup-advanced.md`, Settings → Accounts).
+re-setup — the app already surfaces a `reauth` account status for this). **Update (owner decision):** the project will not pay for CASA/verification, so the public path is *bring your own Google OAuth client* (`docs/google-setup.md`, guided wizard in Settings → Accounts) with the consent screen set to **In production**, unverified. The 2026-09-24 note above that publishing does not avoid the 7-day expiry conflicts with this; the setup guide tells users to fall back to Testing + Reauthorize if tokens still expire. Built-in client + verification stays an optional maintainer path (`docs/maintainers.md`).
 
 ## Definition of done
 
@@ -69,7 +68,7 @@ not just read in the diff. 532 tests pass, typecheck and the packaged `.app` bui
 
 - [x] Launches as a real desktop app; on macOS the window chrome matches Notion Mail (hidden inset titlebar, sidebar, traffic lights) — verified: `npm run pack` produces an ad-hoc-signed, launchable `.app`
 - [x] Demo provider exercises the whole UI offline — verified extensively
-- [ ] Connect Gmail and Outlook accounts (OAuth) — code complete (adapters, PKCE loopback flow, token refresh/reauth, 193 adapter tests against mocked HTTP) and the setup doc's scopes match the code exactly, but **not exercised against a real account**: that needs OAuth apps only the user can create (`docs/provider-setup-advanced.md`)
+- [ ] Connect Gmail and Outlook accounts (OAuth) — code complete (adapters, PKCE loopback flow, token refresh/reauth, 193 adapter tests against mocked HTTP) and the setup doc's scopes match the code exactly, but **not exercised against a real account**: that needs OAuth apps only the user can create (`docs/google-setup.md`)
 - [x] Sidebar: account switcher, compose, search, Views (create/edit/delete), Mail folders, labels with colours, unread counts (including "All Mail", fixed) — verified
 - [x] Thread list: date groups, hover actions, unread styling, multi-select, keyboard nav (`j/k/x/e/#/…`), bulk actions, reachable loading skeleton — verified
 - [x] Reader: side/centre/full peek, message cards, quoted-text collapse, sanitised HTML incl. resolved `cid:` inline images, inline reply/forward (dedup + Escape-to-close fixed) — verified. Attachment *download* is wired (`attachments.save`) but not exercised against a real account
@@ -80,5 +79,5 @@ not just read in the diff. 532 tests pass, typecheck and the packaged `.app` bui
 - [x] Documented: research, decisions, design system, provider setup, install; tests green; CI green on `main`
 
 **What's left for a fully "no more intervention needed" app**: only the user's ~20 minutes in
-Google Cloud Console + Azure (`docs/provider-setup-advanced.md`) — everything downstream of that is
+Google Cloud Console + Azure (`docs/google-setup.md`) — everything downstream of that is
 built and tested against mocked provider responses.
