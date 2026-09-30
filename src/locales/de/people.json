@@ -1,0 +1,24 @@
+{
+  "card": {
+    "about": "Über {{name}}",
+    "you": "du",
+    "compose": "Schreiben",
+    "allMail": "Alle E-Mails",
+    "copy": "Kopieren",
+    "close": "Schließen"
+  },
+  "lastSeen": {
+    "today": "heute",
+    "yesterday": "gestern",
+    "weekday": "letzten {{day}}"
+  },
+  "conversations": {
+    "none": "Noch keine Unterhaltungen",
+    "count_one": "{{count}} Unterhaltung",
+    "count_other": "{{count}} Unterhaltungen",
+    "countWithLast_one": "{{count}} Unterhaltung · {{last}}",
+    "countWithLast_other": "{{count}} Unterhaltungen · {{last}}"
+  },
+  "selectFirst": "Unterhaltung auswählen, um zu sehen, mit wem sie geführt wird",
+  "addressCopied": "Adresse kopiert"
+}

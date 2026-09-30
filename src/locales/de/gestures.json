@@ -1,0 +1,29 @@
+{
+  "move": {
+    "title": "Unterhaltung verschieben",
+    "commandLabel": "Verschieben nach",
+    "placeholder": "Verschieben nach…",
+    "noMatch": "Kein passender Ordner oder kein passendes Label",
+    "nowhere": "Hierfür gibt es kein Ziel",
+    "navigate": "Navigieren",
+    "move": "Verschieben",
+    "labelFallback": "Label",
+    "toLabel_one": "Unterhaltung nach „{{name}}“ verschoben",
+    "toLabel_other": "{{count}} Unterhaltungen nach „{{name}}“ verschoben",
+    "skippedNoLabel": "{{count}} ohne passendes Label unverändert gelassen",
+    "skippedAlreadyThere": "{{count}} bereits dort",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} Unterhaltung",
+    "conversations_other": "{{count}} Unterhaltungen"
+  },
+  "swipe": {
+    "restore": "Wiederherstellen",
+    "restored": "Unterhaltung wiederhergestellt",
+    "notSpam": "Kein Spam",
+    "movedToInbox": "Unterhaltung in den Posteingang verschoben",
+    "archive": "Archivieren",
+    "archived": "Unterhaltung archiviert"
+  }
+}

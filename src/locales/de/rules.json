@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "archived_one": "{{count}} archiviert",
+    "archived_other": "{{count}} archiviert",
+    "trashed_one": "{{count}} in den Papierkorb verschoben",
+    "trashed_other": "{{count}} in den Papierkorb verschoben",
+    "rescued_one": "{{count}} aus dem Spam geholt",
+    "rescued_other": "{{count}} aus dem Spam geholt",
+    "markedRead_one": "{{count}} als gelesen markiert",
+    "markedRead_other": "{{count}} als gelesen markiert",
+    "starred_one": "{{count}} markiert",
+    "starred_other": "{{count}} markiert",
+    "labelled_one": "{{count}} mit „{{name}}“ versehen",
+    "labelled_other": "{{count}} mit „{{name}}“ versehen",
+    "labelFallback": "Label"
+  },
+  "describe": {
+    "from": "Von {{value}}",
+    "fromDomain": "Von @{{value}}",
+    "subject": "Betreff enthält „{{value}}“",
+    "noActions": "Keine Aktionen",
+    "actions": {
+      "archive": "Posteingang überspringen",
+      "markRead": "als gelesen markieren",
+      "star": "markieren",
+      "trash": "in den Papierkorb verschieben",
+      "neverSpam": "nie als Spam einstufen",
+      "label": "Label „{{name}}“ vergeben"
+    }
+  },
+  "form": {
+    "whenMailIs": "Wenn eine E-Mail",
+    "matchOn": "Abgleichen mit",
+    "matchValue": "Vergleichswert",
+    "field": {
+      "from": { "label": "Von", "placeholder": "name@example.com", "hint": "Genau dieser Absender." },
+      "fromDomain": { "label": "Domain", "placeholder": "example.com", "hint": "Alle von dieser Domain, einschließlich Subdomains." },
+      "subject": { "label": "Betreff", "placeholder": "Wörter im Betreff", "hint": "Jeder Betreff, der diesen Text enthält." }
+    },
+    "moreConditions_one": "Plus {{count}} weitere Bedingung.",
+    "moreConditions_other": "Plus {{count}} weitere Bedingungen.",
+    "then": "Dann",
+    "actionsAria": "Aktionen",
+    "actions": {
+      "archive": "Posteingang überspringen",
+      "markRead": "Als gelesen markieren",
+      "star": "Markieren",
+      "trash": "In den Papierkorb",
+      "neverSpam": "Nie als Spam einstufen"
+    },
+    "applyLabel": "Label vergeben",
+    "none": "Keins",
+    "appliesTo": "Gilt für",
+    "allAccounts": "Alle Accounts"
+  },
+  "section": {
+    "title": "Regeln",
+    "description": "Filter, die in Naushen Mail auf neue E-Mails angewendet werden. Sie gelten nur auf diesem Mac: In Gmail wird nichts angelegt, und sie laufen nicht, solange die App geschlossen ist.",
+    "description_outlook": "Filter, die in Naushen Mail auf neue E-Mails angewendet werden. Sie gelten nur auf diesem Mac: In Gmail oder Outlook wird nichts angelegt, und sie laufen nicht, solange die App geschlossen ist.",
+    "empty": {
+      "title": "Noch keine Regeln",
+      "body": "Eine Unterhaltung öffnen und <k1>⌘</k1><k2>⇧</k2><k3>R</k3> drücken, um E-Mails dieses Absenders automatisch zu sortieren."
+    },
+    "removedAccount": "Entfernter Account",
+    "allAccounts": "Alle Accounts",
+    "ruleAria": "Regel: {{condition}}",
+    "and": " und ",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "edit": "Regel bearbeiten",
+    "delete": "Regel löschen",
+    "deleteConfirm": "Diese Regel löschen? Bereits sortierte E-Mails bleiben, wo sie sind.",
+    "deleteAction": "Löschen",
+    "cancel": "Abbrechen",
+    "save": "Sichern",
+    "order": "Regeln laufen von oben nach unten; jede passende Regel wird angewendet."
+  },
+  "bundles": {
+    "title": "Bündel im Posteingang",
+    "collapse": {
+      "label": "Unwichtige E-Mails zusammenfassen",
+      "desc": "Ein gebündeltes Label oder ein gebündelter Absender erscheint als eine Zeile im Posteingang (z. B. „Newsletter · 7 neu“). Markierte E-Mails werden nie gebündelt. Solange nichts hinzugefügt wird, wird nichts gebündelt."
+    },
+    "kindLabel": "Label",
+    "kindSender": "Absender",
+    "stop": "Nicht mehr bündeln",
+    "bundleLabel": "Label bündeln",
+    "bundleLabelDesc": "Oder ein Label in der Seitenleiste mit Rechtsklick öffnen.",
+    "chooseLabel": "Label wählen…"
+  },
+  "host": {
+    "title": "Regel erstellen",
+    "from": "von „{{subject}}“",
+    "noSubject": "(kein Betreff)",
+    "cancel": "Abbrechen",
+    "create": "Regel erstellen",
+    "createApply_one": "Erstellen & auf {{count}} anwenden",
+    "createApply_other": "Erstellen & auf {{count}} anwenden",
+    "undo": "Rückgängig",
+    "note": "Nur in Naushen Mail: In Gmail wird nichts angelegt.",
+    "note_outlook": "Nur in Naushen Mail: In Gmail oder Outlook wird nichts angelegt.",
+    "match": {
+      "incomplete": "Wert und Aktion hinzufügen",
+      "checking": "Vorhandene E-Mails werden geprüft…",
+      "none": "Keine vorhandene Unterhaltung passt",
+      "some_one": "Passt zu {{count}} vorhandenen Unterhaltung",
+      "some_other": "Passt zu {{count}} vorhandenen Unterhaltungen"
+    },
+    "toast": {
+      "createdApplied": "Regel erstellt · {{summary}}",
+      "existedApplied": "Regel existierte bereits · {{summary}}",
+      "createdNothing": "Regel erstellt · nichts zu ändern",
+      "existedNothing": "Regel existierte bereits · nichts zu ändern",
+      "alreadyHave": "Diese Regel gibt es bereits",
+      "created": "Regel erstellt. Sie filtert neue E-Mails auf diesem Mac.",
+      "viewRules": "Regeln ansehen",
+      "failed": "Die Regel konnte nicht erstellt werden",
+      "failedWith": "Die Regel konnte nicht erstellt werden: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "Diese Unterhaltung enthält keine eingegangene Nachricht, aus der sich eine Regel erstellen ließe.",
+    "undo": "Rückgängig",
+    "ran": "Regel: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "{{count}} von {{name}} archiviert",
+    "archivedFrom_other": "{{count}} von {{name}} archiviert",
+    "nothingFrom": "Nichts von {{name}} im Posteingang",
+    "blocked": "{{name}} blockiert. Künftige E-Mails landen im Papierkorb.",
+    "blockedMoved_one": "{{name}} blockiert · {{count}} in den Papierkorb verschoben. Künftige E-Mails landen im Papierkorb.",
+    "blockedMoved_other": "{{name}} blockiert · {{count}} in den Papierkorb verschoben. Künftige E-Mails landen im Papierkorb.",
+    "archivedFromSender_one": "{{count}} von diesem Absender archiviert",
+    "archivedFromSender_other": "{{count}} von diesem Absender archiviert",
+    "bundling": "{{name}} wird im Posteingang gebündelt",
+    "stoppedBundling": "{{name}} wird nicht mehr gebündelt"
+  }
+}

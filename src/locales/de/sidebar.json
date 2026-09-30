@@ -1,0 +1,96 @@
+{
+  "aria": {
+    "mailboxes": "Postfächer"
+  },
+  "newMessage": "Neue Nachricht",
+  "newView": "Neue Ansicht",
+  "editView": "Ansicht bearbeiten",
+  "settings": "Einstellungen",
+  "options": "Optionen",
+  "optionsFor": "Optionen für {{name}}",
+  "optionsOf": "Optionen für {{name}}",
+  "section": {
+    "views": "Ansichten",
+    "mail": "E-Mail",
+    "labels": "Labels"
+  },
+  "categories": {
+    "label": "Kategorien",
+    "tip": "E-Mails gruppiert nach den Gmail-Tabs „Soziale Netzwerke“, „Werbung“, „Benachrichtigungen“ und „Foren“"
+  },
+  "accounts": {
+    "all": "Alle Accounts",
+    "count_one": "{{count}} Account",
+    "count_other": "{{count}} Accounts",
+    "switch": "Account wechseln",
+    "add": "Account hinzufügen"
+  },
+  "search": {
+    "label": "Suchen",
+    "placeholder": "E-Mails durchsuchen",
+    "clear": "Suche löschen",
+    "people": "Passende Personen",
+    "operators": "Suchoperatoren"
+  },
+  "label": {
+    "bundled": "Im Posteingang gebündelt",
+    "bundle": "Im Posteingang bündeln",
+    "stopBundling": "Nicht mehr im Posteingang bündeln"
+  },
+  "summary": {
+    "allMail": "Alle E-Mails",
+    "unread": "ungelesen",
+    "hasAttachment": "mit Anhang",
+    "label": "Label",
+    "from": "von {{value}}",
+    "subject": "Betreff {{value}}",
+    "noFilters": "Keine Filter"
+  },
+  "viewEditor": {
+    "intro": "Ansichten sind gesicherte Filter. Sie gelten für vorhandene und für neue E-Mails.",
+    "name": "Name der Ansicht",
+    "icon": "Symbol",
+    "colour": "Farbe",
+    "noColour": "Keine Farbe",
+    "filters": "Filter",
+    "account": "Account",
+    "mailbox": "Postfach",
+    "allMail": "Alle E-Mails",
+    "anywhere": "Überall",
+    "from": "Von",
+    "fromPlaceholder": "Name oder Adresse",
+    "fromContains": "Von enthält",
+    "subject": "Betreff",
+    "subjectPlaceholder": "enthält…",
+    "subjectContains": "Betreff enthält",
+    "unreadOnly": "Nur ungelesen",
+    "hasAttachment": "Mit Anhang",
+    "labels": "Labels",
+    "delete": "Löschen",
+    "create": "Ansicht erstellen",
+    "updated": "Ansicht aktualisiert",
+    "created": "Ansicht „{{name}}“ erstellt",
+    "deleted": "Ansicht „{{name}}“ gelöscht"
+  },
+  "viewIcon": {
+    "inbox": "Posteingang",
+    "star": "Stern",
+    "flag": "Flagge",
+    "tag": "Tag",
+    "users": "Personen",
+    "send": "Senden",
+    "receipt": "Beleg",
+    "megaphone": "Megafon",
+    "pin": "Pin",
+    "message": "Nachricht",
+    "newspaper": "Zeitung",
+    "flame": "Flamme",
+    "briefcase": "Aktentasche",
+    "bell": "Glocke",
+    "archive": "Archiv",
+    "heart": "Herz",
+    "bookmark": "Lesezeichen",
+    "folder": "Ordner",
+    "zap": "Blitz"
+  }
+}

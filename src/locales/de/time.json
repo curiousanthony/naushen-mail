@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "Zurück um {{time}}",
+    "tomorrow": "Zurück morgen, {{time}}",
+    "weekday": "Zurück {{day}}, {{time}}",
+    "date": "Zurück am {{date}}"
+  },
+  "in": {
+    "minutes": "{{count}} Min.",
+    "hours": "{{count}} Std.",
+    "days": "{{count}} T."
+  },
+  "chip": {
+    "reschedule": "Erinnerung verschieben",
+    "rescheduleAria": "{{when}}. Erinnerung verschieben",
+    "cancel": "Nachfassen abbrechen",
+    "cancelAria": "Nachfassen in {{in}}. Nachfassen abbrechen",
+    "cancelled": "Nachfassen abgebrochen",
+    "followUpIn": "Nachfassen in {{in}}",
+    "noReply": "Noch keine Antwort",
+    "noReplyTitle": "Noch keine Antwort. Klicken zum Ausblenden",
+    "noReplyAria": "Noch keine Antwort. Ausblenden",
+    "dismissed": "Ausgeblendet"
+  },
+  "when": {
+    "placeholder": "Zeit eingeben… tomorrow 3pm",
+    "ariaLabel": "Zeit eingeben",
+    "past": "Dieser Zeitpunkt liegt bereits in der Vergangenheit",
+    "unknown": "Beispiele: „tomorrow 3pm“, „fri“, „in 2 days“ oder „oct 12“"
+  }
+}
