@@ -17,6 +17,7 @@ export function useNativeBridge(): void {
   useEffect(() => {
     let cancelled = false
     void window.api.invoke('app.platform').then((p) => {
+      if (!cancelled) document.documentElement.dataset.platform = p.platform
       if (!cancelled && p.platform === 'darwin') document.documentElement.dataset.vibrancy = 'on'
     })
     const publish = (): void => {

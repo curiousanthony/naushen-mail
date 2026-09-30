@@ -9,11 +9,18 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   verify:
-    name: Typecheck, test, build
-    runs-on: macos-latest
+    name: Typecheck, test, build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,3 +57,29 @@ jobs:
         with:
           name: mailroom-smoke-screenshot
           path: ${{ runner.temp }}/shot.png
+
+  package-cross:
+    name: Package check (${{ matrix.name }})
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            args: --win --x64 --dir
+          - name: Linux
+            os: ubuntu-latest
+            args: --linux --x64 --dir
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Validate electron-builder config and package (unpacked)
+        run: npx electron-builder ${{ matrix.args }}

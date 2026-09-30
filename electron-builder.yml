@@ -1,4 +1,9 @@
-# electron-builder config for Naushen Mail. Personal-use build: ad-hoc signed, not notarised (see docs/install.md).
+# electron-builder config for Naushen Mail (macOS, Windows, Linux).
+# Unsigned by default: macOS gets an ad-hoc signature (scripts/adhoc-sign.cjs), Windows/Linux are unsigned.
+# Real signing switches on by itself when the secrets exist (see .github/workflows/release.yml):
+#   macOS   CSC_LINK + CSC_KEY_PASSWORD (Developer ID .p12); notarisation adds APPLE_ID,
+#           APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID (release.yml passes -c.mac.notarize=true then)
+#   Windows WIN_CSC_LINK + WIN_CSC_KEY_PASSWORD (.pfx), or Azure Trusted Signing (AZURE_* vars, release.yml)
 appId: com.anthony.naushenmail
 productName: Naushen Mail
 copyright: Copyright © 2026 Anthony
@@ -19,13 +24,12 @@ asar: true
 # No native node modules (the DB is node:sqlite), so there is nothing to @electron/rebuild.
 npmRebuild: false
 
-# Ad-hoc signing happens in the afterSign hook; skip electron-builder's own identity lookup.
+# Ad-hoc signing happens in the afterSign hook, and only when electron-builder did not sign with a real identity.
 afterSign: scripts/adhoc-sign.cjs
 
 mac:
   category: public.app-category.productivity
   icon: build/icon.icns
-  identity: null
   hardenedRuntime: false
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
@@ -36,17 +40,63 @@ mac:
       arch: [arm64, x64]
     - target: zip
       arch: [arm64, x64]
-  artifactName: ${productName}-${version}-${arch}.${ext}
+  artifactName: Naushen-Mail-${version}-mac-${arch}.${ext}
   extendInfo:
     NSHumanReadableCopyright: Copyright © 2026 Anthony
     LSMinimumSystemVersion: "12.0"
     LSApplicationCategoryType: public.app-category.productivity
     NSHighResolutionCapable: true
-    CFBundleURLTypes:
-      - CFBundleURLName: Mail link
-        CFBundleTypeRole: Viewer
-        CFBundleURLSchemes:
-          - mailto
+
+# Registers the mailto: scheme: CFBundleURLTypes (macOS), registry keys in the NSIS installer (Windows),
+# and x-scheme-handler/mailto in the .desktop file (Linux).
+protocols:
+  - name: Mail link
+    schemes:
+      - mailto
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+  # Build one arch per invocation (`--x64` / `--arm64`): listing both in one call yields a single combined installer.
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  artifactName: Naushen-Mail-${version}-${arch}-Setup.exe
+  shortcutName: Naushen Mail
+
+linux:
+  icon: build/icons
+  category: Office
+  maintainer: Anthony <curiousanthony@users.noreply.github.com>
+  synopsis: A calm, keyboard-first mail client for Gmail and Outlook
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+  artifactName: Naushen-Mail-${version}-linux-${arch}.${ext}
+  desktop:
+    entry:
+      Categories: Office;Network;Email;
+      Keywords: mail;email;gmail;outlook;
+
+deb:
+  packageCategory: mail
+  priority: optional
+
+# Uploads only when run with --publish always (`npm run release`); CI builds with --publish never and
+# creates the Release itself. Auto-update (electron-updater) is intentionally NOT enabled: unsigned macOS builds cannot
+# self-update, and it would need a runtime dependency.
+publish:
+  provider: github
+  owner: curiousanthony
+  repo: naushen-mail
+  releaseType: release
 
 dmg:
   title: ${productName} ${version}
