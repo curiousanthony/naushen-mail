@@ -9,6 +9,7 @@
  * falls through to free text, so a query like `budget from:priya has:attachment` mixes both.
  */
 import type { Label, ThreadFilter } from '@shared/types'
+import i18n from '@/i18n'
 
 export interface ParsedQuery {
   filter: Pick<ThreadFilter, 'from' | 'to' | 'subjectContains' | 'hasAttachment' | 'unread' | 'starred' | 'labelIds' | 'before' | 'after'>
@@ -110,15 +111,15 @@ export function applyContactSuggestion(q: string, key: 'from' | 'to', email: str
     `${offset > 0 ? ' ' : ''}${key}:${email} `)
 }
 
-/** Shown as a cheat-sheet under the search box while it's focused and empty. */
-export const SEARCH_OPERATOR_HELP: { op: string; hint: string }[] = [
-  { op: 'from:', hint: 'sender name or address' },
-  { op: 'to:', hint: 'recipient name or address' },
-  { op: 'subject:', hint: 'words in the subject' },
-  { op: 'label:', hint: 'label name' },
-  { op: 'has:attachment', hint: 'has a file attached' },
-  { op: 'is:unread', hint: 'unread only' },
-  { op: 'is:starred', hint: 'starred only' },
-  { op: 'before:', hint: 'YYYY-MM-DD' },
-  { op: 'after:', hint: 'YYYY-MM-DD' }
+/** Shown as a cheat-sheet under the search box while it's focused and empty. Built per call so it follows the UI language. */
+export const searchOperatorHelp = (): { op: string; hint: string }[] => [
+  { op: 'from:', hint: i18n.t('common:searchOperators.from') },
+  { op: 'to:', hint: i18n.t('common:searchOperators.to') },
+  { op: 'subject:', hint: i18n.t('common:searchOperators.subject') },
+  { op: 'label:', hint: i18n.t('common:searchOperators.label') },
+  { op: 'has:attachment', hint: i18n.t('common:searchOperators.hasAttachment') },
+  { op: 'is:unread', hint: i18n.t('common:searchOperators.isUnread') },
+  { op: 'is:starred', hint: i18n.t('common:searchOperators.isStarred') },
+  { op: 'before:', hint: i18n.t('common:searchOperators.dateFormat') },
+  { op: 'after:', hint: i18n.t('common:searchOperators.dateFormat') }
 ]

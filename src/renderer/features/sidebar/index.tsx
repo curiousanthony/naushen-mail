@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AlarmClock, ChevronDown, ChevronsUpDown, FileText, Inbox as InboxIcon, LayoutGrid, Layers,
   MoreHorizontal, PencilLine, Plus, Search, Send, Settings as SettingsIcon, ShieldAlert, Star,
@@ -18,7 +19,7 @@ import {
 } from './lib'
 import { readExt } from '@/features/settings/lib/settings-ext'
 import { VIEW_ICONS } from './viewIcons'
-import { activeContactPrefix, applyContactSuggestion, SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
+import { activeContactPrefix, applyContactSuggestion, searchOperatorHelp } from '@/lib/searchQuery'
 import type { Contact } from '@shared/types'
 import { useDropTarget, useSpringLoad } from '@/features/gestures/dnd'
 import type { Dest } from '@/features/gestures/plan'
@@ -38,6 +39,7 @@ const MAIL_DROP: Record<string, Dest> = {
 
 /** Left navigation: accounts, compose, search, Views, Mail, Labels, Settings. */
 export function Sidebar(): JSX.Element {
+  const { t, i18n } = useTranslation('sidebar')
   const accounts = useApp((s) => s.accounts)
   const labels = useApp((s) => s.labels)
   const views = useApp((s) => s.views)
@@ -59,7 +61,8 @@ export function Sidebar(): JSX.Element {
   // "All accounts": same-named labels across accounts are one row (per-account rows otherwise).
   const labelRows = useMemo(() => mergedLabels(labels, accountId), [labels, accountId])
   // Gmail only; empty (and the row hidden) for Outlook-only setups — see categoryGroups.
-  const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- category names are localised, so re-derive on a language change
+  const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId, i18n.language])
   const categoryCounts = useCategoryCounts(categoryRows, accountId, counts)
   const categoryUnread = useMemo(() => Object.values(categoryCounts).reduce((a, b) => a + b, 0), [categoryCounts])
   const tags = useMemo(() => accountTags(accounts), [accounts])
@@ -68,13 +71,13 @@ export function Sidebar(): JSX.Element {
 
   return (
     <>
-      <aside className="sidebar" data-collapsed={collapsedRail} aria-label="Mailboxes" aria-hidden={collapsedRail}>
+      <aside className="sidebar" data-collapsed={collapsedRail} aria-label={t('aria.mailboxes')} aria-hidden={collapsedRail}>
         <div className="sidebar__drag drag" />
         <div className="sidebar__top no-drag">
           <AccountSwitcher accounts={accounts} accountId={accountId} counts={counts} />
-          <Tooltip label="New message" shortcut="C">
+          <Tooltip label={t('newMessage')} shortcut="C">
             <button
-              className="sidebar__icon" aria-label="New message"
+              className="sidebar__icon" aria-label={t('newMessage')}
               onClick={() => openComposer()}
             >
               <PencilLine size={16} />
@@ -86,11 +89,11 @@ export function Sidebar(): JSX.Element {
 
         <nav className="sidebar__scroll no-drag">
           <Section
-            id="views" title="Views" collapsed={!!sections.views} onToggle={toggleSection}
-            action={{ icon: <Plus size={14} />, label: 'New view', onClick: () => openEditor(null) }}
+            id="views" title={t('section.views')} collapsed={!!sections.views} onToggle={toggleSection}
+            action={{ icon: <Plus size={14} />, label: t('newView'), onClick: () => openEditor(null) }}
           >
             <Row
-              icon={<InboxIcon size={16} />} label="Inbox" count={unreadFor(counts, accountId, 'inbox')}
+              icon={<InboxIcon size={16} />} label={t('common:role.inbox')} count={unreadFor(counts, accountId, 'inbox')}
               active={navEquals(nav, { kind: 'role', role: 'inbox' })}
               onClick={() => go({ kind: 'role', role: 'inbox' })}
               dest={{ kind: 'inbox' }}
@@ -99,9 +102,9 @@ export function Sidebar(): JSX.Element {
               // Gmail's tabs (Primary/Social/Promotions/Updates/Forums) as one row, not five --
               // see threadlist/lib.ts's `groupByCategory` for how the list itself groups them.
               <Row
-                icon={<LayoutGrid size={16} />} label="Categories" count={categoryUnread}
+                icon={<LayoutGrid size={16} />} label={t('categories.label')} count={categoryUnread}
                 active={nav.kind === 'categories'} onClick={() => go({ kind: 'categories' })}
-                title="Mail grouped by Gmail's Social / Promotions / Updates / Forums tabs"
+                title={t('categories.tip')}
               />
             )}
             {shownViews.map((v) => (
@@ -113,7 +116,7 @@ export function Sidebar(): JSX.Element {
             ))}
           </Section>
 
-          <Section id="mail" title="Mail" collapsed={!!sections.mail} onToggle={toggleSection}>
+          <Section id="mail" title={t('section.mail')} collapsed={!!sections.mail} onToggle={toggleSection}>
             {MAIL_ITEMS.filter((m) => !m.snoozed || aux.hasSnoozed).map((m) => (
               <Row
                 key={m.id} icon={MAIL_ICON[m.id]} label={m.name}
@@ -126,7 +129,7 @@ export function Sidebar(): JSX.Element {
 
 
           {labelRows.length > 0 && (
-            <Section id="labels" title="Labels" collapsed={!!sections.labels} onToggle={toggleSection}>
+            <Section id="labels" title={t('section.labels')} collapsed={!!sections.labels} onToggle={toggleSection}>
               {labelRows.map((g) => {
                 const owners = g.accountIds.map((id) => tags[id] ?? accounts.find((a) => a.id === id)?.email ?? '')
                 return (
@@ -144,7 +147,7 @@ export function Sidebar(): JSX.Element {
         </nav>
 
         <div className="sidebar__foot no-drag">
-          <Row icon={<SettingsIcon size={16} />} label="Settings" onClick={() => setOverlay('settings')} />
+          <Row icon={<SettingsIcon size={16} />} label={t('settings')} onClick={() => setOverlay('settings')} />
         </div>
       </aside>
       <ViewEditor />
@@ -157,12 +160,13 @@ export function Sidebar(): JSX.Element {
 function AccountSwitcher({ accounts, accountId, counts }: {
   accounts: Account[]; accountId: string; counts: Counts
 }): JSX.Element {
+  const { t } = useTranslation('sidebar')
   const setAccount = useApp((s) => s.setAccount)
   const setOverlay = useApp((s) => s.setOverlay)
   const [anchor, toggle, close] = useAnchor()
   const active = accounts.find((a) => a.id === accountId) ?? null
-  const name = active ? accountLabel(active.name, active.email) : 'All accounts'
-  const sub = active ? active.email : `${accounts.length} account${accounts.length === 1 ? '' : 's'}`
+  const name = active ? accountLabel(active.name, active.email) : t('accounts.all')
+  const sub = active ? active.email : t('accounts.count', { count: accounts.length })
 
   const pick = (id: string): void => { setAccount(id); close() }
 
@@ -180,10 +184,10 @@ function AccountSwitcher({ accounts, accountId, counts }: {
         <ChevronsUpDown size={13} className="acct__chev" />
       </button>
       {anchor && (
-        <Popover anchor={anchor} onClose={close} width={258} label="Switch account">
+        <Popover anchor={anchor} onClose={close} width={258} label={t('accounts.switch')}>
           <button className="menu__item" data-menuitem data-on={accountId === 'all'} onClick={() => pick('all')}>
             <span className="acct__avatar acct__avatar--sm" style={{ background: 'var(--c-text-3)' }}><Layers size={11} strokeWidth={2.5} /></span>
-            <span className="menu__label"><span className="menu__title">All accounts</span></span>
+            <span className="menu__label"><span className="menu__title">{t('accounts.all')}</span></span>
             <Badge n={unreadFor(counts, 'all', 'inbox')} />
           </button>
           {accounts.map((a) => (
@@ -202,11 +206,11 @@ function AccountSwitcher({ accounts, accountId, counts }: {
           <div className="menu__sep" />
           <button className="menu__item" data-menuitem onClick={() => { close(); setOverlay('settings') }}>
             <span className="menu__icon"><Plus size={14} /></span>
-            <span className="menu__label"><span className="menu__title">Add account</span></span>
+            <span className="menu__label"><span className="menu__title">{t('accounts.add')}</span></span>
           </button>
           <button className="menu__item" data-menuitem onClick={() => { close(); setOverlay('settings') }}>
             <span className="menu__icon"><SettingsIcon size={14} /></span>
-            <span className="menu__label"><span className="menu__title">Settings</span></span>
+            <span className="menu__label"><span className="menu__title">{t('settings')}</span></span>
           </button>
         </Popover>
       )}
@@ -218,6 +222,7 @@ function AccountSwitcher({ accounts, accountId, counts }: {
 
 /** Inline search field. Typing navigates to `{kind:'search'}`; clearing restores the last view. */
 function SearchRow(): JSX.Element {
+  const { t } = useTranslation('sidebar')
   const nav = useApp((s) => s.nav)
   const setNav = useApp((s) => s.setNav)
   const [open, setOpen] = useState(false)
@@ -268,7 +273,7 @@ function SearchRow(): JSX.Element {
     return (
       <div className="sidebar__searchwrap no-drag">
         <button className="search" onClick={start}>
-          <Search size={15} /><span>Search</span><kbd>/</kbd>
+          <Search size={15} /><span>{t('search.label')}</span><kbd>/</kbd>
         </button>
       </div>
     )
@@ -292,16 +297,16 @@ function SearchRow(): JSX.Element {
       <div className="search search--open">
         <Search size={15} />
         <input
-          ref={inputRef} value={q} placeholder="Search mail" aria-label="Search mail"
+          ref={inputRef} value={q} placeholder={t('search.placeholder')} aria-label={t('search.placeholder')}
           onChange={(e) => change(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); exit() } }}
           onFocus={() => setFocused(true)}
           onBlur={() => { setFocused(false); if (!q.trim()) exit() }}
         />
-        {q && <button className="search__clear" onMouseDown={(e) => e.preventDefault()} onClick={exit} aria-label="Clear search"><X size={13} /></button>}
+        {q && <button className="search__clear" onMouseDown={(e) => e.preventDefault()} onClick={exit} aria-label={t('search.clear')}><X size={13} /></button>}
       </div>
       {focused && contactPrefix && suggestions.length > 0 && (
-        <div className="search__ops" role="listbox" aria-label="Matching people">
+        <div className="search__ops" role="listbox" aria-label={t('search.people')}>
           {suggestions.map((c) => (
             <button
               key={c.email} type="button" className="search__op search__op--contact" role="option"
@@ -316,8 +321,8 @@ function SearchRow(): JSX.Element {
         </div>
       )}
       {focused && !contactPrefix && !q.trim() && (
-        <div className="search__ops" role="listbox" aria-label="Search operators">
-          {SEARCH_OPERATOR_HELP.map((o) => (
+        <div className="search__ops" role="listbox" aria-label={t('search.operators')}>
+          {searchOperatorHelp().map((o) => (
             <button
               key={o.op} type="button" className="search__op" role="option"
               onMouseDown={(e) => e.preventDefault()}
@@ -393,6 +398,7 @@ function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title
 function LabelRow({ group, count, active, onClick, title, dest }: {
   group: LabelGroup; count: number; active: boolean; onClick(): void; title: string; dest?: Dest | null
 }): JSX.Element {
+  const { t } = useTranslation('sidebar')
   const drop = useDropTarget(dest ?? null)
   const [anchor, toggle, close] = useAnchor()
   const settings = useApp((s) => s.settings)
@@ -413,22 +419,22 @@ function LabelRow({ group, count, active, onClick, title, dest }: {
       >
         <span className="row__lead"><span className="row__dot" style={{ background: `var(--chip-${group.color ?? 'gray'}-fg)` }} /></span>
         <span className="row__label">{group.name}</span>
-        {bundled && <Layers size={11} className="row__bundled" aria-label="Bundled in Inbox" />}
+        {bundled && <Layers size={11} className="row__bundled" aria-label={t('label.bundled')} />}
         <Badge n={count} />
       </button>
-      <Tooltip label="Options">
+      <Tooltip label={t('options')}>
         <button
-          className="row__more" aria-label={`Options for ${group.name}`}
+          className="row__more" aria-label={t('optionsFor', { name: group.name })}
           onClick={(e) => { e.stopPropagation(); toggle(e) }}
         >
           <MoreHorizontal size={14} />
         </button>
       </Tooltip>
       {anchor && (
-        <Popover anchor={anchor} onClose={close} width={220} label={`${group.name} options`}>
+        <Popover anchor={anchor} onClose={close} width={220} label={t('optionsOf', { name: group.name })}>
           <button className="menu__item" data-menuitem onClick={setBundled}>
             <span className="menu__icon"><Layers size={14} /></span>
-            <span className="menu__label"><span className="menu__title">{bundled ? 'Stop bundling in Inbox' : 'Bundle in Inbox'}</span></span>
+            <span className="menu__label"><span className="menu__title">{bundled ? t('label.stopBundling') : t('label.bundle')}</span></span>
           </button>
         </Popover>
       )}
@@ -439,6 +445,7 @@ function LabelRow({ group, count, active, onClick, title, dest }: {
 function ViewRow({ view, count, active, onClick }: {
   view: View; count: number; active: boolean; onClick(): void
 }): JSX.Element {
+  const { t } = useTranslation('sidebar')
   const [anchor, toggle, close] = useAnchor()
   const openEditor = useViewEditor((s) => s.open)
   const dotColor = view.color ? `var(--chip-${view.color}-fg)` : undefined
@@ -457,23 +464,23 @@ function ViewRow({ view, count, active, onClick }: {
         <span className="row__label">{view.name}</span>
         <Badge n={count} />
       </button>
-      <Tooltip label="Options">
+      <Tooltip label={t('options')}>
         <button
-          className="row__more" aria-label={`Options for ${view.name}`}
+          className="row__more" aria-label={t('optionsFor', { name: view.name })}
           onClick={(e) => { e.stopPropagation(); toggle(e) }}
         >
           <MoreHorizontal size={14} />
         </button>
       </Tooltip>
       {anchor && (
-        <Popover anchor={anchor} onClose={close} width={180} label={`${view.name} options`}>
+        <Popover anchor={anchor} onClose={close} width={180} label={t('optionsOf', { name: view.name })}>
           <button className="menu__item" data-menuitem onClick={() => { close(); openEditor(view.id) }}>
             <span className="menu__icon"><SettingsIcon size={14} /></span>
-            <span className="menu__label"><span className="menu__title">Edit view</span></span>
+            <span className="menu__label"><span className="menu__title">{t('editView')}</span></span>
           </button>
           <button className="menu__item" data-menuitem onClick={() => { close(); openEditor(null) }}>
             <span className="menu__icon"><Plus size={14} /></span>
-            <span className="menu__label"><span className="menu__title">New view</span></span>
+            <span className="menu__label"><span className="menu__title">{t('newView')}</span></span>
           </button>
         </Popover>
       )}

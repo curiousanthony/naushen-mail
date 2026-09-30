@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { BellRing, CalendarClock, CalendarDays, Clock, CornerDownLeft, Moon, Sun, Sunrise, Sunset, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Thread, ThreadAction } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { WhenField, whenState } from '@/features/time/WhenField'
@@ -23,6 +24,7 @@ export function SnoozePicker(): JSX.Element | null {
 }
 
 function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
+  const { t: tr, i18n } = useTranslation('commands')
   const close = (): void => useApp.getState().setOverlay(null)
   const usage = useApp((s) => s.settings?.timePresetUsage)
   const now = useMemo(() => new Date(), [])
@@ -30,7 +32,7 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
     () => (followUp ? getFollowUpPresets(now) : orderByUsage(getSnoozePresets(now), usage)),
     // Order is decided once per open; picking a preset must not reshuffle rows under the cursor.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [now, followUp]
+    [now, followUp, i18n.language]
   )
   const custom0 = useMemo(() => defaultCustom(now), [now])
   const { ids, threads } = targetThreads()
@@ -53,7 +55,7 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
     const when = formatReminderDate(at, new Date(), true)
     const noReply = followUp || ifNoReply
     const action: ThreadAction = noReply ? { type: 'remind', at: at.getTime() } : { type: 'snooze', until: at.getTime() }
-    const message = followUp ? `Follow-up set for ${when}, if nobody replies` : `Reminder set for ${when}`
+    const message = followUp ? tr('snooze.followUpSet', { when }) : tr('snooze.reminderSet', { when })
     if (presetId) {
       const { updateSettings, settings } = useApp.getState()
       const cur = settings?.timePresetUsage ?? {}
@@ -70,7 +72,7 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
     const { act, toast } = useApp.getState()
     if (snoozed.length) await act({ type: 'unsnooze' }, snoozed)
     if (reminded.length) await act({ type: 'remind', at: null }, reminded)
-    toast({ message: followUp ? 'Follow-up removed' : 'Reminder removed', duration: 3000 })
+    toast({ message: followUp ? tr('snooze.followUpRemoved') : tr('snooze.reminderRemoved'), duration: 3000 })
   }
 
   const activate = (i: number): void => {
@@ -93,7 +95,7 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
 
   const subject = threads[0]?.subject
   const count = ids.length
-  const title = followUp ? 'Follow up if no reply' : 'Set reminder'
+  const title = followUp ? tr('snooze.followUpTitle') : tr('snooze.reminderTitle')
   const state = whenState(typed, now)
 
   return (
@@ -102,21 +104,21 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
         <div className="cmd-head">
           <div className="cmd-head__text">
             <div className="cmd-head__title">{title}</div>
-            <div className="cmd-head__sub">{count > 1 ? `${count} conversations` : subject || 'Conversation'}</div>
+            <div className="cmd-head__sub">{count > 1 ? tr('snooze.conversations', { count }) : subject || tr('snooze.conversation')}</div>
           </div>
-          <button className="cmd-iconbtn" aria-label="Close" onClick={close}><X size={16} strokeWidth={1.5} /></button>
+          <button className="cmd-iconbtn" aria-label={tr('common.close')} onClick={close}><X size={16} strokeWidth={1.5} /></button>
         </div>
 
         <WhenField
           ref={inputRef}
           value={typed}
           onChange={setTyped}
-          placeholder={followUp ? 'Type a time… in 3 days' : 'Type a time… tomorrow 3pm'}
+          placeholder={followUp ? tr('snooze.typeFollowUp') : tr('snooze.typeReminder')}
           onSubmit={(w) => void commit(w.date)}
         />
 
         {!typing && (
-          <div className="cmd-snooze__list" role="listbox" aria-label={followUp ? 'Follow-up times' : 'Reminder times'}>
+          <div className="cmd-snooze__list" role="listbox" aria-label={followUp ? tr('snooze.followUpTimes') : tr('snooze.reminderTimes')}>
             {presets.map((p, i) => {
               const Ico = PRESET_ICON[p.id]
               return (
@@ -130,7 +132,7 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
             {hasReminder && (
               <button role="option" aria-selected={active === presets.length} className="cmd-row cmd-row--danger" data-active={active === presets.length} onMouseMove={() => setActive(presets.length)} onClick={() => activate(presets.length)}>
                 <BellRing size={16} strokeWidth={1.5} className="cmd-row__icon" />
-                <span className="cmd-row__label">{followUp ? 'Remove follow-up' : 'Remove reminder'}</span>
+                <span className="cmd-row__label">{followUp ? tr('snooze.removeFollowUp') : tr('snooze.removeReminder')}</span>
               </button>
             )}
           </div>
@@ -139,13 +141,13 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
         {!typing && <div className="cmd-divider" />}
         {!typing && (
           <div className="cmd-snooze__custom">
-            <div className="cmd-snooze__customhead"><CalendarClock size={16} strokeWidth={1.5} className="cmd-row__icon" /><span>Pick date &amp; time</span></div>
+            <div className="cmd-snooze__customhead"><CalendarClock size={16} strokeWidth={1.5} className="cmd-row__icon" /><span>{tr('snooze.pickDateTime')}</span></div>
             <div className="cmd-snooze__fields">
-              <input type="date" className="cmd-field" value={date} min={toDateInput(now)} onChange={(e) => setDate(e.target.value)} aria-label="Date" />
-              <input type="time" className="cmd-field" value={time} onChange={(e) => setTime(e.target.value)} aria-label="Time" />
-              <button className="cmd-btn cmd-btn--primary" disabled={!customAt} onClick={() => customAt && void commit(customAt)}>Set</button>
+              <input type="date" className="cmd-field" value={date} min={toDateInput(now)} onChange={(e) => setDate(e.target.value)} aria-label={tr('snooze.date')} />
+              <input type="time" className="cmd-field" value={time} onChange={(e) => setTime(e.target.value)} aria-label={tr('snooze.time')} />
+              <button className="cmd-btn cmd-btn--primary" disabled={!customAt} onClick={() => customAt && void commit(customAt)}>{tr('snooze.set')}</button>
             </div>
-            {!customAt && <div className="cmd-snooze__error">Choose a time in the future.</div>}
+            {!customAt && <div className="cmd-snooze__error">{tr('snooze.future')}</div>}
           </div>
         )}
 
@@ -154,8 +156,8 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
             <div className="cmd-divider" />
             <label className="cmd-toggle">
               <span className="cmd-toggle__text">
-                <span className="cmd-toggle__title">Remind only if no reply</span>
-                <span className="cmd-toggle__desc">{ifNoReply ? 'Stays in your inbox. You are reminded if nobody replies.' : 'Hides the conversation until then.'}</span>
+                <span className="cmd-toggle__title">{tr('snooze.onlyIfNoReply')}</span>
+                <span className="cmd-toggle__desc">{ifNoReply ? tr('snooze.onlyIfNoReplyOn') : tr('snooze.onlyIfNoReplyOff')}</span>
               </span>
               <input type="checkbox" role="switch" className="cmd-switch" checked={ifNoReply} onChange={(e) => setIfNoReply(e.target.checked)} />
             </label>
@@ -163,9 +165,9 @@ function SnoozeBody({ followUp }: { followUp: boolean }): JSX.Element {
         )}
 
         <div className="cmd-footer">
-          {!typing && <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> Navigate</span>}
-          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> {typing ? (state.kind === 'ok' ? 'Confirm' : 'Keep typing') : 'Select'}</span>
-          <span><kbd className="cmd-key cmd-key--word">esc</kbd> Close</span>
+          {!typing && <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> {tr('common.navigate')}</span>}
+          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> {typing ? (state.kind === 'ok' ? tr('snooze.confirm') : tr('snooze.keepTyping')) : tr('snooze.select')}</span>
+          <span><kbd className="cmd-key cmd-key--word">esc</kbd> {tr('common.close')}</span>
         </div>
       </div>
     </Overlay>

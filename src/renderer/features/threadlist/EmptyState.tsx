@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Clock, FileText, Filter, Inbox, Layers, Search, Send, ShieldCheck, Star, Tag, Trash2, type LucideIcon } from 'lucide-react'
 import type { Nav } from '@/lib/store'
 import { inboxZeroLine, type DayPeriod } from './emptyLines'
@@ -54,8 +55,10 @@ function Scene({ period }: { period: DayPeriod }): JSX.Element {
 
 /** Empty list. Inbox zero gets the scene and a time-of-day line; other mailboxes get a quiet glyph. */
 export function EmptyState({ nav, copy, filtered }: { nav: Nav; copy: Copy; filtered: boolean }): JSX.Element {
+  const { t, i18n } = useTranslation('threadlist')
   const zero = !filtered && nav.kind === 'role' && nav.role === 'inbox'
-  const mood = useMemo(() => inboxZeroLine(), [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- re-pick the line when the UI language changes
+  const mood = useMemo(() => inboxZeroLine(), [i18n.language])
   if (zero) {
     return (
       <div className="es es--zero" role="status">
@@ -66,7 +69,7 @@ export function EmptyState({ nav, copy, filtered }: { nav: Nav; copy: Copy; filt
     )
   }
   const Glyph = glyphFor(nav, filtered)
-  const hint = nav.kind === 'search' && !filtered ? 'Try fewer words, or search by sender with from:name.' : null
+  const hint = nav.kind === 'search' && !filtered ? t('empty.searchHint') : null
   return (
     <div className="es" role="status">
       <span className="es__glyph"><Glyph size={20} strokeWidth={1.5} /></span>

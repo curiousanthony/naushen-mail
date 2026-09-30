@@ -8,6 +8,7 @@
  */
 import type { Label, Thread } from '@shared/types'
 import { displayName, groupLabel } from '@/lib/format'
+import i18n from '@/i18n'
 import type { Item } from './lib'
 
 export interface BundleDef {
@@ -100,7 +101,9 @@ export function senderSummary(threads: Thread[], myEmails: Set<string>): string[
 
 /** "7 new" when anything is unread, else "7 conversations". */
 export const bundleCount = (b: BundleGroup): string =>
-  b.unread > 0 ? `${b.unread} new` : `${b.threads.length} ${b.threads.length === 1 ? 'conversation' : 'conversations'}`
+  b.unread > 0
+    ? i18n.t('threadlist:bundle.newCount', { count: b.unread })
+    : i18n.t('threadlist:bundle.conversationCount', { count: b.threads.length })
 
 /** Flat list items (headers, rows, bundle rows) for the windowed list. */
 export function buildItems(

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useApp, type Toast } from '@/lib/store'
 import { Keys } from './Keycaps'
 import './commands.css'
@@ -17,6 +18,7 @@ interface Item { toast: Toast; state: 'in' | 'leaving'; orphan: boolean; held: b
  * pointer leaves ("pause on hover"), and removals play an exit animation.
  */
 export function Toaster(): JSX.Element {
+  const { t } = useTranslation('commands')
   const toasts = useApp((s) => s.toasts)
   const dismiss = useApp((s) => s.dismissToast)
   const [items, setItems] = useState<Item[]>([])
@@ -65,11 +67,11 @@ export function Toaster(): JSX.Element {
   }
 
   const visible = items.slice(-MAX_VISIBLE)
-  const newestUndo = [...visible].reverse().find((x) => x.state === 'in' && x.toast.actionLabel === 'Undo')?.toast.id
+  const newestUndo = [...visible].reverse().find((x) => x.state === 'in' && x.toast.actionLabel === t('common:actions.undo'))?.toast.id
 
   return (
     <>
-      <div className="cmd-toasts" role="region" aria-label="Notifications" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <div className="cmd-toasts" role="region" aria-label={t('toaster.notifications')} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
         {visible.map(({ toast, state }) => (
           <div key={toast.id} className={`cmd-toast cmd-toast--${state}`} role="status" aria-live="polite">
             <span className="cmd-toast__msg">{toast.message}</span>
@@ -79,7 +81,7 @@ export function Toaster(): JSX.Element {
                 {toast.id === newestUndo && <Keys binding="z" />}
               </button>
             )}
-            <button className="cmd-toast__close" aria-label="Dismiss" onClick={() => close(toast)}><X size={14} strokeWidth={1.75} /></button>
+            <button className="cmd-toast__close" aria-label={t('toaster.dismiss')} onClick={() => close(toast)}><X size={14} strokeWidth={1.75} /></button>
           </div>
         ))}
       </div>

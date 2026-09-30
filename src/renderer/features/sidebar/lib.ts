@@ -4,6 +4,8 @@
  */
 import type { Counts, Label, LabelColor, SystemRole, View } from '@shared/types'
 import type { Nav } from '@/lib/store'
+import i18n, { currentLocale } from '@/i18n'
+import { roleName } from '@/lib/labels'
 
 /**
  * Unread badge for a sidebar key.
@@ -36,14 +38,15 @@ export interface MailItem {
  * The "Mail" section, in Notion Mail's order. "All Mail" uses role 'all', which the repo
  * treats as "everything except trash/spam" — i.e. inbox + archived.
  */
+// `name` is a getter so the label is resolved at render time and follows the UI language.
 export const MAIL_ITEMS: MailItem[] = [
-  { id: 'all', name: 'All Mail', role: 'all' },
-  { id: 'starred', name: 'Starred', role: 'starred' },
-  { id: 'sent', name: 'Sent', role: 'sent' },
-  { id: 'drafts', name: 'Drafts', role: 'drafts' },
-  { id: 'snoozed', name: 'Reminders', snoozed: true },
-  { id: 'spam', name: 'Spam', role: 'spam' },
-  { id: 'trash', name: 'Trash', role: 'trash' }
+  { id: 'all', get name() { return i18n.t('common:role.all') }, role: 'all' },
+  { id: 'starred', get name() { return i18n.t('common:role.starred') }, role: 'starred' },
+  { id: 'sent', get name() { return i18n.t('common:role.sent') }, role: 'sent' },
+  { id: 'drafts', get name() { return i18n.t('common:role.drafts') }, role: 'drafts' },
+  { id: 'snoozed', get name() { return i18n.t('common:role.reminders') }, snoozed: true },
+  { id: 'spam', get name() { return i18n.t('common:role.spam') }, role: 'spam' },
+  { id: 'trash', get name() { return i18n.t('common:role.trash') }, role: 'trash' }
 ]
 
 export const mailNav = (m: MailItem): Nav =>
@@ -53,7 +56,7 @@ export const mailNav = (m: MailItem): Nav =>
 export function sidebarLabels(labels: Label[], accountId: string): Label[] {
   return labels
     .filter((l) => l.kind === 'user' && (accountId === 'all' || l.accountId === accountId))
-    .sort((a, b) => a.name.localeCompare(b.name) || a.accountId.localeCompare(b.accountId))
+    .sort((a, b) => a.name.localeCompare(b.name, currentLocale()) || a.accountId.localeCompare(b.accountId))
 }
 
 /** One sidebar row: a label, or (All accounts) every account's label of the same name. */
@@ -99,7 +102,7 @@ export function mergedLabels(labels: Label[], accountId: string): LabelGroup[] {
     for (const [spelling, n] of votes.get(key)!) if (n > (votes.get(key)!.get(best) ?? 0)) best = spelling
     g.name = best
   }
-  return [...groups.values()].sort((a, b) => a.name.localeCompare(b.name))
+  return [...groups.values()].sort((a, b) => a.name.localeCompare(b.name, currentLocale()))
 }
 
 /** Combined unread count of a merged row. A thread lives in one account, so nothing double counts. */
@@ -112,6 +115,17 @@ export const unreadForGroup = (counts: Counts, accountId: string, g: LabelGroup)
 /** Primary (CATEGORY_PERSONAL) is deliberately absent: it is the plain Inbox, never a Categories row. */
 export const CATEGORY_ORDER = ['CATEGORY_SOCIAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
 
+/** Gmail's category names are fixed provider strings, so they are localised by `remoteId` rather than shown as stored. */
+function categoryName(remoteId: string, stored: string): string {
+  switch (remoteId) {
+    case 'CATEGORY_SOCIAL': return i18n.t('common:category.social')
+    case 'CATEGORY_PROMOTIONS': return i18n.t('common:category.promotions')
+    case 'CATEGORY_UPDATES': return i18n.t('common:category.updates')
+    case 'CATEGORY_FORUMS': return i18n.t('common:category.forums')
+    default: return stored
+  }
+}
+
 /**
  * Category labels for the sidebar's "Categories" section, one row per distinct category
  * (grouped by `remoteId`, not name — the friendly name is fixed, not user text), in Gmail's tab
@@ -123,7 +137,7 @@ export function categoryGroups(labels: Label[], accountId: string): LabelGroup[]
   const groups = new Map<string, LabelGroup>()
   for (const l of own) {
     const g = groups.get(l.remoteId)
-    if (!g) groups.set(l.remoteId, { key: l.remoteId, name: l.name, color: l.color, ids: [l.id], accountIds: [l.accountId] })
+    if (!g) groups.set(l.remoteId, { key: l.remoteId, name: categoryName(l.remoteId, l.name), color: l.color, ids: [l.id], accountIds: [l.accountId] })
     else {
       g.ids.push(l.id)
       if (!g.accountIds.includes(l.accountId)) g.accountIds.push(l.accountId)
@@ -194,13 +208,14 @@ export function saveCollapsed(state: Record<string, boolean>): void {
 export function filterSummary(v: View, labels: Label[]): string {
   const f = v.filter
   const parts: string[] = []
-  if (f.role) parts.push(f.role === 'all' ? 'All mail' : f.role[0].toUpperCase() + f.role.slice(1))
-  if (f.unread) parts.push('unread')
-  if (f.hasAttachment) parts.push('has attachment')
-  for (const id of f.labelIds ?? []) parts.push(labels.find((l) => l.id === id)?.name ?? 'label')
-  for (const s of f.from ?? []) parts.push(`from ${s}`)
-  for (const s of f.subjectContains ?? []) parts.push(`subject ${s}`)
-  return parts.join(' · ') || 'No filters'
+  const t = i18n.getFixedT(null, 'sidebar')
+  if (f.role) parts.push(f.role === 'all' ? t('summary.allMail') : roleName(f.role))
+  if (f.unread) parts.push(t('summary.unread'))
+  if (f.hasAttachment) parts.push(t('summary.hasAttachment'))
+  for (const id of f.labelIds ?? []) parts.push(labels.find((l) => l.id === id)?.name ?? t('summary.label'))
+  for (const s of f.from ?? []) parts.push(t('summary.from', { value: s }))
+  for (const s of f.subjectContains ?? []) parts.push(t('summary.subject', { value: s }))
+  return parts.join(' · ') || t('summary.noFilters')
 }
 
 /** Text used in the sidebar for an account's display name. */

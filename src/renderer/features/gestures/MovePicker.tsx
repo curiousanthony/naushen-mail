@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Command } from 'cmdk'
+import { useTranslation } from 'react-i18next'
+import { roleName } from '@/lib/labels'
+import { currentLocale } from '@/i18n'
 import { Archive, CornerDownLeft, FolderInput, Inbox, ShieldAlert, Trash2 } from 'lucide-react'
 import type { Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -20,6 +23,7 @@ export function MovePicker(): JSX.Element | null {
 }
 
 function MoveBody(): JSX.Element {
+  const { t: tr, i18n } = useTranslation('gestures')
   const close = (): void => useApp.getState().setOverlay(null)
   const labels = useApp((s) => s.labels)
   const accounts = useApp((s) => s.accounts)
@@ -43,15 +47,15 @@ function MoveBody(): JSX.Element {
     const accIds = new Set(threads.map((t) => t.accountId))
     const userLabels = labels
       .filter((l) => l.kind === 'user' && accIds.has(l.accountId))
-      .sort((a, b) => a.name.localeCompare(b.name) || a.accountId.localeCompare(b.accountId))
+      .sort((a, b) => a.name.localeCompare(b.name, currentLocale()) || a.accountId.localeCompare(b.accountId))
     const dup = ambiguousLabelNames(userLabels)
     const tags = accountTags(accounts)
     const navRole = nav.kind === 'role' ? nav.role : null
     const folders: Opt[] = [
-      { key: 'inbox', name: 'Inbox', dest: { kind: 'inbox' }, icon: Inbox, keywords: ['unarchive'] },
-      { key: 'archive', name: 'Archive', dest: { kind: 'archive' }, icon: Archive, keywords: ['done', 'all mail'] },
-      { key: 'trash', name: 'Trash', dest: { kind: 'trash' }, icon: Trash2, keywords: ['delete', 'bin'] },
-      { key: 'spam', name: 'Spam', dest: { kind: 'spam' }, icon: ShieldAlert, keywords: ['junk'] }
+      { key: 'inbox', name: roleName('inbox'), dest: { kind: 'inbox' }, icon: Inbox, keywords: ['unarchive'] },
+      { key: 'archive', name: roleName('archive'), dest: { kind: 'archive' }, icon: Archive, keywords: ['done', 'all mail'] },
+      { key: 'trash', name: roleName('trash'), dest: { kind: 'trash' }, icon: Trash2, keywords: ['delete', 'bin'] },
+      { key: 'spam', name: roleName('spam'), dest: { kind: 'spam' }, icon: ShieldAlert, keywords: ['junk'] }
     ]
     const lab: Opt[] = userLabels.map((l) => ({
       key: `label:${l.id}`, name: l.name, dest: { kind: 'label', labelId: l.id, accountId: l.accountId },
@@ -59,7 +63,7 @@ function MoveBody(): JSX.Element {
     }))
     // Hide folders that would change nothing for every target (you are already there).
     return [...folders, ...lab].filter((o) => planMove(threads, o.dest, labels, navRole).apply.length > 0)
-  }, [threads, labels, accounts, nav])
+  }, [threads, labels, accounts, nav, i18n.language])
 
   const q = query.trim()
   const shown = filterRank(opts, q, (o) => ({ label: o.name, keywords: o.keywords }))
@@ -70,14 +74,14 @@ function MoveBody(): JSX.Element {
   }
 
   return (
-    <Overlay onClose={close} width={340} top="16vh" label="Move conversation" className="cmd-labels">
-      <Command shouldFilter={false} loop label="Move to" className="cmd-root">
+    <Overlay onClose={close} width={340} top="16vh" label={tr('move.title')} className="cmd-labels">
+      <Command shouldFilter={false} loop label={tr('move.commandLabel')} className="cmd-root">
         <div className="cmd-inputrow cmd-inputrow--sm">
           <FolderInput size={16} strokeWidth={1.5} className="cmd-inputrow__icon" />
-          <Command.Input autoFocus value={query} onValueChange={setQuery} placeholder="Move to…" className="cmd-input cmd-input--sm" />
+          <Command.Input autoFocus value={query} onValueChange={setQuery} placeholder={tr('move.placeholder')} className="cmd-input cmd-input--sm" />
         </div>
         <Command.List className="cmd-list cmd-list--sm">
-          {!shown.length && <div className="cmd-empty">{opts.length ? 'No matching folder or label' : 'Nowhere to move these'}</div>}
+          {!shown.length && <div className="cmd-empty">{opts.length ? tr('move.noMatch') : tr('move.nowhere')}</div>}
           {shown.map((o) => {
             const Ico = o.icon
             return (
@@ -92,9 +96,9 @@ function MoveBody(): JSX.Element {
           })}
         </Command.List>
         <div className="cmd-footer">
-          <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> Navigate</span>
-          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> Move</span>
-          <span><kbd className="cmd-key cmd-key--word">esc</kbd> Cancel</span>
+          <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> {tr('move.navigate')}</span>
+          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> {tr('move.move')}</span>
+          <span><kbd className="cmd-key cmd-key--word">esc</kbd> {tr('common:actions.cancel')}</span>
         </div>
       </Command>
     </Overlay>

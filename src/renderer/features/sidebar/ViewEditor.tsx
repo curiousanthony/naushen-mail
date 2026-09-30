@@ -1,17 +1,46 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, Trash2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { LABEL_COLORS, type LabelColor, type SystemRole, type ThreadFilter, type View } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { colorName, roleName } from '@/lib/labels'
 import { Tooltip } from '@/features/tooltip'
 import { useViewEditor } from './viewEditorState'
 import { accountTags, sidebarLabels } from './lib'
 import { VIEW_ICON_KEYS, VIEW_ICONS } from './viewIcons'
 
-const ROLES: { id: SystemRole | 'any'; name: string }[] = [
-  { id: 'inbox', name: 'Inbox' }, { id: 'all', name: 'All mail' }, { id: 'sent', name: 'Sent' },
-  { id: 'drafts', name: 'Drafts' }, { id: 'trash', name: 'Trash' }, { id: 'spam', name: 'Spam' },
-  { id: 'any', name: 'Anywhere' }
+const roles = (): { id: SystemRole | 'any'; name: string }[] => [
+  { id: 'inbox', name: roleName('inbox') }, { id: 'all', name: i18n.t('sidebar:viewEditor.allMail') },
+  { id: 'sent', name: roleName('sent') }, { id: 'drafts', name: roleName('drafts') },
+  { id: 'trash', name: roleName('trash') }, { id: 'spam', name: roleName('spam') },
+  { id: 'any', name: i18n.t('sidebar:viewEditor.anywhere') }
 ]
+
+function iconName(key: string): string {
+  switch (key) {
+    case 'inbox': return i18n.t('sidebar:viewIcon.inbox')
+    case 'star': return i18n.t('sidebar:viewIcon.star')
+    case 'flag': return i18n.t('sidebar:viewIcon.flag')
+    case 'tag': return i18n.t('sidebar:viewIcon.tag')
+    case 'users': return i18n.t('sidebar:viewIcon.users')
+    case 'send': return i18n.t('sidebar:viewIcon.send')
+    case 'receipt': return i18n.t('sidebar:viewIcon.receipt')
+    case 'megaphone': return i18n.t('sidebar:viewIcon.megaphone')
+    case 'pin': return i18n.t('sidebar:viewIcon.pin')
+    case 'message': return i18n.t('sidebar:viewIcon.message')
+    case 'newspaper': return i18n.t('sidebar:viewIcon.newspaper')
+    case 'flame': return i18n.t('sidebar:viewIcon.flame')
+    case 'briefcase': return i18n.t('sidebar:viewIcon.briefcase')
+    case 'bell': return i18n.t('sidebar:viewIcon.bell')
+    case 'archive': return i18n.t('sidebar:viewIcon.archive')
+    case 'heart': return i18n.t('sidebar:viewIcon.heart')
+    case 'bookmark': return i18n.t('sidebar:viewIcon.bookmark')
+    case 'folder': return i18n.t('sidebar:viewIcon.folder')
+    case 'zap': return i18n.t('sidebar:viewIcon.zap')
+    default: return key
+  }
+}
 
 const first = (v?: string[]): string => v?.[0] ?? ''
 const list = (v: string): string[] | undefined => (v.trim() ? [v.trim()] : undefined)
@@ -21,6 +50,7 @@ const list = (v: string): string[] | undefined => (v.trim() ? [v.trim()] : undef
  * already on the filter (date range, full-text, starred…) is carried through untouched.
  */
 export function ViewEditor(): JSX.Element | null {
+  const { t } = useTranslation('sidebar')
   const overlay = useApp((s) => s.overlay)
   const views = useApp((s) => s.views)
   const labels = useApp((s) => s.labels)
@@ -125,7 +155,7 @@ export function ViewEditor(): JSX.Element | null {
     await refreshMeta()
     close()
     setNav({ kind: 'view', viewId: view.id })
-    toast({ message: base ? 'View updated' : `View “${trimmed}” created` })
+    toast({ message: base ? t('viewEditor.updated') : t('viewEditor.created', { name: trimmed }) })
   }
 
   async function remove(): Promise<void> {
@@ -135,15 +165,15 @@ export function ViewEditor(): JSX.Element | null {
     await refreshMeta()
     close()
     if (nav.kind === 'view' && nav.viewId === base.id) setNav({ kind: 'role', role: 'inbox' })
-    toast({ message: `View “${base.name}” deleted` })
+    toast({ message: t('viewEditor.deleted', { name: base.name }) })
   }
 
   return (
     <div className="ve__scrim" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
-      <div className="ve" role="dialog" aria-modal="true" aria-label={base ? 'Edit view' : 'New view'}>
+      <div className="ve" role="dialog" aria-modal="true" aria-label={base ? t('editView') : t('newView')}>
         <header className="ve__head">
-          <h2>{base ? 'Edit view' : 'New view'}</h2>
-          <p>Views are saved filters. They apply to mail you already have and to anything new.</p>
+          <h2>{base ? t('editView') : t('newView')}</h2>
+          <p>{t('viewEditor.intro')}</p>
         </header>
 
         <div className="ve__body">
@@ -153,17 +183,17 @@ export function ViewEditor(): JSX.Element | null {
             </span>
             <input
               ref={nameRef} className="ve__name" value={name} onChange={(e) => setName(e.target.value)}
-              placeholder="View name" aria-label="View name" autoFocus
+              placeholder={t('viewEditor.name')} aria-label={t('viewEditor.name')} autoFocus
             />
           </div>
 
-          <label className="ve__label">Icon</label>
+          <label className="ve__label">{t('viewEditor.icon')}</label>
           <div className="ve__emojis">
             {VIEW_ICON_KEYS.map((key) => {
               const Icon = VIEW_ICONS[key]
               return (
-                <Tooltip key={key} label={key}>
-                  <button className="ve__emojibtn" data-on={key === icon} onClick={() => setIcon(key)} aria-label={key}>
+                <Tooltip key={key} label={iconName(key)}>
+                  <button className="ve__emojibtn" data-on={key === icon} onClick={() => setIcon(key)} aria-label={iconName(key)}>
                     <Icon size={15} />
                   </button>
                 </Tooltip>
@@ -171,54 +201,54 @@ export function ViewEditor(): JSX.Element | null {
             })}
           </div>
 
-          <label className="ve__label">Colour</label>
+          <label className="ve__label">{t('viewEditor.colour')}</label>
           <div className="ve__colors">
-            <Tooltip label="No colour">
-              <button className="ve__swatch" data-on={color === ''} onClick={() => setColor('')} aria-label="No colour">
+            <Tooltip label={t('viewEditor.noColour')}>
+              <button className="ve__swatch" data-on={color === ''} onClick={() => setColor('')} aria-label={t('viewEditor.noColour')}>
                 <span className="ve__swatchdot ve__swatchdot--none" />
               </button>
             </Tooltip>
             {LABEL_COLORS.map((c) => (
-              <Tooltip key={c} label={c}>
-                <button className="ve__swatch" data-on={color === c} onClick={() => setColor(c)} aria-label={c}>
+              <Tooltip key={c} label={colorName(c)}>
+                <button className="ve__swatch" data-on={color === c} onClick={() => setColor(c)} aria-label={colorName(c)}>
                   <span className="ve__swatchdot" style={{ background: `var(--chip-${c}-fg)` }} />
                 </button>
               </Tooltip>
             ))}
           </div>
 
-          <label className="ve__label">Filters</label>
+          <label className="ve__label">{t('viewEditor.filters')}</label>
           <div className="ve__grid">
-            <span>Account</span>
-            <select value={accountId} onChange={(e) => { setAccountId(e.target.value); setLabelIds([]) }} aria-label="Account">
-              <option value="all">All accounts</option>
+            <span>{t('viewEditor.account')}</span>
+            <select value={accountId} onChange={(e) => { setAccountId(e.target.value); setLabelIds([]) }} aria-label={t('viewEditor.account')}>
+              <option value="all">{t('accounts.all')}</option>
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.email}</option>)}
             </select>
 
-            <span>Mailbox</span>
-            <select value={role} onChange={(e) => setRole(e.target.value as SystemRole | 'any')} aria-label="Mailbox">
-              {ROLES.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
+            <span>{t('viewEditor.mailbox')}</span>
+            <select value={role} onChange={(e) => setRole(e.target.value as SystemRole | 'any')} aria-label={t('viewEditor.mailbox')}>
+              {roles().map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
 
-            <span>From</span>
-            <input value={from} onChange={(e) => setFrom(e.target.value)} placeholder="name or address" aria-label="From contains" />
+            <span>{t('viewEditor.from')}</span>
+            <input value={from} onChange={(e) => setFrom(e.target.value)} placeholder={t('viewEditor.fromPlaceholder')} aria-label={t('viewEditor.fromContains')} />
 
-            <span>Subject</span>
-            <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="contains…" aria-label="Subject contains" />
+            <span>{t('viewEditor.subject')}</span>
+            <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={t('viewEditor.subjectPlaceholder')} aria-label={t('viewEditor.subjectContains')} />
           </div>
 
           <div className="ve__checks">
             <button className="ve__check" data-on={unread} onClick={() => setUnread(!unread)} role="checkbox" aria-checked={unread}>
-              <span className="ve__box">{unread && <Check size={12} strokeWidth={3} />}</span> Unread only
+              <span className="ve__box">{unread && <Check size={12} strokeWidth={3} />}</span> {t('viewEditor.unreadOnly')}
             </button>
             <button className="ve__check" data-on={attachment} onClick={() => setAttachment(!attachment)} role="checkbox" aria-checked={attachment}>
-              <span className="ve__box">{attachment && <Check size={12} strokeWidth={3} />}</span> Has attachment
+              <span className="ve__box">{attachment && <Check size={12} strokeWidth={3} />}</span> {t('viewEditor.hasAttachment')}
             </button>
           </div>
 
           {userLabels.length > 0 && (
             <>
-              <label className="ve__label">Labels</label>
+              <label className="ve__label">{t('viewEditor.labels')}</label>
               <div className="ve__labels">
                 {userLabels.map((l) => {
                   const on = labelIds.includes(l.id)
@@ -243,13 +273,13 @@ export function ViewEditor(): JSX.Element | null {
         <footer className="ve__foot">
           {base && base.id !== 'view-inbox' && (
             <button className="ve__btn ve__btn--danger" onClick={() => void remove()} disabled={busy}>
-              <Trash2 size={14} /> Delete
+              <Trash2 size={14} /> {t('viewEditor.delete')}
             </button>
           )}
           <span className="ve__spacer" />
-          <button className="ve__btn" onClick={close}>Cancel</button>
+          <button className="ve__btn" onClick={close}>{t('common:actions.cancel')}</button>
           <button className="ve__btn ve__btn--primary" onClick={() => void save()} disabled={!name.trim() || busy}>
-            {base ? 'Save' : 'Create view'}
+            {base ? t('common:actions.save') : t('viewEditor.create')}
           </button>
         </footer>
       </div>

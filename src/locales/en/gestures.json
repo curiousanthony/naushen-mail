@@ -1,0 +1,29 @@
+{
+  "move": {
+    "title": "Move conversation",
+    "commandLabel": "Move to",
+    "placeholder": "Move to…",
+    "noMatch": "No matching folder or label",
+    "nowhere": "Nowhere to move these",
+    "navigate": "Navigate",
+    "move": "Move",
+    "labelFallback": "label",
+    "toLabel_one": "Conversation moved to “{{name}}”",
+    "toLabel_other": "{{count}} conversations moved to “{{name}}”",
+    "skippedNoLabel": "{{count}} without a matching label left as is",
+    "skippedAlreadyThere": "{{count}} already there",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} conversation",
+    "conversations_other": "{{count}} conversations"
+  },
+  "swipe": {
+    "restore": "Restore",
+    "restored": "Conversation restored",
+    "notSpam": "Not spam",
+    "movedToInbox": "Conversation moved to inbox",
+    "archive": "Archive",
+    "archived": "Conversation archived"
+  }
+}

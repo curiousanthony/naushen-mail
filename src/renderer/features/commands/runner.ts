@@ -1,5 +1,6 @@
 import type { SystemRole, Thread, ThreadAction } from '@shared/types'
 import { LABEL_COLORS } from '@shared/types'
+import i18n from '@/i18n'
 import { useApp } from '@/lib/store'
 import { extendSelection, lastMessage, moveFocus, targetIds } from './selection'
 import { UndoStack, invertAction, toastText } from './undo'
@@ -53,7 +54,7 @@ export async function perform(action: ThreadAction, message: string | null, opts
   await s.act(action, ids)
   const entry = inverse ? undoStack.push(ids, inverse, message ?? '') : null
   if (opts.silent || !message) return
-  S().toast({ message, actionLabel: entry ? 'Undo' : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
+  S().toast({ message, actionLabel: entry ? i18n.t('common:actions.undo') : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
 }
 
 /**
@@ -71,7 +72,7 @@ export async function performSteps(steps: { ids: string[]; action: ThreadAction 
   }
   const [first, ...rest] = inverses
   const entry = first ? undoStack.push(first.ids, first.action, message, rest) : null
-  S().toast({ message, actionLabel: entry ? 'Undo' : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
+  S().toast({ message, actionLabel: entry ? i18n.t('common:actions.undo') : undefined, onAction: entry ? () => void undoEntry(entry.id) : undefined })
 }
 
 async function undoEntry(entryId: number): Promise<void> {
@@ -89,9 +90,9 @@ async function applyUndo(entry: { ids: string[]; inverse: ThreadAction; extra?: 
 /** `z`: undo the newest reversible action. */
 export async function undoLast(): Promise<void> {
   const entry = undoStack.pop()
-  if (!entry) { S().toast({ message: 'Nothing to undo', duration: 2500 }); return }
+  if (!entry) { S().toast({ message: i18n.t('commands:undo.nothing'), duration: 2500 }); return }
   await applyUndo(entry)
-  S().toast({ message: 'Undone', duration: 2500 })
+  S().toast({ message: i18n.t('commands:undo.done'), duration: 2500 })
 }
 
 async function composeFor(mode: 'reply' | 'replyAll' | 'forward'): Promise<void> {
@@ -113,15 +114,15 @@ async function unsubscribe(): Promise<void> {
   const m = t ? lastMessage(t.messages.filter((x) => x.listUnsubscribe)) ?? lastMessage(t.messages) : undefined
   const targets = parseListUnsubscribe(m?.listUnsubscribe)
   if (!t || !m || (!targets.https && !targets.mailto)) {
-    S().toast({ message: 'No unsubscribe link found in this conversation', duration: 3500 })
+    S().toast({ message: i18n.t('commands:unsubscribe.notFound'), duration: 3500 })
     return
   }
   if (targets.https) {
     await window.api.invoke('app.openExternal', targets.https)
-    S().toast({ message: 'Opened the unsubscribe page in your browser', duration: 4000 })
+    S().toast({ message: i18n.t('commands:unsubscribe.openedPage'), duration: 4000 })
   } else if (targets.mailto) {
     S().openComposer({ mode: 'new', accountId: t.accountId, init: { to: [{ email: targets.mailto.to }], subject: targets.mailto.subject ?? 'Unsubscribe' } })
-    S().toast({ message: 'Unsubscribe request drafted. Send it to finish.', duration: 4000 })
+    S().toast({ message: i18n.t('commands:unsubscribe.drafted'), duration: 4000 })
   }
 }
 
@@ -222,9 +223,9 @@ export const HANDLERS: Record<string, Handler> = {
   'sync.now': async () => {
     if (syncing) return
     syncing = true
-    S().toast({ message: 'Syncing…', duration: 1500 })
-    try { await window.api.invoke('sync.now'); S().toast({ message: 'Mail up to date', duration: 1500 }) }
-    catch { S().toast({ message: "Couldn't sync. Will retry shortly.", duration: 3000 }) }
+    S().toast({ message: i18n.t('commands:sync.syncing'), duration: 1500 })
+    try { await window.api.invoke('sync.now'); S().toast({ message: i18n.t('commands:sync.upToDate'), duration: 1500 }) }
+    catch { S().toast({ message: i18n.t('commands:sync.failed'), duration: 3000 }) }
     finally { syncing = false }
   },
   'theme.set': ({ arg }) => { if (arg) void S().updateSettings({ theme: arg as (typeof THEMES)[number] }) },

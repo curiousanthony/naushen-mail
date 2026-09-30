@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Command } from 'cmdk'
 import { Check, CornerDownLeft, Minus, Plus, Tag } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { currentLocale } from '@/i18n'
 import type { Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { filterRank } from './filter'
@@ -16,6 +18,7 @@ export function LabelPicker(): JSX.Element | null {
 }
 
 function LabelBody(): JSX.Element {
+  const { t } = useTranslation('commands')
   const close = (): void => useApp.getState().setOverlay(null)
   const allLabels = useApp((s) => s.labels)
   const { ids, threads: known } = targetThreads()
@@ -37,7 +40,7 @@ function LabelBody(): JSX.Element {
   // Labels belong to one account; scope to the first thread's account (mixed-account selections only touch that account's threads).
   const accountId = threads[0]?.accountId
   const scoped = useMemo(() => threads.filter((t) => t.accountId === accountId), [threads, accountId])
-  const labels: Label[] = useMemo(() => allLabels.filter((l) => l.kind === 'user' && l.accountId === accountId).sort((a, b) => a.name.localeCompare(b.name)), [allLabels, accountId])
+  const labels: Label[] = useMemo(() => allLabels.filter((l) => l.kind === 'user' && l.accountId === accountId).sort((a, b) => a.name.localeCompare(b.name, currentLocale())), [allLabels, accountId])
 
   const q = query.trim()
   const shown = filterRank(labels, q, (l) => ({ label: l.name }))
@@ -50,7 +53,7 @@ function LabelBody(): JSX.Element {
     const on = stateOf(l) === 'on'
     setOverride((o) => ({ ...o, [l.id]: on ? 'off' : 'on' }))
     const idsHere = scoped.map((t) => t.id)
-    await perform(on ? { type: 'removeLabel', labelId: l.id } : { type: 'addLabel', labelId: l.id }, on ? `Removed label “${l.name}”` : `Added label “${l.name}”`, { ids: idsHere })
+    await perform(on ? { type: 'removeLabel', labelId: l.id } : { type: 'addLabel', labelId: l.id }, on ? t('labels.removed', { name: l.name }) : t('labels.added', { name: l.name }), { ids: idsHere })
     void useApp.getState().refreshThreads()
   }
 
@@ -63,14 +66,14 @@ function LabelBody(): JSX.Element {
   }
 
   return (
-    <Overlay onClose={close} width={340} top="16vh" label="Label conversation" className="cmd-labels">
-      <Command shouldFilter={false} loop label="Labels" className="cmd-root">
+    <Overlay onClose={close} width={340} top="16vh" label={t('labels.title')} className="cmd-labels">
+      <Command shouldFilter={false} loop label={t('labels.commandLabel')} className="cmd-root">
         <div className="cmd-inputrow cmd-inputrow--sm">
           <Tag size={16} strokeWidth={1.5} className="cmd-inputrow__icon" />
-          <Command.Input autoFocus value={query} onValueChange={setQuery} placeholder="Label as…" className="cmd-input cmd-input--sm" />
+          <Command.Input autoFocus value={query} onValueChange={setQuery} placeholder={t('labels.placeholder')} className="cmd-input cmd-input--sm" />
         </div>
         <Command.List className="cmd-list cmd-list--sm">
-          {!shown.length && !canCreate && <div className="cmd-empty">{labels.length ? 'No matching labels' : 'No labels yet. Type a name to create one.'}</div>}
+          {!shown.length && !canCreate && <div className="cmd-empty">{labels.length ? t('labels.noMatch') : t('labels.none')}</div>}
           {shown.map((l) => {
             const st = stateOf(l)
             return (
@@ -87,14 +90,14 @@ function LabelBody(): JSX.Element {
           {canCreate && (
             <Command.Item value={`create:${q}`} onSelect={() => void create()} className="cmd-item">
               <span className="cmd-item__icon"><Plus size={16} strokeWidth={1.5} /></span>
-              <span className="cmd-item__label">Create label “{q}”</span>
+              <span className="cmd-item__label">{t('labels.create', { name: q })}</span>
             </Command.Item>
           )}
         </Command.List>
         <div className="cmd-footer">
-          <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> Navigate</span>
-          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> Toggle</span>
-          <span><kbd className="cmd-key cmd-key--word">esc</kbd> Done</span>
+          <span><kbd className="cmd-key">↑</kbd><kbd className="cmd-key">↓</kbd> {t('common.navigate')}</span>
+          <span><kbd className="cmd-key"><CornerDownLeft size={10} strokeWidth={2} /></kbd> {t('labels.toggle')}</span>
+          <span><kbd className="cmd-key cmd-key--word">esc</kbd> {t('labels.done')}</span>
         </div>
       </Command>
     </Overlay>

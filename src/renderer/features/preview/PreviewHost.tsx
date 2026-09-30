@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Paperclip, Star } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { ThreadWithMessages } from '@shared/types'
 import { sanitizeEmailHtml } from '@shared/sanitize'
 import { plainTextToHtml } from '@shared/sanitize/text'
@@ -71,6 +72,7 @@ function bodySrcDoc(thread: ThreadWithMessages, tokens: ThemeTokens, dark: boole
  * (much rarer) content changes do. Same measure-then-place trick as tooltip/TooltipHost.tsx.
  */
 export function PreviewHost(): JSX.Element | null {
+  const { t } = useTranslation('preview')
   const visible = usePreviewStore((s) => s.visible)
   const threadId = usePreviewStore((s) => s.threadId)
   const x = usePreviewStore((s) => s.x)
@@ -143,7 +145,7 @@ export function PreviewHost(): JSX.Element | null {
   const names = (() => {
     const seen: string[] = []
     for (const p of thread.participants) {
-      const n = myEmails.has(p.email.toLowerCase()) ? 'Me' : displayName(p)
+      const n = myEmails.has(p.email.toLowerCase()) ? t('me') : displayName(p)
       if (!seen.includes(n)) seen.push(n)
     }
     return seen.join(', ')
@@ -178,8 +180,8 @@ export function PreviewHost(): JSX.Element | null {
       </div>
 
       <div className="preview__subject">
-        {thread.unread && <span className="preview__unread" aria-label="Unread" />}
-        {thread.subject || '(no subject)'}
+        {thread.unread && <span className="preview__unread" aria-label={t('unread')} />}
+        {thread.subject || t('common:noSubject')}
         {thread.messageCount > 1 && <span className="preview__count">{thread.messageCount}</span>}
       </div>
 
@@ -187,7 +189,7 @@ export function PreviewHost(): JSX.Element | null {
         // sandbox has no allow-scripts (same as the reader's own iframe, bodyDocument.ts) and
         // the whole card is pointer-events:none (preview.css), so this is inert either way.
         <div className="preview__body">
-          <iframe className="preview__frame" title="Message preview" srcDoc={srcDoc} sandbox="allow-same-origin" scrolling="no" tabIndex={-1} />
+          <iframe className="preview__frame" title={t('frameTitle')} srcDoc={srcDoc} sandbox="allow-same-origin" scrolling="no" tabIndex={-1} />
           <div className="preview__fade" aria-hidden />
         </div>
       ) : thread.snippet ? (
@@ -200,10 +202,10 @@ export function PreviewHost(): JSX.Element | null {
             <span key={l.id} className="preview__chip" style={chipStyle(l.color)}>{l.name}</span>
           ))}
           {thread.hasAttachments && (
-            <span className="preview__icon"><Paperclip size={12} /> Attachment</span>
+            <span className="preview__icon"><Paperclip size={12} /> {t('attachment')}</span>
           )}
           {thread.starred && (
-            <span className="preview__icon preview__icon--star"><Star size={12} fill="currentColor" /> Starred</span>
+            <span className="preview__icon preview__icon--star"><Star size={12} fill="currentColor" /> {t('starred')}</span>
           )}
         </div>
       )}

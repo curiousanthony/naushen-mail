@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "Back {{time}}",
+    "tomorrow": "Back tomorrow {{time}}",
+    "weekday": "Back {{day}} {{time}}",
+    "date": "Back {{date}}"
+  },
+  "in": {
+    "minutes": "{{count}}m",
+    "hours": "{{count}}h",
+    "days": "{{count}}d"
+  },
+  "chip": {
+    "reschedule": "Reschedule reminder",
+    "rescheduleAria": "{{when}}. Reschedule reminder",
+    "cancel": "Cancel follow-up",
+    "cancelAria": "Follow-up in {{in}}. Cancel follow-up",
+    "cancelled": "Follow-up cancelled",
+    "followUpIn": "Follow-up in {{in}}",
+    "noReply": "No reply yet",
+    "noReplyTitle": "No reply yet. Click to dismiss",
+    "noReplyAria": "No reply yet. Dismiss",
+    "dismissed": "Dismissed"
+  },
+  "when": {
+    "placeholder": "Type a time… tomorrow 3pm",
+    "ariaLabel": "Type a time",
+    "past": "That time has already passed",
+    "unknown": "Try “tomorrow 3pm”, “fri”, “in 2 days” or “oct 12”"
+  }
+}

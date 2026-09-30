@@ -1,5 +1,6 @@
 import type { Address } from '@shared/types'
 import { useApp } from '@/lib/store'
+import i18n from '@/i18n'
 
 /** Compose a new message to one person (in the current account, or the first one under "All"). */
 export function composeTo(a: Address): void {
@@ -17,5 +18,5 @@ export function allMailFrom(email: string): void {
 
 export async function copyAddress(email: string): Promise<void> {
   try { await navigator.clipboard.writeText(email) } catch { /* clipboard blocked: still confirm nothing false */ return }
-  useApp.getState().toast({ message: 'Address copied', duration: 1800 })
+  useApp.getState().toast({ message: i18n.t('people:addressCopied'), duration: 1800 })
 }

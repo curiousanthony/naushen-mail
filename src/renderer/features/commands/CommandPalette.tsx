@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Command } from 'cmdk'
+import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import {
   Archive, Clock, CornerDownLeft, FileText, Forward, History, Inbox, Keyboard, Layers, Mail, MailOpen, MailX, Monitor, Moon, PanelLeft,
   ListFilter, RefreshCw, Reply, ReplyAll, Search, Send, Settings, ShieldAlert, ShieldBan, SquarePen, Star, StarOff, Sun, Tag, Trash2, Undo2, User, UserPlus, Users, X
@@ -9,7 +11,7 @@ import type { PersonHit, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, listTime } from '@/lib/format'
 import { filterRank, highlightSegments } from './filter'
-import { GROUP_ORDER, buildPaletteItems, groupItems, jumpGroupOf, type PaletteItem } from './paletteItems'
+import { GROUP_ORDER, buildPaletteItems, groupItems, groupText, jumpGroupOf, type PaletteItem } from './paletteItems'
 import { THREAD_GROUP_SCORE, blendScore, looksLikeEmail, orderGroups, rankScored, type JumpGroup } from './jump'
 import { loadFrecency, recordPick } from './frecency'
 import { loadRecent, pushRecent, saveRecent } from './recent'
@@ -92,12 +94,13 @@ function Hl({ text, query }: { text: string; query: string }): JSX.Element {
 /** The other party: first participant that is not one of your own addresses. */
 function leadName(th: Thread, mine: Set<string>): string {
   const p = th.participants.find((x) => !mine.has(x.email.toLowerCase())) ?? th.participants[0]
-  return p ? displayName(p) : 'Unknown'
+  return p ? displayName(p) : i18n.t('commands:palette.unknown')
 }
 
 interface Entry { key: string; group: JumpGroup; score: number; node: JSX.Element }
 
 function PaletteBody(): JSX.Element {
+  const { t: tr } = useTranslation('commands')
   const ui = useCommandUi.getState()
   const [mode, setMode] = useState<'commands' | 'search'>(ui.paletteMode)
   const [query, setQuery] = useState(ui.paletteInitial)
@@ -202,8 +205,8 @@ function PaletteBody(): JSX.Element {
       </span>
       {p.threadCount ? <span className="cmd-item__hint cmd-item__hint--idle">{p.threadCount}</span> : null}
       <span className="cmd-item__acts">
-        <span className="cmd-act"><Keys display={[['↵']]} /> Write</span>
-        <span className="cmd-act"><Keys display={[['⇥']]} /> All mail</span>
+        <span className="cmd-act"><Keys display={[['↵']]} /> {tr('palette.write')}</span>
+        <span className="cmd-act"><Keys display={[['⇥']]} /> {tr('palette.allMail')}</span>
       </span>
     </Command.Item>
   )
@@ -237,7 +240,7 @@ function PaletteBody(): JSX.Element {
     <Command.Item key={th.id} value={`thread:${th.id}`} onSelect={() => openResult(th)} className="cmd-item cmd-item--thread">
       <span className="cmd-item__icon">{th.unread ? <span className="cmd-unread" /> : <Mail size={16} strokeWidth={1.5} />}</span>
       <span className="cmd-item__sender"><Hl text={leadName(th, mine)} query={q} /></span>
-      <span className="cmd-item__subject"><Hl text={th.subject || '(no subject)'} query={q} /></span>
+      <span className="cmd-item__subject"><Hl text={th.subject || tr('common:noSubject')} query={q} /></span>
       {th.snippet && <span className="cmd-item__snippet">{th.snippet}</span>}
       <span className="cmd-item__time">{listTime(th.lastMessageAt)}</span>
     </Command.Item>
@@ -245,7 +248,7 @@ function PaletteBody(): JSX.Element {
   const searchAllRow = (
     <Command.Item key="search-all" value={`search:${q}`} onSelect={() => submitSearch(q)} className="cmd-item cmd-item--searchall">
       <span className="cmd-item__icon"><Search size={16} strokeWidth={1.5} /></span>
-      <span className="cmd-item__label">{results.total > results.threads.length ? `See all ${results.total} results for “${q}”` : `Search all mail for “${q}”`}</span>
+      <span className="cmd-item__label">{results.total > results.threads.length ? tr('palette.seeAll', { count: results.total, query: q }) : tr('palette.searchAll', { query: q })}</span>
       <span className="cmd-item__hint cmd-item__hint--key"><Keys display={[['⌘', '↵']]} /></span>
     </Command.Item>
   )
@@ -265,30 +268,31 @@ function PaletteBody(): JSX.Element {
   const nothing = typing ? !ordered.length : mode === 'commands' ? !groups.length && !showRecent : false
 
   const recentGroup = showRecent && (
-    <Command.Group heading={<span className="cmd-heading">Recent searches</span>} key="recent">
+    <Command.Group heading={<span className="cmd-heading">{tr('palette.recentSearches')}</span>} key="recent">
       {recent.map((r) => (
         <Command.Item key={r} value={`recent:${r}`} onSelect={() => submitSearch(r)} className="cmd-item">
           <span className="cmd-item__icon"><History size={16} strokeWidth={1.5} /></span>
           <span className="cmd-item__label">{r}</span>
-          <span className="cmd-item__hint">Search</span>
+          <span className="cmd-item__hint">{tr('palette.search')}</span>
         </Command.Item>
       ))}
     </Command.Group>
   )
 
   const head = (g: string): JSX.Element => <span className="cmd-heading">{g}</span>
+  const actionsHeading = (): string => (ids.length > 1 ? tr('palette.actionsSelected', { count: ids.length }) : groupText('Actions'))
   const groupNode = (g: (typeof ordered)[number]): JSX.Element | null => {
     if (g.group === 'Threads') {
-      return <Command.Group key="Threads" heading={head('Threads')}>{threadNodes}{searchAllRow}{searching && !results.threads.length && <div className="cmd-searching">Searching…</div>}</Command.Group>
+      return <Command.Group key="Threads" heading={head(groupText('Threads'))}>{threadNodes}{searchAllRow}{searching && !results.threads.length && <div className="cmd-searching">{tr('palette.searching')}</div>}</Command.Group>
     }
     const found = typedGroups.find((t) => t.group === g.group)
-    return found ? <Command.Group key={g.group} heading={head(g.group === 'Actions' && ids.length > 1 ? `Actions · ${ids.length} selected` : g.group)}>{found.nodes}</Command.Group> : null
+    return found ? <Command.Group key={g.group} heading={head(g.group === 'Actions' ? actionsHeading() : groupText(g.group))}>{found.nodes}</Command.Group> : null
   }
 
   return (
-    <Overlay onClose={close} width={640} label="Command menu" className="cmd-palette">
+    <Overlay onClose={close} width={640} label={tr('palette.title')} className="cmd-palette">
       <Command
-        shouldFilter={false} loop label="Command menu" className="cmd-root"
+        shouldFilter={false} loop label={tr('palette.title')} className="cmd-root"
         value={sel} onValueChange={setSel}
         onKeyDown={(e) => {
           if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || (e.ctrlKey && /^[jknp]$/i.test(e.key))) touched.current = true
@@ -300,42 +304,42 @@ function PaletteBody(): JSX.Element {
       >
         <div className="cmd-inputrow">
           <Search size={18} strokeWidth={1.5} className="cmd-inputrow__icon" />
-          {mode === 'search' && <span className="cmd-pill">Search email</span>}
+          {mode === 'search' && <span className="cmd-pill">{tr('palette.searchEmail')}</span>}
           <Command.Input
             autoFocus
             value={query}
             onValueChange={setQuery}
-            placeholder={mode === 'search' ? 'Search by sender, subject, or words in the message…' : 'Search mail, people, or run a command…'}
+            placeholder={mode === 'search' ? tr('palette.placeholderSearch') : tr('palette.placeholder')}
             className="cmd-input"
             onKeyDown={(e) => {
               if (e.key === 'Backspace' && !query && mode === 'search') { e.preventDefault(); setMode('commands') }
             }}
           />
-          {query && <button className="cmd-clear" aria-label="Clear" onClick={() => setQuery('')}><X size={14} strokeWidth={1.75} /></button>}
+          {query && <button className="cmd-clear" aria-label={tr('palette.clear')} onClick={() => setQuery('')}><X size={14} strokeWidth={1.75} /></button>}
         </div>
         <Command.List ref={listRef} className="cmd-list">
-          {nothing && !searching && <div className="cmd-empty">No results</div>}
-          {mode === 'search' && !q && !showRecent && <div className="cmd-empty">Search your mail. Try a name, a subject or a phrase.</div>}
+          {nothing && !searching && <div className="cmd-empty">{tr('palette.noResults')}</div>}
+          {mode === 'search' && !q && !showRecent && <div className="cmd-empty">{tr('palette.searchHint')}</div>}
 
           {mode === 'commands' && !typing && groups.filter((g) => g.group === 'Actions').map((g) => (
-            <Command.Group key={g.group} heading={<span className="cmd-heading">{g.group}{ids.length > 1 ? ` · ${ids.length} selected` : ''}</span>}>{g.items.map(renderItem)}</Command.Group>
+            <Command.Group key={g.group} heading={<span className="cmd-heading">{actionsHeading()}</span>}>{g.items.map(renderItem)}</Command.Group>
           ))}
           {!typing && recentGroup}
           {mode === 'commands' && !typing && groups.filter((g) => g.group !== 'Actions').sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group)).map((g) => (
-            <Command.Group key={g.group} heading={<span className="cmd-heading">{g.group}</span>}>{g.items.map(renderItem)}</Command.Group>
+            <Command.Group key={g.group} heading={<span className="cmd-heading">{groupText(g.group)}</span>}>{g.items.map(renderItem)}</Command.Group>
           ))}
 
           {typing && ordered.map(groupNode)}
 
           {mode === 'search' && showSearchGroup && (
-            <Command.Group heading={head('Search email')}>
+            <Command.Group heading={head(tr('palette.searchEmail'))}>
               <Command.Item value={`search:${q}`} onSelect={() => submitSearch(q)} className="cmd-item">
                 <span className="cmd-item__icon"><Search size={16} strokeWidth={1.5} /></span>
-                <span className="cmd-item__label">Search for “{q}”</span>
+                <span className="cmd-item__label">{tr('palette.searchFor', { query: q })}</span>
                 <span className="cmd-item__hint cmd-item__hint--key"><CornerDownLeft size={12} strokeWidth={1.75} /></span>
               </Command.Item>
               {threadNodes}
-              {searching && !results.threads.length && <div className="cmd-searching">Searching…</div>}
+              {searching && !results.threads.length && <div className="cmd-searching">{tr('palette.searching')}</div>}
             </Command.Group>
           )}
         </Command.List>

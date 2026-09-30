@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TimeChips } from '@/features/time/TimeChips'
 import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, RotateCcw, ShieldCheck, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
@@ -58,6 +59,7 @@ function Action({ label, on, danger, onClick, children }: {
 function RowImpl({
   thread: t, labels, account, showAccount, myEmails, selected, focused, open, onSelect, onOpen, onMenu
 }: RowProps): JSX.Element {
+  const { t: tr } = useTranslation('threadlist')
   const act = useApp((s) => s.act)
   const focus = useApp((s) => s.focus)
   const setOverlay = useApp((s) => s.setOverlay)
@@ -172,7 +174,7 @@ function RowImpl({
         >
           <span className="trow__revealbody">
             {swipe.side === 'right'
-              ? <><AlarmClock size={16} /><span>Remind</span></>
+              ? <><AlarmClock size={16} /><span>{tr('row.remind')}</span></>
               : <>{leftKind.action.type === 'archive' ? <Archive size={16} /> : <RotateCcw size={16} />}<span>{leftKind.label}</span></>}
           </span>
         </div>
@@ -200,7 +202,7 @@ function RowImpl({
       onDragEnd={endThreadDrag}
     >
       <span className="trow__lead">
-        <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? 'Unread' : undefined} />
+        <span className="trow__unread" data-on={t.unread} aria-label={t.unread ? tr('row.unread') : undefined} />
         {showAvatars && (
           // No account colour here (removed — a different colour per account read as visual
           // noise, not signal, across a long list). The account is still one hover away: the
@@ -220,7 +222,7 @@ function RowImpl({
             reserving a blank 22px circle's worth of space for nothing. */}
         <button
           className="trow__box" data-bare={!showAvatars || undefined} role="checkbox" aria-checked={selected}
-          aria-label={selected ? 'Deselect conversation' : 'Select conversation'}
+          aria-label={selected ? tr('row.deselect') : tr('row.select')}
           onClick={(e) => { e.stopPropagation(); onSelect(t.id, e) }}
           onMouseDown={(e) => e.stopPropagation()}
         >
@@ -231,7 +233,7 @@ function RowImpl({
       <span className="trow__sender">{sender || t.subject}</span>
 
       <span className="trow__text">
-        <span className="trow__subject">{t.subject || '(no subject)'}</span>
+        <span className="trow__subject">{t.subject || tr('common:noSubject')}</span>
         {t.messageCount > 1 && <span className="trow__count">{t.messageCount}</span>}
         {t.snippet && <span className="trow__snippet">{t.snippet}</span>}
       </span>
@@ -242,8 +244,8 @@ function RowImpl({
         {chips.map((l) => (
           <span key={l.id} className="trow__chip" style={chipStyle(l.color)}>{l.name}</span>
         ))}
-        {t.hasAttachments && <Paperclip size={12} className="trow__clip" aria-label="Has attachments" />}
-        {t.starred && <Star size={12} className="trow__starred" fill="currentColor" aria-label="Starred" />}
+        {t.hasAttachments && <Paperclip size={12} className="trow__clip" aria-label={tr('row.hasAttachments')} />}
+        {t.starred && <Star size={12} className="trow__starred" fill="currentColor" aria-label={tr('row.starred')} />}
       </span>
 
       <span className="trow__right">
@@ -251,27 +253,27 @@ function RowImpl({
         <span className="trow__actions">
           {navRole() === 'spam' && (
             // The one thing you want in Spam: get a wrongly-flagged message back to the Inbox.
-            <Tooltip label="Not spam — move to Inbox" shortcut="⇧E">
+            <Tooltip label={tr('row.notSpamTip')} shortcut="⇧E">
               <button
-                className="trow__act trow__act--pill" aria-label="Not spam" tabIndex={-1}
+                className="trow__act trow__act--pill" aria-label={tr('row.notSpam')} tabIndex={-1}
                 onClick={(e) => { e.stopPropagation(); void perform({ type: 'notSpam' }, toastText('notSpam', 1), { ids: [t.id] }) }}
                 onMouseDown={(e) => e.stopPropagation()}
               >
-                <ShieldCheck size={16} /><span>Not spam</span>
+                <ShieldCheck size={16} /><span>{tr('row.notSpam')}</span>
               </button>
             </Tooltip>
           )}
-          <Action label={t.starred ? 'Unstar' : 'Star'} on={t.starred} onClick={() => void act(t.starred ? { type: 'unstar' } : { type: 'star' }, [t.id])}>
+          <Action label={t.starred ? tr('row.unstar') : tr('row.star')} on={t.starred} onClick={() => void act(t.starred ? { type: 'unstar' } : { type: 'star' }, [t.id])}>
             <Star size={16} fill={t.starred ? 'currentColor' : 'none'} />
           </Action>
-          <Action label={t.unread ? 'Mark as read' : 'Mark as unread'} onClick={() => void act(t.unread ? { type: 'markRead' } : { type: 'markUnread' }, [t.id])}>
+          <Action label={t.unread ? tr('row.markRead') : tr('row.markUnread')} onClick={() => void act(t.unread ? { type: 'markRead' } : { type: 'markUnread' }, [t.id])}>
             {t.unread ? <MailOpen size={16} /> : <Mail size={16} />}
           </Action>
-          <Action label="Set reminder" onClick={remind}><AlarmClock size={16} /></Action>
+          <Action label={tr('row.setReminder')} onClick={remind}><AlarmClock size={16} /></Action>
           {navRole() !== 'spam' && navRole() !== 'trash' && (
-            <Action label="Archive" onClick={() => void act({ type: 'archive' }, [t.id], 'Conversation archived')}><Archive size={16} /></Action>
+            <Action label={tr('row.archive')} onClick={() => void act({ type: 'archive' }, [t.id], tr('row.toastArchived'))}><Archive size={16} /></Action>
           )}
-          <Action label="Move to trash" danger onClick={() => void act({ type: 'trash' }, [t.id], 'Moved to trash')}><Trash2 size={16} /></Action>
+          <Action label={tr('row.moveToTrash')} danger onClick={() => void act({ type: 'trash' }, [t.id], tr('row.toastTrashed'))}><Trash2 size={16} /></Action>
         </span>
       </span>
     </div>

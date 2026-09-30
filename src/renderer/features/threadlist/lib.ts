@@ -4,6 +4,8 @@
  */
 import type { Label, SystemRole, Thread, View } from '@shared/types'
 import { groupLabel, displayName } from '@/lib/format'
+import i18n from '@/i18n'
+import { roleName } from '@/lib/labels'
 import type { Nav } from '@/lib/store'
 import { categoryGroups } from '../sidebar/lib'
 import type { BundleGroup } from './bundles'
@@ -150,11 +152,12 @@ export const unionIds = (a: string[], b: string[]): string[] => [...a, ...b.filt
 
 /** "Me", "Léa Martin", "Léa, Marc" or "Léa, Marc +2" — me is always shown as "Me". */
 export function senderText(t: Thread, myEmails: Set<string>): string {
+  const me = i18n.t('threadlist:sender.me')
   const names = t.participants.map((p) =>
-    myEmails.has(p.email.toLowerCase()) ? 'Me' : displayName(p))
+    myEmails.has(p.email.toLowerCase()) ? me : displayName(p))
   const seen: string[] = []
   for (const n of names) if (!seen.includes(n)) seen.push(n)
-  const others = seen.filter((n) => n !== 'Me')
+  const others = seen.filter((n) => n !== me)
   const list = others.length ? others : seen
   if (list.length <= 2) return list.join(', ')
   return `${list.slice(0, 2).join(', ')} +${list.length - 2}`
@@ -167,22 +170,17 @@ export function rowLabels(t: Thread, labels: Label[], max = 3): Label[] {
 
 // ---------------------------------------------------------------- copy
 
-const ROLE_TITLE: Record<SystemRole, string> = {
-  inbox: 'Inbox', sent: 'Sent', drafts: 'Drafts', trash: 'Trash', spam: 'Spam',
-  archive: 'Archive', starred: 'Starred', important: 'Important', all: 'All Mail'
-}
-
 /** Heading for the list's top bar. */
 export function listTitle(nav: Nav, views: View[], labels: Label[]): { emoji?: string; title: string } {
   switch (nav.kind) {
-    case 'role': return { title: ROLE_TITLE[nav.role] }
-    case 'categories': return { title: 'Categories' }
-    case 'snoozed': return { title: 'Reminders' }
-    case 'search': return { title: nav.text ? `Search: ${nav.text}` : 'Search' }
-    case 'label': return { title: labels.find((l) => l.id === nav.labelId)?.name ?? 'Label' }
+    case 'role': return { title: roleName(nav.role) }
+    case 'categories': return { title: i18n.t('threadlist:title.categories') }
+    case 'snoozed': return { title: i18n.t('threadlist:title.reminders') }
+    case 'search': return { title: nav.text ? i18n.t('threadlist:title.searchFor', { text: nav.text }) : i18n.t('threadlist:title.search') }
+    case 'label': return { title: labels.find((l) => l.id === nav.labelId)?.name ?? i18n.t('threadlist:title.label') }
     case 'view': {
       const v = views.find((x) => x.id === nav.viewId)
-      return { emoji: v?.emoji, title: v?.name ?? 'View' }
+      return { emoji: v?.emoji, title: v?.name ?? i18n.t('threadlist:title.view') }
     }
   }
 }
@@ -191,22 +189,23 @@ export interface EmptyCopy { title: string; body: string }
 
 /** Per-view empty state, in Notion's calm sentence-case voice. */
 export function emptyCopy(nav: Nav, viewName?: string, filtered = false): EmptyCopy {
-  if (filtered) return { title: 'No matches', body: 'No conversations match these filters.' }
+  const t = i18n.getFixedT(null, 'threadlist')
+  if (filtered) return { title: t('empty.filtered.title'), body: t('empty.filtered.body') }
   switch (nav.kind) {
     case 'role':
       switch (nav.role) {
-        case 'inbox': return { title: "You're all caught up.", body: 'Nothing new in your inbox.' }
-        case 'sent': return { title: 'Nothing sent yet', body: 'Messages you send will appear here.' }
-        case 'drafts': return { title: 'No drafts', body: 'Start a message and it will be saved here.' }
-        case 'trash': return { title: 'Trash is empty', body: 'Deleted conversations land here first.' }
-        case 'spam': return { title: 'No spam', body: 'Nothing has been flagged as spam.' }
-        case 'starred': return { title: 'No starred conversations', body: 'Star a conversation to find it quickly.' }
-        default: return { title: 'No mail here', body: 'This mailbox is empty.' }
+        case 'inbox': return { title: t('empty.inbox.title'), body: t('empty.inbox.body') }
+        case 'sent': return { title: t('empty.sent.title'), body: t('empty.sent.body') }
+        case 'drafts': return { title: t('empty.drafts.title'), body: t('empty.drafts.body') }
+        case 'trash': return { title: t('empty.trash.title'), body: t('empty.trash.body') }
+        case 'spam': return { title: t('empty.spam.title'), body: t('empty.spam.body') }
+        case 'starred': return { title: t('empty.starred.title'), body: t('empty.starred.body') }
+        default: return { title: t('empty.mailbox.title'), body: t('empty.mailbox.body') }
       }
-    case 'categories': return { title: 'Nothing categorized', body: 'Social, Promotions, Updates and Forums mail will group here as it arrives.' }
-    case 'snoozed': return { title: 'No reminders', body: 'Conversations you snooze will come back here.' }
-    case 'label': return { title: 'No conversations', body: 'Nothing carries this label yet.' }
-    case 'search': return { title: 'No results', body: `Nothing matches “${nav.text}”.` }
-    case 'view': return { title: 'Nothing here yet', body: `No conversations match ${viewName ?? 'this view'}.` }
+    case 'categories': return { title: t('empty.categories.title'), body: t('empty.categories.body') }
+    case 'snoozed': return { title: t('empty.reminders.title'), body: t('empty.reminders.body') }
+    case 'label': return { title: t('empty.label.title'), body: t('empty.label.body') }
+    case 'search': return { title: t('empty.search.title'), body: t('empty.search.body', { text: nav.text }) }
+    case 'view': return { title: t('empty.view.title'), body: t('empty.view.body', { name: viewName ?? t('empty.view.thisView') }) }
   }
 }

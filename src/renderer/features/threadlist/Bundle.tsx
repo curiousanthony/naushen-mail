@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Archive, ChevronRight, Layers } from 'lucide-react'
 import { listTime } from '@/lib/format'
 import { Tooltip } from '@/features/tooltip'
@@ -16,10 +17,11 @@ import './bundles.css'
 function BundleRowImpl({ bundle, expanded, focused }: {
   bundle: BundleGroup; expanded: boolean; focused: boolean
 }): JSX.Element {
+  const { t: tr } = useTranslation('threadlist')
   const toggle = useBundleUi((s) => s.toggle)
   const ids = bundle.threads.map((t) => t.id)
   const n = ids.length
-  const label = `${bundle.def.name}, ${bundleCount(bundle)}`
+  const label = tr('bundle.ariaLabel', { name: bundle.def.name, summary: bundleCount(bundle) })
 
   return (
     <div
@@ -46,9 +48,9 @@ function BundleRowImpl({ bundle, expanded, focused }: {
       <span className="trow__right">
         <span className="trow__time">{listTime(bundle.newest)}</span>
         <span className="trow__actions">
-          <Tooltip label={`Archive all ${n}`} shortcut="E">
+          <Tooltip label={tr('bundle.archiveAll', { count: n })} shortcut="E">
             <button
-              className="trow__act" aria-label={`Archive all ${n} in ${bundle.def.name}`} tabIndex={-1}
+              className="trow__act" aria-label={tr('bundle.archiveAllIn', { count: n, name: bundle.def.name })} tabIndex={-1}
               onClick={(e) => { e.stopPropagation(); void perform({ type: 'archive' }, toastText('archive', n), { ids }) }}
               onMouseDown={(e) => e.stopPropagation()}
             >

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import i18n from '@/i18n'
 import type {
   Account, AppSettings, Counts, Draft, Label, SystemRole, Thread, ThreadAction, ThreadFilter, View
 } from '@shared/types'
@@ -164,8 +165,8 @@ export const useApp = create<AppState>((set, get) => ({
     window.api.onEvent((e) => {
       if (e.type === 'outbox' && e.status === 'failed') {
         get().toast({
-          message: e.error ? `Couldn't send: ${e.error}` : "Couldn't send the message.",
-          actionLabel: 'Retry',
+          message: e.error ? i18n.t('common:toast.sendFailedWithReason', { error: e.error }) : i18n.t('common:toast.sendFailed'),
+          actionLabel: i18n.t('common:actions.retry'),
           duration: 0, // sticky: a swallowed send failure is exactly what must never go unnoticed
           onAction: () => void window.api.invoke('compose.retry', e.id)
         })
@@ -230,7 +231,7 @@ export const useApp = create<AppState>((set, get) => ({
     set((st) => ({ selectedIds: st.selectedIds.filter((i) => !ids.includes(i)) }))
     await window.api.invoke('threads.act', ids, action)
     const inverse = INVERSE[action.type]
-    if (toastText) get().toast({ message: toastText, actionLabel: inverse ? 'Undo' : undefined, onAction: inverse ? () => void window.api.invoke('threads.act', ids, inverse(action)) : undefined })
+    if (toastText) get().toast({ message: toastText, actionLabel: inverse ? i18n.t('common:actions.undo') : undefined, onAction: inverse ? () => void window.api.invoke('threads.act', ids, inverse(action)) : undefined })
   },
 
   openComposer(init) {
