@@ -1,3 +1,4 @@
+import { resolveRecent } from '../../shared/filters'
 import type { SQLInputValue } from 'node:sqlite'
 import type {
   Account, Address, AppSettings, Attachment, Contact, Counts, Draft, Label, Message, PersonHit, PersonInfo, ScheduledSend,
@@ -20,6 +21,16 @@ const rowToLabel = (r: Row): Label => ({
   id: r.id, accountId: r.account_id, remoteId: r.remote_id, name: r.name,
   color: r.color ?? undefined, kind: r.kind, role: r.role ?? undefined
 })
+
+/** Mime/extension patterns (SQL LIKE, lower-cased) for each attachment kind. */
+const ATTACHMENT_KIND_SQL: Record<string, { mime: string[]; ext: string[] }> = {
+  pdf: { mime: ['application/pdf'], ext: ['pdf'] },
+  image: { mime: ['image/%'], ext: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'heic'] },
+  document: { mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml%', 'application/vnd.oasis.opendocument.text', 'text/plain', 'application/rtf'], ext: ['doc', 'docx', 'odt', 'txt', 'rtf', 'pages'] },
+  spreadsheet: { mime: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml%', 'text/csv'], ext: ['xls', 'xlsx', 'csv', 'numbers'] },
+  presentation: { mime: ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml%'], ext: ['ppt', 'pptx', 'key'] },
+  archive: { mime: ['application/zip', 'application/x-zip%', 'application/gzip', 'application/x-7z%', 'application/x-rar%'], ext: ['zip', 'gz', '7z', 'rar', 'tar'] }
+}
 
 export class Repo {
   constructor(readonly db: DB) {
@@ -250,8 +261,9 @@ export class Repo {
     }
 
     if (f.unread !== undefined) w.push(`t.unread = ${f.unread ? 1 : 0}`)
-    if (f.starred) w.push('t.starred = 1')
-    if (f.hasAttachment) w.push('t.has_attachments = 1')
+    if (f.starred !== undefined && f.role !== 'starred') w.push(`t.starred = ${f.starred ? 1 : 0}`)
+    if (f.hasAttachment !== undefined) w.push(`t.has_attachments = ${f.hasAttachment ? 1 : 0}`)
+    if (f.recent) { w.push('t.last_message_at >= ?'); p.push(resolveRecent(f.recent, now)) }
     if (f.after) { w.push('t.last_message_at >= ?'); p.push(f.after) }
     if (f.before) { w.push('t.last_message_at <= ?'); p.push(f.before) }
     for (const s of f.from ?? []) {
@@ -268,9 +280,62 @@ export class Repo {
       w.push('t.id IN (SELECT thread_id FROM thread_fts WHERE thread_fts MATCH ?)')
       p.push(ftsQuery(f.text))
     }
+    this.buildExtraWhere(f, w, p, now)
     if (f.onlySnoozed) { w.push('t.snoozed_until IS NOT NULL AND t.snoozed_until > ?'); p.push(now) }
-    else if (!f.includeSnoozed) { w.push('(t.snoozed_until IS NULL OR t.snoozed_until <= ?)'); p.push(now) }
+    else if (!f.includeSnoozed && f.reminderState !== 'snoozed' && f.reminderState !== 'any') { w.push('(t.snoozed_until IS NULL OR t.snoozed_until <= ?)'); p.push(now) }
     return { where: w.length ? 'WHERE ' + w.join(' AND ') : '', params: p }
+  }
+
+  /** Newer local-only criteria (see the "Additive fields" block of ThreadFilter). */
+  private buildExtraWhere(f: ThreadFilter, w: string[], p: SQLInputValue[], now: number): void {
+    const msgExists = (cond: string): string => `EXISTS (SELECT 1 FROM messages m WHERE m.thread_id = t.id AND ${cond})`
+    // Accounts' own addresses, matched against the JSON address blobs ({"name":..,"email":".."}).
+    const meIn = (col: string): string =>
+      `EXISTS (SELECT 1 FROM accounts a WHERE a.id = m.account_id AND instr(lower(${col}), '"email":"' || lower(a.email) || '"') > 0)`
+    for (const group of f.labelGroups ?? []) {
+      if (!group.length) continue
+      w.push(`EXISTS (SELECT 1 FROM thread_labels tl WHERE tl.thread_id = t.id AND tl.label_id IN (${group.map(() => '?').join(',')}))`)
+      p.push(...group)
+    }
+    for (const s of f.subjectAll ?? []) { w.push(`t.subject LIKE ? ESCAPE '\\'`); p.push(`%${likeEsc(s)}%`) }
+    if (f.hasUnsubscribe !== undefined) {
+      const c = msgExists(`m.list_unsubscribe IS NOT NULL AND m.list_unsubscribe != ''`)
+      w.push(f.hasUnsubscribe ? c : `NOT ${c}`)
+    }
+    // Attachments of a given nature. json_each walks each message's attachments_json.
+    const att = (cond: string): string =>
+      `EXISTS (SELECT 1 FROM messages m, json_each(m.attachments_json) j WHERE m.thread_id = t.id AND ${cond})`
+    if (f.hasInvite !== undefined) {
+      const c = att(`(lower(json_extract(j.value, '$.mimeType')) LIKE 'text/calendar%' OR lower(json_extract(j.value, '$.mimeType')) LIKE 'application/ics%' OR lower(json_extract(j.value, '$.filename')) LIKE '%.ics')`)
+      w.push(f.hasInvite ? c : `NOT ${c}`)
+    }
+    const real = `json_extract(j.value, '$.inline') = 0`
+    if (f.attachmentKinds?.length) {
+      const parts: string[] = []
+      for (const k of f.attachmentKinds) {
+        const c = ATTACHMENT_KIND_SQL[k]
+        if (!c) continue
+        parts.push(`(${c.mime.map((m) => `lower(json_extract(j.value, '$.mimeType')) LIKE '${m}'`).concat(c.ext.map((e) => `lower(json_extract(j.value, '$.filename')) LIKE '%.${e}'`)).join(' OR ')})`)
+      }
+      if (parts.length) w.push(att(`${real} AND (${parts.join(' OR ')})`))
+    }
+    if (f.minAttachmentSize) { w.push(att(`${real} AND json_extract(j.value, '$.size') >= ?`)); p.push(f.minAttachmentSize) }
+    // Someone else's message that reached me: direct (To) vs only copied (Cc, not also in To).
+    if (f.addressedTo === 'to') w.push(msgExists(`${meIn('m.to_json')} AND NOT ${meIn('m.from_json')}`))
+    else if (f.addressedTo === 'cc') w.push(msgExists(`${meIn('m.cc_json')} AND NOT ${meIn('m.to_json')} AND NOT ${meIn('m.from_json')}`))
+    if (f.lastFrom) {
+      const lastMine = `EXISTS (SELECT 1 FROM messages m WHERE m.id = (SELECT m2.id FROM messages m2 WHERE m2.thread_id = t.id AND m2.is_draft = 0 ORDER BY m2.date DESC, m2.id DESC LIMIT 1) AND ${meIn('m.from_json')})`
+      w.push(f.lastFrom === 'me' ? lastMine : `NOT ${lastMine}`)
+    }
+    if (f.minMessages) { w.push('t.message_count >= ?'); p.push(f.minMessages) }
+    if (f.maxMessages) { w.push('t.message_count <= ?'); p.push(f.maxMessages) }
+    switch (f.reminderState) {
+      case 'snoozed': w.push('t.snoozed_until IS NOT NULL AND t.snoozed_until > ?'); p.push(now); break
+      case 'reminder': w.push('t.reminder_at IS NOT NULL'); break
+      case 'any': w.push('((t.snoozed_until IS NOT NULL AND t.snoozed_until > ?) OR t.reminder_at IS NOT NULL)'); p.push(now); break
+      case 'none': w.push('t.reminder_at IS NULL'); break
+      default: break
+    }
   }
 
   listThreads(q: ThreadQuery): ThreadListResult {

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { SystemRole } from '@shared/types'
+import type { SystemRole, ThreadFilter } from '@shared/types'
 import { useApp } from '@/lib/store'
 
 /** Prefills a brand-new view from wherever it was started -- currently only "Save as view" from
@@ -12,6 +12,8 @@ export interface ViewSeed {
   from?: string
   unread?: boolean
   attachment?: boolean
+  /** Every other filter criterion, carried over verbatim into a new view's saved filter. */
+  extra?: ThreadFilter
 }
 
 interface ViewEditorState {

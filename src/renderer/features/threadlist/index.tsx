@@ -6,15 +6,17 @@ import { BundleRow } from './Bundle'
 import { buildEntries, buildItems, navStateOf } from './bundles'
 import { publishBundleNav, useBundleUi } from './bundleNav'
 import { readBundles } from '../rules/prefs'
-import { dedupeLabels, expandLabelIds } from '@/lib/labels'
+import { dedupeLabels } from '@/lib/labels'
 import { FilterBar } from './FilterBar'
 import { EmptyTrashButton } from './EmptyTrash'
 import { BulkBar } from './BulkBar'
 import { VIEW_ICONS } from '../sidebar/viewIcons'
+import { activeCount } from '@shared/filters'
+import { useFilters } from './filterState'
 import {
-  EMPTY_CHIPS, WINDOW_THRESHOLD, applyChips, chipCount, emptyCopy, flatten, groupByCategory, groupThreads,
+  WINDOW_THRESHOLD, emptyCopy, flatten, groupByCategory, groupThreads,
   listTitle, offsetsOf, rangeIds, scrollOffsetFor, unionIds, windowRange,
-  type Chips, type Metrics
+  type Metrics
 } from './lib'
 import { useListFlip } from './useListFlip'
 import { EmptyState, Skeleton } from './EmptyState'
@@ -47,14 +49,14 @@ export function ThreadList(): JSX.Element {
   const openThread = useApp((s) => s.openThread)
   const focus = useApp((s) => s.focus)
 
-  const [chips, setChips] = useState<Chips>(EMPTY_CHIPS)
+  const conditions = useFilters((s) => s.conditions)
   const scroller = useRef<HTMLDivElement>(null)
   const anchor = useRef<string | null>(null)
   const [scrollTop, setScrollTop] = useState(0)
   const [viewportH, setViewportH] = useState(720)
 
   // A new mailbox is a new set of filters.
-  useEffect(() => { setChips(EMPTY_CHIPS); anchor.current = null }, [nav, accountId])
+  useEffect(() => { anchor.current = null }, [nav, accountId])
 
   // `loading` flips true as soon as a nav change kicks off a refetch, but the OLD thread list
   // (from the mailbox you just left) keeps rendering under it until the new page arrives — local
@@ -70,11 +72,8 @@ export function ThreadList(): JSX.Element {
   }, [loading])
 
   const metrics = DENSITY[settings.density]
-  // Same-named labels across accounts are one label in the "All accounts" view, so a label chip
-  // must match any of them.
-  const visible = useMemo(() => applyChips(threads, {
-    ...chips, labelIds: chips.labelIds.flatMap((id) => expandLabelIds(labels, id, accountId))
-  }), [threads, chips, labels, accountId])
+  // Filter conditions are applied in SQL (store.refreshThreads), so what is loaded is what is shown.
+  const visible = threads
   const myEmails = useMemo(() => new Set(accounts.map((a) => a.email.toLowerCase())), [accounts])
 
   // Opt-in bundles (Settings -> Rules, or a label's menu): only ever in the Inbox.
@@ -172,7 +171,7 @@ export function ThreadList(): JSX.Element {
   }, [focusedId, items, offsets, metrics])
 
   const head = listTitle(nav, views, labels)
-  const filtered = chipCount(chips) > 0
+  const filtered = activeCount(conditions) > 0
   const accountById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts])
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
   const selectedThreads = useMemo(() => visible.filter((t) => selectedSet.has(t.id)), [visible, selectedSet])
@@ -184,7 +183,7 @@ export function ThreadList(): JSX.Element {
   // never a colour -- a per-account tint or dot was cognitively noisy across a long list.
   const showAccount = accountId === 'all' && accounts.length > 1
   const viewName = nav.kind === 'view' ? views.find((v) => v.id === nav.viewId)?.name : undefined
-  const count = filtered ? visible.length : total
+  const count = total
   const empty = emptyCopy(nav, viewName, filtered)
 
   return (
@@ -196,7 +195,7 @@ export function ThreadList(): JSX.Element {
           {count > 0 && <span className="tl__count">{count}</span>}
         </h1>
         {nav.kind === 'role' && nav.role === 'trash' && <EmptyTrashButton />}
-        <FilterBar chips={chips} onChange={setChips} labels={userLabels} showGroupToggle={nav.kind !== 'categories'} />
+        <FilterBar labels={userLabels} showGroupToggle={nav.kind !== 'categories'} />
       </header>
 
       <div

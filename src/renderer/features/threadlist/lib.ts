@@ -1,5 +1,5 @@
 /**
- * Pure list logic: local filter chips, date grouping, flattening for windowing, range
+ * Pure list logic: date grouping (filters live in @shared/filters), flattening for windowing, range
  * selection and row text. No React / DOM, so it runs under vitest's node environment.
  */
 import type { Label, SystemRole, Thread, View } from '@shared/types'
@@ -7,37 +7,6 @@ import { groupLabel, displayName } from '@/lib/format'
 import type { Nav } from '@/lib/store'
 import { categoryGroups } from '../sidebar/lib'
 import type { BundleGroup } from './bundles'
-
-// ---------------------------------------------------------------- filter chips
-
-/** Client-side refinements layered on top of the nav's server filter. */
-export interface Chips {
-  unread: boolean
-  attachments: boolean
-  labelIds: string[]
-  from: string
-}
-
-export const EMPTY_CHIPS: Chips = { unread: false, attachments: false, labelIds: [], from: '' }
-
-export const chipCount = (c: Chips): number =>
-  (c.unread ? 1 : 0) + (c.attachments ? 1 : 0) + c.labelIds.length + (c.from.trim() ? 1 : 0)
-
-const matchesFrom = (t: Thread, q: string): boolean => {
-  const needle = q.trim().toLowerCase()
-  if (!needle) return true
-  return t.participants.some((p) =>
-    p.email.toLowerCase().includes(needle) || (p.name ?? '').toLowerCase().includes(needle))
-}
-
-export function applyChips(threads: Thread[], c: Chips): Thread[] {
-  if (!chipCount(c)) return threads
-  return threads.filter((t) =>
-    (!c.unread || t.unread) &&
-    (!c.attachments || t.hasAttachments) &&
-    (!c.labelIds.length || c.labelIds.some((id) => t.labelIds.includes(id))) &&
-    matchesFrom(t, c.from))
-}
 
 // ---------------------------------------------------------------- grouping
 
