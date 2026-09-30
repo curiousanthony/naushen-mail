@@ -1,43 +1,50 @@
-import { useEffect, useState } from 'react'
 import { ExternalLink, Mail } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button, Group, Row, SectionTitle } from '../ui'
+import { docUrl, ISSUES_URL, LICENSE_ID, platformName, providerCtx, REPO, storeKey, usePlatformInfo } from '../lib/project'
 
-const REPO = 'https://github.com/curiousanthony/mailroom'
-const LINKS = [
-  { label: 'Provider setup guide', desc: 'Connect Gmail and Outlook', url: `${REPO}/blob/main/docs/06-provider-setup.md` },
-  { label: 'Decisions & architecture', desc: 'Stack, trade-offs, definition of done', url: `${REPO}/blob/main/docs/00-decisions.md` },
-  { label: 'Design system', desc: 'Tokens, type, motion', url: `${REPO}/blob/main/docs/03-design-system.md` },
-  { label: 'Source code', desc: 'Naushen Mail on GitHub', url: REPO }
-]
 const CREDITS = ['Electron', 'React', 'TipTap', 'Zustand', 'Lucide icons', 'date-fns', 'DOMPurify', 'Nodemailer', 'cmdk']
 
 export function AboutSection(): JSX.Element {
-  const [info, setInfo] = useState<{ platform: string; version: string } | null>(null)
-  useEffect(() => { void window.api.invoke('app.platform').then(setInfo).catch(() => undefined) }, [])
-  const platform = info?.platform === 'darwin' ? 'macOS' : info?.platform ?? ''
+  const { t } = useTranslation('settings')
+  const info = usePlatformInfo()
+  const platform = platformName(info?.platform)
+  const links = [
+    { id: 'setup', url: docUrl('06-provider-setup.md'), ctx: providerCtx },
+    { id: 'decisions', url: docUrl('00-decisions.md'), ctx: {} },
+    { id: 'design', url: docUrl('03-design-system.md'), ctx: {} },
+    { id: 'privacy', url: docUrl('PRIVACY.md'), ctx: {} },
+    { id: 'issues', url: ISSUES_URL, ctx: {} },
+    { id: 'source', url: REPO, ctx: {} }
+  ]
   return (
     <div>
-      <SectionTitle title="About" />
+      <SectionTitle title={t('about.title')} />
       <div className="st-about">
         <span className="st-about__logo"><Mail size={26} strokeWidth={1.5} /></span>
         <div>
           <div className="st-about__name">Naushen Mail</div>
-          <div className="st-about__ver">{info ? `Version ${info.version}${platform ? ` · ${platform}` : ''}` : 'Version …'}</div>
+          <div className="st-about__ver">
+            {info ? `${t('about.version', { version: info.version })}${platform ? ` · ${platform}` : ''}` : t('about.versionLoading')}
+            {` · ${t('about.license', { license: LICENSE_ID })}`}
+          </div>
         </div>
       </div>
-      <p className="st-muted st-about__blurb">A calm, keyboard-first desktop mail client for Gmail and Outlook. Your mail is cached on this Mac and account tokens are kept in the macOS Keychain. Naushen Mail has no servers of its own and no AI features.</p>
+      <p className="st-muted st-about__blurb">
+        {t('about.blurb', { store: t(`store.${storeKey(info?.platform)}`), ...providerCtx })}
+      </p>
 
-      <Group title="Documentation">
-        {LINKS.map((l) => (
-          <Row key={l.url} label={l.label} description={l.desc}>
-            <Button size="sm" icon={<ExternalLink size={13} />} onClick={() => void window.api.invoke('app.openExternal', l.url)}>Open</Button>
+      <Group title={t('about.docsTitle')}>
+        {links.map((l) => (
+          <Row key={l.id} label={t(`about.links.${l.id}.label`)} description={t(`about.links.${l.id}.desc`, { ...l.ctx })}>
+            <Button size="sm" icon={<ExternalLink size={13} />} onClick={() => void window.api.invoke('app.openExternal', l.url)}>{t('about.open')}</Button>
           </Row>
         ))}
       </Group>
 
-      <Group title="Built with">
+      <Group title={t('about.builtWith')}>
         <div className="st-credits">{CREDITS.map((c) => <span key={c} className="st-pill">{c}</span>)}</div>
-        <p className="st-muted st-muted--small">Open-source software, used under its own licences.</p>
+        <p className="st-muted st-muted--small">{t('about.openSource')}</p>
       </Group>
     </div>
   )

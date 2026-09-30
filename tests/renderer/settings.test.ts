@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import './_i18n-en'
 import type { AppSettings, View } from '@shared/types'
 import { DEFAULT_SETTINGS } from '@shared/types'
 import { EXT_DEFAULTS, extPatch, readExt } from '@/features/settings/lib/settings-ext'

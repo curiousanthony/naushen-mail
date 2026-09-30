@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "archived_one": "Archived {{count}}",
+    "archived_other": "Archived {{count}}",
+    "trashed_one": "Moved {{count}} to Trash",
+    "trashed_other": "Moved {{count}} to Trash",
+    "rescued_one": "Rescued {{count}} from Spam",
+    "rescued_other": "Rescued {{count}} from Spam",
+    "markedRead_one": "Marked {{count}} as read",
+    "markedRead_other": "Marked {{count}} as read",
+    "starred_one": "Starred {{count}}",
+    "starred_other": "Starred {{count}}",
+    "labelled_one": "Labelled {{count}} “{{name}}”",
+    "labelled_other": "Labelled {{count}} “{{name}}”",
+    "labelFallback": "label"
+  },
+  "describe": {
+    "from": "From {{value}}",
+    "fromDomain": "From @{{value}}",
+    "subject": "Subject contains “{{value}}”",
+    "noActions": "No actions",
+    "actions": {
+      "archive": "skip the inbox",
+      "markRead": "mark as read",
+      "star": "star",
+      "trash": "move to Trash",
+      "neverSpam": "never send to Spam",
+      "label": "label “{{name}}”"
+    }
+  },
+  "form": {
+    "whenMailIs": "When mail is",
+    "matchOn": "Match on",
+    "matchValue": "Match value",
+    "field": {
+      "from": { "label": "From", "placeholder": "name@example.com", "hint": "This exact sender." },
+      "fromDomain": { "label": "Domain", "placeholder": "example.com", "hint": "Anyone at this domain, including its subdomains." },
+      "subject": { "label": "Subject", "placeholder": "Words in the subject", "hint": "Any subject containing this text." }
+    },
+    "moreConditions_one": "Plus {{count}} more condition.",
+    "moreConditions_other": "Plus {{count}} more conditions.",
+    "then": "Then",
+    "actionsAria": "Actions",
+    "actions": {
+      "archive": "Skip inbox",
+      "markRead": "Mark as read",
+      "star": "Star",
+      "trash": "Move to Trash",
+      "neverSpam": "Never send to Spam"
+    },
+    "applyLabel": "Apply label",
+    "none": "None",
+    "appliesTo": "Applies to",
+    "allAccounts": "All accounts"
+  },
+  "section": {
+    "title": "Rules",
+    "description": "Filters that run on new mail inside Naushen Mail. They are local to this Mac: nothing is created in Gmail, and they don't run while the app is closed.",
+    "description_outlook": "Filters that run on new mail inside Naushen Mail. They are local to this Mac: nothing is created in Gmail or Outlook, and they don't run while the app is closed.",
+    "empty": {
+      "title": "No rules yet",
+      "body": "Open a conversation and press <k1>⌘</k1><k2>⇧</k2><k3>R</k3> to file mail from that sender automatically."
+    },
+    "removedAccount": "Removed account",
+    "allAccounts": "All accounts",
+    "ruleAria": "Rule: {{condition}}",
+    "and": " and ",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "edit": "Edit rule",
+    "delete": "Delete rule",
+    "deleteConfirm": "Delete this rule? Mail already filed stays where it is.",
+    "deleteAction": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "order": "Rules run top to bottom; every matching rule applies."
+  },
+  "bundles": {
+    "title": "Inbox bundles",
+    "collapse": {
+      "label": "Collapse low-value mail",
+      "desc": "A bundled label or sender becomes one row in your Inbox (for example “Newsletters · 7 new”). Starred mail is never bundled. Nothing is bundled until you add one."
+    },
+    "kindLabel": "Label",
+    "kindSender": "Sender",
+    "stop": "Stop bundling",
+    "bundleLabel": "Bundle a label",
+    "bundleLabelDesc": "Or right-click a label in the sidebar.",
+    "chooseLabel": "Choose a label…"
+  },
+  "host": {
+    "title": "Create rule",
+    "from": "from “{{subject}}”",
+    "noSubject": "(no subject)",
+    "cancel": "Cancel",
+    "create": "Create rule",
+    "createApply_one": "Create & apply to {{count}}",
+    "createApply_other": "Create & apply to {{count}}",
+    "undo": "Undo",
+    "note": "Local to Naushen Mail: nothing is created in Gmail.",
+    "note_outlook": "Local to Naushen Mail: nothing is created in Gmail or Outlook.",
+    "match": {
+      "incomplete": "Add a value and an action",
+      "checking": "Checking existing mail…",
+      "none": "No existing conversations match",
+      "some_one": "Matches {{count}} existing conversation",
+      "some_other": "Matches {{count}} existing conversations"
+    },
+    "toast": {
+      "createdApplied": "Rule created · {{summary}}",
+      "existedApplied": "Rule already existed · {{summary}}",
+      "createdNothing": "Rule created · nothing needed changing",
+      "existedNothing": "Rule already existed · nothing needed changing",
+      "alreadyHave": "You already have this rule",
+      "created": "Rule created. It filters new mail on this Mac.",
+      "viewRules": "View rules",
+      "failed": "Couldn't create the rule",
+      "failedWith": "Couldn't create the rule: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "This conversation has no incoming message to build a rule from.",
+    "undo": "Undo",
+    "ran": "Rule: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "Archived {{count}} from {{name}}",
+    "archivedFrom_other": "Archived {{count}} from {{name}}",
+    "nothingFrom": "Nothing in your inbox from {{name}}",
+    "blocked": "Blocked {{name}}. Future mail goes to Trash.",
+    "blockedMoved_one": "Blocked {{name}} · {{count}} moved to Trash. Future mail goes to Trash.",
+    "blockedMoved_other": "Blocked {{name}} · {{count}} moved to Trash. Future mail goes to Trash.",
+    "archivedFromSender_one": "Archived {{count}} from this sender",
+    "archivedFromSender_other": "Archived {{count}} from this sender",
+    "bundling": "Bundling {{name}} in your Inbox",
+    "stoppedBundling": "Stopped bundling {{name}}"
+  }
+}

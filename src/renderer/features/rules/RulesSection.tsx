@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDown, ArrowUp, Layers, ListFilter, Pencil, Trash2, X } from 'lucide-react'
 import type { Rule } from '@shared/types'
-import { describeActions, describeCondition, isRuleComplete } from '@shared/rules'
+import { isRuleComplete } from '@shared/rules'
+import { Trans, useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
+import { providerCtx } from '@/features/settings/lib/project'
+import { describeActions, describeCondition } from './describe'
 import { dedupeLabels } from '@/lib/labels'
 import { Button, ConfirmBar, EmptyState, Group, IconButton, Row, SectionTitle, Select, Switch } from '@/features/settings/ui'
 import { draftToRule, isDraftComplete, ruleToDraft, type RuleDraft } from './draft'
@@ -13,6 +16,7 @@ import './rules.css'
 
 /** Settings -> Rules: local filters (list, toggle, edit, reorder, delete) and Inbox bundles. */
 export function RulesSection(): JSX.Element {
+  const { t } = useTranslation('rules')
   const accounts = useApp((s) => s.accounts)
   const labels = useApp((s) => s.labels)
   const settings = useApp((s) => s.settings)
@@ -44,7 +48,7 @@ export function RulesSection(): JSX.Element {
     await load()
   }
 
-  const acct = (id: string | null): string => (id ? accounts.find((a) => a.id === id)?.email ?? 'Removed account' : 'All accounts')
+  const acct = (id: string | null): string => (id ? accounts.find((a) => a.id === id)?.email ?? t('section.removedAccount') : t('section.allAccounts'))
 
   const bundles = readBundles(settings)
   const bundleLabelOptions = useMemo(
@@ -56,42 +60,42 @@ export function RulesSection(): JSX.Element {
   return (
     <div>
       <SectionTitle
-        title="Rules"
-        description="Filters that run on new mail inside Naushen Mail. They are local to this Mac: nothing is created in Gmail or Outlook, and they don't run while the app is closed."
+        title={t('section.title')}
+        description={t('section.description', { ...providerCtx })}
       />
 
-      <Group title="Rules">
+      <Group title={t('section.title')}>
         {rules === null ? null : rules.length === 0 ? (
-          <EmptyState icon={<ListFilter size={20} strokeWidth={1.5} />} title="No rules yet">
-            Open a conversation and press <kbd className="rules__kbd">⌘</kbd><kbd className="rules__kbd">⇧</kbd><kbd className="rules__kbd">R</kbd> to file mail from that sender automatically.
+          <EmptyState icon={<ListFilter size={20} strokeWidth={1.5} />} title={t('section.empty.title')}>
+            <Trans t={t} i18nKey="section.empty.body" components={{ k1: <kbd className="rules__kbd" />, k2: <kbd className="rules__kbd" />, k3: <kbd className="rules__kbd" /> }} />
           </EmptyState>
         ) : (
           <ul className="rules__list">
             {rules.map((r, i) => (
               <li key={r.id} className="rules__item" data-off={!r.enabled}>
                 <div className="rules__line">
-                  <Switch label={`Rule: ${describeCondition(r.conditions[0])}`} checked={r.enabled} onChange={(enabled) => void save({ ...r, enabled })} />
+                  <Switch label={t('section.ruleAria', { condition: describeCondition(r.conditions[0]) })} checked={r.enabled} onChange={(enabled) => void save({ ...r, enabled })} />
                   <div className="rules__text">
                     <div className="rules__when">
-                      {r.conditions.map(describeCondition).join(' and ')}
+                      {r.conditions.map(describeCondition).join(t('section.and'))}
                     </div>
                     <div className="rules__then">{describeActions(r.actions)} <span className="rules__scope">{acct(r.accountId)}</span></div>
                   </div>
                   <div className="rules__tools">
-                    <IconButton label="Move up" disabled={i === 0} onClick={() => void move(i, -1)}><ArrowUp size={14} strokeWidth={1.75} /></IconButton>
-                    <IconButton label="Move down" disabled={i === rules.length - 1} onClick={() => void move(i, 1)}><ArrowDown size={14} strokeWidth={1.75} /></IconButton>
-                    <IconButton label="Edit rule" onClick={() => setEditing(editing?.id === r.id ? null : { id: r.id, draft: ruleToDraft(r) })}><Pencil size={14} strokeWidth={1.75} /></IconButton>
-                    <IconButton label="Delete rule" onClick={() => setConfirm(r.id)}><Trash2 size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('section.moveUp')} disabled={i === 0} onClick={() => void move(i, -1)}><ArrowUp size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('section.moveDown')} disabled={i === rules.length - 1} onClick={() => void move(i, 1)}><ArrowDown size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('section.edit')} onClick={() => setEditing(editing?.id === r.id ? null : { id: r.id, draft: ruleToDraft(r) })}><Pencil size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('section.delete')} onClick={() => setConfirm(r.id)}><Trash2 size={14} strokeWidth={1.75} /></IconButton>
                   </div>
                 </div>
                 {confirm === r.id && (
-                  <ConfirmBar message="Delete this rule? Mail already filed stays where it is." confirmLabel="Delete" onCancel={() => setConfirm(null)} onConfirm={() => void remove(r.id)} />
+                  <ConfirmBar message={t('section.deleteConfirm')} confirmLabel={t('section.deleteAction')} onCancel={() => setConfirm(null)} onConfirm={() => void remove(r.id)} />
                 )}
                 {editing?.id === r.id && (
                   <div className="rules__edit">
                     <RuleForm draft={editing.draft} onChange={(draft) => setEditing({ id: r.id, draft })} accounts={accounts} labels={labels} />
                     <div className="rules__editfoot">
-                      <Button size="sm" onClick={() => setEditing(null)}>Cancel</Button>
+                      <Button size="sm" onClick={() => setEditing(null)}>{t('section.cancel')}</Button>
                       <Button
                         size="sm" variant="primary" disabled={!isDraftComplete(editing.draft)}
                         onClick={() => {
@@ -100,7 +104,7 @@ export function RulesSection(): JSX.Element {
                           void save(next).then(() => setEditing(null))
                         }}
                       >
-                        Save
+                        {t('section.save')}
                       </Button>
                     </div>
                   </div>
@@ -109,13 +113,13 @@ export function RulesSection(): JSX.Element {
             ))}
           </ul>
         )}
-        {rules !== null && rules.length > 1 && <p className="rules__foot">Rules run top to bottom; every matching rule applies.</p>}
+        {rules !== null && rules.length > 1 && <p className="rules__foot">{t('section.order')}</p>}
       </Group>
 
-      <Group title="Inbox bundles">
+      <Group title={t('bundles.title')}>
         <Row
-          label="Collapse low-value mail"
-          description="A bundled label or sender becomes one row in your Inbox (for example “Newsletters · 7 new”). Starred mail is never bundled. Nothing is bundled until you add one."
+          label={t('bundles.collapse.label')}
+          description={t('bundles.collapse.desc')}
         />
         {bundles.length > 0 && (
           <ul className="rules__list">
@@ -125,10 +129,10 @@ export function RulesSection(): JSX.Element {
                   <span className="rules__ico"><Layers size={14} strokeWidth={1.75} /></span>
                   <div className="rules__text">
                     <div className="rules__when">{b.name}</div>
-                    <div className="rules__then">{b.kind === 'label' ? 'Label' : 'Sender'}{b.kind === 'sender' && b.match !== b.name.toLowerCase() ? ` · ${b.match}` : ''}</div>
+                    <div className="rules__then">{b.kind === 'label' ? t('bundles.kindLabel') : t('bundles.kindSender')}{b.kind === 'sender' && b.match !== b.name.toLowerCase() ? ` · ${b.match}` : ''}</div>
                   </div>
                   <div className="rules__tools">
-                    <IconButton label="Stop bundling" onClick={() => void update(bundlesPatch(bundles.filter((x) => x.id !== b.id)))}><X size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('bundles.stop')} onClick={() => void update(bundlesPatch(bundles.filter((x) => x.id !== b.id)))}><X size={14} strokeWidth={1.75} /></IconButton>
                   </div>
                 </div>
               </li>
@@ -136,11 +140,11 @@ export function RulesSection(): JSX.Element {
           </ul>
         )}
         {bundleLabelOptions.length > 0 && (
-          <Row label="Bundle a label" description="Or right-click a label in the sidebar.">
+          <Row label={t('bundles.bundleLabel')} description={t('bundles.bundleLabelDesc')}>
             <Select
-              label="Bundle a label" value="" width={200}
+              label={t('bundles.bundleLabel')} value="" width={200}
               onChange={(name) => { if (name) void update(bundlesPatch(toggleBundle(bundles, 'label', name, name))) }}
-              options={[{ value: '', label: 'Choose a label…' }, ...bundleLabelOptions.map((l) => ({ value: l.name, label: l.name }))]}
+              options={[{ value: '', label: t('bundles.chooseLabel') }, ...bundleLabelOptions.map((l) => ({ value: l.name, label: l.name }))]}
             />
           </Row>
         )}

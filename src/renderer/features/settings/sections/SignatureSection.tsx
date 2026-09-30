@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import clsx from 'clsx'
+import { Trans, useTranslation } from 'react-i18next'
 import { ImagePlus, PenLine, Trash2, UserRound } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { AccountSelect, Button, ConfirmBar, EmptyState, Group, Row, SavedTick, SectionTitle, Switch } from '../ui'
@@ -42,6 +43,7 @@ function TemplatePreview({ kind }: { kind: SignaturePreviewKind }): JSX.Element 
 }
 
 export function SignatureSection(): JSX.Element {
+  const { t } = useTranslation('settings')
   const accounts = useApp((s) => s.accounts)
   const settings = useApp((s) => s.settings)
   const update = useApp((s) => s.updateSettings)
@@ -112,8 +114,8 @@ export function SignatureSection(): JSX.Element {
     if (fileRef.current) fileRef.current.value = ''
     if (!file) return
     setPhotoErr('')
-    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') { setPhotoErr('Choose a PNG, JPEG, GIF or WebP image.'); return }
-    try { changePhoto(await cropToSquareDataUri(file)) } catch (e) { setPhotoErr(e instanceof Error ? e.message : 'Could not use that image.') }
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') { setPhotoErr(t('signature.photo.badType')); return }
+    try { changePhoto(await cropToSquareDataUri(file)) } catch (e) { setPhotoErr(e instanceof Error ? e.message : t('signature.photo.unusable')) }
   }
 
   const pickTemplate = (tpl: SignatureTemplate): void => {
@@ -123,37 +125,37 @@ export function SignatureSection(): JSX.Element {
   if (accounts.length === 0) {
     return (
       <div>
-        <SectionTitle title="Signature" />
-        <EmptyState icon={<PenLine size={22} strokeWidth={1.5} />} title="No accounts yet">Connect an account first; each account has its own signature.</EmptyState>
+        <SectionTitle title={t('signature.title')} />
+        <EmptyState icon={<PenLine size={22} strokeWidth={1.5} />} title={t('signature.noAccounts')}>{t('signature.noAccountsBody')}</EmptyState>
       </div>
     )
   }
 
   return (
     <div>
-      <SectionTitle title="Signature" description="Added to the bottom of new messages. Each account has its own signature." />
+      <SectionTitle title={t('signature.title')} description={t('signature.description')} />
       <Group>
-        {accounts.length > 1 && <Row label="Account"><AccountSelect label="Account" accounts={accounts} value={accountId} onChange={(id) => { save.flush(); setAccountId(id) }} /></Row>}
-        <Row label="Include in replies and forwards" description="When off, the signature is only added to new messages.">
-          <Switch label="Include signature in replies and forwards" checked={ext.signatureInReplies} onChange={(signatureInReplies) => void update(extPatch({ signatureInReplies }))} />
+        {accounts.length > 1 && <Row label={t('signature.account')}><AccountSelect label={t('signature.account')} accounts={accounts} value={accountId} onChange={(id) => { save.flush(); setAccountId(id) }} /></Row>}
+        <Row label={t('signature.inReplies.label')} description={t('signature.inReplies.desc')}>
+          <Switch label={t('signature.inReplies.aria')} checked={ext.signatureInReplies} onChange={(signatureInReplies) => void update(extPatch({ signatureInReplies }))} />
         </Row>
       </Group>
 
-      <Group title="Templates">
-        <p className="st-muted">Start from a common layout, then edit the placeholder text like any other part of the signature.</p>
-        <div className="st-sig-gallery" role="list" aria-label="Signature templates">
+      <Group title={t('signature.templatesTitle')}>
+        <p className="st-muted">{t('signature.templatesIntro')}</p>
+        <div className="st-sig-gallery" role="list" aria-label={t('signature.templatesAria')}>
           {SIGNATURE_TEMPLATES.map((tpl) => (
             <button key={tpl.id} type="button" role="listitem" className="st-sig-card" onClick={() => pickTemplate(tpl)}>
               <TemplatePreview kind={tpl.preview} />
-              <span className="st-sig-card__label">{tpl.label}</span>
-              <span className="st-sig-card__desc">{tpl.description}</span>
+              <span className="st-sig-card__label">{t(`signature.templates.${tpl.id}.label`)}</span>
+              <span className="st-sig-card__desc">{t(`signature.templates.${tpl.id}.description`)}</span>
             </button>
           ))}
         </div>
         {pendingTemplate && (
           <ConfirmBar
-            message={<>Replace your current signature with <strong>{pendingTemplate.label}</strong>? This can't be undone.</>}
-            confirmLabel="Replace"
+            message={<Trans t={t} i18nKey="signature.replaceConfirm" values={{ name: t(`signature.templates.${pendingTemplate.id}.label`) }} components={{ b: <strong /> }} />}
+            confirmLabel={t('signature.replace')}
             onConfirm={() => applyTemplate(pendingTemplate)}
             onCancel={() => setPendingTemplate(null)}
           />
@@ -161,22 +163,22 @@ export function SignatureSection(): JSX.Element {
       </Group>
 
       {photo.kind !== 'none' && account && (
-        <Group title="Signature photo">
+        <Group title={t('signature.photo.title')}>
           <div className="st-sigphoto">
             <span className="st-sigphoto__thumb" aria-hidden>
               {photo.kind === 'image' ? <img src={photo.src} alt="" /> : <UserRound size={22} strokeWidth={1.5} />}
             </span>
             <div className="st-sigphoto__body">
-              <p className="st-muted">{photo.kind === 'image' ? 'Shown beside your name. Pictures are cropped to a square and shrunk to fit.' : 'No picture yet, so your initial is shown. Add one to appear beside your name.'}</p>
+              <p className="st-muted">{photo.kind === 'image' ? t('signature.photo.hasImage') : t('signature.photo.noImage')}</p>
               <div className="st-sigphoto__actions">
-                <Button size="sm" icon={<ImagePlus size={13} />} onClick={() => fileRef.current?.click()}>{photo.kind === 'image' ? 'Replace picture…' : 'Choose picture…'}</Button>
+                <Button size="sm" icon={<ImagePlus size={13} />} onClick={() => fileRef.current?.click()}>{photo.kind === 'image' ? t('signature.photo.replace') : t('signature.photo.choose')}</Button>
                 {account.avatarUrl && photo.kind === 'image' && photo.src !== account.avatarUrl && (
-                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>Use account picture</Button>
+                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>{t('signature.photo.useAccount')}</Button>
                 )}
                 {account.avatarUrl && photo.kind === 'initials' && (
-                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>Use account picture</Button>
+                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>{t('signature.photo.useAccount')}</Button>
                 )}
-                {photo.kind === 'image' && <Button size="sm" variant="ghost" className="st-danger-text" icon={<Trash2 size={13} />} onClick={() => changePhoto(null)}>Remove</Button>}
+                {photo.kind === 'image' && <Button size="sm" variant="ghost" className="st-danger-text" icon={<Trash2 size={13} />} onClick={() => changePhoto(null)}>{t('signature.photo.remove')}</Button>}
               </div>
               {photoErr && <div className="st-inline-error" role="alert">{photoErr}</div>}
             </div>
@@ -185,24 +187,24 @@ export function SignatureSection(): JSX.Element {
         </Group>
       )}
 
-      <Group title={`Signature${account ? ` for ${account.email}` : ''}`} action={<SavedTick show={saved} />}>
-        <RichTextEditor label="Signature" resetKey={`${accountId}:${applyTick}`} initialHtml={initial} placeholder="Write a signature, e.g. your name and title…" minHeight={132}
+      <Group title={account ? t('signature.editorTitleFor', { email: account.email }) : t('signature.title')} action={<SavedTick show={saved} />}>
+        <RichTextEditor label={t('signature.title')} resetKey={`${accountId}:${applyTick}`} initialHtml={initial} placeholder={t('signature.placeholder')} minHeight={132}
           sanitize={sanitizeSignature}
           onChange={(html) => { setPreview(html); save.call(currentId.current, html) }} />
       </Group>
 
-      <Group title="Preview">
+      <Group title={t('signature.preview.title')}>
         <div className="st-sigpreview">
           <div className="st-sigpreview__head">
-            <span>To: <strong>Sam Rivera</strong></span>
-            <span>Subject: Following up</span>
+            <span><Trans t={t} i18nKey="signature.preview.to" components={{ b: <strong /> }} /></span>
+            <span>{t('signature.preview.subject')}</span>
           </div>
           <div className="st-sigpreview__body selectable">
-            <p>Hi Sam,</p>
-            <p>Thanks for the quick call today. I’ll send the notes over tomorrow morning.</p>
+            <p>{t('signature.preview.greeting')}</p>
+            <p>{t('signature.preview.body')}</p>
             {previewHtml
               ? <div className="st-sigpreview__sig" dangerouslySetInnerHTML={{ __html: previewHtml }} />
-              : <div className="st-sigpreview__none">No signature</div>}
+              : <div className="st-sigpreview__none">{t('signature.preview.none')}</div>}
           </div>
         </div>
       </Group>

@@ -32,13 +32,10 @@ export function initAppearance(): void {
   })
 }
 
-/** Swatches shown in Settings > Appearance; the preview colours are the `--sw-<name>` tokens in accents.css. */
-export const ACCENTS: { value: Accent; label: string }[] = [
-  { value: 'blue', label: 'Blue' },
-  { value: 'violet', label: 'Violet' },
-  { value: 'pink', label: 'Pink' },
-  { value: 'orange', label: 'Orange' },
-  { value: 'green', label: 'Green' },
-  { value: 'teal', label: 'Teal' },
-  { value: 'neutral', label: 'Neutral' }
+/**
+ * Swatches shown in Settings > Appearance; the preview colours are the `--sw-<name>` tokens in accents.css.
+ * Names are translated as `settings:appearance.accents.<value>`.
+ */
+export const ACCENTS: { value: Accent }[] = [
+  { value: 'blue' }, { value: 'violet' }, { value: 'pink' }, { value: 'orange' }, { value: 'green' }, { value: 'teal' }, { value: 'neutral' }
 ]

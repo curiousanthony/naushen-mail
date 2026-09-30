@@ -4,8 +4,10 @@
  * provider and undo-able; this file only decides what to ask for and how to word the toast.
  */
 import { create } from 'zustand'
+import i18n from 'i18next'
 import type { Rule, RuleStep } from '@shared/types'
-import { describeCondition, subjectOf, suggestRule, type RuleSuggestion } from '@shared/rules'
+import { subjectOf, suggestRule, type RuleSuggestion } from '@shared/rules'
+import { describeCondition } from './describe'
 import { useApp } from '@/lib/store'
 import { HANDLERS } from '@/features/commands/runner'
 import { bundleId } from '../threadlist/bundles'
@@ -14,6 +16,8 @@ import { bundlesPatch, readBundles, toggleBundle } from './prefs'
 import { summarizeSteps } from './draft'
 
 const S = useApp.getState
+/** Strings live in the `rules` namespace (`src/locales/<lng>/rules.json`, keys under `toast.*`). */
+const tr = (key: string, options?: Record<string, unknown>): string => i18n.t(key, { ns: 'rules', ...options }) as string
 
 // ---------------------------------------------------------------- the rule popover
 
@@ -39,7 +43,7 @@ export async function openRuleForFocused(): Promise<void> {
   const subject = t ? subjectOf(t.accountId, t.subject, t.messages, me) : null
   const suggestion = t ? suggestRule(subject, t.subject) : null
   if (!t || !suggestion) {
-    S().toast({ message: 'This conversation has no incoming message to build a rule from.', duration: 3500 })
+    S().toast({ message: tr('toast.noIncoming'), duration: 3500 })
     return
   }
   useRuleUi.getState().open({ threadId: t.id, accountId: t.accountId, suggestion, subject: t.subject })
@@ -74,9 +78,10 @@ export const markHandled = (ruleId: string): void => { handled.add(ruleId) }
 export function announceRun(ruleId: string, steps: RuleStep[]): void {
   if (handled.delete(ruleId) || ruleId.startsWith('adhoc:') || !steps.length) return
   const rule = cachedRules.find((r) => r.id === ruleId)
-  const who = rule?.conditions[0] ? `${describeCondition(rule.conditions[0])}: ` : 'Rule: '
+  const summary = summarizeSteps(steps, labelName)
   S().toast({
-    message: who + summarizeSteps(steps, labelName), actionLabel: 'Undo', duration: 9000,
+    message: rule?.conditions[0] ? tr('toast.ranWith', { condition: describeCondition(rule.conditions[0]), summary }) : tr('toast.ran', { summary }),
+    actionLabel: tr('toast.undo'), duration: 9000,
     onAction: () => void undoSteps(steps)
   })
 }
@@ -112,8 +117,8 @@ export async function archiveAllFrom(email?: string, quiet = false): Promise<Rul
   const n = res.threadCount
   if (!quiet) {
     S().toast(n
-      ? { message: `Archived ${n} from ${sender.name}`, actionLabel: 'Undo', duration: 9000, onAction: () => void undoSteps(res.steps) }
-      : { message: `Nothing in your inbox from ${sender.name}`, duration: 3000 })
+      ? { message: tr('toast.archivedFrom', { count: n, name: sender.name }), actionLabel: tr('toast.undo'), duration: 9000, onAction: () => void undoSteps(res.steps) }
+      : { message: tr('toast.nothingFrom', { name: sender.name }), duration: 3000 })
   }
   return res.steps
 }
@@ -133,8 +138,8 @@ export async function blockSender(email?: string): Promise<void> {
   const n = res.threadCount
   await refreshRuleCache()
   S().toast({
-    message: `Blocked ${sender.name}${n ? ` · ${n} moved to Trash` : ''}. Future mail goes to Trash.`,
-    actionLabel: 'Undo', duration: 9000,
+    message: n ? tr('toast.blockedMoved', { name: sender.name, count: n }) : tr('toast.blocked', { name: sender.name }),
+    actionLabel: tr('toast.undo'), duration: 9000,
     onAction: () => {
       void undoSteps(res.steps)
       if (!dup) void window.api.invoke('rules.delete', rule.id).then(refreshRuleCache)
@@ -148,7 +153,7 @@ export async function unsubscribeAndArchive(email?: string): Promise<void> {
   const steps = await archiveAllFrom(email, true)
   if (steps === null) return
   const n = new Set(steps.flatMap((x) => x.threadIds)).size
-  if (n) S().toast({ message: `Archived ${n} from this sender`, actionLabel: 'Undo', duration: 9000, onAction: () => void undoSteps(steps) })
+  if (n) S().toast({ message: tr('toast.archivedFromSender', { count: n }), actionLabel: tr('toast.undo'), duration: 9000, onAction: () => void undoSteps(steps) })
 }
 
 // ---------------------------------------------------------------- bundle toggles
@@ -160,7 +165,7 @@ export async function toggleLabelBundle(labelId?: string): Promise<void> {
   const next = toggleBundle(defs, 'label', l.name, l.name)
   await S().updateSettings(bundlesPatch(next))
   const on = next.length > defs.length
-  S().toast({ message: on ? `Bundling ${l.name} in your Inbox` : `Stopped bundling ${l.name}`, duration: 2600 })
+  S().toast({ message: on ? tr('toast.bundling', { name: l.name }) : tr('toast.stoppedBundling', { name: l.name }), duration: 2600 })
 }
 
 export async function toggleSenderBundle(email?: string): Promise<void> {
@@ -171,7 +176,7 @@ export async function toggleSenderBundle(email?: string): Promise<void> {
   const next = toggleBundle(defs, 'sender', addr, sender.name)
   await S().updateSettings(bundlesPatch(next))
   const on = next.length > defs.length
-  S().toast({ message: on ? `Bundling ${sender.name} in your Inbox` : `Stopped bundling ${sender.name}`, duration: 2600 })
+  S().toast({ message: on ? tr('toast.bundling', { name: sender.name }) : tr('toast.stoppedBundling', { name: sender.name }), duration: 2600 })
 }
 
 export const isSenderBundled = (email: string): boolean =>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import { Bold, Check, Eraser, Italic, Link as LinkIcon, Underline, Unlink, X } from 'lucide-react'
 import { IconButton, TextInput } from '../ui'
 import { sanitizeRich } from '../lib/sanitize'
@@ -19,6 +20,7 @@ export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, l
   initialHtml: string; resetKey: string; onChange: (html: string) => void; placeholder: string; label: string; minHeight?: number
   sanitize?: (html: string) => string
 }): JSX.Element {
+  const { t } = useTranslation('settings')
   const ref = useRef<HTMLDivElement>(null)
   const savedRange = useRef<Range | null>(null)
   const [active, setActive] = useState<Record<Cmd, boolean>>({ bold: false, italic: false, underline: false })
@@ -88,26 +90,26 @@ export function RichTextEditor({ initialHtml, resetKey, onChange, placeholder, l
 
   return (
     <div className="st-rte">
-      <div className="st-rte__bar" role="toolbar" aria-label={`${label} formatting`}>
-        <IconButton label="Bold (⌘B)" className={clsx(active.bold && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('bold')}><Bold size={15} strokeWidth={1.75} /></IconButton>
-        <IconButton label="Italic (⌘I)" className={clsx(active.italic && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('italic')}><Italic size={15} strokeWidth={1.75} /></IconButton>
-        <IconButton label="Underline (⌘U)" className={clsx(active.underline && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('underline')}><Underline size={15} strokeWidth={1.75} /></IconButton>
+      <div className="st-rte__bar" role="toolbar" aria-label={t('rte.formatting', { label })}>
+        <IconButton label={t('rte.bold')} className={clsx(active.bold && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('bold')}><Bold size={15} strokeWidth={1.75} /></IconButton>
+        <IconButton label={t('rte.italic')} className={clsx(active.italic && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('italic')}><Italic size={15} strokeWidth={1.75} /></IconButton>
+        <IconButton label={t('rte.underline')} className={clsx(active.underline && 'is-active')} onMouseDown={keepFocus} onClick={() => exec('underline')}><Underline size={15} strokeWidth={1.75} /></IconButton>
         <span className="st-rte__sep" />
-        <IconButton label="Add link" className={clsx(linkOpen && 'is-active')} onMouseDown={keepFocus} onClick={linkOpen ? () => setLinkOpen(false) : openLink}><LinkIcon size={15} strokeWidth={1.75} /></IconButton>
-        <IconButton label="Remove link" onMouseDown={keepFocus} onClick={() => exec('unlink')}><Unlink size={15} strokeWidth={1.75} /></IconButton>
+        <IconButton label={t('rte.addLink')} className={clsx(linkOpen && 'is-active')} onMouseDown={keepFocus} onClick={linkOpen ? () => setLinkOpen(false) : openLink}><LinkIcon size={15} strokeWidth={1.75} /></IconButton>
+        <IconButton label={t('rte.removeLink')} onMouseDown={keepFocus} onClick={() => exec('unlink')}><Unlink size={15} strokeWidth={1.75} /></IconButton>
         <span className="st-rte__sep" />
-        <IconButton label="Clear formatting" onMouseDown={keepFocus} onClick={() => exec('removeFormat')}><Eraser size={15} strokeWidth={1.75} /></IconButton>
+        <IconButton label={t('rte.clear')} onMouseDown={keepFocus} onClick={() => exec('removeFormat')}><Eraser size={15} strokeWidth={1.75} /></IconButton>
       </div>
       {linkOpen && (
         <div className="st-rte__link">
-          <TextInput autoFocus placeholder="Paste a link, e.g. example.com" value={linkText} invalid={linkBad} aria-label="Link address"
+          <TextInput autoFocus placeholder={t('rte.linkPlaceholder')} value={linkText} invalid={linkBad} aria-label={t('rte.linkAddress')}
             onChange={(e) => { setLinkText(e.target.value); setLinkBad(false) }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') { e.preventDefault(); applyLink() }
               if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setLinkOpen(false); ref.current?.focus() }
             }} />
-          <IconButton label="Apply link" onClick={applyLink}><Check size={15} strokeWidth={1.75} /></IconButton>
-          <IconButton label="Cancel" onClick={() => setLinkOpen(false)}><X size={15} strokeWidth={1.75} /></IconButton>
+          <IconButton label={t('rte.applyLink')} onClick={applyLink}><Check size={15} strokeWidth={1.75} /></IconButton>
+          <IconButton label={t('ui.cancel')} onClick={() => setLinkOpen(false)}><X size={15} strokeWidth={1.75} /></IconButton>
         </div>
       )}
       <div className="st-rte__wrap" style={{ minHeight }}>

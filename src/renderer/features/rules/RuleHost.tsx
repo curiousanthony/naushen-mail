@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Rule } from '@shared/types'
+import { providerCtx } from '@/features/settings/lib/project'
 import { sameRule } from '@shared/rules'
 import { useApp } from '@/lib/store'
 import { useFocusTrap } from '@/features/settings/lib/focus-trap'
@@ -28,6 +30,7 @@ export function RuleHost(): JSX.Element | null {
 const WIDTH = 412
 
 function RulePopover({ seed }: { seed: RuleSeed }): JSX.Element {
+  const { t } = useTranslation('rules')
   const close = useRuleUi((s) => s.close)
   const accounts = useApp((s) => s.accounts)
   const labels = useApp((s) => s.labels)
@@ -87,21 +90,22 @@ function RulePopover({ seed }: { seed: RuleSeed }): JSX.Element {
         markHandled(saved.id)
         const res = await window.api.invoke('rules.applyExisting', saved)
         const steps = res.steps
+        const summary = steps.length ? summarizeSteps(steps, (id) => useApp.getState().labels.find((l) => l.id === id)?.name) : ''
         toast({
           message: steps.length
-            ? `${dup ? 'Rule already existed' : 'Rule created'} · ${summarizeSteps(steps, (id) => useApp.getState().labels.find((l) => l.id === id)?.name)}`
-            : `${dup ? 'Rule already existed' : 'Rule created'} · nothing needed changing`,
-          actionLabel: steps.length ? 'Undo' : undefined, duration: 9000,
+            ? t(dup ? 'host.toast.existedApplied' : 'host.toast.createdApplied', { summary })
+            : t(dup ? 'host.toast.existedNothing' : 'host.toast.createdNothing'),
+          actionLabel: steps.length ? t('host.undo') : undefined, duration: 9000,
           onAction: steps.length ? () => void undoSteps(steps) : undefined
         })
       } else {
         toast({
-          message: dup ? 'You already have this rule' : 'Rule created. It filters new mail on this Mac.',
-          actionLabel: 'View rules', onAction: openRulesSettings, duration: 6000
+          message: dup ? t('host.toast.alreadyHave') : t('host.toast.created'),
+          actionLabel: t('host.toast.viewRules'), onAction: openRulesSettings, duration: 6000
         })
       }
     } catch (e) {
-      toast({ message: `Couldn't create the rule${e instanceof Error ? `: ${e.message}` : ''}`, duration: 5000 })
+      toast({ message: e instanceof Error ? t('host.toast.failedWith', { message: e.message }) : t('host.toast.failed'), duration: 5000 })
       setBusy(false)
     }
   }
@@ -116,18 +120,18 @@ function RulePopover({ seed }: { seed: RuleSeed }): JSX.Element {
     }
   }
 
-  const countText = !complete ? 'Add a value and an action' : count === null ? 'Checking existing mail…'
-    : count === 0 ? 'No existing conversations match' : `Matches ${count} existing conversation${count === 1 ? '' : 's'}`
+  const countText = !complete ? t('host.match.incomplete') : count === null ? t('host.match.checking')
+    : count === 0 ? t('host.match.none') : t('host.match.some', { count })
 
   return (
     <div className="rp__scrim no-drag" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
       <div
-        ref={box} className="rp" role="dialog" aria-label="Create rule" tabIndex={-1} onKeyDown={onKeyDown}
+        ref={box} className="rp" role="dialog" aria-label={t('host.title')} tabIndex={-1} onKeyDown={onKeyDown}
         style={{ width: WIDTH, left: pos?.left ?? 0, top: pos?.top ?? 0, visibility: pos ? 'visible' : 'hidden' }}
       >
         <div className="rp__head">
-          <h2>Create rule</h2>
-          <span className="rp__from" title={seed.subject}>from “{seed.subject || '(no subject)'}”</span>
+          <h2>{t('host.title')}</h2>
+          <span className="rp__from" title={seed.subject}>{t('host.from', { subject: seed.subject || t('host.noSubject') })}</span>
         </div>
 
         <RuleForm draft={draft} onChange={setDraft} accounts={accounts} labels={labels} suggestion={seed.suggestion} inputRef={input} />
@@ -135,18 +139,18 @@ function RulePopover({ seed }: { seed: RuleSeed }): JSX.Element {
         <div className="rp__match" data-empty={complete && count === 0}>{countText}</div>
 
         <div className="rp__foot">
-          <button type="button" className="rp__btn" onClick={close}>Cancel</button>
+          <button type="button" className="rp__btn" onClick={close}>{t('host.cancel')}</button>
           <span className="rp__spacer" />
           <button type="button" className="rp__btn rp__btn--primary" disabled={!complete || busy} onClick={() => void create(false)}>
-            Create rule <kbd className="rp__kbd">↵</kbd>
+            {t('host.create')} <kbd className="rp__kbd">↵</kbd>
           </button>
           {complete && count !== null && count > 0 && (
             <button type="button" className="rp__btn rp__btn--primary rp__btn--strong" disabled={busy} onClick={() => void create(true)}>
-              Create &amp; apply to {count} <kbd className="rp__kbd">⌘↵</kbd>
+              {t('host.createApply', { count })} <kbd className="rp__kbd">⌘↵</kbd>
             </button>
           )}
         </div>
-        <p className="rp__note">Local to Naushen Mail: nothing is created in Gmail or Outlook.</p>
+        <p className="rp__note">{t('host.note', { ...providerCtx })}</p>
       </div>
     </div>
   )
