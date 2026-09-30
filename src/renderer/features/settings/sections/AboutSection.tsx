@@ -10,7 +10,7 @@ export function AboutSection(): JSX.Element {
   const info = usePlatformInfo()
   const platform = platformName(info?.platform)
   const links = [
-    { id: 'setup', url: docUrl('06-provider-setup.md'), ctx: providerCtx },
+    { id: 'setup', url: docUrl('google-setup.md'), ctx: providerCtx },
     { id: 'decisions', url: docUrl('00-decisions.md'), ctx: {} },
     { id: 'design', url: docUrl('03-design-system.md'), ctx: {} },
     { id: 'privacy', url: docUrl('PRIVACY.md'), ctx: {} },

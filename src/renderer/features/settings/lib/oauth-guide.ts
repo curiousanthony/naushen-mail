@@ -1,6 +1,6 @@
 import i18n from 'i18next'
 
-/** Checklist text for the (hidden unless OUTLOOK_ENABLED) Microsoft setup. Mirrors docs/06-provider-setup.md. */
+/** Checklist text for the (hidden unless OUTLOOK_ENABLED) Microsoft setup. Mirrors docs/google-setup.md. */
 export interface GuideStep { text: string; code?: string[] }
 
 const t = (key: string): string => i18n.t(key, { ns: 'settings' }) as string

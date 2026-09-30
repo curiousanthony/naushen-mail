@@ -200,7 +200,7 @@ export const OAuthSetup = forwardRef<HTMLDivElement, Props>(function OAuthSetup(
       </p>
       {!builtIn && (
         <p className="st-muted st-muted--small">
-          <button type="button" className="st-link" onClick={() => openExternal(docUrl('06-provider-setup.md'))}>{t('oauth.guideLink', { ...providerCtx })}</button>
+          <button type="button" className="st-link" onClick={() => openExternal(docUrl('google-setup.md'))}>{t('oauth.guideLink', { ...providerCtx })}</button>
         </p>
       )}
       <div className="st-oauth">

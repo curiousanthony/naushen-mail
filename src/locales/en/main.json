@@ -44,7 +44,7 @@
     "attachmentEmpty": "Attachment has no content"
   },
   "gmail": {
-    "missingClient": "Google sign-in is not configured in this build. Add your own Google OAuth client ID and secret in Settings → Accounts → OAuth setup (see docs/06-provider-setup.md).",
+    "missingClient": "Google sign-in is not configured in this build. Add your own Google OAuth client ID and secret in Settings → Accounts → OAuth setup (see docs/google-setup.md).",
     "noRefreshToken": "Google did not issue a refresh token. Remove Naushen Mail at myaccount.google.com/permissions and try again.",
     "missingScope": "Naushen Mail needs permission to read and manage your Gmail. Connect again and leave every permission ticked.",
     "profileFailed": "Could not read your Google profile (HTTP {{status}}).",
