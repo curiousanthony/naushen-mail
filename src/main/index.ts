@@ -1,3 +1,4 @@
+import { setMainLanguage } from './i18n'
 import { app, BrowserWindow, Menu, nativeTheme, shell } from 'electron'
 import { join } from 'node:path'
 import { openDb } from './db/db'
@@ -105,6 +106,7 @@ app.whenReady().then(async () => {
   app.setName('Naushen Mail')
   const db = openDb(userDataPath('mailroom.db'))
   const repo = new Repo(db)
+  setMainLanguage(repo.getSettings().language)
   const engine = new SyncEngine(repo)
   const outbox = new Outbox(repo, engine)
   seedDefaultViews(repo)

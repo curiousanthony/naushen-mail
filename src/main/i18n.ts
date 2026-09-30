@@ -1,0 +1,23 @@
+import i18n from 'i18next'
+import { app } from 'electron'
+import { DEFAULT_LANGUAGE, LANGUAGES, resolveLanguage, type LanguagePref } from '@shared/languages'
+
+/** Main-process strings (native notifications, menus, errors that reach the UI). Messages live in the `main` namespace. */
+const files = import.meta.glob('../locales/*/main.json', { eager: true, import: 'default' }) as Record<string, Record<string, unknown>>
+const resources: Record<string, { main: Record<string, unknown> }> = {}
+for (const [path, main] of Object.entries(files)) {
+  const lng = /locales\/([^/]+)\/main\.json$/.exec(path)?.[1]
+  if (lng) resources[lng] = { main }
+}
+
+const instance = i18n.createInstance()
+void instance.init({
+  resources, lng: DEFAULT_LANGUAGE, fallbackLng: DEFAULT_LANGUAGE, supportedLngs: LANGUAGES.map((l) => l.code),
+  defaultNS: 'main', ns: ['main'], interpolation: { escapeValue: false }, returnNull: false
+})
+
+export function setMainLanguage(pref: LanguagePref | undefined): void {
+  void instance.changeLanguage(resolveLanguage(pref, app.getLocale()))
+}
+/** Translate a main-process string: `mt('notify.newMail', { count })`. */
+export const mt = (key: string, options?: Record<string, unknown>): string => instance.t(key, options) as string

@@ -1,3 +1,4 @@
+import type { LanguagePref } from './languages'
 /**
  * Provider-agnostic domain model shared by main, preload and renderer.
  *
@@ -286,6 +287,8 @@ export type ThreadStyle = 'side' | 'center' | 'full'
 
 export interface AppSettings {
   theme: 'system' | 'light' | 'dark'
+  /** UI language; missing = 'system' (follow the OS, falling back to English). */
+  language?: LanguagePref
   /** Optional so settings saved before this existed still load; treat a missing value as 'side'. */
   threadStyle?: ThreadStyle
   /** Show threads grouped by date bucket. */
@@ -331,6 +334,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   showAvatars: false,
   undoSendSeconds: 10,
   signatureHtml: {},
+  language: 'system',
   oauth: { googleClientId: '', googleClientSecret: '', microsoftClientId: '' },
   markReadOnOpen: true,
   notifications: true,

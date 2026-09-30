@@ -1,3 +1,4 @@
+import { currentLocale } from '@/i18n'
 import { useEffect, useState } from 'react'
 import { Calendar, Check, MapPin } from 'lucide-react'
 import type { Attachment, Message } from '@shared/types'
@@ -24,10 +25,10 @@ const saveResponse = (uid: string, r: Rsvp): void => {
 function formatWhen(ev: IcsEvent): string {
   if (!ev.start) return ''
   const d = new Date(ev.start)
-  if (ev.allDay) return d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-  const dateStr = d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
-  const startStr = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-  const endStr = ev.end ? new Date(ev.end).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : null
+  if (ev.allDay) return d.toLocaleDateString(currentLocale(), { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  const dateStr = d.toLocaleDateString(currentLocale(), { weekday: 'long', month: 'long', day: 'numeric' })
+  const startStr = d.toLocaleTimeString(currentLocale(), { hour: 'numeric', minute: '2-digit' })
+  const endStr = ev.end ? new Date(ev.end).toLocaleTimeString(currentLocale(), { hour: 'numeric', minute: '2-digit' }) : null
   return `${dateStr} · ${startStr}${endStr ? `–${endStr}` : ''}`
 }
 

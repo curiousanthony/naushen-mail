@@ -1,3 +1,4 @@
+import { currentLocale } from '@/i18n'
 /**
  * "Schedule send" presets. Pure so the labels and the timestamps can be tested without
  * freezing the clock in the UI.
@@ -26,15 +27,15 @@ export function daysUntilNextMonday(from: Date): number {
 }
 
 const fmtDay = (d: Date): string =>
-  new Intl.DateTimeFormat('en-GB', { weekday: 'short' }).format(d)
+  new Intl.DateTimeFormat(currentLocale(), { weekday: 'short' }).format(d)
 const fmtTime = (d: Date): string =>
-  new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(d)
+  new Intl.DateTimeFormat(currentLocale(), { hour: '2-digit', minute: '2-digit', hour12: false }).format(d)
 
 /** `Tue, 08:00`, or `Tue 12 May, 08:00` when it is more than a week out. */
 export function scheduleDetail(d: Date, now: Date): string {
   const far = d.getTime() - now.getTime() > 6 * 864e5
   const day = far
-    ? new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).format(d)
+    ? new Intl.DateTimeFormat(currentLocale(), { weekday: 'short', day: 'numeric', month: 'short' }).format(d)
     : fmtDay(d)
   return `${day}, ${fmtTime(d)}`
 }

@@ -9,6 +9,7 @@ import { CommandPalette, Toaster, ShortcutsHelp, useGlobalShortcuts } from '@/fe
 import { TooltipHost } from '@/features/tooltip'
 import { PreviewHost } from '@/features/preview'
 import { useNativeBridge } from '@/features/native'
+import { applyLanguage } from '@/i18n'
 import { RuleHost } from '@/features/rules/RuleHost'
 
 /**
@@ -19,6 +20,8 @@ export function App(): JSX.Element {
   const init = useApp((s) => s.init)
   const ready = useApp((s) => s.ready)
   useEffect(() => { void init() }, [init])
+  const language = useApp((s) => s.settings.language)
+  useEffect(() => { applyLanguage(language) }, [language])
   useGlobalShortcuts()
   useNativeBridge()
 

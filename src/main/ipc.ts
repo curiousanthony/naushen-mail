@@ -1,3 +1,4 @@
+import { setMainLanguage } from './i18n'
 import { dialog, ipcMain, shell, app, BrowserWindow, nativeTheme } from 'electron'
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -154,6 +155,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'settings.set': async (patch) => {
       const next = repo.setSettings(patch)
       if (patch.theme) nativeTheme.themeSource = patch.theme
+      if ('language' in patch) setMainLanguage(next.language)
       if ('dockBadge' in patch) engine.emit({ type: 'changed' }) // re-derives the Dock badge
       // Changes what the Inbox query returns — re-derive counts and, if Inbox is open, the list itself.
       if ('hideCategoriesFromInbox' in patch) engine.emit({ type: 'changed' })
