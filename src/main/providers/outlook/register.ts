@@ -46,6 +46,15 @@ connectors.outlook = {
     repoRef = repo
     return buildAdapter(account, repo)
   },
+  async refreshAvatar(account, { repo }) {
+    const src = createTokenSource({
+      getTokens: () => loadTokens(repo, account.id),
+      saveTokens: (t) => saveTokens(repo, account.id, t),
+      getClientId: () => repo.getSettings().oauth.microsoftClientId,
+      markReauthNeeded: (message) => repo.patchAccount(account.id, { status: 'reauth', statusMessage: message })
+    })
+    return fetchPhoto(await src.get())
+  },
   forget(account) {
     if (repoRef) deleteTokens(repoRef, account.id)
   }

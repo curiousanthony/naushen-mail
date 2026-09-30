@@ -130,9 +130,16 @@ export function SavedTick({ show }: { show: boolean }): JSX.Element {
 
 /* ------------------------------------------------------------------ account bits */
 
-export function Avatar({ account, size = 32 }: { account: Pick<Account, 'name' | 'email' | 'color'>; size?: number }): JSX.Element {
+export function Avatar({ account, size = 32 }: { account: Pick<Account, 'name' | 'email' | 'color'> & { avatarUrl?: string }; size?: number }): JSX.Element {
   const initial = (account.name || account.email || '?').trim().charAt(0).toUpperCase()
-  return <span className="st-avatar" style={{ width: size, height: size, fontSize: Math.round(size * 0.44), background: account.color }} aria-hidden>{initial}</span>
+  const [failed, setFailed] = useState(false)
+  useEffect(() => setFailed(false), [account.avatarUrl])
+  return (
+    <span className="st-avatar" style={{ width: size, height: size, fontSize: Math.round(size * 0.44), background: account.color }} aria-hidden>
+      {initial}
+      {account.avatarUrl && !failed && <img className="st-avatar__img" src={account.avatarUrl} alt="" onError={() => setFailed(true)} />}
+    </span>
+  )
 }
 
 export function AccountSelect({ accounts, value, onChange, label }: { accounts: Account[]; value: string; onChange: (id: string) => void; label: string }): JSX.Element {

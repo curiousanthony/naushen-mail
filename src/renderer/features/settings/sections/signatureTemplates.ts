@@ -1,6 +1,6 @@
 import type { Account } from '@shared/types'
 import { escapeAttr, escapeHtml, safeColor } from '@shared/emailhtml/escape'
-import { normalizeUrl } from '@shared/sanitize/urls'
+import { isSafeDataImage, normalizeUrl } from '@shared/sanitize/urls'
 
 /**
  * Signature template gallery: a handful of common business-signature layouts, filled in with
@@ -77,23 +77,27 @@ type TemplateAccount = Pick<Account, 'name' | 'email' | 'avatarUrl' | 'color'>
 const AVATAR_SIZE = 56
 
 /**
- * The avatar cell for "Photo left". Only a plain `https:` URL is trusted as an `<img src>`:
- * Outlook accounts store `avatarUrl` as a `data:image/jpeg;base64,…` (see
- * `src/main/providers/outlook/auth.ts`'s `fetchPhoto`), which can be tens of KB inlined into
- * *every* sent message, and plenty of webmail (Gmail included) does not render `data:` image
- * sources in received mail at all — it would just be a blank box there. So a data-URI avatar
- * falls back to the initials circle, same as when there is no `avatarUrl` at all.
- * Note for Outlook *desktop* (Word-engine) recipients: it ignores `border-radius`, so even the
- * https-photo case renders as a square there, not a circle — a known email-HTML limitation,
- * not a bug in this template.
+ * The avatar cell for "Photo left". A plain `https:` URL or a raster `data:image/…` URI is used as
+ * the `<img src>`; anything else falls back to the initials circle. A `data:` photo is fine
+ * to embed here: `serializeToEmailHtml` lifts it into an inline `cid:` MIME part when the message
+ * is sent (Gmail and most webmail do not render `data:` sources in received mail).
+ * `photo` overrides `account.avatarUrl` (the user picked a signature-specific picture).
+ * Note for Outlook *desktop* (Word-engine) recipients: it ignores `border-radius`, so the photo
+ * renders as a square there, not a circle — a known email-HTML limitation, not a bug in this template.
  */
-function photoCell(account: TemplateAccount): string {
-  const url = account.avatarUrl ? normalizeUrl(account.avatarUrl) : ''
-  if (/^https:\/\//i.test(url)) {
+export function photoCell(account: TemplateAccount, photo?: string): string {
+  const raw = photo ?? account.avatarUrl
+  const url = raw ? normalizeUrl(raw) : ''
+  if (/^https:\/\//i.test(url) || (raw && isSafeDataImage(raw))) {
+    const src = /^data:/i.test(raw ?? '') ? (raw as string) : url
     const alt = escapeAttr(account.name || account.email || '')
-    return `<img src="${escapeAttr(url)}" width="${AVATAR_SIZE}" height="${AVATAR_SIZE}" alt="${alt}" ` +
+    return `<img src="${escapeAttr(src)}" width="${AVATAR_SIZE}" height="${AVATAR_SIZE}" alt="${alt}" ` +
       `style="border-radius:50%;display:block;width:${AVATAR_SIZE}px;height:${AVATAR_SIZE}px;object-fit:cover" />`
   }
+  return initialsCell(account)
+}
+
+export function initialsCell(account: TemplateAccount): string {
   const initial = escapeHtml((account.name || account.email || '?').trim().charAt(0).toUpperCase() || '?')
   const bg = safeColor(account.color) ?? INK_MUTED
   return `<span style="display:inline-block;width:${AVATAR_SIZE}px;height:${AVATAR_SIZE}px;border-radius:50%;` +

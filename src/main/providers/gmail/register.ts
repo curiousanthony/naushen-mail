@@ -6,8 +6,9 @@ import { deleteTokens, loadTokens, saveTokens } from '../../auth/tokens'
 import type { Repo } from '../../db/repo'
 import type { AdapterFactoryDeps } from '../types'
 import { GmailAdapter } from './adapter'
+import { fetchImageDataUri, googlePictureUrl } from '../avatar'
 import {
-  accountIdFor, buildAuthUrl, exchangeCode, fetchUserInfo, GMAIL_MODIFY_SCOPE, MISSING_CLIENT_MESSAGE, revokeToken
+  accountIdFor, buildAuthUrl, exchangeCode, fetchUserInfo, refreshAccessToken, GMAIL_MODIFY_SCOPE, MISSING_CLIENT_MESSAGE, revokeToken
 } from './auth'
 
 /** `Connector.forget(account)` is not handed a repo, so remember the one used by connect()/restore(). */
@@ -48,7 +49,7 @@ export const gmailConnector: Connector = {
       email: me.email,
       name: me.name || me.email.split('@')[0],
       color: '',
-      avatarUrl: me.picture,
+      avatarUrl: me.picture ? await fetchImageDataUri(googlePictureUrl(me.picture)) : undefined,
       createdAt: Date.now(),
       syncCursor: null,
       lastSyncAt: null,
@@ -60,6 +61,19 @@ export const gmailConnector: Connector = {
 
   restore(account, { repo }) {
     return makeAdapter(repo, account)
+  },
+
+  /** Fetch the Google profile photo for an account connected before avatars were persisted. */
+  async refreshAvatar(account, { repo }) {
+    let tokens = loadTokens(repo, account.id)
+    if (!tokens?.refreshToken) return undefined
+    if (tokens.expiresAt < Date.now() + 60_000) {
+      const { googleClientId, googleClientSecret } = repo.getSettings().oauth
+      tokens = await refreshAccessToken({ clientId: googleClientId.trim(), clientSecret: googleClientSecret.trim() }, tokens.refreshToken)
+      saveTokens(repo, account.id, tokens)
+    }
+    const me = await fetchUserInfo(tokens.accessToken)
+    return me.picture ? fetchImageDataUri(googlePictureUrl(me.picture)) : undefined
   },
 
   forget(account) {

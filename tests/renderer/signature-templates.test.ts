@@ -41,11 +41,16 @@ describe('photo-left template — avatar selection', () => {
     expect(html).toContain('border-radius:50%')
   })
 
-  it('falls back to an initials circle for a data: URI avatar (not renderable by most webmail)', () => {
+  it('uses a data: URI avatar as the <img> (converted to a cid: part when sent)', () => {
     const html = renderSignatureTemplate(photoTemplate, dataUriAvatar)
-    expect(html).not.toContain('<img')
-    expect(html).toContain('>A<') // initial
+    expect(html).toContain('<img src="data:image/jpeg;base64,AAAA"')
     expect(html).toContain('border-radius:50%')
+  })
+
+  it('falls back to initials for an SVG data: URI', () => {
+    const html = renderSignatureTemplate(photoTemplate, { ...noAvatar, avatarUrl: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=' })
+    expect(html).not.toContain('<img')
+    expect(html).toContain('>A<')
   })
 
   it('falls back to an initials circle when there is no avatarUrl at all', () => {

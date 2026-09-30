@@ -5,7 +5,7 @@ import { Repo } from './db/repo'
 import { SyncEngine } from './sync/engine'
 import { Outbox } from './sync/outbox'
 import { registerIpc } from './ipc'
-import { restoreAccounts } from './accounts'
+import { refreshAvatars, restoreAccounts } from './accounts'
 import { buildMenu } from './menu'
 import { seedDefaultViews } from './seed'
 import './providers/register'
@@ -129,6 +129,7 @@ app.whenReady().then(async () => {
   engine.start()
   outbox.start()
   void engine.syncAll()
+  void refreshAvatars(repo, engine)
 
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) summon() })
 })
