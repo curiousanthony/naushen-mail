@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { TimeChips } from '@/features/time/TimeChips'
-import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, RotateCcw, Star, Trash2 } from 'lucide-react'
+import { AlarmClock, Archive, Check, MailOpen, Mail, Paperclip, RotateCcw, ShieldCheck, Star, Trash2 } from 'lucide-react'
 import type { Account, Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { initials, listTime } from '@/lib/format'
@@ -31,15 +31,17 @@ export interface RowProps {
   /** Id is passed back so the list can keep these callbacks stable and `memo` effective. */
   onSelect(id: string, e: MouseEvent): void
   onOpen(id: string, e: MouseEvent): void
+  /** Right-click: opens the row's action menu (see RowMenu.tsx). */
+  onMenu?(id: string, e: MouseEvent): void
 }
 
-function Action({ label, on, onClick, children }: {
-  label: string; on?: boolean; onClick(): void; children: React.ReactNode
+function Action({ label, on, danger, onClick, children }: {
+  label: string; on?: boolean; danger?: boolean; onClick(): void; children: React.ReactNode
 }): JSX.Element {
   return (
     <Tooltip label={label}>
       <button
-        className="trow__act" data-on={!!on} aria-label={label}
+        className="trow__act" data-on={!!on} data-danger={danger || undefined} aria-label={label}
         // Out of the tab order: a 300-row list would otherwise be ~1500 stops, and these
         // actions are all reachable from the keyboard through the commands feature.
         tabIndex={-1}
@@ -54,7 +56,7 @@ function Action({ label, on, onClick, children }: {
 
 /** One conversation. ~40px comfortable / 32px compact; hover actions replace the time. */
 function RowImpl({
-  thread: t, labels, account, showAccount, myEmails, selected, focused, open, onSelect, onOpen
+  thread: t, labels, account, showAccount, myEmails, selected, focused, open, onSelect, onOpen, onMenu
 }: RowProps): JSX.Element {
   const act = useApp((s) => s.act)
   const focus = useApp((s) => s.focus)
@@ -180,6 +182,7 @@ function RowImpl({
       className="trow" role="option" aria-selected={selected} id={`trow-${t.id}`}
       data-unread={t.unread} data-selected={selected} data-focused={focused} data-open={open}
       onClick={(e) => onOpen(t.id, e)}
+      onContextMenu={onMenu ? (e) => { e.preventDefault(); usePreviewStore.getState().hide(t.id); onMenu(t.id, e) } : undefined}
       onDoubleClick={(e) => onOpen(t.id, e)}
       onMouseEnter={onRowMouseEnter}
       onMouseMove={onRowMouseMove}
@@ -246,15 +249,29 @@ function RowImpl({
       <span className="trow__right">
         <span className="trow__time">{listTime(t.lastMessageAt)}</span>
         <span className="trow__actions">
+          {navRole() === 'spam' && (
+            // The one thing you want in Spam: get a wrongly-flagged message back to the Inbox.
+            <Tooltip label="Not spam — move to Inbox" shortcut="⇧E">
+              <button
+                className="trow__act trow__act--pill" aria-label="Not spam" tabIndex={-1}
+                onClick={(e) => { e.stopPropagation(); void perform({ type: 'notSpam' }, toastText('notSpam', 1), { ids: [t.id] }) }}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <ShieldCheck size={16} /><span>Not spam</span>
+              </button>
+            </Tooltip>
+          )}
           <Action label={t.starred ? 'Unstar' : 'Star'} on={t.starred} onClick={() => void act(t.starred ? { type: 'unstar' } : { type: 'star' }, [t.id])}>
-            <Star size={14} fill={t.starred ? 'currentColor' : 'none'} />
+            <Star size={16} fill={t.starred ? 'currentColor' : 'none'} />
           </Action>
           <Action label={t.unread ? 'Mark as read' : 'Mark as unread'} onClick={() => void act(t.unread ? { type: 'markRead' } : { type: 'markUnread' }, [t.id])}>
-            {t.unread ? <MailOpen size={14} /> : <Mail size={14} />}
+            {t.unread ? <MailOpen size={16} /> : <Mail size={16} />}
           </Action>
-          <Action label="Set reminder" onClick={remind}><AlarmClock size={14} /></Action>
-          <Action label="Archive" onClick={() => void act({ type: 'archive' }, [t.id], 'Conversation archived')}><Archive size={14} /></Action>
-          <Action label="Move to trash" onClick={() => void act({ type: 'trash' }, [t.id], 'Moved to trash')}><Trash2 size={14} /></Action>
+          <Action label="Set reminder" onClick={remind}><AlarmClock size={16} /></Action>
+          {navRole() !== 'spam' && navRole() !== 'trash' && (
+            <Action label="Archive" onClick={() => void act({ type: 'archive' }, [t.id], 'Conversation archived')}><Archive size={16} /></Action>
+          )}
+          <Action label="Move to trash" danger onClick={() => void act({ type: 'trash' }, [t.id], 'Moved to trash')}><Trash2 size={16} /></Action>
         </span>
       </span>
     </div>

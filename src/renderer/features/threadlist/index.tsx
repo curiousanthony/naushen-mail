@@ -10,7 +10,13 @@ import { dedupeLabels, expandLabelIds } from '@/lib/labels'
 import { FilterBar } from './FilterBar'
 import { EmptyTrashButton } from './EmptyTrash'
 import { BulkBar } from './BulkBar'
-import { VIEW_ICONS } from '../sidebar/viewIcons'
+import { RowMenu } from './RowMenu'
+import { buildRowMenu, type RowMenuItem } from './menuItems'
+import { TitleGlyph, titleIconFor } from './titleIcon'
+import { readShowListCount } from './listPrefs'
+import { runCommand } from '../commands/runner'
+import { useCommandUi } from '../commands/ui-store'
+import { isEditableElement } from '../commands/keys'
 import {
   EMPTY_CHIPS, WINDOW_THRESHOLD, applyChips, chipCount, emptyCopy, flatten, groupByCategory, groupThreads,
   listTitle, offsetsOf, rangeIds, scrollOffsetFor, unionIds, windowRange,
@@ -130,6 +136,70 @@ export function ThreadList(): JSX.Element {
     openThread(id)
   }, [selectRange, selectOne, focus, openThread])
 
+  // ---- right-click menu (same commands as the palette / hover actions)
+  const [menu, setMenu] = useState<{ id: string; x: number; y: number } | null>(null)
+  const closeMenu = useCallback(() => setMenu(null), [])
+  const onMenu = useCallback((id: string, e: MouseEvent) => {
+    focus(id)
+    setMenu({ id, x: e.clientX, y: e.clientY })
+  }, [focus])
+  const pickMenu = useCallback((item: RowMenuItem) => {
+    const id = menu?.id
+    setMenu(null)
+    if (!id) return
+    // Commands act on selection > open thread > cursor. Right-clicking a row outside the current
+    // selection (or beside the open thread) must act on that row alone, so target it explicitly
+    // and put the previous selection back once the action / picker is done.
+    const st = useApp.getState()
+    const before = st.selectedIds
+    const inSel = before.length > 1 && before.includes(id)
+    const needsSel = !inSel && ((st.openThreadId !== null && st.openThreadId !== id) || before.length > 0)
+    useApp.setState({ focusedId: id, selectedIds: needsSel ? [id] : inSel ? before : [] })
+    runCommand(item.cmd)
+    if (!needsSel) return
+    const restore = (): void => {
+      const s = useApp.getState()
+      const live = new Set(s.threads.map((t) => t.id))
+      const same = s.selectedIds.length === 1 && s.selectedIds[0] === id
+      if (same) useApp.setState({ selectedIds: before.filter((i) => live.has(i)) })
+    }
+    if (useApp.getState().overlay) {
+      const off = useApp.subscribe((s) => { if (!s.overlay) { off(); setTimeout(restore, 0) } })
+    } else setTimeout(restore, 250)
+  }, [menu])
+  const menuThread = menu ? visible.find((t) => t.id === menu.id) : undefined
+  const navRole = nav.kind === 'role' ? nav.role : null
+
+  // ---- keyboard cursor: arrows / o with nothing open, and the focus ring's on/off state
+  const listKbd = useCommandUi((s) => s.listKbd)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.defaultPrevented || e.isComposing || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return
+      const st = useApp.getState()
+      if (st.overlay || st.openThreadId || st.composers.length) return
+      const t = e.target instanceof HTMLElement ? e.target : null
+      if (isEditableElement(t) || t?.closest('[role="menu"], [role="dialog"], .reader')) return
+      const ids = visibleRef.current.map((x) => x.id)
+      if (!ids.length) return
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault()
+        const i = st.focusedId ? ids.indexOf(st.focusedId) : -1
+        // No cursor yet (or it is on a row the filter hid): the first arrow lands on the first row.
+        const next = i < 0 ? 0 : Math.max(0, Math.min(ids.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))
+        st.focus(ids[next])
+        useCommandUi.getState().setListKbd(true)
+        ;(document.activeElement as HTMLElement | null)?.blur?.()
+      } else if (e.key === 'o' && st.focusedId) {
+        e.preventDefault()
+        st.openThread(st.focusedId)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+  // Mouse use hands the cursor back to the pointer: drop the ring.
+  const clearKbd = useCallback(() => useCommandUi.getState().setListKbd(false), [])
+
   // Drop selections the filter chips have hidden, so the bulk bar always matches what is on screen.
   useEffect(() => {
     const ids = new Set(visible.map((t) => t.id))
@@ -185,15 +255,16 @@ export function ThreadList(): JSX.Element {
   const showAccount = accountId === 'all' && accounts.length > 1
   const viewName = nav.kind === 'view' ? views.find((v) => v.id === nav.viewId)?.name : undefined
   const count = filtered ? visible.length : total
+  const showCount = readShowListCount(settings)
   const empty = emptyCopy(nav, viewName, filtered)
 
   return (
-    <section className="tl" data-density={settings.density} aria-label={head.title}>
+    <section className="tl" data-density={settings.density} data-kbd={listKbd || undefined} aria-label={head.title}>
       <header className="tl__bar">
         <h1 className="tl__title">
-          {head.emoji && VIEW_ICONS[head.emoji] && (() => { const Icon = VIEW_ICONS[head.emoji!]; return <Icon size={16} className="tl__emoji" /> })()}
+          <TitleGlyph icon={titleIconFor(nav, views, labels)} />
           <span className="tl__titletext">{head.title}</span>
-          {count > 0 && <span className="tl__count">{count}</span>}
+          {showCount && count > 0 && <span className="tl__count">{count}</span>}
         </h1>
         {nav.kind === 'role' && nav.role === 'trash' && <EmptyTrashButton />}
         <FilterBar chips={chips} onChange={setChips} labels={userLabels} showGroupToggle={nav.kind !== 'categories'} />
@@ -201,7 +272,16 @@ export function ThreadList(): JSX.Element {
 
       <div
         className="tl__scroll" ref={scroller} onScroll={onScroll}
-        role="listbox" aria-multiselectable aria-label="Conversations" tabIndex={-1}
+        role="listbox" aria-multiselectable aria-label="Conversations" tabIndex={0}
+        aria-activedescendant={focusedId ? `trow-${focusedId}` : undefined}
+        onMouseDown={clearKbd} onMouseMove={listKbd ? clearKbd : undefined}
+        // Tab into the list lands the cursor on the first row (or keeps the current one), no opening.
+        onFocus={(e) => {
+          if (e.target !== e.currentTarget || !items.length) return
+          const st = useApp.getState()
+          if (!st.focusedId || !visibleRef.current.some((t) => t.id === st.focusedId)) st.focus(visibleRef.current[0]?.id ?? null)
+          useCommandUi.getState().setListKbd(true)
+        }}
       >
         {loading && (!threads.length || staleLoad) ? (
           <Skeleton />
@@ -233,6 +313,7 @@ export function ThreadList(): JSX.Element {
                   open={openThreadId === it.thread.id}
                   onSelect={onSelect}
                   onOpen={onOpen}
+                  onMenu={onMenu}
                 />
                 </ChildWrap>
               )
@@ -243,6 +324,12 @@ export function ThreadList(): JSX.Element {
       </div>
 
       <BulkBar selected={selectedThreads} labels={labels} />
+      {menu && menuThread && (
+        <RowMenu
+          x={menu.x} y={menu.y} label="Conversation actions"
+          items={buildRowMenu(menuThread, navRole)} onPick={pickMenu} onClose={closeMenu}
+        />
+      )}
     </section>
   )
 }

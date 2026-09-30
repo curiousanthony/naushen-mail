@@ -61,14 +61,15 @@ export function buildPaletteItems(c: PaletteCtx): PaletteItem[] {
   // ---- Actions (context aware: only when a thread is targeted)
   if (c.targetCount > 0) {
     if (c.navRole !== 'archive' && c.navRole !== 'trash' && c.navRole !== 'spam') out.push(item({ group: 'Actions', label: `Archive ${subject}`, cmd: 'thread.archive', icon: 'archive', keywords: ['done'] }))
-    if (c.navRole !== 'inbox') out.push(item({ group: 'Actions', label: `Move ${subject} to Inbox`, cmd: 'thread.inbox', icon: 'inbox', keywords: ['unarchive', 'restore'] }))
+    if (c.navRole === 'spam') out.push(item({ group: 'Actions', label: many ? `Not spam (${c.targetCount} conversations)` : 'Not spam', cmd: 'thread.inbox', icon: 'inbox', binding: primaryBinding('thread.inbox'), keywords: ['unspam', 'not junk', 'restore', 'inbox', 'legitimate'] }))
+    else if (c.navRole !== 'inbox') out.push(item({ group: 'Actions', label: `Move ${subject} to Inbox`, cmd: 'thread.inbox', icon: 'inbox', keywords: ['unarchive', 'restore'] }))
     out.push(item({ group: 'Actions', label: c.targetStarred ? 'Remove star' : 'Star', cmd: 'thread.star', icon: c.targetStarred ? 'star-off' : 'star', keywords: ['favorite', 'unstar'] }))
     out.push(item({ group: 'Actions', label: 'Set reminder…', cmd: 'thread.remind', icon: 'clock', keywords: ['snooze', 'later', 'remind'] }))
     out.push(item({ group: 'Actions', label: 'Follow up if no reply…', cmd: 'thread.followup', icon: 'clock', binding: primaryBinding('thread.followup'), keywords: ['remind', 'waiting', 'nudge', 'no response'] }))
     out.push(item({ group: 'Actions', label: 'Label…', cmd: 'thread.label', icon: 'tag', keywords: ['tag', 'add label', 'remove label'] }))
     out.push(item({ group: 'Actions', label: c.targetUnread ? 'Mark as read' : 'Mark as unread', cmd: c.targetUnread ? 'thread.markRead' : 'thread.markUnread', icon: c.targetUnread ? 'mail-open' : 'mail', binding: primaryBinding('thread.unread'), keywords: ['read', 'unread'] }))
     out.push(item({ group: 'Actions', label: 'Delete', cmd: 'thread.trash', icon: 'trash', keywords: ['trash', 'remove'] }))
-    out.push(item({ group: 'Actions', label: 'Report spam', cmd: 'thread.spam', icon: 'spam', keywords: ['junk'] }))
+    if (c.navRole !== 'spam') out.push(item({ group: 'Actions', label: 'Report spam', cmd: 'thread.spam', icon: 'spam', keywords: ['junk'] }))
     out.push(item({ group: 'Actions', label: 'Move to…', cmd: 'thread.move', icon: 'folder-input', keywords: ['folder', 'label', 'file', 'move'] }))
     out.push(item({ group: 'Actions', label: c.targetMuted ? 'Unmute conversation' : 'Mute conversation', cmd: 'thread.mute', icon: 'bell-off', keywords: ['silence', 'ignore', 'skip inbox', 'mute'] }))
   }

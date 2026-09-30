@@ -5,6 +5,7 @@ import { useApp } from '@/lib/store'
 import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
 import { extPatch, readExt, type Accent, type AutoAdvance, type CountMode, type ThreadStyle } from '../lib/settings-ext'
 import { ACCENTS } from '../lib/appearance'
+import { readShowListCount, showListCountPatch } from '@/features/threadlist/listPrefs'
 
 const STYLES: { value: ThreadStyle; label: string; desc: string }[] = [
   { value: 'side', label: 'Side peek', desc: 'Opens from the right, over the list' },
@@ -92,6 +93,12 @@ export function AppearanceSection(): JSX.Element {
             </button>
           ))}
         </div>
+      </Group>
+
+      <Group title="List title">
+        <Row label="Show email count next to view title" description="Shows how many conversations are in the current list, to the right of the title (Inbox, Categories, …). Off by default.">
+          <Switch label="Show email count next to view title" checked={readShowListCount(settings)} onChange={(v) => set(showListCountPatch(v))} />
+        </Row>
       </Group>
 
       <Group title="Inbox">
