@@ -18,6 +18,12 @@ export function unreadFor(counts: Counts, accountId: string, key: string): numbe
   return counts.unread[`${accountId}:${key}`] ?? 0
 }
 
+/** Sidebar badge text: '99+' cap (default) or the exact number. Zero/negative => '' (no badge). */
+export function formatCount(n: number, mode: 'cap' | 'exact' = 'cap'): string {
+  if (!(n > 0)) return ''
+  return mode === 'cap' && n > 99 ? '99+' : String(Math.floor(n))
+}
+
 export interface MailItem {
   id: string
   name: string

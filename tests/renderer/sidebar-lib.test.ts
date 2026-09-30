@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import type { Counts, Label, View } from '../../src/shared/types'
 import {
-  MAIL_ITEMS, accountLabel, accountTags, ambiguousLabelNames, categoryGroups, filterSummary, loadCollapsed,
+  MAIL_ITEMS, formatCount, accountLabel, accountTags, ambiguousLabelNames, categoryGroups, filterSummary, loadCollapsed,
   mailNav, navEquals, saveCollapsed, sidebarLabels, sidebarViews, unreadFor, unreadForGroup
 } from '../../src/renderer/features/sidebar/lib'
 
@@ -30,7 +30,7 @@ describe('unreadFor', () => {
 
 describe('mail section', () => {
   it('lists Notion Mail\'s folders with All Mail first', () => {
-    expect(MAIL_ITEMS.map((m) => m.name)).toEqual(['All Mail', 'Starred', 'Sent', 'Drafts', 'Reminders', 'Trash', 'Spam'])
+    expect(MAIL_ITEMS.map((m) => m.name)).toEqual(['All Mail', 'Starred', 'Sent', 'Drafts', 'Reminders', 'Spam', 'Trash'])
   })
   it('maps rows to navs, with Reminders using the local snoozed nav', () => {
     expect(mailNav(MAIL_ITEMS[0])).toEqual({ kind: 'role', role: 'all' })
@@ -170,7 +170,7 @@ describe('categoryGroups (Gmail Categories sidebar section)', () => {
   ]
 
   it('returns only category-kind labels, in Gmail\'s fixed tab order, never alphabetical', () => {
-    expect(categoryGroups(labels, 'a').map((g) => g.name)).toEqual(['Primary', 'Promotions', 'Forums'])
+    expect(categoryGroups(labels, 'a').map((g) => g.name)).toEqual(['Promotions', 'Forums']) // Primary is never a row
   })
 
   it('groups the same category across accounts by remoteId when viewing "all"', () => {
@@ -190,5 +190,28 @@ describe('categoryGroups (Gmail Categories sidebar section)', () => {
     const counts: Counts = { unread: { 'all:a:CATEGORY_PROMOTIONS': 3, 'all:b:CATEGORY_PROMOTIONS': 2 } }
     const promo = categoryGroups(labels, 'all').find((g) => g.key === 'CATEGORY_PROMOTIONS')!
     expect(unreadForGroup(counts, 'all', promo)).toBe(5)
+  })
+})
+
+describe('formatCount', () => {
+  it('caps at 99+ by default and shows exact counts on request', () => {
+    expect(formatCount(0)).toBe('')
+    expect(formatCount(7)).toBe('7')
+    expect(formatCount(99)).toBe('99')
+    expect(formatCount(100)).toBe('99+')
+    expect(formatCount(1234, 'cap')).toBe('99+')
+    expect(formatCount(1234, 'exact')).toBe('1234')
+  })
+})
+
+describe('sidebar order and categories', () => {
+  it('lists Spam above Trash, Trash last', () => {
+    const ids = MAIL_ITEMS.map((m) => m.id)
+    expect(ids.indexOf('spam')).toBeLessThan(ids.indexOf('trash'))
+    expect(ids[ids.length - 1]).toBe('trash')
+  })
+  it('never includes Primary in category rows', () => {
+    const ls = ['CATEGORY_PERSONAL', 'CATEGORY_SOCIAL'].map((r) => label(`a:${r}`, 'a', r, 'category'))
+    expect(categoryGroups(ls, 'a').map((g) => g.key)).toEqual(['CATEGORY_SOCIAL'])
   })
 })

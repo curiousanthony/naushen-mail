@@ -121,14 +121,15 @@ describe('Gmail categories', () => {
       T('promo1', NOW - 1000, { labelIds: ['a:CATEGORY_PROMOTIONS'] }),
       T('social1', NOW - 2000, { labelIds: ['a:CATEGORY_SOCIAL'] }),
       T('promo2', NOW - 3000, { labelIds: ['a:CATEGORY_PROMOTIONS'] }),
-      // No category label at all (not yet re-synced): falls back to Primary rather than vanishing.
-      T('uncat', NOW - 4000, { labelIds: [] })
+      // Primary / uncategorised mail is not part of the Categories view.
+      T('uncat', NOW - 4000, { labelIds: [] }),
+      T('primary1', NOW - 5000, { labelIds: ['a:CATEGORY_PERSONAL'] })
     ]
     const groups = groupByCategory(threads, labels, 'a')
-    expect(groups.map((g) => g.label)).toEqual(['Primary', 'Social', 'Promotions'])
+    expect(groups.map((g) => g.label)).toEqual(['Social', 'Promotions'])
     expect(groups.find((g) => g.label === 'Promotions')?.threads.map((t) => t.id)).toEqual(['promo1', 'promo2'])
     expect(groups.find((g) => g.label === 'Social')?.threads.map((t) => t.id)).toEqual(['social1'])
-    expect(groups.find((g) => g.label === 'Primary')?.threads.map((t) => t.id)).toEqual(['uncat'])
+    expect(groups.some((g) => g.label === 'Primary')).toBe(false)
   })
 
   it('groupByCategory falls back to one ungrouped bucket when the account has no category labels at all', () => {

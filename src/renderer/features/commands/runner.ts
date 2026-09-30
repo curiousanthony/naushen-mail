@@ -159,6 +159,8 @@ export const THEMES = ['system', 'light', 'dark'] as const
 
 // ------------------------------------------------------------------ registry
 
+let syncing = false
+
 export const HANDLERS: Record<string, Handler> = {
   'nav.next': () => move(1),
   'nav.prev': () => move(-1),
@@ -205,7 +207,14 @@ export const HANDLERS: Record<string, Handler> = {
     // Convention for the settings feature: jump to a section when this event is handled.
     window.dispatchEvent(new CustomEvent('mailroom:settings-section', { detail: 'accounts' }))
   },
-  'sync.now': async () => { await window.api.invoke('sync.now'); S().toast({ message: 'Syncing…', duration: 1800 }) },
+  'sync.now': async () => {
+    if (syncing) return
+    syncing = true
+    S().toast({ message: 'Syncing…', duration: 1500 })
+    try { await window.api.invoke('sync.now'); S().toast({ message: 'Mail up to date', duration: 1500 }) }
+    catch { S().toast({ message: "Couldn't sync. Will retry shortly.", duration: 3000 }) }
+    finally { syncing = false }
+  },
   'theme.set': ({ arg }) => { if (arg) void S().updateSettings({ theme: arg as (typeof THEMES)[number] }) },
 
   'sel.toggle': () => { const s = S(); if (s.focusedId) s.toggleSelect(s.focusedId) },

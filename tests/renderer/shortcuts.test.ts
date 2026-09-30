@@ -4,6 +4,16 @@ import { SECTIONS, SHORTCUTS, activeBindings } from '@/features/commands/shortcu
 import { groupShortcuts } from '@/features/commands/sheet'
 import { HANDLERS, MENU_COMMANDS } from '@/features/commands/runner'
 
+describe('sync / rule shortcuts', () => {
+  it('binds Cmd+R to Sync now and keeps every binding unique', () => {
+    const all = activeBindings().map((b) => normalizeBinding(b.binding))
+    expect(new Set(all).size).toBe(all.length)
+    expect(activeBindings().find((b) => normalizeBinding(b.binding) === 'mod+r')?.id).toBe('sync.now')
+    expect(SHORTCUTS.find((s) => s.id === 'rule.create')?.keys).not.toContain('mod+r')
+    expect(HANDLERS['sync.now']).toBeTypeOf('function')
+  })
+})
+
 describe('shortcut table', () => {
   it('has unique ids', () => {
     const ids = SHORTCUTS.map((s) => s.id)

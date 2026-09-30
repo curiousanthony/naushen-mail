@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import type { AppSettings } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
-import { extPatch, readExt, type Accent, type AutoAdvance, type ThreadStyle } from '../lib/settings-ext'
+import { extPatch, readExt, type Accent, type AutoAdvance, type CountMode, type ThreadStyle } from '../lib/settings-ext'
 import { ACCENTS } from '../lib/appearance'
 
 const STYLES: { value: ThreadStyle; label: string; desc: string }[] = [
@@ -70,6 +70,14 @@ export function AppearanceSection(): JSX.Element {
                 onClick={() => set(extPatch({ accent: a.value as Accent }))} />
             ))}
           </div>
+        </Row>
+      </Group>
+
+      <Group title="Sidebar counts">
+        <Row label="Unread count display" description="How unread badges in the sidebar are shown. The cap shows 99+ once a view has more than 99 unread.">
+          <Segmented<CountMode> label="Unread count display" value={ext.sidebarCountMode} onChange={(sidebarCountMode) => set(extPatch({ sidebarCountMode }))} options={[
+            { value: 'cap', label: '99+ cap' }, { value: 'exact', label: 'Exact count' }
+          ]} />
         </Row>
       </Group>
 
