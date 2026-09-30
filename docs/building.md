@@ -16,7 +16,7 @@ npm run dev          # Electron + Vite with hot reload
 Other scripts: `npm run build` (bundle to `out/`), `npm run typecheck`, `npm test`.
 
 Pick **Settings, Accounts, Add account, Demo** to explore with sample mail. To sign in with a real Gmail account from a
-source build you need OAuth credentials: see [provider-setup-advanced.md](provider-setup-advanced.md).
+source build you need OAuth credentials: see [google-setup.md](google-setup.md).
 
 ## Package
 | Command | Output | Notes |

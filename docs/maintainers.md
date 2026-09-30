@@ -19,8 +19,8 @@ Set under *Settings, Secrets and variables, Actions*.
 
 | Secret | Required | Purpose |
 |---|---|---|
-| `MAIN_VITE_GOOGLE_CLIENT_ID` | yes | Google OAuth desktop client ID baked into official builds |
-| `MAIN_VITE_GOOGLE_CLIENT_SECRET` | yes | Its (non-confidential for desktop apps, but required) client secret |
+| `MAIN_VITE_GOOGLE_CLIENT_ID` | only for a built-in client (optional) | Google OAuth desktop client ID baked into builds; leave unset so users bring their own |
+| `MAIN_VITE_GOOGLE_CLIENT_SECRET` | only for a built-in client (optional) | Its (non-confidential for desktop apps, but required) client secret |
 | `CSC_LINK` | optional | macOS Developer ID certificate (`.p12`, base64 or URL) for signing |
 | `CSC_KEY_PASSWORD` | optional | Password of that certificate |
 | `APPLE_ID` | optional | Apple ID used for notarisation |
@@ -33,7 +33,13 @@ Without the signing secrets, builds are unsigned (macOS ad-hoc) and users see Ga
 [install.md](install.md)). Never commit these values. Anything embedded in a shipped app can be extracted, which is why only
 the desktop client ID/secret (which Google documents as non-confidential for installed apps) belongs in the build.
 
-## Google OAuth verification
+## Appendix (optional): built-in Google client and Google verification
+
+The public path is **bring your own Google OAuth client** ([google-setup.md](google-setup.md)); the project does **not** pay for
+Google verification. Everything below is optional and only relevant if the owner later decides to ship a built-in client
+(`MAIN_VITE_GOOGLE_CLIENT_ID` / `MAIN_VITE_GOOGLE_CLIENT_SECRET`, see `.env.example`) and pursue verification.
+
+### Google OAuth verification
 
 > Everything in this section is taken from Google's documentation as understood when this was written. **Re-check the current
 > Google docs before applying**; limits, wording and fees change.
@@ -56,12 +62,12 @@ To become verified you generally need:
    Google and the assessor.
 3. The app must comply with the Google API Services User Data Policy, including Limited Use (see PRIVACY.md).
 
-Until then: keep the OAuth consent screen accurate, keep the privacy policy URL live, and tell users in the README that a warning
+If pursued: keep the OAuth consent screen accurate, keep the privacy policy URL live, and tell users in the README that a warning
 is expected (it is).
 
-## Microsoft
+## Microsoft (Outlook)
 Outlook support is implemented but hidden by `OUTLOOK_ENABLED` in `src/shared/features.ts`. To enable it: create a Microsoft Entra
-app registration (public client, PKCE, redirect `http://localhost`, scopes in [provider-setup-advanced.md](provider-setup-advanced.md)),
+app registration (public client, PKCE, redirect `http://localhost`, scopes in [google-setup.md](google-setup.md)),
 wire its client ID into the build, complete publisher verification if required, then flip the flag and update the README.
 
 ## GitHub Pages

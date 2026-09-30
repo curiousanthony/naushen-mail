@@ -1,6 +1,6 @@
 # Installing Naushen Mail
 
-Naushen Mail runs on macOS, Windows and Linux. Only **Gmail** accounts are supported today (Outlook is coming). Want to build it
+Naushen Mail runs on macOS, Windows and Linux. Only **Gmail** accounts are supported today (Outlook and IMAP are planned). Want to build it
 yourself? See [building.md](building.md).
 
 ## 1. Download
@@ -48,8 +48,9 @@ expected; it goes away once signed builds are published.
 
 ## 3. Add your account
 
-Open **Settings, Accounts, Add account** and sign in with Google in your browser. Choose **Demo** to try the app offline with
-sample mail.
+Gmail sign-in needs a **one-time personal Google setup** (a free OAuth client in your own Google Cloud project, about 10
+minutes; no billing needed). Open **Settings, Accounts, Add account, Gmail** and follow the wizard, or read
+[google-setup.md](google-setup.md). Choose **Demo** to try the app offline with sample mail first.
 
 ## 4. Make it your default mail app (`mailto:` links)
 
@@ -91,6 +92,6 @@ auto-updater yet.)
 | macOS: wrong architecture | Use `arm64` on Apple Silicon and `x64` on Intel (`uname -m`) |
 | macOS: Keychain asks repeatedly | Choose **Always Allow**. Ad-hoc builds change identity on each update, so this can reappear |
 | macOS: quits immediately on Apple Silicon | The signature was lost by the copy tool; re-sign: `codesign --force --deep --sign - "/Applications/Naushen Mail.app"` |
-| Google says "hasn't verified this app" | Expected while the app has not passed Google's OAuth verification: click **Advanced**, then **Go to Naushen Mail**. See [maintainers.md](maintainers.md#google-oauth-verification) for why |
+| Google says "hasn't verified this app" | Expected for your own unverified OAuth client: click **Advanced**, then **Go to Naushen Mail (unsafe)**. See [google-setup.md](google-setup.md) |
 | Blank window or crash on start | Run the executable from a terminal to see errors. Then try a clean profile by moving the data folder aside |
 | Start over | Quit the app and delete the data folder |
