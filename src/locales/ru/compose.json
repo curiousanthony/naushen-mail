@@ -1,0 +1,229 @@
+{
+  "window": {
+    "newMessage": "Новое письмо",
+    "composer": "Редактор письма",
+    "minimise": "Свернуть",
+    "maximise": "Развернуть на весь экран",
+    "restore": "Восстановить",
+    "expand": "Развернуть",
+    "close": "Закрыть"
+  },
+  "fields": {
+    "from": "От",
+    "to": "Кому",
+    "cc": "Копия",
+    "bcc": "Скрытая копия",
+    "subject": "Тема",
+    "noAccount": "Нет учётной записи",
+    "sendFrom": "Отправить от имени",
+    "signature": "Подпись"
+  },
+  "recipients": {
+    "remove": "Удалить {{email}}",
+    "frequent": "Частые"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> похоже на опечатку в <b>{{suggested}}</b>",
+    "useDomain": "Использовать {{domain}}",
+    "keepAsTyped": "Оставить как есть",
+    "mailingList": "Похоже на <b>список рассылки</b>: ваш ответ получат все его участники.",
+    "replyingTo_one": "Ответ получит <b>{{count}} человек</b>.",
+    "replyingTo_few": "Ответ получат <b>{{count}} человека</b>.",
+    "replyingTo_many": "Ответ получат <b>{{count}} человек</b>.",
+    "replyingTo_other": "Ответ получат <b>{{count}} человека</b>.",
+    "replySenderOnly": "Ответить только отправителю",
+    "dismiss": "Закрыть"
+  },
+  "quote": {
+    "show": "Показать цитируемый текст"
+  },
+  "attachments": {
+    "remove": "Удалить {{name}}",
+    "totalOver": "{{size}} — превышен лимит 25 МБ",
+    "drop": "Перетащите файлы, чтобы прикрепить",
+    "bytes_one": "{{count}} байт",
+    "bytes_few": "{{count}} байта",
+    "bytes_many": "{{count}} байт",
+    "bytes_other": "{{count}} байта",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Прикрепить файл",
+    "addSubject": "Добавить тему",
+    "sendAnyway": "Всё равно отправить"
+  },
+  "validation": {
+    "noRecipient": "Добавьте хотя бы одного получателя.",
+    "invalidAddress_one": "{{email}} — недопустимый адрес электронной почты.",
+    "invalidAddress_few": "Недопустимые адреса электронной почты у получателей: {{count}}.",
+    "invalidAddress_many": "Недопустимые адреса электронной почты у получателей: {{count}}.",
+    "invalidAddress_other": "Недопустимые адреса электронной почты у получателей: {{count}}.",
+    "noSubject": "У письма нет темы.",
+    "empty": "Письмо пустое.",
+    "missingAttachment": "Вы упомянули вложение, но ничего не прикрепили."
+  },
+  "nudge": {
+    "empty": "Письмо пустое.",
+    "typo": "Возможно, опечатка в {{domain}}.",
+    "attachment": "Вы написали «{{word}}», но ничего не прикреплено.",
+    "noSubject": "Нет темы."
+  },
+  "toolbar": {
+    "snippets": "Шаблоны",
+    "attach": "Прикрепить файлы",
+    "discard": "Удалить черновик",
+    "help": "Справка по форматированию",
+    "draftSaved": "Черновик сохранён",
+    "send": "Отправить"
+  },
+  "schedule": {
+    "title": "Отложенная отправка",
+    "timePlaceholder": "Введите время… tomorrow 9am",
+    "timeLabel": "Введите время отправки",
+    "confirm": "Запланировать",
+    "pickFuture": "Выберите время в будущем",
+    "followUp_one": "Напомнить, если не ответят за {{count}} день",
+    "followUp_few": "Напомнить, если не ответят за {{count}} дня",
+    "followUp_many": "Напомнить, если не ответят за {{count}} дней",
+    "followUp_other": "Напомнить, если не ответят за {{count}} дня",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "Сегодня утром",
+    "thisAfternoon": "Сегодня днём",
+    "tomorrowMorning": "Завтра утром",
+    "tomorrowAfternoon": "Завтра днём",
+    "nextWeek": "На следующей неделе",
+    "pickDateTime": "Выбрать дату и время",
+    "scheduledFor": "Отправка запланирована: {{when}}"
+  },
+  "toast": {
+    "discarded": "Черновик удалён",
+    "archived": "Цепочка архивирована",
+    "sending": "Отправка…",
+    "sent": "Отправлено",
+    "sentFollowUp_one": "Отправлено · напоминание через {{count}} день, если не будет ответа",
+    "sentFollowUp_few": "Отправлено · напоминание через {{count}} дня, если не будет ответа",
+    "sentFollowUp_many": "Отправлено · напоминание через {{count}} дней, если не будет ответа",
+    "sentFollowUp_other": "Отправлено · напоминание через {{count}} дня, если не будет ответа",
+    "scheduledFollowUp_one": "{{scheduled}} · напоминание через {{count}} день",
+    "scheduledFollowUp_few": "{{scheduled}} · напоминание через {{count}} дня",
+    "scheduledFollowUp_many": "{{scheduled}} · напоминание через {{count}} дней",
+    "scheduledFollowUp_other": "{{scheduled}} · напоминание через {{count}} дня",
+    "notSent": "Не отправлено: {{reason}}",
+    "sendFailed": "Не удалось отправить письмо",
+    "cancel": "Отмена",
+    "undo": "Отменить"
+  },
+  "snippets": {
+    "none": "Шаблонов пока нет",
+    "newFromDraft": "+ Новый шаблон из этого черновика",
+    "nameLabel": "Название шаблона",
+    "namePlaceholder": "Ссылка на сайт",
+    "untitled": "Шаблон без названия"
+  },
+  "help": {
+    "typing": "Набор текста",
+    "smartTypography": "Умные кавычки, тире и многоточие",
+    "formatting": "Форматирование",
+    "insertBlock": "Вставить блок",
+    "emoji": "Эмодзи",
+    "textStyles": "Жирный, курсив, подчёркнутый",
+    "strikethrough": "Зачёркнутый",
+    "code": "Код",
+    "link": "Ссылка",
+    "snippet": "Шаблон",
+    "headings": "Заголовки",
+    "bulletKeys": "- или *",
+    "bulletList": "Маркированный список",
+    "numberedList": "Нумерованный список",
+    "todo": "Задача",
+    "quote": "Цитата",
+    "codeBlock": "Блок кода",
+    "divider": "Разделитель",
+    "send": "Отправить",
+    "sendArchive": "Отправить и архивировать",
+    "saveClose": "Сохранить черновик и закрыть"
+  },
+  "editor": {
+    "placeholder": "Пишите или нажмите «/» для блоков",
+    "placeholderShort": "Пишите или нажмите «/»",
+    "toggle": "Сворачиваемый блок",
+    "heading": "Заголовок {{level}}"
+  },
+  "slash": {
+    "noMatch": "Подходящих блоков нет",
+    "insertSnippet": "Вставить шаблон",
+    "colour": "Цвет",
+    "background": "Фон",
+    "groups": {
+      "basic": "Основные блоки",
+      "media": "Медиа",
+      "advanced": "Дополнительно",
+      "snippets": "Шаблоны"
+    },
+    "items": {
+      "text": { "title": "Текст", "description": "Просто пишите обычный текст." },
+      "h1": { "title": "Заголовок 1", "description": "Крупный заголовок раздела." },
+      "h2": { "title": "Заголовок 2", "description": "Средний заголовок раздела." },
+      "h3": { "title": "Заголовок 3", "description": "Мелкий заголовок раздела." },
+      "bulletList": { "title": "Маркированный список", "description": "Простой список с маркерами." },
+      "orderedList": { "title": "Нумерованный список", "description": "Список с нумерацией." },
+      "taskList": { "title": "Список задач", "description": "Отслеживайте дела в чек-листе." },
+      "toggle": { "title": "Сворачиваемый список", "description": "Скройте подробности внутри блока." },
+      "quote": { "title": "Цитата", "description": "Оформите цитату." },
+      "divider": { "title": "Разделитель", "description": "Визуально разделите блоки." },
+      "callout": { "title": "Выноска", "description": "Выделите важный текст." },
+      "code": { "title": "Код", "description": "Вставьте фрагмент кода." },
+      "table": { "title": "Таблица", "description": "Добавьте простую таблицу." },
+      "image": { "title": "Изображение", "description": "Загрузите или перетащите картинку." },
+      "link": { "title": "Ссылка", "description": "Ссылка на веб-страницу." },
+      "emoji": { "title": "Эмодзи", "description": "Найдите и вставьте эмодзи." },
+      "textColor": { "title": "Цвет текста", "description": "Изменить цвет выделенного текста." },
+      "backgroundColor": { "title": "Цвет фона", "description": "Выделить текст фоном." }
+    },
+    "colors": {
+      "default": "По умолчанию",
+      "gray": "Серый",
+      "brown": "Коричневый",
+      "orange": "Оранжевый",
+      "yellow": "Жёлтый",
+      "green": "Зелёный",
+      "blue": "Синий",
+      "purple": "Фиолетовый",
+      "pink": "Розовый",
+      "red": "Красный"
+    }
+  },
+  "selection": {
+    "turnInto": "Преобразовать в",
+    "bold": "Жирный",
+    "italic": "Курсив",
+    "underline": "Подчёркнутый",
+    "strikethrough": "Зачёркнутый",
+    "code": "Код",
+    "link": "Ссылка",
+    "colour": "Цвет",
+    "text": "Текст",
+    "background": "Фон",
+    "pasteLink": "Вставьте ссылку…",
+    "apply": "Применить",
+    "openLink": "Открыть ссылку",
+    "removeLink": "Удалить ссылку"
+  },
+  "link": {
+    "dialog": "Изменить ссылку",
+    "placeholder": "Вставьте или введите ссылку",
+    "urlLabel": "URL ссылки",
+    "apply": "Применить",
+    "applyLink": "Применить ссылку",
+    "open": "Открыть ссылку",
+    "remove": "Удалить ссылку"
+  },
+  "image": {
+    "alignLeft": "По левому краю",
+    "alignCenter": "По центру",
+    "alignRight": "По правому краю"
+  },
+  "callout": {
+    "changeIcon": "Изменить значок выноски"
+  }
+}

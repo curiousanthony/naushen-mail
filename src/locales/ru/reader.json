@@ -1,0 +1,151 @@
+{
+  "thread": {
+    "fallbackTitle": "Цепочка",
+    "loading": "Загрузка цепочки",
+    "unavailableTitle": "Эта цепочка больше недоступна.",
+    "unavailableHint": "Возможно, её удалили или переместили.",
+    "resize": "Изменить размер панели цепочки"
+  },
+  "header": {
+    "collapse": "Свернуть",
+    "collapseThread": "Свернуть цепочку",
+    "archive": "Архивировать",
+    "archived": "Цепочка архивирована",
+    "markUnread": "Отметить непрочитанной",
+    "markedUnread": "Отмечена непрочитанной",
+    "setReminder": "Установить напоминание",
+    "star": "Пометить",
+    "unstar": "Снять пометку",
+    "label": "Ярлык",
+    "unsubscribe": "Отписаться",
+    "unsubscribeWeb": "Откроется в браузере",
+    "unsubscribeMail": "Отправит письмо",
+    "reportSpam": "Это спам",
+    "reportedSpam": "Отмечено как спам",
+    "trash": "В корзину",
+    "trashed": "Перемещено в корзину",
+    "noSubject": "(без темы)",
+    "messageCount_one": "{{count}} письмо",
+    "messageCount_few": "{{count}} письма",
+    "messageCount_many": "{{count}} писем",
+    "messageCount_other": "{{count}} письма"
+  },
+  "replyBar": {
+    "reply": "Ответить",
+    "replyAll": "Ответить всем",
+    "forward": "Переслать"
+  },
+  "message": {
+    "unread": "Не прочитано",
+    "expand": "Развернуть письмо",
+    "showDetails": "Показать подробности",
+    "hideDetails": "Скрыть подробности",
+    "showRecipientDetails": "Показать данные получателей",
+    "hideRecipientDetails": "Скрыть данные получателей",
+    "toLine": "кому: {{recipients}}",
+    "toMe": "мне",
+    "attachmentCount_one": "{{count}} вложение",
+    "attachmentCount_few": "{{count}} вложения",
+    "attachmentCount_many": "{{count}} вложений",
+    "attachmentCount_other": "{{count}} вложения",
+    "reply": "Ответить",
+    "replyAll": "Ответить всем",
+    "forward": "Переслать",
+    "copyField": "Копировать: {{label}}",
+    "copyAddress_one": "Копировать адрес ({{label}})",
+    "copyAddress_few": "Копировать адреса ({{label}})",
+    "copyAddress_many": "Копировать адреса ({{label}})",
+    "copyAddress_other": "Копировать адреса ({{label}})",
+    "copied": "Скопировано",
+    "detail": {
+      "from": "От",
+      "replyTo": "Ответ на",
+      "to": "Кому",
+      "cc": "Копия",
+      "bcc": "Скрытая копия",
+      "date": "Дата"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_one": "Внешнее изображение заблокировано",
+    "remoteImageBlocked_few": "Заблокировано внешних изображений: {{count}}",
+    "remoteImageBlocked_many": "Заблокировано внешних изображений: {{count}}",
+    "remoteImageBlocked_other": "Заблокировано внешних изображений: {{count}}",
+    "loadImages": "Загрузить изображения",
+    "alwaysLoad": "Всегда загружать",
+    "empty": "В этом письме нет текста.",
+    "frameTitle": "Письмо от {{sender}}",
+    "showAsDesigned": "Показать как задумано",
+    "adaptToDark": "Адаптировать к тёмной теме",
+    "showOriginalColours": "Показать исходные цвета",
+    "adaptColours": "Адаптировать цвета к тёмной теме",
+    "original": "Оригинал",
+    "adapt": "Адаптировать",
+    "showQuote": "Показать цитируемый текст",
+    "hideQuote": "Скрыть цитируемый текст"
+  },
+  "attachments": {
+    "preview": "Просмотр: {{name}}",
+    "download": "Скачать {{name}} — {{size}}"
+  },
+  "preview": {
+    "loading": "Загрузка предпросмотра…",
+    "failed": "Не удалось загрузить предпросмотр файла.",
+    "unavailable": "Для этого типа файлов предпросмотр недоступен.",
+    "download": "Скачать",
+    "close": "Закрыть",
+    "closePreview": "Закрыть предпросмотр"
+  },
+  "invite": {
+    "loading": "Чтение приглашения…",
+    "sending": "Отправка…",
+    "yes": "Да",
+    "maybe": "Возможно",
+    "no": "Нет",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}, {{name}}.",
+    "sent": {
+      "accepted": "Ответ отправлен — вы отметили «Да»",
+      "tentative": "Ответ отправлен — вы отметили «Возможно»",
+      "declined": "Ответ отправлен — вы отметили «Нет»"
+    },
+    "failed": "Не удалось отправить ответ. Повторите попытку."
+  },
+  "code": {
+    "copyTooltip": "Копировать код подтверждения",
+    "copyAria": "Копировать код подтверждения {{code}}",
+    "copy": "Копировать <b>{{code}}</b>",
+    "copied": "Скопировано: {{code}}",
+    "copyFailed": "Не удалось скопировать код",
+    "none": "Свежего кода подтверждения здесь нет"
+  },
+  "shield": {
+    "blocked_one": "Заблокирован {{count}} трекер",
+    "blocked_few": "Заблокировано трекеров: {{count}}",
+    "blocked_many": "Заблокировано трекеров: {{count}}",
+    "blocked_other": "Заблокировано трекеров: {{count}}",
+    "trackingPixel": "Пиксель отслеживания",
+    "note": "Трекеры сообщают, что вы открыли письмо. Они остаются заблокированными, даже если вы загружаете изображения."
+  },
+  "link": {
+    "mailTo": "написать",
+    "call": "позвонить",
+    "trackingStripped_one": "При открытии удалён {{count}} параметр отслеживания",
+    "trackingStripped_few": "При открытии удалено параметров отслеживания: {{count}}",
+    "trackingStripped_many": "При открытии удалено параметров отслеживания: {{count}}",
+    "trackingStripped_other": "При открытии удалено параметров отслеживания: {{count}}",
+    "warningLabel": "Проверьте ссылку",
+    "warning": "Эта ссылка ведёт на <b>{{actual}}</b>, а не на <b>{{shown}}</b>.",
+    "openAnyway": "Всё равно открыть",
+    "cancel": "Отмена",
+    "writeTo": "Написать на этот адрес",
+    "open": "Открыть ссылку",
+    "copyAddress": "Копировать адрес",
+    "copyLink": "Копировать ссылку",
+    "copyLinkClean": "Копировать ссылку (без отслеживания)",
+    "copyFailed": "Не удалось скопировать ссылку",
+    "copiedClean": "Ссылка скопирована без параметров отслеживания",
+    "addressCopied": "Адрес скопирован",
+    "copied": "Ссылка скопирована"
+  }
+}

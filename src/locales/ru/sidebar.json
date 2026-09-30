@@ -1,0 +1,98 @@
+{
+  "aria": {
+    "mailboxes": "Почтовые ящики"
+  },
+  "newMessage": "Новое письмо",
+  "newView": "Новый вид",
+  "editView": "Изменить вид",
+  "settings": "Настройки",
+  "options": "Параметры",
+  "optionsFor": "Параметры: {{name}}",
+  "optionsOf": "Параметры: {{name}}",
+  "section": {
+    "views": "Виды",
+    "mail": "Почта",
+    "labels": "Ярлыки"
+  },
+  "categories": {
+    "label": "Категории",
+    "tip": "Почта, сгруппированная по вкладкам Gmail: Соцсети / Промоакции / Оповещения / Форумы"
+  },
+  "accounts": {
+    "all": "Все учётные записи",
+    "count_one": "{{count}} учётная запись",
+    "count_few": "{{count}} учётные записи",
+    "count_many": "{{count}} учётных записей",
+    "count_other": "{{count}} учётной записи",
+    "switch": "Сменить учётную запись",
+    "add": "Добавить учётную запись"
+  },
+  "search": {
+    "label": "Поиск",
+    "placeholder": "Поиск по почте",
+    "clear": "Очистить поиск",
+    "people": "Подходящие люди",
+    "operators": "Операторы поиска"
+  },
+  "label": {
+    "bundled": "Сгруппировано во Входящих",
+    "bundle": "Группировать во Входящих",
+    "stopBundling": "Не группировать во Входящих"
+  },
+  "summary": {
+    "allMail": "Вся почта",
+    "unread": "непрочитанные",
+    "hasAttachment": "с вложением",
+    "label": "ярлык",
+    "from": "от {{value}}",
+    "subject": "тема {{value}}",
+    "noFilters": "Без фильтров"
+  },
+  "viewEditor": {
+    "intro": "Виды — это сохранённые фильтры. Они применяются к имеющейся и к новой почте.",
+    "name": "Название вида",
+    "icon": "Значок",
+    "colour": "Цвет",
+    "noColour": "Без цвета",
+    "filters": "Фильтры",
+    "account": "Учётная запись",
+    "mailbox": "Папка",
+    "allMail": "Вся почта",
+    "anywhere": "Везде",
+    "from": "От",
+    "fromPlaceholder": "имя или адрес",
+    "fromContains": "Отправитель содержит",
+    "subject": "Тема",
+    "subjectPlaceholder": "содержит…",
+    "subjectContains": "Тема содержит",
+    "unreadOnly": "Только непрочитанные",
+    "hasAttachment": "Есть вложение",
+    "labels": "Ярлыки",
+    "delete": "Удалить",
+    "create": "Создать вид",
+    "updated": "Вид обновлён",
+    "created": "Вид «{{name}}» создан",
+    "deleted": "Вид «{{name}}» удалён"
+  },
+  "viewIcon": {
+    "inbox": "входящие",
+    "star": "звезда",
+    "flag": "флажок",
+    "tag": "тег",
+    "users": "люди",
+    "send": "отправка",
+    "receipt": "чек",
+    "megaphone": "рупор",
+    "pin": "булавка",
+    "message": "сообщение",
+    "newspaper": "газета",
+    "flame": "огонь",
+    "briefcase": "портфель",
+    "bell": "колокольчик",
+    "archive": "архив",
+    "heart": "сердце",
+    "bookmark": "закладка",
+    "folder": "папка",
+    "zap": "молния"
+  }
+}

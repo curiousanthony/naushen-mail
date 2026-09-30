@@ -1,0 +1,33 @@
+{
+  "move": {
+    "title": "Переместить цепочку",
+    "commandLabel": "Переместить в",
+    "placeholder": "Переместить в…",
+    "noMatch": "Нет подходящей папки или ярлыка",
+    "nowhere": "Некуда перемещать",
+    "navigate": "Навигация",
+    "move": "Переместить",
+    "labelFallback": "ярлык",
+    "toLabel_one": "Цепочка перемещена в «{{name}}»",
+    "toLabel_few": "{{count}} цепочки перемещены в «{{name}}»",
+    "toLabel_many": "{{count}} цепочек перемещено в «{{name}}»",
+    "toLabel_other": "{{count}} цепочки перемещены в «{{name}}»",
+    "skippedNoLabel": "Без подходящего ярлыка оставлено как есть: {{count}}",
+    "skippedAlreadyThere": "Уже на месте: {{count}}",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} цепочка",
+    "conversations_few": "{{count}} цепочки",
+    "conversations_many": "{{count}} цепочек",
+    "conversations_other": "{{count}} цепочки"
+  },
+  "swipe": {
+    "restore": "Восстановить",
+    "restored": "Цепочка восстановлена",
+    "notSpam": "Не спам",
+    "movedToInbox": "Цепочка перемещена во Входящие",
+    "archive": "Архивировать",
+    "archived": "Цепочка архивирована"
+  }
+}
