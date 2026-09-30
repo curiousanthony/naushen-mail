@@ -84,8 +84,8 @@ export const ENUM_VALUES: Partial<Record<FilterProp, OpDef[]>> = {
   read: [{ key: 'unread', label: 'Unread' }, { key: 'read', label: 'Read' }],
   starred: [{ key: 'yes', label: 'Starred' }, { key: 'no', label: 'Not starred' }],
   recipient: [{ key: 'to', label: 'To me' }, { key: 'cc', label: 'Only Cc’d' }],
-  newsletter: [{ key: 'yes', label: 'A newsletter / mailing list' }, { key: 'no', label: 'Not a newsletter' }],
-  invite: [{ key: 'yes', label: 'Included' }, { key: 'no', label: 'Not included' }],
+  newsletter: [{ key: 'yes', label: 'Yes' }, { key: 'no', label: 'No' }],
+  invite: [{ key: 'yes', label: 'Yes' }, { key: 'no', label: 'No' }],
   reminder: [{ key: 'snoozed', label: 'Snoozed' }, { key: 'reminder', label: 'Waiting for a reply' }, { key: 'any', label: 'Either' }, { key: 'none', label: 'None' }],
   reply: [{ key: 'awaiting', label: 'Awaiting their reply (I wrote last)' }, { key: 'needs', label: 'Needs my reply (they wrote last)' }]
 }
