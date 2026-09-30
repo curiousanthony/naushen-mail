@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Notification } from 'electron'
+import { mt } from './i18n'
 import type { NotifyPlan, ViewState } from './notify-plan'
 
 /** Shows a native notification for a plan. Single messages get Archive / Mark read actions. */
@@ -12,8 +13,8 @@ export function showNotification(
     title: plan.title,
     body: plan.body,
     // macOS shows these as buttons for alert-style notifications; ignored elsewhere.
-    actions: single ? [{ type: 'button', text: 'Archive' }, { type: 'button', text: 'Mark as Read' }] : [],
-    closeButtonText: 'Dismiss',
+    actions: single ? [{ type: 'button', text: mt('notify.archive') }, { type: 'button', text: mt('notify.markRead') }] : [],
+    closeButtonText: mt('notify.dismiss'),
     silent: false
   })
   live.add(n)

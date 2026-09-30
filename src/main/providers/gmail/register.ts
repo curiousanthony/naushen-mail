@@ -5,10 +5,11 @@ import { loopbackAuth, pkce } from '../../auth/oauth'
 import { deleteTokens, loadTokens, saveTokens } from '../../auth/tokens'
 import type { Repo } from '../../db/repo'
 import type { AdapterFactoryDeps } from '../types'
+import { mt } from '../../i18n'
 import { GmailAdapter } from './adapter'
 import { fetchImageDataUri, googlePictureUrl } from '../avatar'
 import {
-  accountIdFor, buildAuthUrl, exchangeCode, fetchUserInfo, refreshAccessToken, GMAIL_MODIFY_SCOPE, MISSING_CLIENT_MESSAGE, revokeToken
+  accountIdFor, buildAuthUrl, exchangeCode, fetchUserInfo, refreshAccessToken, GMAIL_MODIFY_SCOPE, requireGoogleClient, revokeToken
 } from './auth'
 
 /** `Connector.forget(account)` is not handed a repo, so remember the one used by connect()/restore(). */
@@ -28,18 +29,16 @@ function makeAdapter(repo: Repo, account: Account): GmailAdapter {
 
 export const gmailConnector: Connector = {
   async connect({ repo }) {
-    const { googleClientId, googleClientSecret } = repo.getSettings().oauth
-    if (!googleClientId.trim() || !googleClientSecret.trim()) throw new Error(MISSING_CLIENT_MESSAGE)
-    const client = { clientId: googleClientId.trim(), clientSecret: googleClientSecret.trim() }
+    const client = requireGoogleClient(repo.getSettings().oauth)
 
     const { verifier, challenge } = pkce()
     const { code, redirectUri } = await loopbackAuth((redirect, state) => buildAuthUrl(client, redirect, state, challenge), { host: '127.0.0.1' })
     const tokens = await exchangeCode(client, code, verifier, redirectUri)
     if (!tokens.refreshToken) {
-      throw new Error('Google did not issue a refresh token. Remove Naushen Mail at myaccount.google.com/permissions and try again.')
+      throw new Error(mt('gmail.noRefreshToken'))
     }
     if (!(tokens.scope ?? '').split(' ').includes(GMAIL_MODIFY_SCOPE)) {
-      throw new Error('Naushen Mail needs permission to read and manage your Gmail. Connect again and leave every permission ticked.')
+      throw new Error(mt('gmail.missingScope'))
     }
     const me = await fetchUserInfo(tokens.accessToken)
 
@@ -68,8 +67,7 @@ export const gmailConnector: Connector = {
     let tokens = loadTokens(repo, account.id)
     if (!tokens?.refreshToken) return undefined
     if (tokens.expiresAt < Date.now() + 60_000) {
-      const { googleClientId, googleClientSecret } = repo.getSettings().oauth
-      tokens = await refreshAccessToken({ clientId: googleClientId.trim(), clientSecret: googleClientSecret.trim() }, tokens.refreshToken)
+      tokens = await refreshAccessToken(requireGoogleClient(repo.getSettings().oauth), tokens.refreshToken)
       saveTokens(repo, account.id, tokens)
     }
     const me = await fetchUserInfo(tokens.accessToken)

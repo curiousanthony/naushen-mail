@@ -1,6 +1,7 @@
 import type { Label, OutgoingMessage, ThreadAction } from '@shared/types'
 import { makeId } from '@shared/types'
 import type { NormalizedThread, ProviderAdapter, SyncPage } from '../types'
+import { mt } from '../../i18n'
 import { buildMockMailbox, MOCK_ATTACHMENT_CONTENT, type MockMailbox } from './fixtures'
 
 /** In-memory demo provider. Lets the whole UI run with no OAuth, and doubles as a test double. */
@@ -24,7 +25,7 @@ export class MockAdapter implements ProviderAdapter {
 
   async fetchThread(remoteThreadId: string): Promise<NormalizedThread> {
     const t = this.box.threads.find((x) => x.thread.remoteId === remoteThreadId)
-    if (!t) throw new Error('Thread not found')
+    if (!t) throw new Error(mt('errors.threadNotFound'))
     return t
   }
 

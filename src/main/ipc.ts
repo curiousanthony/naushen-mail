@@ -1,4 +1,4 @@
-import { setMainLanguage } from './i18n'
+import { mt, setMainLanguage } from './i18n'
 import { dialog, ipcMain, shell, app, BrowserWindow, nativeTheme } from 'electron'
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -10,6 +10,7 @@ import type { Outbox } from './sync/outbox'
 import { connectAccount, removeAccount } from './accounts'
 import { dragOutAttachment } from './dragout'
 import { matchExisting } from './sync/rules'
+import { builtInGoogleClient } from './providers/gmail/auth'
 
 export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): void {
   const impl: MailApi = {
@@ -20,7 +21,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
     'labels.list': async () => repo.listLabels(),
     'labels.create': async (accountId, name, color) => {
       const adapter = engine.getAdapter(accountId)
-      if (!adapter) throw new Error('Account not connected')
+      if (!adapter) throw new Error(mt('errors.accountNotConnected'))
       const l = await adapter.createLabel(name, color)
       repo.upsertLabel({ ...l, color: (color as never) ?? l.color })
       engine.emit({ type: 'changed', accountId })
@@ -162,7 +163,7 @@ export function registerIpc(repo: Repo, engine: SyncEngine, outbox: Outbox): voi
       return next
     },
     'app.openExternal': async (url) => { if (/^(https?:|mailto:)/i.test(url)) await shell.openExternal(url) },
-    'app.platform': async () => ({ platform: process.platform, version: app.getVersion() }),
+    'app.platform': async () => ({ platform: process.platform, version: app.getVersion(), builtInOAuth: { google: builtInGoogleClient() !== null } }),
     'attachments.dragOut': (messageId, attachmentId, start) =>
       dragOutAttachment(repo, engine, (BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0])?.webContents, messageId, attachmentId, start)
   }

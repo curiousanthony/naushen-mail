@@ -1,1 +1,64 @@
-{}
+{
+  "menu": {
+    "settings": "Settings…",
+    "file": "File",
+    "newMessage": "New Message",
+    "addAccount": "Add Account…",
+    "edit": "Edit",
+    "view": "View",
+    "commandMenu": "Command Menu",
+    "search": "Search",
+    "toggleSidebar": "Toggle Sidebar",
+    "reloadWindow": "Reload Window",
+    "mailbox": "Mailbox",
+    "goToInbox": "Go to Inbox",
+    "checkMail": "Check Mail Now"
+  },
+  "notify": {
+    "archive": "Archive",
+    "markRead": "Mark as Read",
+    "dismiss": "Dismiss",
+    "noSubject": "(no subject)",
+    "burstTitle_one": "{{count}} new message",
+    "burstTitle_other": "{{count}} new messages",
+    "burstBody": "{{names}} and {{others}} more"
+  },
+  "oauth": {
+    "connectedTitle": "You’re connected",
+    "connectedBody": "You can close this tab and return to Naushen Mail.",
+    "failedTitle": "Something went wrong",
+    "invalidResponse": "Invalid response.",
+    "authFailed": "Authorization failed: {{error}}",
+    "authInvalid": "Invalid authorization response",
+    "timedOut": "Sign-in timed out"
+  },
+  "errors": {
+    "notSignedIn": "Not signed in",
+    "sessionExpired": "Your session expired. Sign in again.",
+    "threadNotFound": "Thread not found",
+    "accountNotConnected": "Account not connected",
+    "connectorUnavailable": "The {{provider}} connector is not available in this build.",
+    "providerUnavailable": "Provider not available",
+    "actionFailed": "Action failed: {{message}}",
+    "attachmentNotFound": "Attachment not found",
+    "attachmentEmpty": "Attachment has no content"
+  },
+  "gmail": {
+    "missingClient": "Google sign-in is not configured in this build. Add your own Google OAuth client ID and secret in Settings → Accounts → OAuth setup (see docs/06-provider-setup.md).",
+    "noRefreshToken": "Google did not issue a refresh token. Remove Naushen Mail at myaccount.google.com/permissions and try again.",
+    "missingScope": "Naushen Mail needs permission to read and manage your Gmail. Connect again and leave every permission ticked.",
+    "profileFailed": "Could not read your Google profile (HTTP {{status}}).",
+    "noEmail": "Google did not return an email address for this account.",
+    "authRejected": "Google rejected the stored credentials. Sign in again.",
+    "network": "Network error talking to Gmail: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "Add your Microsoft Application (client) ID first: Settings → Accounts → OAuth setup.",
+    "noEmail": "Microsoft did not return an email address for this account.",
+    "noInbox": "Could not find the Inbox folder of this mailbox.",
+    "deltaIncomplete": "Outlook delta round did not complete",
+    "categoryOnly": "Only Outlook categories can be edited",
+    "categoryGone": "Category \"{{name}}\" no longer exists",
+    "attachmentUpload": "Attachment upload failed ({{status}})"
+  }
+}

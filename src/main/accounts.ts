@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import type { Account, ProviderKind } from '@shared/types'
 import type { Repo } from './db/repo'
 import type { SyncEngine } from './sync/engine'
+import { mt } from './i18n'
 import { MockAdapter } from './providers/mock/adapter'
 
 const COLORS = ['#2383e2', '#d9730d', '#0f7b6c', '#9065b0', '#e03e3e', '#ad1a72']
@@ -40,7 +41,7 @@ export async function connectAccount(kind: ProviderKind, repo: Repo, engine: Syn
     return repo.getAccount(id)!
   }
   const connector = connectors[kind]
-  if (!connector) throw new Error(`The ${kind} connector is not available in this build.`)
+  if (!connector) throw new Error(mt('errors.connectorUnavailable', { provider: kind }))
   const { account, adapter } = await connector.connect({ repo })
   const acc = { ...account, color: account.color || COLORS[repo.listAccounts().length % COLORS.length] }
   repo.upsertAccount(acc)
@@ -60,7 +61,7 @@ export function restoreAccounts(repo: Repo, engine: SyncEngine): void {
     }
     const adapter = connectors[a.provider]?.restore(a, { repo })
     if (adapter) engine.register(adapter)
-    else repo.patchAccount(a.id, { status: 'error', statusMessage: 'Provider not available' })
+    else repo.patchAccount(a.id, { status: 'error', statusMessage: mt('errors.providerUnavailable') })
   }
 }
 

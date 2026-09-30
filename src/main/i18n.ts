@@ -12,13 +12,22 @@ for (const [path, main] of Object.entries(files)) {
 }
 
 const instance = i18n.createInstance()
+// Synchronous init so `mt()` works (in English) before `setMainLanguage` is ever called, and in unit tests.
 void instance.init({
-  resources, lng: DEFAULT_LANGUAGE, fallbackLng: DEFAULT_LANGUAGE, supportedLngs: LANGUAGES.map((l) => l.code),
+  initAsync: false, resources, lng: DEFAULT_LANGUAGE, fallbackLng: DEFAULT_LANGUAGE, supportedLngs: LANGUAGES.map((l) => l.code),
   defaultNS: 'main', ns: ['main'], interpolation: { escapeValue: false }, returnNull: false
 })
 
+const listeners = new Set<() => void>()
+/** Run `cb` after the main-process language changes (menus rebuild their labels here). Returns an unsubscribe. */
+export function onMainLanguageChange(cb: () => void): () => void {
+  listeners.add(cb)
+  return () => { listeners.delete(cb) }
+}
+
 export function setMainLanguage(pref: LanguagePref | undefined): void {
-  void instance.changeLanguage(resolveLanguage(pref, app.getLocale()))
+  const locale = typeof app?.getLocale === 'function' ? app.getLocale() : 'en'
+  void instance.changeLanguage(resolveLanguage(pref, locale)).then(() => { for (const cb of listeners) cb() })
 }
 /** Translate a main-process string: `mt('notify.newMail', { count })`. */
 export const mt = (key: string, options?: Record<string, unknown>): string => instance.t(key, options) as string

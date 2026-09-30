@@ -2,6 +2,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { shell } from 'electron'
+import { mt } from '../i18n'
 
 /** RFC 7636 PKCE pair. */
 export function pkce(): { verifier: string; challenge: string } {
@@ -11,8 +12,11 @@ export function pkce(): { verifier: string; challenge: string } {
 
 export interface LoopbackResult { code: string; redirectUri: string }
 
-const PAGE = (title: string, body: string): string =>
-  `<!doctype html><meta charset="utf-8"><title>${title}</title><body style="font:16px -apple-system,system-ui,sans-serif;color:#37352f;display:grid;place-items:center;height:100vh;margin:0"><div style="text-align:center"><h2 style="font-weight:600">${title}</h2><p style="color:#787774">${body}</p></div></body>`
+const esc = (s: string): string => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
+const PAGE = (rawTitle: string, rawBody: string): string => {
+  const title = esc(rawTitle), body = esc(rawBody)
+  return `<!doctype html><meta charset="utf-8"><title>${title}</title><body style="font:16px -apple-system,system-ui,sans-serif;color:#37352f;display:grid;place-items:center;height:100vh;margin:0"><div style="text-align:center"><h2 style="font-weight:600">${title}</h2><p style="color:#787774">${body}</p></div></body>`
+}
 
 /**
  * Desktop OAuth "loopback" flow: listens on 127.0.0.1:<random port>, opens the system browser at
@@ -33,14 +37,14 @@ export async function loopbackAuth(
       const code = url.searchParams.get('code')
       const ok = !err && code && url.searchParams.get('state') === state
       res.writeHead(ok ? 200 : 400, { 'Content-Type': 'text/html; charset=utf-8' })
-      res.end(ok ? PAGE('You’re connected', 'You can close this tab and return to Naushen Mail.') : PAGE('Something went wrong', err ?? 'Invalid response.'))
+      res.end(ok ? PAGE(mt('oauth.connectedTitle'), mt('oauth.connectedBody')) : PAGE(mt('oauth.failedTitle'), err ?? mt('oauth.invalidResponse')))
       clearTimeout(timer)
       server.close()
       if (ok) resolve({ code: code!, redirectUri: `http://${host}:${(server.address() as AddressInfo | null)?.port ?? port}` })
-      else reject(new Error(err ? `Authorization failed: ${err}` : 'Invalid authorization response'))
+      else reject(new Error(err ? mt('oauth.authFailed', { error: err }) : mt('oauth.authInvalid')))
     })
     let port = 0
-    const timer = setTimeout(() => { server.close(); reject(new Error('Sign-in timed out')) }, opts.timeoutMs ?? 5 * 60_000)
+    const timer = setTimeout(() => { server.close(); reject(new Error(mt('oauth.timedOut'))) }, opts.timeoutMs ?? 5 * 60_000)
     server.on('error', (e) => { clearTimeout(timer); reject(e) })
     server.listen(0, '127.0.0.1', () => {
       port = (server.address() as AddressInfo).port

@@ -1,5 +1,6 @@
 import type { Label, OutgoingAttachment, OutgoingMessage, ThreadAction } from '@shared/types'
 import { makeId } from '@shared/types'
+import { mt } from '../../i18n'
 import type { NormalizedThread, ProviderAdapter, SyncPage } from '../types'
 import { GraphClient, GraphError, enc, isNotFound, isSyncStateError, odataString, type TokenSource } from './graph'
 import {
@@ -114,7 +115,7 @@ export class OutlookAdapter implements ProviderAdapter {
       if (r.status === 'fulfilled' && r.value?.id) byWk.set(WELL_KNOWN[i], r.value.id)
       else if (r.status === 'rejected' && !isNotFound(r.reason) && WELL_KNOWN[i] === 'inbox') throw r.reason
     })
-    if (!byWk.has('inbox')) throw new Error('Could not find the Inbox folder of this mailbox.')
+    if (!byWk.has('inbox')) throw new Error(mt('outlook.noInbox'))
     if (!byWk.has('archive') && this.createdArchiveId) byWk.set('archive', this.createdArchiveId)
     this.folderIdByWk = byWk
     this.wkByFolderId = new Map([...byWk].map(([wk, id]) => [id, wk]))
@@ -203,7 +204,7 @@ export class OutlookAdapter implements ProviderAdapter {
 
   async fetchThread(remoteThreadId: string): Promise<NormalizedThread> {
     const { threads } = await this.refresh([remoteThreadId])
-    if (!threads[0]) throw new Error('Thread not found')
+    if (!threads[0]) throw new Error(mt('errors.threadNotFound'))
     return threads[0]
   }
 
@@ -274,7 +275,7 @@ export class OutlookAdapter implements ProviderAdapter {
       if (!page['@odata.nextLink']) break
       url = page['@odata.nextLink']
     }
-    throw new Error('Outlook delta round did not complete')
+    throw new Error(mt('outlook.deltaIncomplete'))
   }
 
   private async baselineStep(cur: Cursor): Promise<SyncPage> {
@@ -519,7 +520,7 @@ export class OutlookAdapter implements ProviderAdapter {
         headers: { 'Content-Type': 'application/octet-stream', 'Content-Length': String(end - start), 'Content-Range': `bytes ${start}-${end - 1}/${data.length}` },
         body: data.subarray(start, end)
       })
-      if (!res.ok) throw new GraphError(res.status, String(res.status), `Attachment upload failed (${res.status})`)
+      if (!res.ok) throw new GraphError(res.status, String(res.status), mt('outlook.attachmentUpload', { status: res.status }))
     }
   }
 
@@ -557,10 +558,10 @@ export class OutlookAdapter implements ProviderAdapter {
 
   private async findCategory(remoteLabelId: string): Promise<GraphCategory> {
     const name = categoryNameFromRemoteId(remoteLabelId)
-    if (!name) throw new Error('Only Outlook categories can be edited')
+    if (!name) throw new Error(mt('outlook.categoryOnly'))
     await this.loadCategories()
     const cat = this.categories.get(name.toLowerCase())
-    if (!cat) throw new Error(`Category "${name}" no longer exists`)
+    if (!cat) throw new Error(mt('outlook.categoryGone', { name }))
     return cat
   }
 

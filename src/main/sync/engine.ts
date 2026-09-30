@@ -3,6 +3,7 @@ import { activeRules } from '@shared/rules'
 import type { ProviderAdapter } from '../providers/types'
 import type { Repo } from '../db/repo'
 import { FollowUps } from './followups'
+import { mt } from '../i18n'
 import { RulesStore, planFor } from './rules'
 
 const LOCAL_ONLY = new Set<ThreadAction['type']>(['snooze', 'unsnooze', 'remind'])
@@ -122,10 +123,10 @@ export class SyncEngine {
    * adapter may have just set (via `markReauthNeeded`) immediately before throwing — a bare
    * network/API error is a worse, less actionable message than "sign in again".
    */
-  private failStatus(accountId: string, e: unknown, prefix = ''): void {
+  private failStatus(accountId: string, e: unknown, prefixKey = ''): void {
     const current = this.repo.getAccount(accountId)?.status
     if (current === 'reauth') return
-    this.setStatus(accountId, { status: 'error', statusMessage: `${prefix}${e instanceof Error ? e.message : String(e)}` })
+    this.setStatus(accountId, { status: 'error', statusMessage: prefixKey ? mt(prefixKey, { message: e instanceof Error ? e.message : String(e) }) : e instanceof Error ? e.message : String(e) })
   }
 
   /**
@@ -170,7 +171,7 @@ export class SyncEngine {
         const remote: ThreadAction = action.type === 'mute' ? { type: 'archive' } : action.type === 'unmute' ? { type: 'unarchive' } : action
         for (const t of threads) await adapter.applyAction(t.remoteId, remote, { labels })
       } catch (e) {
-        this.failStatus(accountId, e, 'Action failed: ')
+        this.failStatus(accountId, e, 'errors.actionFailed')
         void this.syncAccount(accountId) // reconcile local state with the server
       }
     }))
@@ -178,7 +179,7 @@ export class SyncEngine {
 
   async send(msg: OutgoingMessage): Promise<void> {
     const adapter = this.adapters.get(msg.accountId)
-    if (!adapter) throw new Error('Account not connected')
+    if (!adapter) throw new Error(mt('errors.accountNotConnected'))
     const sentAt = Date.now()
     await adapter.send(msg)
     this.repo.bumpContacts([...msg.to, ...msg.cc, ...msg.bcc])

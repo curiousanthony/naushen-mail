@@ -1,5 +1,6 @@
 import { safeStorage } from 'electron'
 import type { Repo } from '../db/repo'
+import { mt } from '../i18n'
 import type { StoredTokens } from '../providers/types'
 
 /**
@@ -36,7 +37,7 @@ export async function ensureAccessToken(
   onReauth: (msg: string) => void
 ): Promise<string> {
   const t = get()
-  if (!t) { onReauth('Not signed in'); throw new Error('Not signed in') }
+  if (!t) { onReauth(mt('errors.notSignedIn')); throw new Error(mt('errors.notSignedIn')) }
   if (t.expiresAt - 60_000 > Date.now()) return t.accessToken
   try {
     const next = await refresh(t.refreshToken)
@@ -45,7 +46,7 @@ export async function ensureAccessToken(
     return merged.accessToken
   } catch (e) {
     const code = (e as { code?: string }).code
-    if (code === 'invalid_grant' || code === 'interaction_required') onReauth('Your session expired. Sign in again.')
+    if (code === 'invalid_grant' || code === 'interaction_required') onReauth(mt('errors.sessionExpired'))
     throw e
   }
 }
