@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "previous7": "7 derniers jours",
+    "previous30": "30 derniers jours"
+  },
+  "actions": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "retry": "Réessayer",
+    "undo": "Annuler"
+  },
+  "toast": {
+    "sendFailed": "Impossible d'envoyer le message.",
+    "sendFailedWithReason": "Envoi impossible : {{error}}"
+  },
+  "noSubject": "(sans objet)",
+  "role": {
+    "inbox": "Boîte de réception",
+    "sent": "Envoyés",
+    "drafts": "Brouillons",
+    "trash": "Corbeille",
+    "spam": "Spam",
+    "archive": "Archives",
+    "starred": "Favoris",
+    "important": "Importants",
+    "all": "Tous les messages",
+    "reminders": "Rappels"
+  },
+  "category": {
+    "social": "Réseaux sociaux",
+    "promotions": "Promotions",
+    "updates": "Notifications",
+    "forums": "Forums"
+  },
+  "color": {
+    "gray": "gris",
+    "brown": "marron",
+    "orange": "orange",
+    "yellow": "jaune",
+    "green": "vert",
+    "blue": "bleu",
+    "purple": "violet",
+    "pink": "rose",
+    "red": "rouge"
+  },
+  "searchOperators": {
+    "from": "nom ou adresse de l'expéditeur",
+    "to": "nom ou adresse du destinataire",
+    "subject": "mots de l'objet",
+    "label": "nom du libellé",
+    "hasAttachment": "avec pièce jointe",
+    "isUnread": "non lus uniquement",
+    "isStarred": "favoris uniquement",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

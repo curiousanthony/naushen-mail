@@ -1,0 +1,65 @@
+{
+  "menu": {
+    "settings": "Réglages…",
+    "file": "Fichier",
+    "newMessage": "Nouveau message",
+    "addAccount": "Ajouter un compte…",
+    "edit": "Édition",
+    "view": "Affichage",
+    "commandMenu": "Menu des commandes",
+    "search": "Rechercher",
+    "toggleSidebar": "Afficher/masquer la barre latérale",
+    "reloadWindow": "Recharger la fenêtre",
+    "mailbox": "Boîte aux lettres",
+    "goToInbox": "Aller à la boîte de réception",
+    "checkMail": "Relever le courrier maintenant"
+  },
+  "notify": {
+    "archive": "Archiver",
+    "markRead": "Marquer comme lu",
+    "dismiss": "Ignorer",
+    "noSubject": "(sans objet)",
+    "burstTitle_one": "{{count}} nouveau message",
+    "burstTitle_many": "{{count}} de nouveaux messages",
+    "burstTitle_other": "{{count}} nouveaux messages",
+    "burstBody": "{{names}} et {{others}} autres"
+  },
+  "oauth": {
+    "connectedTitle": "Vous êtes connecté",
+    "connectedBody": "Vous pouvez fermer cet onglet et revenir à Naushen Mail.",
+    "failedTitle": "Une erreur s'est produite",
+    "invalidResponse": "Réponse non valide.",
+    "authFailed": "Échec de l'autorisation : {{error}}",
+    "authInvalid": "Réponse d'autorisation non valide",
+    "timedOut": "La connexion a expiré"
+  },
+  "errors": {
+    "notSignedIn": "Non connecté",
+    "sessionExpired": "Votre session a expiré. Reconnectez-vous.",
+    "threadNotFound": "Conversation introuvable",
+    "accountNotConnected": "Compte non connecté",
+    "connectorUnavailable": "Le connecteur {{provider}} n'est pas disponible dans cette version.",
+    "providerUnavailable": "Fournisseur indisponible",
+    "actionFailed": "Échec de l'action : {{message}}",
+    "attachmentNotFound": "Pièce jointe introuvable",
+    "attachmentEmpty": "La pièce jointe est vide"
+  },
+  "gmail": {
+    "missingClient": "La connexion Google n'est pas configurée dans cette version. Ajoutez votre propre identifiant et secret client OAuth Google dans Réglages → Comptes → Configuration OAuth (voir docs/google-setup.md).",
+    "noRefreshToken": "Google n'a pas fourni de jeton d'actualisation. Retirez Naushen Mail sur myaccount.google.com/permissions, puis réessayez.",
+    "missingScope": "Naushen Mail a besoin de l'autorisation de lire et de gérer votre Gmail. Reconnectez-vous en laissant toutes les autorisations cochées.",
+    "profileFailed": "Impossible de lire votre profil Google (HTTP {{status}}).",
+    "noEmail": "Google n'a pas renvoyé d'adresse e-mail pour ce compte.",
+    "authRejected": "Google a rejeté les identifiants enregistrés. Reconnectez-vous.",
+    "network": "Erreur réseau lors de la communication avec Gmail : {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "Ajoutez d'abord l'identifiant d'application (client) Microsoft : Réglages → Comptes → Configuration OAuth.",
+    "noEmail": "Microsoft n'a pas renvoyé d'adresse e-mail pour ce compte.",
+    "noInbox": "Impossible de trouver le dossier Boîte de réception de cette boîte aux lettres.",
+    "deltaIncomplete": "La synchronisation delta d'Outlook ne s'est pas terminée",
+    "categoryOnly": "Seules les catégories Outlook peuvent être modifiées",
+    "categoryGone": "La catégorie « {{name}} » n'existe plus",
+    "attachmentUpload": "Échec de l'envoi de la pièce jointe ({{status}})"
+  }
+}

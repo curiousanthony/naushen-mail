@@ -1,0 +1,149 @@
+{
+  "summary": {
+    "archived_one": "{{count}} archivée",
+    "archived_many": "{{count}} archivées",
+    "archived_other": "{{count}} archivées",
+    "trashed_one": "{{count}} mise à la corbeille",
+    "trashed_many": "{{count}} mises à la corbeille",
+    "trashed_other": "{{count}} mises à la corbeille",
+    "rescued_one": "{{count}} récupérée du spam",
+    "rescued_many": "{{count}} récupérées du spam",
+    "rescued_other": "{{count}} récupérées du spam",
+    "markedRead_one": "{{count}} marquée comme lue",
+    "markedRead_many": "{{count}} marquées comme lues",
+    "markedRead_other": "{{count}} marquées comme lues",
+    "starred_one": "{{count}} ajoutée aux favoris",
+    "starred_many": "{{count}} ajoutées aux favoris",
+    "starred_other": "{{count}} ajoutées aux favoris",
+    "labelled_one": "{{count}} avec le libellé « {{name}} »",
+    "labelled_many": "{{count}} avec le libellé « {{name}} »",
+    "labelled_other": "{{count}} avec le libellé « {{name}} »",
+    "labelFallback": "libellé"
+  },
+  "describe": {
+    "from": "De {{value}}",
+    "fromDomain": "De @{{value}}",
+    "subject": "L'objet contient « {{value}} »",
+    "noActions": "Aucune action",
+    "actions": {
+      "archive": "ignorer la boîte de réception",
+      "markRead": "marquer comme lu",
+      "star": "ajouter aux favoris",
+      "trash": "mettre à la corbeille",
+      "neverSpam": "ne jamais classer en spam",
+      "label": "ajouter le libellé « {{name}} »"
+    }
+  },
+  "form": {
+    "whenMailIs": "Quand un message est",
+    "matchOn": "Critère",
+    "matchValue": "Valeur à trouver",
+    "field": {
+      "from": { "label": "De", "placeholder": "nom@example.com", "hint": "Cet expéditeur exactement." },
+      "fromDomain": { "label": "Domaine", "placeholder": "example.com", "hint": "Toute personne de ce domaine, sous-domaines compris." },
+      "subject": { "label": "Objet", "placeholder": "Mots de l'objet", "hint": "Tout objet contenant ce texte." }
+    },
+    "moreConditions_one": "Plus {{count}} autre condition.",
+    "moreConditions_many": "Plus {{count}} d'autres conditions.",
+    "moreConditions_other": "Plus {{count}} autres conditions.",
+    "then": "Alors",
+    "actionsAria": "Actions",
+    "actions": {
+      "archive": "Ignorer la boîte de réception",
+      "markRead": "Marquer comme lu",
+      "star": "Ajouter aux favoris",
+      "trash": "Mettre à la corbeille",
+      "neverSpam": "Ne jamais classer en spam"
+    },
+    "applyLabel": "Appliquer un libellé",
+    "none": "Aucun",
+    "appliesTo": "S'applique à",
+    "allAccounts": "Tous les comptes"
+  },
+  "section": {
+    "title": "Règles",
+    "description": "Des filtres appliqués aux nouveaux messages dans Naushen Mail. Ils restent sur ce Mac : rien n'est créé dans Gmail, et ils ne s'exécutent pas lorsque l'app est fermée.",
+    "description_outlook": "Des filtres appliqués aux nouveaux messages dans Naushen Mail. Ils restent sur ce Mac : rien n'est créé dans Gmail ni Outlook, et ils ne s'exécutent pas lorsque l'app est fermée.",
+    "empty": {
+      "title": "Aucune règle",
+      "body": "Ouvrez une conversation et appuyez sur <k1>⌘</k1><k2>⇧</k2><k3>R</k3> pour classer automatiquement les messages de cet expéditeur."
+    },
+    "removedAccount": "Compte supprimé",
+    "allAccounts": "Tous les comptes",
+    "ruleAria": "Règle : {{condition}}",
+    "and": " et ",
+    "moveUp": "Monter",
+    "moveDown": "Descendre",
+    "edit": "Modifier la règle",
+    "delete": "Supprimer la règle",
+    "deleteConfirm": "Supprimer cette règle ? Les messages déjà classés restent où ils sont.",
+    "deleteAction": "Supprimer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "order": "Les règles s'exécutent de haut en bas ; toutes celles qui correspondent s'appliquent."
+  },
+  "bundles": {
+    "title": "Regroupements de la boîte de réception",
+    "collapse": {
+      "label": "Réduire le courrier peu important",
+      "desc": "Un libellé ou un expéditeur regroupé devient une seule ligne dans votre boîte de réception (par exemple « Newsletters · 7 nouveaux »). Les messages favoris ne sont jamais regroupés. Rien n'est regroupé tant que vous n'en ajoutez pas."
+    },
+    "kindLabel": "Libellé",
+    "kindSender": "Expéditeur",
+    "stop": "Ne plus regrouper",
+    "bundleLabel": "Regrouper un libellé",
+    "bundleLabelDesc": "Ou faites un clic droit sur un libellé dans la barre latérale.",
+    "chooseLabel": "Choisir un libellé…"
+  },
+  "host": {
+    "title": "Créer une règle",
+    "from": "à partir de « {{subject}} »",
+    "noSubject": "(sans objet)",
+    "cancel": "Annuler",
+    "create": "Créer la règle",
+    "createApply_one": "Créer et appliquer à {{count}}",
+    "createApply_many": "Créer et appliquer à {{count}}",
+    "createApply_other": "Créer et appliquer à {{count}}",
+    "undo": "Annuler",
+    "note": "Reste dans Naushen Mail : rien n'est créé dans Gmail.",
+    "note_outlook": "Reste dans Naushen Mail : rien n'est créé dans Gmail ni Outlook.",
+    "match": {
+      "incomplete": "Ajoutez une valeur et une action",
+      "checking": "Vérification des messages existants…",
+      "none": "Aucune conversation existante ne correspond",
+      "some_one": "Correspond à {{count}} conversation existante",
+      "some_many": "Correspond à {{count}} de conversations existantes",
+      "some_other": "Correspond à {{count}} conversations existantes"
+    },
+    "toast": {
+      "createdApplied": "Règle créée · {{summary}}",
+      "existedApplied": "Règle déjà existante · {{summary}}",
+      "createdNothing": "Règle créée · rien à modifier",
+      "existedNothing": "Règle déjà existante · rien à modifier",
+      "alreadyHave": "Vous avez déjà cette règle",
+      "created": "Règle créée. Elle filtre les nouveaux messages sur ce Mac.",
+      "viewRules": "Voir les règles",
+      "failed": "Impossible de créer la règle",
+      "failedWith": "Impossible de créer la règle : {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "Cette conversation ne contient aucun message reçu à partir duquel créer une règle.",
+    "undo": "Annuler",
+    "ran": "Règle : {{summary}}",
+    "ranWith": "{{condition}} : {{summary}}",
+    "archivedFrom_one": "{{count}} message de {{name}} archivé",
+    "archivedFrom_many": "{{count}} de messages de {{name}} archivés",
+    "archivedFrom_other": "{{count}} messages de {{name}} archivés",
+    "nothingFrom": "Aucun message de {{name}} dans votre boîte de réception",
+    "blocked": "{{name}} bloqué. Ses prochains messages iront à la corbeille.",
+    "blockedMoved_one": "{{name}} bloqué · {{count}} message mis à la corbeille. Ses prochains messages iront à la corbeille.",
+    "blockedMoved_many": "{{name}} bloqué · {{count}} de messages mis à la corbeille. Ses prochains messages iront à la corbeille.",
+    "blockedMoved_other": "{{name}} bloqué · {{count}} messages mis à la corbeille. Ses prochains messages iront à la corbeille.",
+    "archivedFromSender_one": "{{count}} message de cet expéditeur archivé",
+    "archivedFromSender_many": "{{count}} de messages de cet expéditeur archivés",
+    "archivedFromSender_other": "{{count}} messages de cet expéditeur archivés",
+    "bundling": "{{name}} est regroupé dans votre boîte de réception",
+    "stoppedBundling": "{{name}} n'est plus regroupé"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "aria": {
+    "mailboxes": "Boîtes aux lettres"
+  },
+  "newMessage": "Nouveau message",
+  "newView": "Nouvelle vue",
+  "editView": "Modifier la vue",
+  "settings": "Réglages",
+  "options": "Options",
+  "optionsFor": "Options pour {{name}}",
+  "optionsOf": "Options de {{name}}",
+  "section": {
+    "views": "Vues",
+    "mail": "Courrier",
+    "labels": "Libellés"
+  },
+  "categories": {
+    "label": "Catégories",
+    "tip": "Courrier regroupé selon les onglets Gmail Réseaux sociaux / Promotions / Notifications / Forums"
+  },
+  "accounts": {
+    "all": "Tous les comptes",
+    "count_one": "{{count}} compte",
+    "count_many": "{{count}} de comptes",
+    "count_other": "{{count}} comptes",
+    "switch": "Changer de compte",
+    "add": "Ajouter un compte"
+  },
+  "search": {
+    "label": "Rechercher",
+    "placeholder": "Rechercher dans le courrier",
+    "clear": "Effacer la recherche",
+    "people": "Personnes correspondantes",
+    "operators": "Opérateurs de recherche"
+  },
+  "label": {
+    "bundled": "Regroupé dans la boîte de réception",
+    "bundle": "Regrouper dans la boîte de réception",
+    "stopBundling": "Ne plus regrouper dans la boîte de réception"
+  },
+  "summary": {
+    "allMail": "Tous les messages",
+    "unread": "non lus",
+    "hasAttachment": "avec pièce jointe",
+    "label": "libellé",
+    "from": "de {{value}}",
+    "subject": "objet {{value}}",
+    "noFilters": "Aucun filtre"
+  },
+  "viewEditor": {
+    "intro": "Les vues sont des filtres enregistrés. Elles s'appliquent au courrier existant et à tout nouveau message.",
+    "name": "Nom de la vue",
+    "icon": "Icône",
+    "colour": "Couleur",
+    "noColour": "Aucune couleur",
+    "filters": "Filtres",
+    "account": "Compte",
+    "mailbox": "Boîte aux lettres",
+    "allMail": "Tous les messages",
+    "anywhere": "Partout",
+    "from": "De",
+    "fromPlaceholder": "nom ou adresse",
+    "fromContains": "L'expéditeur contient",
+    "subject": "Objet",
+    "subjectPlaceholder": "contient…",
+    "subjectContains": "L'objet contient",
+    "unreadOnly": "Non lus uniquement",
+    "hasAttachment": "Avec pièce jointe",
+    "labels": "Libellés",
+    "delete": "Supprimer",
+    "create": "Créer la vue",
+    "updated": "Vue mise à jour",
+    "created": "Vue « {{name}} » créée",
+    "deleted": "Vue « {{name}} » supprimée"
+  },
+  "viewIcon": {
+    "inbox": "boîte de réception",
+    "star": "étoile",
+    "flag": "drapeau",
+    "tag": "étiquette",
+    "users": "personnes",
+    "send": "envoi",
+    "receipt": "reçu",
+    "megaphone": "mégaphone",
+    "pin": "épingle",
+    "message": "message",
+    "newspaper": "journal",
+    "flame": "flamme",
+    "briefcase": "mallette",
+    "bell": "cloche",
+    "archive": "archive",
+    "heart": "cœur",
+    "bookmark": "marque-page",
+    "folder": "dossier",
+    "zap": "éclair"
+  }
+}

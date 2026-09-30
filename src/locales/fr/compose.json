@@ -1,0 +1,223 @@
+{
+  "window": {
+    "newMessage": "Nouveau message",
+    "composer": "Éditeur de message",
+    "minimise": "Réduire",
+    "maximise": "Agrandir",
+    "restore": "Restaurer",
+    "expand": "Développer",
+    "close": "Fermer"
+  },
+  "fields": {
+    "from": "De",
+    "to": "À",
+    "cc": "Cc",
+    "bcc": "Cci",
+    "subject": "Objet",
+    "noAccount": "Aucun compte",
+    "sendFrom": "Envoyer depuis",
+    "signature": "Signature"
+  },
+  "recipients": {
+    "remove": "Retirer {{email}}",
+    "frequent": "Fréquents"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> ressemble à une faute de frappe pour <b>{{suggested}}</b>",
+    "useDomain": "Utiliser {{domain}}",
+    "keepAsTyped": "Conserver tel quel",
+    "mailingList": "Ceci ressemble à une <b>liste de diffusion</b> ; votre réponse ira à tous ses membres.",
+    "replyingTo_one": "Réponse à <b>{{count}} personne</b>.",
+    "replyingTo_many": "Réponse à <b>{{count}} de personnes</b>.",
+    "replyingTo_other": "Réponse à <b>{{count}} personnes</b>.",
+    "replySenderOnly": "Répondre à l'expéditeur seulement",
+    "dismiss": "Ignorer"
+  },
+  "quote": {
+    "show": "Afficher le texte cité"
+  },
+  "attachments": {
+    "remove": "Retirer {{name}}",
+    "totalOver": "{{size}} — dépasse la limite de 25 Mo",
+    "drop": "Déposez des fichiers pour les joindre",
+    "bytes_one": "{{count}} octet",
+    "bytes_many": "{{count}} d'octets",
+    "bytes_other": "{{count}} octets",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Joindre un fichier",
+    "addSubject": "Ajouter un objet",
+    "sendAnyway": "Envoyer quand même"
+  },
+  "validation": {
+    "noRecipient": "Ajoutez au moins un destinataire.",
+    "invalidAddress_one": "{{email}} n'est pas une adresse e-mail valide.",
+    "invalidAddress_many": "{{count}} de destinataires ont une adresse e-mail non valide.",
+    "invalidAddress_other": "{{count}} destinataires ont une adresse e-mail non valide.",
+    "noSubject": "Ce message n'a pas d'objet.",
+    "empty": "Ce message est vide.",
+    "missingAttachment": "Vous avez mentionné une pièce jointe, mais rien n'est joint."
+  },
+  "nudge": {
+    "empty": "Ce message est vide.",
+    "typo": "{{domain}} est peut-être une faute de frappe.",
+    "attachment": "Vous avez écrit « {{word}} », mais rien n'est joint.",
+    "noSubject": "Pas d'objet."
+  },
+  "toolbar": {
+    "snippets": "Textes rapides",
+    "attach": "Joindre des fichiers",
+    "discard": "Supprimer le brouillon",
+    "help": "Aide sur la mise en forme",
+    "draftSaved": "Brouillon enregistré",
+    "send": "Envoyer"
+  },
+  "schedule": {
+    "title": "Programmer l'envoi",
+    "timePlaceholder": "Saisissez une heure… tomorrow 9am",
+    "timeLabel": "Saisissez une heure d'envoi",
+    "confirm": "Programmer",
+    "pickFuture": "Choisissez une heure dans le futur",
+    "followUp_one": "Me relancer sans réponse sous {{count}} jour",
+    "followUp_many": "Me relancer sans réponse sous {{count}} de jours",
+    "followUp_other": "Me relancer sans réponse sous {{count}} jours",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "Ce matin",
+    "thisAfternoon": "Cet après-midi",
+    "tomorrowMorning": "Demain matin",
+    "tomorrowAfternoon": "Demain après-midi",
+    "nextWeek": "La semaine prochaine",
+    "pickDateTime": "Choisir la date et l'heure",
+    "scheduledFor": "Programmé pour {{when}}"
+  },
+  "toast": {
+    "discarded": "Brouillon supprimé",
+    "archived": "Conversation archivée",
+    "sending": "Envoi…",
+    "sent": "Envoyé",
+    "sentFollowUp_one": "Envoyé · relance dans {{count}} jour sans réponse",
+    "sentFollowUp_many": "Envoyé · relance dans {{count}} de jours sans réponse",
+    "sentFollowUp_other": "Envoyé · relance dans {{count}} jours sans réponse",
+    "scheduledFollowUp_one": "{{scheduled}} · relance dans {{count}} jour",
+    "scheduledFollowUp_many": "{{scheduled}} · relance dans {{count}} de jours",
+    "scheduledFollowUp_other": "{{scheduled}} · relance dans {{count}} jours",
+    "notSent": "Non envoyé : {{reason}}",
+    "sendFailed": "Impossible d'envoyer le message",
+    "cancel": "Annuler",
+    "undo": "Annuler"
+  },
+  "snippets": {
+    "none": "Aucun texte rapide pour l'instant",
+    "newFromDraft": "+ Nouveau texte rapide à partir de ce brouillon",
+    "nameLabel": "Nom du texte rapide",
+    "namePlaceholder": "Lien du site web",
+    "untitled": "Texte rapide sans titre"
+  },
+  "help": {
+    "typing": "Saisie",
+    "smartTypography": "Guillemets, tirets et points de suspension typographiques",
+    "formatting": "Mise en forme",
+    "insertBlock": "Insérer un bloc",
+    "emoji": "Emoji",
+    "textStyles": "Gras, italique, souligné",
+    "strikethrough": "Barré",
+    "code": "Code",
+    "link": "Lien",
+    "snippet": "Texte rapide",
+    "headings": "Titres",
+    "bulletKeys": "- ou *",
+    "bulletList": "Liste à puces",
+    "numberedList": "Liste numérotée",
+    "todo": "Tâche",
+    "quote": "Citation",
+    "codeBlock": "Bloc de code",
+    "divider": "Séparateur",
+    "send": "Envoyer",
+    "sendArchive": "Envoyer et archiver",
+    "saveClose": "Enregistrer le brouillon et fermer"
+  },
+  "editor": {
+    "placeholder": "Écrivez, ou tapez « / » pour les blocs",
+    "placeholderShort": "Écrivez, ou tapez « / »",
+    "toggle": "Bascule",
+    "heading": "Titre {{level}}"
+  },
+  "slash": {
+    "noMatch": "Aucun bloc correspondant",
+    "insertSnippet": "Insérer un texte rapide",
+    "colour": "Couleur",
+    "background": "Arrière-plan",
+    "groups": {
+      "basic": "Blocs de base",
+      "media": "Médias",
+      "advanced": "Avancé",
+      "snippets": "Textes rapides"
+    },
+    "items": {
+      "text": { "title": "Texte", "description": "Commencez à écrire en texte brut." },
+      "h1": { "title": "Titre 1", "description": "Grand titre de section." },
+      "h2": { "title": "Titre 2", "description": "Titre de section moyen." },
+      "h3": { "title": "Titre 3", "description": "Petit titre de section." },
+      "bulletList": { "title": "Liste à puces", "description": "Créer une liste à puces simple." },
+      "orderedList": { "title": "Liste numérotée", "description": "Créer une liste numérotée." },
+      "taskList": { "title": "Liste de tâches", "description": "Suivre des tâches avec une liste à cocher." },
+      "toggle": { "title": "Liste dépliante", "description": "Masquer des détails dans un bloc repliable." },
+      "quote": { "title": "Citation", "description": "Mettre en avant une citation." },
+      "divider": { "title": "Séparateur", "description": "Séparer visuellement les blocs." },
+      "callout": { "title": "Encadré", "description": "Faire ressortir un passage." },
+      "code": { "title": "Code", "description": "Insérer un extrait de code." },
+      "table": { "title": "Tableau", "description": "Ajouter un tableau simple." },
+      "image": { "title": "Image", "description": "Importer ou déposer une image." },
+      "link": { "title": "Lien", "description": "Créer un lien vers une page web." },
+      "emoji": { "title": "Emoji", "description": "Rechercher et insérer un emoji." },
+      "textColor": { "title": "Couleur du texte", "description": "Colorer le texte sélectionné." },
+      "backgroundColor": { "title": "Couleur d'arrière-plan", "description": "Surligner le texte sélectionné." }
+    },
+    "colors": {
+      "default": "Par défaut",
+      "gray": "Gris",
+      "brown": "Marron",
+      "orange": "Orange",
+      "yellow": "Jaune",
+      "green": "Vert",
+      "blue": "Bleu",
+      "purple": "Violet",
+      "pink": "Rose",
+      "red": "Rouge"
+    }
+  },
+  "selection": {
+    "turnInto": "Transformer en",
+    "bold": "Gras",
+    "italic": "Italique",
+    "underline": "Souligné",
+    "strikethrough": "Barré",
+    "code": "Code",
+    "link": "Lien",
+    "colour": "Couleur",
+    "text": "Texte",
+    "background": "Arrière-plan",
+    "pasteLink": "Collez un lien…",
+    "apply": "Appliquer",
+    "openLink": "Ouvrir le lien",
+    "removeLink": "Supprimer le lien"
+  },
+  "link": {
+    "dialog": "Modifier le lien",
+    "placeholder": "Collez ou saisissez un lien",
+    "urlLabel": "URL du lien",
+    "apply": "Appliquer",
+    "applyLink": "Appliquer le lien",
+    "open": "Ouvrir le lien",
+    "remove": "Supprimer le lien"
+  },
+  "image": {
+    "alignLeft": "Aligner à gauche",
+    "alignCenter": "Centrer",
+    "alignRight": "Aligner à droite"
+  },
+  "callout": {
+    "changeIcon": "Changer l'icône de l'encadré"
+  }
+}

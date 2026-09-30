@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "Retour à {{time}}",
+    "tomorrow": "Retour demain à {{time}}",
+    "weekday": "Retour {{day}} à {{time}}",
+    "date": "Retour le {{date}}"
+  },
+  "in": {
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h",
+    "days": "{{count}} j"
+  },
+  "chip": {
+    "reschedule": "Reprogrammer le rappel",
+    "rescheduleAria": "{{when}}. Reprogrammer le rappel",
+    "cancel": "Annuler la relance",
+    "cancelAria": "Relance dans {{in}}. Annuler la relance",
+    "cancelled": "Relance annulée",
+    "followUpIn": "Relance dans {{in}}",
+    "noReply": "Pas encore de réponse",
+    "noReplyTitle": "Pas encore de réponse. Cliquez pour ignorer",
+    "noReplyAria": "Pas encore de réponse. Ignorer",
+    "dismissed": "Ignoré"
+  },
+  "when": {
+    "placeholder": "Saisissez une heure… tomorrow 3pm",
+    "ariaLabel": "Saisissez une heure",
+    "past": "Cette heure est déjà passée",
+    "unknown": "Essayez « tomorrow 3pm », « fri », « in 2 days » ou « oct 12 » (en anglais)"
+  }
+}

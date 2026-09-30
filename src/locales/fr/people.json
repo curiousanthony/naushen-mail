@@ -1,0 +1,26 @@
+{
+  "card": {
+    "about": "À propos de {{name}}",
+    "you": "vous",
+    "compose": "Écrire",
+    "allMail": "Tous les messages",
+    "copy": "Copier",
+    "close": "fermer"
+  },
+  "lastSeen": {
+    "today": "aujourd'hui",
+    "yesterday": "hier",
+    "weekday": "{{day}} dernier"
+  },
+  "conversations": {
+    "none": "Aucune conversation pour l'instant",
+    "count_one": "{{count}} conversation",
+    "count_many": "{{count}} de conversations",
+    "count_other": "{{count}} conversations",
+    "countWithLast_one": "{{count}} conversation · {{last}}",
+    "countWithLast_many": "{{count}} de conversations · {{last}}",
+    "countWithLast_other": "{{count}} conversations · {{last}}"
+  },
+  "selectFirst": "Sélectionnez une conversation pour voir avec qui elle a lieu",
+  "addressCopied": "Adresse copiée"
+}

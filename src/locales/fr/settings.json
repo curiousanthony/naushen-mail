@@ -1,0 +1,415 @@
+{
+  "nav": {
+    "group": { "account": "Compte", "mail": "Courrier", "app": "App" },
+    "accounts": "Comptes",
+    "appearance": "Apparence et boîte de réception",
+    "signature": "Signature",
+    "sending": "Envoi",
+    "labels": "Libellés",
+    "views": "Vues",
+    "snippets": "Modèles de texte",
+    "rules": "Règles et regroupements",
+    "shortcuts": "Raccourcis clavier",
+    "about": "À propos"
+  },
+  "modal": {
+    "label": "Réglages",
+    "sections": "Sections des réglages",
+    "close": "Fermer",
+    "closeAria": "Fermer les réglages",
+    "noAccounts": "Aucun compte",
+    "accountCount_one": "{{count}} compte",
+    "accountCount_many": "{{count}} de comptes",
+    "accountCount_other": "{{count}} comptes"
+  },
+  "ui": {
+    "saved": "Enregistré",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "labelColour": "Couleur du libellé",
+    "colors": {
+      "gray": "Gris", "brown": "Marron", "orange": "Orange", "yellow": "Jaune", "green": "Vert",
+      "blue": "Bleu", "purple": "Violet", "pink": "Rose", "red": "Rouge"
+    }
+  },
+  "providers": { "demo": "Démo" },
+  "store": {
+    "darwin": "Trousseau macOS",
+    "win32": "Gestionnaire d'identifiants Windows/DPAPI",
+    "linux": "trousseau du système"
+  },
+  "errors": {
+    "unknown": "Erreur inconnue",
+    "missingGoogle": "Ajoutez d'abord votre ID client OAuth Google. Naushen Mail n'a pas de serveur : vous créez vous-même l'app OAuth (gratuite).",
+    "missingMicrosoft": "Ajoutez d'abord l'ID de votre application Microsoft (ID client). Naushen Mail n'a pas de serveur : vous enregistrez vous-même l'app (gratuite).",
+    "clientRejected": "{{name}} a rejeté le client OAuth. Vérifiez les identifiants dans la configuration OAuth ci-dessous. ({{msg}})",
+    "redirectRejected": "{{name}} a rejeté l'adresse de redirection. Suivez exactement l'étape de redirection de la configuration OAuth. ({{msg}})",
+    "notInBuild": "Le connecteur {{name}} n'est pas disponible dans cette version de Naushen Mail.",
+    "timedOut": "La connexion a expiré. Réessayez et terminez la connexion en quelques minutes.",
+    "cancelled": "La connexion a été annulée. Rien n'a été connecté.",
+    "offline": "Impossible de joindre {{name}}. Vérifiez votre connexion Internet et réessayez.",
+    "generic": "Impossible de connecter {{name}}. Réessayez.",
+    "googleIdFormat": "Les ID client Google se terminent par .apps.googleusercontent.com",
+    "guidFormat": "Un GUID est attendu, par exemple 00000000-0000-0000-0000-000000000000"
+  },
+  "accounts": {
+    "title": "Comptes",
+    "description": "Les comptes de messagerie connectés à Naushen Mail. Les conversations ne sont jamais fusionnées entre comptes.",
+    "connectedTitle": "Comptes connectés",
+    "empty": {
+      "title": "Aucun compte connecté",
+      "body": "Connectez Gmail pour commencer à lire vos messages, ou ajoutez un compte de démonstration pour découvrir Naushen Mail hors connexion.",
+      "body_outlook": "Connectez Gmail ou Outlook pour commencer à lire vos messages, ou ajoutez un compte de démonstration pour découvrir Naushen Mail hors connexion."
+    },
+    "addTitle": "Ajouter un compte",
+    "waiting": "En attente de connexion…",
+    "finishInBrowser": "Terminez dans votre navigateur",
+    "browserNote": "Une fenêtre de navigateur s'est ouverte pour la connexion. Revenez ici une fois terminé ; la connexion expire au bout de cinq minutes.",
+    "openGuide": "Ouvrir le guide de configuration OAuth",
+    "openAdvanced": "Ouvrir les réglages avancés du client Google",
+    "connected": "{{email}} connecté",
+    "providers": {
+      "gmail": { "title": "Connecter Gmail", "sub": "Compte Google" },
+      "outlook": { "title": "Connecter Outlook", "sub": "Compte Microsoft" },
+      "mock": { "title": "Ajouter un compte de démo", "sub": "Messages d'exemple, hors connexion" }
+    },
+    "status": {
+      "syncing": "Synchronisation…",
+      "reauth": "Nouvelle autorisation requise",
+      "error": "Erreur de synchronisation",
+      "never": "Pas encore synchronisé",
+      "justNow": "Synchronisé à l'instant",
+      "synced": "Synchronisé {{time}}"
+    },
+    "row": {
+      "noPhoto": "Pas encore de photo de profil. Si {{company}} en a une pour ce compte, utilisez « Autoriser à nouveau » pour permettre la lecture de votre profil.",
+      "reauthorize": "Autoriser à nouveau",
+      "syncNow": "Synchroniser",
+      "disconnect": "Déconnecter",
+      "disconnectConfirm": "<b>Déconnecter {{email}} ?</b> Ses messages, libellés et rappels locaux sont supprimés de Naushen Mail sur cet ordinateur. Rien n'est supprimé chez {{provider}}."
+    }
+  },
+  "oauth": {
+    "copied": "Copié",
+    "openConsole": "Ouvrir la console Google Cloud",
+    "wizardTitle": "Configurer Gmail avec votre propre client Google",
+    "advancedTitle": "Avancé : utiliser votre propre client Google",
+    "intro": "Naushen Mail n'a pas de serveur : Gmail nécessite donc un client OAuth Google que vous créez vous-même. C'est gratuit et cela prend environ dix minutes. Les valeurs sont stockées uniquement sur cet ordinateur et ne sont envoyées qu'à Google. Le compte de démo fonctionne sans rien de tout cela.",
+    "intro_outlook": "Naushen Mail n'a pas de serveur : vous possédez donc vos apps OAuth (gratuites, environ dix minutes chacune). Ces valeurs sont stockées uniquement sur ce Mac et ne sont envoyées qu'à Google et Microsoft. Le compte de démo fonctionne sans rien de tout cela.",
+    "introBuiltIn": "Naushen Mail inclut déjà une connexion Google : vous pouvez connecter Gmail sans aucune configuration. N'utilisez votre propre client que si vous le préférez. C'est gratuit et cela prend environ dix minutes ; les valeurs sont stockées uniquement sur cet ordinateur.",
+    "guideLink": "Lire le guide complet de configuration du fournisseur (Gmail)",
+    "guideLink_outlook": "Lire le guide complet de configuration du fournisseur (Gmail et Outlook)",
+    "clientId": "ID client",
+    "clientSecret": "Secret client",
+    "secretHint": "Google considère le secret d'une app de bureau comme non confidentiel, mais le point de terminaison des jetons l'exige tout de même.",
+    "hideSecret": "Masquer le secret",
+    "showSecret": "Afficher le secret",
+    "google": { "title": "Google (Gmail)" },
+    "wizard": {
+      "project": {
+        "title": "Créer un projet Google Cloud",
+        "body": "Connectez-vous à la console Google Cloud et créez un projet, par exemple « Naushen Mail ». C'est gratuit et aucune facturation n'est nécessaire."
+      },
+      "api": {
+        "title": "Activer l'API Gmail",
+        "body": "Dans votre nouveau projet, ouvrez la page de l'API Gmail et cliquez sur Activer."
+      },
+      "consent": {
+        "title": "Configurer l'écran de consentement",
+        "body": "Google Auth Platform → Commencer. Utilisez le nom d'app ci-dessous, votre propre adresse e-mail comme adresse d'assistance et de contact, et choisissez le public Externe.",
+        "copyName": "Copier le nom de l'app"
+      },
+      "scopes": {
+        "title": "Ajouter l'autorisation Gmail",
+        "body": "Accès aux données → Ajouter ou supprimer des niveaux d'accès → collez-les sous « Ajouter manuellement des niveaux d'accès » → Ajouter au tableau → Mettre à jour → Enregistrer.",
+        "copy": "Copier les niveaux d'accès"
+      },
+      "testUser": {
+        "title": "Vous ajouter comme utilisateur test",
+        "body": "Public → Utilisateurs test → Ajouter des utilisateurs → saisissez votre propre adresse Gmail (ou vos adresses). Seuls les utilisateurs listés peuvent se connecter tant que l'app est en phase de test."
+      },
+      "client": {
+        "title": "Créer le client de bureau",
+        "body": "Clients → Créer un client → Type d'application : Application de bureau → Créer. Google affiche alors un ID client et un secret client."
+      },
+      "paste": {
+        "title": "Coller l'ID client et le secret",
+        "body": "Copiez les deux valeurs ici. Elles sont stockées uniquement sur cet ordinateur et ne sont envoyées qu'à Google.",
+        "connectHint": "Saisissez un ID client valide et le secret pour activer le bouton."
+      }
+    },
+    "expiry": {
+      "title": "Éviter la déconnexion tous les 7 jours (recommandé)",
+      "body": "Tant que l'écran de consentement est en phase de test, Google fait expirer votre connexion tous les 7 jours et vous devrez cliquer sur « Autoriser à nouveau ». Pour l'éviter, ouvrez Public et choisissez Publier l'app afin qu'elle soit en production. La validation par Google n'est pas nécessaire pour un usage personnel : Google affiche seulement un avertissement « app non validée » à la connexion (Avancé → Accéder à Naushen Mail).",
+      "open": "Ouvrir la page Public"
+    },
+    "microsoft": {
+      "title": "Microsoft (Outlook)",
+      "open": "Ouvrir Microsoft Entra",
+      "clientId": "ID de l'application (client)",
+      "adminNote": "Les locataires professionnels ou scolaires peuvent exiger le consentement d'un administrateur pour certaines autorisations ; pas les comptes personnels."
+    }
+  },
+  "guide": {
+    "microsoft": {
+      "register": "Dans Microsoft Entra : Inscriptions d'applications → Nouvelle inscription.",
+      "name": "Nommez-la « Naushen Mail ». Types de comptes pris en charge : comptes dans un annuaire organisationnel et comptes Microsoft personnels.",
+      "redirect": "URI de redirection : plateforme Client public/natif (mobile et bureau), valeur :",
+      "copyId": "Copiez l'ID de l'application (client) dans le champ ci-dessus.",
+      "public": "Authentification → Autoriser les flux clients publics → Oui.",
+      "permissions": "Autorisations d'API → Ajouter → Microsoft Graph → Déléguées :",
+      "noSecret": "Ne créez pas de secret client. Naushen Mail est un client public et utilise PKCE."
+    }
+  },
+  "about": {
+    "title": "À propos",
+    "version": "Version {{version}}",
+    "versionLoading": "Version …",
+    "license": "Licence {{license}}",
+    "blurb": "Un client de messagerie de bureau calme, pensé pour le clavier, pour Gmail. Vos messages sont mis en cache sur cet ordinateur et les jetons de compte sont conservés dans le {{store}}. Naushen Mail n'a pas de serveurs propres ni de fonctions d'IA.",
+    "blurb_outlook": "Un client de messagerie de bureau calme, pensé pour le clavier, pour Gmail et Outlook. Vos messages sont mis en cache sur cet ordinateur et les jetons de compte sont conservés dans le {{store}}. Naushen Mail n'a pas de serveurs propres ni de fonctions d'IA.",
+    "docsTitle": "Documentation",
+    "open": "Ouvrir",
+    "builtWith": "Construit avec",
+    "openSource": "Logiciels libres, utilisés selon leurs propres licences.",
+    "links": {
+      "setup": { "label": "Guide de configuration des fournisseurs", "desc": "Connecter Gmail", "desc_outlook": "Connecter Gmail et Outlook" },
+      "decisions": { "label": "Décisions et architecture", "desc": "Pile technique, compromis, critères d'achèvement" },
+      "design": { "label": "Système de design", "desc": "Jetons, typographie, animations" },
+      "privacy": { "label": "Politique de confidentialité", "desc": "Ce que Naushen Mail stocke et où" },
+      "issues": { "label": "Signaler un problème", "desc": "Bugs et idées sur GitHub" },
+      "source": { "label": "Code source", "desc": "Naushen Mail sur GitHub" }
+    }
+  },
+  "appearance": {
+    "title": "Apparence et boîte de réception",
+    "description": "L'apparence de Naushen Mail et le comportement de la boîte de réception.",
+    "groups": {
+      "appearance": "Apparence",
+      "counts": "Compteurs de la barre latérale",
+      "threadStyle": "Style de conversation",
+      "listTitle": "Titre de la liste",
+      "inbox": "Boîte de réception"
+    },
+    "language": {
+      "label": "Langue",
+      "desc": "La langue de l'app. « Par défaut du système » suit votre système d'exploitation.",
+      "system": "Par défaut du système"
+    },
+    "theme": {
+      "label": "Thème",
+      "desc": "Suivre macOS, ou choisir clair ou sombre. Les changements s'appliquent immédiatement.",
+      "light": "Clair", "dark": "Sombre", "system": "Système"
+    },
+    "density": {
+      "label": "Densité",
+      "comfortable": { "label": "Confortable", "desc": "Plus d'espace dans la liste, la barre latérale et la lecture" },
+      "compact": { "label": "Compacte", "desc": "Lignes resserrées : plus de conversations à l'écran" }
+    },
+    "accent": { "label": "Couleur d'accentuation", "desc": "Sélection, focus, pastilles de non-lu et boutons principaux." },
+    "accents": {
+      "blue": "Bleu", "violet": "Violet", "pink": "Rose", "orange": "Orange", "green": "Vert", "teal": "Turquoise", "neutral": "Neutre"
+    },
+    "counts": {
+      "label": "Affichage du nombre de non-lus",
+      "desc": "La façon dont les pastilles de non-lus s'affichent dans la barre latérale. Le plafond affiche 99+ dès qu'une vue compte plus de 99 non lus.",
+      "cap": "Plafond à 99+",
+      "exact": "Nombre exact"
+    },
+    "threadStyle": {
+      "side": { "label": "Aperçu latéral", "desc": "S'ouvre à droite, par-dessus la liste" },
+      "center": { "label": "Aperçu centré", "desc": "Une fenêtre centrée par-dessus la liste" },
+      "full": { "label": "Pleine page", "desc": "Remplace la liste tant qu'elle est ouverte" }
+    },
+    "listCount": {
+      "label": "Afficher le nombre de messages à côté du titre de la vue",
+      "desc": "Affiche le nombre de conversations de la liste actuelle, à droite du titre (Boîte de réception, Catégories, …). Désactivé par défaut."
+    },
+    "groupByDate": { "label": "Grouper par date", "desc": "Regrouper les conversations sous Aujourd'hui, Hier, 7 derniers jours, etc." },
+    "markRead": { "label": "Marquer comme lu à l'ouverture", "desc": "Une conversation est marquée comme lue dès que vous l'ouvrez." },
+    "remoteImages": { "label": "Bloquer les images distantes", "desc": "Les images des e-mails ne sont chargées que si vous l'autorisez. Protège contre les pixels espions." },
+    "hideCategories": {
+      "label": "Masquer Promotions/Réseaux sociaux/Notifications/Forums de la boîte de réception",
+      "desc": "Gmail uniquement. Limite la boîte de réception aux messages principaux ; le reste reste à un clic sous Catégories dans la barre latérale. Désactivé par défaut : rien ne change tant que vous ne l'activez pas."
+    },
+    "avatars": {
+      "label": "Afficher les avatars",
+      "desc": "Photos des expéditeurs et destinataires dans la liste et la lecture, via Gravatar. Désactivé par défaut : Notion Mail ne les affichait pas non plus, et c'est un service externe de plus sollicité pour chaque contact."
+    },
+    "swipe": { "label": "Gestes de balayage", "desc": "Balayage à deux doigts sur une conversation : vers la gauche pour archiver, vers la droite pour ajouter un rappel. Trackpads uniquement." },
+    "autoAdvance": {
+      "label": "Passage automatique",
+      "desc": "Où aller après avoir archivé, mis à la corbeille ou mis en attente la conversation ouverte.",
+      "next": "Suivante", "previous": "Précédente", "close": "Fermer"
+    }
+  },
+  "sending": {
+    "title": "Envoi et notifications",
+    "groups": { "sending": "Envoi", "notifications": "Notifications" },
+    "undo": {
+      "label": "Annuler l'envoi",
+      "desc": "Retient chaque message un instant après avoir appuyé sur Envoyer, pour pouvoir le rappeler.",
+      "aria": "Délai d'annulation de l'envoi",
+      "off": "Désactivé",
+      "seconds": "{{seconds}} s"
+    },
+    "notifications": {
+      "label": "Notifications de bureau",
+      "desc": "Affiche une notification macOS à l'arrivée d'un nouveau message dans votre boîte de réception. Les rafales sont regroupées en une seule ; rien ne s'affiche pendant que vous regardez cette boîte.",
+      "off": "Désactivées", "all": "Tous les nouveaux messages", "people": "Personnes uniquement"
+    },
+    "dock": { "label": "Pastille du Dock", "desc": "Affiche le nombre de messages non lus de la boîte de réception sur l'icône du Dock." }
+  },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "description": "Naushen Mail est conçu pour être piloté au clavier. Les raccourcis sont fixes pour le moment.",
+    "viewAll": "Voir tous les raccourcis",
+    "names": {
+      "commandMenu": "Menu de commandes", "compose": "Écrire", "archive": "Archiver", "reply": "Répondre", "reminder": "Ajouter un rappel",
+      "label": "Libellé", "search": "Rechercher", "undo": "Annuler", "all": "Afficher tous les raccourcis"
+    }
+  },
+  "labels": {
+    "title": "Libellés",
+    "description": "Les libellés se synchronisent avec votre compte. Les couleurs restent locales à Naushen Mail.",
+    "noAccounts": "Aucun compte",
+    "noAccountsBody": "Connectez un compte pour gérer ses libellés.",
+    "none": "Aucun libellé.",
+    "rename": "Renommer le libellé {{name}}",
+    "deleteLabel": "Supprimer le libellé {{name}}",
+    "delete": "Supprimer",
+    "deleteConfirm": "<b>Supprimer « {{name}} » ?</b> Il est retiré de toutes les conversations et du compte lui-même.",
+    "new": "Nouveau libellé",
+    "newFor": "Nom du nouveau libellé pour {{email}}",
+    "newColour": "Couleur du nouveau libellé",
+    "create": "Créer"
+  },
+  "views": {
+    "title": "Vues",
+    "description": "Des filtres enregistrés qui apparaissent dans la barre latérale. Faites glisser pour les réorganiser.",
+    "count_one": "{{count}} vue enregistrée",
+    "count_many": "{{count}} de vues enregistrées",
+    "count_other": "{{count}} vues enregistrées",
+    "new": "Nouvelle vue",
+    "empty": {
+      "title": "Aucune vue enregistrée",
+      "create": "Créer une vue",
+      "body": "Une vue est un filtre enregistré, comme « Non lus » ou « De mon équipe ». Elle apparaît dans la barre latérale."
+    },
+    "moveUp": "Monter {{name}}",
+    "moveDown": "Descendre {{name}}",
+    "deleteView": "Supprimer {{name}}",
+    "sidebar": "Barre latérale",
+    "showInSidebar": "Afficher {{name}} dans la barre latérale",
+    "delete": "Supprimer",
+    "deleteConfirm": "<b>Supprimer la vue « {{name}} » ?</b> Vos messages ne sont pas affectés.",
+    "role": {
+      "inbox": "Boîte de réception", "sent": "Envoyés", "drafts": "Brouillons", "trash": "Corbeille", "spam": "Spam", "archive": "Archives",
+      "starred": "Favoris", "important": "Importants", "all": "Tous les messages"
+    },
+    "filter": {
+      "reminders": "Rappels",
+      "unread": "Non lus",
+      "starred": "Favoris",
+      "hasAttachment": "Avec pièce jointe",
+      "from": "De {{list}}",
+      "to": "À {{list}}",
+      "subject": "Objet « {{text}} »",
+      "text": "« {{text}} »",
+      "labels_one": "{{count}} libellé",
+      "labels_many": "{{count}} de libellés",
+      "labels_other": "{{count}} libellés",
+      "accounts_one": "{{count}} compte",
+      "accounts_many": "{{count}} de comptes",
+      "accounts_other": "{{count}} comptes",
+      "all": "Tous les messages"
+    }
+  },
+  "snippets": {
+    "title": "Modèles de texte",
+    "description": "Du texte réutilisable à insérer dans n'importe quel message. Stocké sur ce Mac.",
+    "new": "Nouveau modèle",
+    "saveFailed": "Impossible d'enregistrer les modèles (le stockage local est indisponible).",
+    "empty": {
+      "title": "Aucun modèle",
+      "create": "Créer un modèle",
+      "body": "Enregistrez ce que vous retapez sans cesse : disponibilités, itinéraire, un refus poli."
+    },
+    "untitled": "Modèle sans titre",
+    "emptyPreview": "Vide",
+    "snippetFallback": "modèle",
+    "deleteNamed": "Supprimer {{name}}",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "p. ex. Disponibilités pour une réunion",
+    "shortcutLabel": "Raccourci",
+    "shortcutHint": "Facultatif. Saisissez le raccourci après « / » dans l'éditeur pour insérer ce modèle.",
+    "shortcutPlaceholder": "reunion",
+    "shortcutTaken": "Un autre modèle utilise déjà /{{shortcut}}.",
+    "content": "Contenu",
+    "contentLabel": "Contenu du modèle",
+    "contentPlaceholder": "Écrivez le texte à insérer…",
+    "delete": "Supprimer",
+    "deleteConfirm": "<b>Supprimer ce modèle ?</b> Cette action est irréversible.",
+    "create": "Créer le modèle",
+    "save": "Enregistrer"
+  },
+  "rte": {
+    "formatting": "Mise en forme : {{label}}",
+    "bold": "Gras (⌘B)",
+    "italic": "Italique (⌘I)",
+    "underline": "Souligné (⌘U)",
+    "addLink": "Ajouter un lien",
+    "removeLink": "Supprimer le lien",
+    "clear": "Effacer la mise en forme",
+    "linkPlaceholder": "Collez un lien, p. ex. example.com",
+    "linkAddress": "Adresse du lien",
+    "applyLink": "Appliquer le lien"
+  },
+  "signature": {
+    "title": "Signature",
+    "description": "Ajoutée en bas des nouveaux messages. Chaque compte a sa propre signature.",
+    "noAccounts": "Aucun compte",
+    "noAccountsBody": "Connectez d'abord un compte ; chaque compte a sa propre signature.",
+    "account": "Compte",
+    "inReplies": {
+      "label": "Inclure dans les réponses et transferts",
+      "desc": "Désactivé, la signature n'est ajoutée qu'aux nouveaux messages.",
+      "aria": "Inclure la signature dans les réponses et transferts"
+    },
+    "templatesTitle": "Modèles",
+    "templatesIntro": "Partez d'une mise en page courante, puis modifiez le texte d'exemple comme n'importe quelle autre partie de la signature.",
+    "templatesAria": "Modèles de signature",
+    "templates": {
+      "minimal": { "label": "Minimal", "description": "Juste votre nom et votre fonction, sans photo." },
+      "photo-left": { "label": "Photo à gauche", "description": "Une photo ronde à côté de votre nom, fonction et e-mail." },
+      "compact": { "label": "Compact", "description": "Nom, fonction et téléphone sur une seule ligne." },
+      "classic": { "label": "Bloc classique", "description": "Nom, fonction, entreprise, un séparateur, puis les coordonnées." }
+    },
+    "replaceConfirm": "Remplacer votre signature actuelle par <b>{{name}}</b> ? Cette action est irréversible.",
+    "replace": "Remplacer",
+    "photo": {
+      "title": "Photo de la signature",
+      "hasImage": "Affichée à côté de votre nom. Les images sont recadrées en carré et réduites.",
+      "noImage": "Pas encore d'image : votre initiale est affichée. Ajoutez-en une pour qu'elle apparaisse à côté de votre nom.",
+      "replace": "Remplacer l'image…",
+      "choose": "Choisir une image…",
+      "useAccount": "Utiliser l'image du compte",
+      "remove": "Supprimer",
+      "badType": "Choisissez une image PNG, JPEG, GIF ou WebP.",
+      "unusable": "Impossible d'utiliser cette image.",
+      "unreadable": "Ce fichier n'a pas pu être lu comme une image.",
+      "empty": "Cette image est vide.",
+      "unavailable": "Le traitement d'images est indisponible."
+    },
+    "editorTitleFor": "Signature pour {{email}}",
+    "placeholder": "Écrivez une signature, p. ex. votre nom et votre fonction…",
+    "preview": {
+      "title": "Aperçu",
+      "to": "À : <b>Sam Rivera</b>",
+      "subject": "Objet : Suite de notre échange",
+      "greeting": "Bonjour Sam,",
+      "body": "Merci pour l'appel rapide d'aujourd'hui. Je vous envoie les notes demain matin.",
+      "none": "Aucune signature"
+    }
+  }
+}

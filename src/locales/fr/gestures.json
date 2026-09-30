@@ -1,0 +1,31 @@
+{
+  "move": {
+    "title": "Déplacer la conversation",
+    "commandLabel": "Déplacer vers",
+    "placeholder": "Déplacer vers…",
+    "noMatch": "Aucun dossier ou libellé correspondant",
+    "nowhere": "Aucune destination possible",
+    "navigate": "Naviguer",
+    "move": "Déplacer",
+    "labelFallback": "libellé",
+    "toLabel_one": "Conversation déplacée vers « {{name}} »",
+    "toLabel_many": "{{count}} de conversations déplacées vers « {{name}} »",
+    "toLabel_other": "{{count}} conversations déplacées vers « {{name}} »",
+    "skippedNoLabel": "{{count}} sans libellé correspondant, laissées telles quelles",
+    "skippedAlreadyThere": "{{count}} déjà à destination",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} conversation",
+    "conversations_many": "{{count}} de conversations",
+    "conversations_other": "{{count}} conversations"
+  },
+  "swipe": {
+    "restore": "Restaurer",
+    "restored": "Conversation restaurée",
+    "notSpam": "Pas du spam",
+    "movedToInbox": "Conversation déplacée dans la boîte de réception",
+    "archive": "Archiver",
+    "archived": "Conversation archivée"
+  }
+}
