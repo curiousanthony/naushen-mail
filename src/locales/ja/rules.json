@@ -1,0 +1,125 @@
+{
+  "summary": {
+    "archived_other": "{{count}}件をアーカイブしました",
+    "trashed_other": "{{count}}件をゴミ箱に移動しました",
+    "rescued_other": "{{count}}件を迷惑メールから戻しました",
+    "markedRead_other": "{{count}}件を既読にしました",
+    "starred_other": "{{count}}件にスターを付けました",
+    "labelled_other": "{{count}}件にラベル「{{name}}」を付けました",
+    "labelFallback": "ラベル"
+  },
+  "describe": {
+    "from": "送信者が{{value}}",
+    "fromDomain": "送信者が@{{value}}",
+    "subject": "件名に「{{value}}」を含む",
+    "noActions": "操作なし",
+    "actions": {
+      "archive": "受信トレイをスキップ",
+      "markRead": "既読にする",
+      "star": "スターを付ける",
+      "trash": "ゴミ箱に移動",
+      "neverSpam": "迷惑メールにしない",
+      "label": "ラベル「{{name}}」を付ける"
+    }
+  },
+  "form": {
+    "whenMailIs": "メールが次に一致する場合",
+    "matchOn": "条件",
+    "matchValue": "一致する値",
+    "field": {
+      "from": { "label": "送信者", "placeholder": "name@example.com", "hint": "この送信者のみ。" },
+      "fromDomain": { "label": "ドメイン", "placeholder": "example.com", "hint": "このドメイン(サブドメインを含む)のすべての送信者。" },
+      "subject": { "label": "件名", "placeholder": "件名に含まれる語句", "hint": "このテキストを含むすべての件名。" }
+    },
+    "moreConditions_other": "ほか{{count}}件の条件があります。",
+    "then": "実行する操作",
+    "actionsAria": "操作",
+    "actions": {
+      "archive": "受信トレイをスキップ",
+      "markRead": "既読にする",
+      "star": "スターを付ける",
+      "trash": "ゴミ箱に移動",
+      "neverSpam": "迷惑メールにしない"
+    },
+    "applyLabel": "ラベルを付ける",
+    "none": "なし",
+    "appliesTo": "適用対象",
+    "allAccounts": "すべてのアカウント"
+  },
+  "section": {
+    "title": "ルール",
+    "description": "Naushen Mail内で新着メールに適用されるフィルタです。このMacのみで動作し、Gmailには何も作成されません。アプリを閉じている間は実行されません。",
+    "description_outlook": "Naushen Mail内で新着メールに適用されるフィルタです。このMacのみで動作し、GmailやOutlookには何も作成されません。アプリを閉じている間は実行されません。",
+    "empty": {
+      "title": "ルールはまだありません",
+      "body": "スレッドを開いて<k1>⌘</k1><k2>⇧</k2><k3>R</k3>を押すと、その送信者のメールを自動で振り分けられます。"
+    },
+    "removedAccount": "削除されたアカウント",
+    "allAccounts": "すべてのアカウント",
+    "ruleAria": "ルール: {{condition}}",
+    "and": "かつ",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "edit": "ルールを編集",
+    "delete": "ルールを削除",
+    "deleteConfirm": "このルールを削除しますか？すでに振り分けたメールはそのままです。",
+    "deleteAction": "削除",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "order": "ルールは上から順に実行され、一致するルールはすべて適用されます。"
+  },
+  "bundles": {
+    "title": "受信トレイのまとめ表示",
+    "collapse": {
+      "label": "重要度の低いメールをまとめる",
+      "desc": "まとめたラベルや送信者は、受信トレイで1行にまとまります(例: 「ニュースレター · 新着7件」)。スター付きのメールはまとめられません。追加するまで、何もまとめられません。"
+    },
+    "kindLabel": "ラベル",
+    "kindSender": "送信者",
+    "stop": "まとめ表示を停止",
+    "bundleLabel": "ラベルをまとめる",
+    "bundleLabelDesc": "サイドバーのラベルを右クリックしても設定できます。",
+    "chooseLabel": "ラベルを選択…"
+  },
+  "host": {
+    "title": "ルールを作成",
+    "from": "「{{subject}}」から",
+    "noSubject": "(件名なし)",
+    "cancel": "キャンセル",
+    "create": "ルールを作成",
+    "createApply_other": "作成して{{count}}件に適用",
+    "undo": "元に戻す",
+    "note": "Naushen Mail内のみで動作し、Gmailには何も作成されません。",
+    "note_outlook": "Naushen Mail内のみで動作し、GmailやOutlookには何も作成されません。",
+    "match": {
+      "incomplete": "値と操作を追加してください",
+      "checking": "既存のメールを確認中…",
+      "none": "一致する既存のスレッドはありません",
+      "some_other": "既存の{{count}}件のスレッドに一致します"
+    },
+    "toast": {
+      "createdApplied": "ルールを作成しました · {{summary}}",
+      "existedApplied": "ルールはすでに存在します · {{summary}}",
+      "createdNothing": "ルールを作成しました · 変更の必要はありませんでした",
+      "existedNothing": "ルールはすでに存在します · 変更の必要はありませんでした",
+      "alreadyHave": "このルールはすでにあります",
+      "created": "ルールを作成しました。このMacで新着メールに適用されます。",
+      "viewRules": "ルールを表示",
+      "failed": "ルールを作成できませんでした",
+      "failedWith": "ルールを作成できませんでした: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "このスレッドには、ルールの作成元にできる受信メッセージがありません。",
+    "undo": "元に戻す",
+    "ran": "ルール: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_other": "{{name}}からの{{count}}件をアーカイブしました",
+    "nothingFrom": "受信トレイに{{name}}からのメールはありません",
+    "blocked": "{{name}}をブロックしました。今後のメールはゴミ箱に入ります。",
+    "blockedMoved_other": "{{name}}をブロックしました · {{count}}件をゴミ箱に移動しました。今後のメールはゴミ箱に入ります。",
+    "archivedFromSender_other": "この送信者からの{{count}}件をアーカイブしました",
+    "bundling": "{{name}}を受信トレイでまとめています",
+    "stoppedBundling": "{{name}}のまとめ表示を停止しました"
+  }
+}

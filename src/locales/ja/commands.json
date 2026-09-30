@@ -1,0 +1,276 @@
+{
+  "section": {
+    "navigation": "ナビゲーション",
+    "threads": "スレッド",
+    "selection": "選択",
+    "messages": "メッセージ",
+    "composeWindow": "作成ウインドウ",
+    "global": "全般"
+  },
+  "group": {
+    "actions": "操作",
+    "navigate": "移動",
+    "compose": "作成",
+    "settings": "設定",
+    "commands": "コマンド",
+    "people": "連絡先",
+    "threads": "スレッド"
+  },
+  "common": {
+    "close": "閉じる",
+    "navigate": "移動"
+  },
+  "keys": {
+    "then": "次に"
+  },
+  "sheet": {
+    "title": "キーボードショートカット",
+    "search": "ショートカットを検索…",
+    "searchLabel": "ショートカットを検索",
+    "noMatch": "「{{query}}」に一致するショートカットはありません。",
+    "or": "または",
+    "footer": "文字を入力していないときは、1キーのショートカットが使えます。"
+  },
+  "toast": {
+    "archive_other": "{{count}}件のスレッドをアーカイブしました",
+    "unarchive_other": "{{count}}件のスレッドを受信トレイに移動しました",
+    "trash_other": "{{count}}件のスレッドをゴミ箱に移動しました",
+    "untrash_other": "{{count}}件のスレッドを元に戻しました",
+    "spam_other": "{{count}}件のスレッドを迷惑メールとして報告しました",
+    "notSpam_other": "{{count}}件のスレッドを受信トレイに移動しました",
+    "read_other": "{{count}}件のスレッドを既読にしました",
+    "unread_other": "{{count}}件のスレッドを未読にしました",
+    "star_other": "{{count}}件のスレッドにスターを付けました",
+    "unstar_other": "{{count}}件のスレッドのスターを外しました",
+    "mute_other": "{{count}}件のスレッドをミュートしました。返信は受信トレイに表示されません",
+    "unmute_other": "{{count}}件のスレッドのミュートを解除し、受信トレイに移動しました"
+  },
+  "toaster": {
+    "notifications": "通知",
+    "dismiss": "閉じる"
+  },
+  "undo": {
+    "nothing": "元に戻す操作はありません",
+    "done": "元に戻しました"
+  },
+  "unsubscribe": {
+    "notFound": "このスレッドに配信停止リンクが見つかりません",
+    "openedPage": "配信停止ページをブラウザで開きました",
+    "drafted": "配信停止のリクエストを下書きにしました。送信して完了してください。"
+  },
+  "sync": {
+    "syncing": "同期中…",
+    "upToDate": "メールは最新です",
+    "failed": "同期できませんでした。まもなく再試行します。"
+  },
+  "labels": {
+    "title": "スレッドにラベルを付ける",
+    "commandLabel": "ラベル",
+    "placeholder": "ラベルを付ける…",
+    "noMatch": "一致するラベルがありません",
+    "none": "ラベルはまだありません。名前を入力して作成できます。",
+    "create": "ラベル「{{name}}」を作成",
+    "added": "ラベル「{{name}}」を追加しました",
+    "removed": "ラベル「{{name}}」を外しました",
+    "toggle": "切り替え",
+    "done": "完了"
+  },
+  "snooze": {
+    "later": "今日の後ほど",
+    "evening": "今夜",
+    "thisMorning": "今朝",
+    "tomorrow": "明日",
+    "weekend": "今週末",
+    "nextWeek": "来週",
+    "in2Days": "2日後",
+    "in3Days": "3日後",
+    "in1Week": "1週間後",
+    "in2Weeks": "2週間後",
+    "when": {
+      "today": "今日 {{time}}",
+      "todayInline": "今日 {{time}}",
+      "tomorrow": "明日 {{time}}",
+      "tomorrowInline": "明日 {{time}}",
+      "weekday": "{{day}} {{time}}",
+      "date": "{{date}} {{time}}"
+    },
+    "followUpSet": "返信がない場合、{{when}}にフォローアップします",
+    "reminderSet": "{{when}}にリマインダーを設定しました",
+    "followUpRemoved": "フォローアップを削除しました",
+    "reminderRemoved": "リマインダーを削除しました",
+    "followUpTitle": "返信がなければフォローアップ",
+    "reminderTitle": "リマインダーを設定",
+    "conversations_other": "{{count}}件のスレッド",
+    "conversation": "スレッド",
+    "typeFollowUp": "Type a time… in 3 days",
+    "typeReminder": "Type a time… tomorrow 3pm",
+    "followUpTimes": "フォローアップの時刻",
+    "reminderTimes": "リマインダーの時刻",
+    "removeFollowUp": "フォローアップを削除",
+    "removeReminder": "リマインダーを削除",
+    "pickDateTime": "日時を選択",
+    "date": "日付",
+    "time": "時刻",
+    "set": "設定",
+    "future": "未来の時刻を選択してください。",
+    "onlyIfNoReply": "返信がない場合のみ通知",
+    "onlyIfNoReplyOn": "受信トレイに残ります。返信がない場合に通知します。",
+    "onlyIfNoReplyOff": "その時刻までスレッドを非表示にします。",
+    "confirm": "確定",
+    "keepTyping": "入力を続ける",
+    "select": "選択"
+  },
+  "palette": {
+    "title": "コマンドメニュー",
+    "placeholder": "メールや連絡先を検索、またはコマンドを実行…",
+    "placeholderSearch": "送信者、件名、本文の語句で検索…",
+    "searchEmail": "メールを検索",
+    "clear": "クリア",
+    "noResults": "結果なし",
+    "searchHint": "メールを検索します。名前、件名、フレーズを入力してみてください。",
+    "searching": "検索中…",
+    "recentSearches": "最近の検索",
+    "search": "検索",
+    "searchFor": "「{{query}}」を検索",
+    "seeAll": "「{{query}}」の{{count}}件の結果をすべて表示",
+    "searchAll": "すべてのメールから「{{query}}」を検索",
+    "unknown": "不明",
+    "write": "作成",
+    "allMail": "すべてのメール",
+    "actionsSelected": "操作 · {{count}}件選択中",
+    "archive_other": "{{count}}件のスレッドをアーカイブ",
+    "notSpam_other": "迷惑メールではない({{count}}件のスレッド)",
+    "moveToInbox_other": "{{count}}件のスレッドを受信トレイに移動",
+    "removeStar": "スターを外す",
+    "star": "スターを付ける",
+    "setReminder": "リマインダーを設定…",
+    "followUp": "返信がなければフォローアップ…",
+    "label": "ラベル…",
+    "markRead": "既読にする",
+    "markUnread": "未読にする",
+    "delete": "削除",
+    "reportSpam": "迷惑メールを報告",
+    "moveTo": "移動先…",
+    "unmute": "スレッドのミュートを解除",
+    "mute": "スレッドをミュート",
+    "selectAll": "すべてのスレッドを選択",
+    "unsubscribe": "配信を停止",
+    "copyCode": "認証コードをコピー",
+    "createRule": "このスレッドからルールを作成…",
+    "archiveAllFrom": "{{name}}からのメールをすべてアーカイブ",
+    "unsubscribeArchiveAll": "配信を停止し、{{name}}からのメールをすべてアーカイブ",
+    "block": "{{name}}をブロック",
+    "blockHint": "今後のメールはゴミ箱へ",
+    "bundle": "{{name}}を受信トレイでまとめる",
+    "stopBundling": "{{name}}のまとめ表示を停止",
+    "undoLast": "直前の操作を元に戻す",
+    "goTo": "{{name}}へ移動",
+    "hintView": "ビュー",
+    "hintLabel": "ラベル",
+    "hintCurrent": "現在",
+    "allAccounts": "すべてのアカウント",
+    "switchTo": "{{name}}に切り替え",
+    "newMessage": "新規メッセージ",
+    "reply": "返信",
+    "replyAll": "全員に返信",
+    "forward": "転送",
+    "openSettings": "設定を開く",
+    "shortcuts": "キーボードショートカット",
+    "showSidebar": "サイドバーを表示",
+    "hideSidebar": "サイドバーを隠す",
+    "addAccount": "アカウントを追加…",
+    "syncNow": "今すぐ同期",
+    "theme": "テーマ: {{name}}",
+    "themeSystem": "システム",
+    "themeLight": "ライト",
+    "themeDark": "ダーク"
+  },
+  "shortcut": {
+    "nav": {
+      "next": "次のスレッド",
+      "prev": "前のスレッド",
+      "open": "スレッドを開く",
+      "arrows": "リストを上下に移動(矢印キー)",
+      "openO": "選択中のスレッドを開く",
+      "list": "リストにフォーカス(キーボード)",
+      "back": "スレッドを閉じる / 戻る",
+      "top": "先頭へ移動",
+      "bottom": "末尾へ移動"
+    },
+    "go": {
+      "inbox": "受信トレイへ移動",
+      "sent": "送信済みへ移動",
+      "drafts": "下書きへ移動",
+      "all": "すべてのメールへ移動"
+    },
+    "account": {
+      "switch": "アカウントを切り替え"
+    },
+    "thread": {
+      "archive": "アーカイブ",
+      "trash": "削除",
+      "spam": "迷惑メールを報告",
+      "unread": "未読にする",
+      "inbox": "受信トレイに移動",
+      "undo": "元に戻す",
+      "remind": "リマインダーを設定",
+      "followup": "返信がなければフォローアップ",
+      "label": "ラベルの付け外し",
+      "star": "スターの付け外し",
+      "unsubscribe": "配信を停止",
+      "move": "移動先…",
+      "mute": "スレッドのミュート / 解除",
+      "markRead": "既読にする"
+    },
+    "rule": {
+      "create": "スレッドからルールを作成"
+    },
+    "sel": {
+      "toggle": "スレッドの選択 / 選択解除",
+      "extendDown": "選択範囲を下に拡張",
+      "extendUp": "選択範囲を上に拡張",
+      "all": "すべてのスレッドを選択"
+    },
+    "msg": {
+      "reply": "返信",
+      "replyAll": "全員に返信",
+      "forward": "転送",
+      "next": "スレッド内の次のメッセージ",
+      "prev": "スレッド内の前のメッセージ",
+      "toggle": "メッセージの展開 / 折りたたみ",
+      "toggleAll": "すべて展開 / 折りたたみ",
+      "attachments": "添付ファイルを開く",
+      "copyCode": "認証コードをコピー"
+    },
+    "person": {
+      "info": "送信者情報"
+    },
+    "compose": {
+      "send": "送信",
+      "sendArchive": "送信してアーカイブ",
+      "exit": "下書きを終了",
+      "discard": "下書きを破棄",
+      "cc": "Ccを追加",
+      "bcc": "Bccを追加",
+      "from": "差出人を編集",
+      "subject": "件名を編集",
+      "recipient": "宛先を編集",
+      "body": "本文にフォーカス",
+      "attach": "添付ファイルを追加",
+      "h": "テキスト / 見出し1〜3",
+      "lists": "チェックリスト / 箇条書き / 番号付き / 引用",
+      "link": "リンクを挿入または編集",
+      "new": "作成"
+    },
+    "ui": {
+      "palette": "コマンドメニュー",
+      "search": "検索",
+      "help": "キーボードショートカット",
+      "sidebar": "サイドバーを切り替え",
+      "settings": "設定を開く"
+    },
+    "sync": {
+      "now": "今すぐ同期(メールを更新)"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "menu": {
+    "settings": "設定…",
+    "file": "ファイル",
+    "newMessage": "新規メッセージ",
+    "addAccount": "アカウントを追加…",
+    "edit": "編集",
+    "view": "表示",
+    "commandMenu": "コマンドメニュー",
+    "search": "検索",
+    "toggleSidebar": "サイドバーを切り替え",
+    "reloadWindow": "ウインドウを再読み込み",
+    "mailbox": "メールボックス",
+    "goToInbox": "受信トレイへ移動",
+    "checkMail": "今すぐメールを確認"
+  },
+  "notify": {
+    "archive": "アーカイブ",
+    "markRead": "既読にする",
+    "dismiss": "閉じる",
+    "noSubject": "(件名なし)",
+    "burstTitle_other": "新着メッセージ{{count}}件",
+    "burstBody": "{{names}}ほか{{others}}件"
+  },
+  "oauth": {
+    "connectedTitle": "接続しました",
+    "connectedBody": "このタブを閉じて、Naushen Mailに戻ってください。",
+    "failedTitle": "問題が発生しました",
+    "invalidResponse": "無効な応答です。",
+    "authFailed": "認証に失敗しました: {{error}}",
+    "authInvalid": "無効な認証応答です",
+    "timedOut": "サインインがタイムアウトしました"
+  },
+  "errors": {
+    "notSignedIn": "サインインしていません",
+    "sessionExpired": "セッションの有効期限が切れました。もう一度サインインしてください。",
+    "threadNotFound": "スレッドが見つかりません",
+    "accountNotConnected": "アカウントが接続されていません",
+    "connectorUnavailable": "このビルドでは{{provider}}コネクタを利用できません。",
+    "providerUnavailable": "プロバイダを利用できません",
+    "actionFailed": "操作に失敗しました: {{message}}",
+    "attachmentNotFound": "添付ファイルが見つかりません",
+    "attachmentEmpty": "添付ファイルの内容が空です"
+  },
+  "gmail": {
+    "missingClient": "このビルドではGoogleサインインが設定されていません。設定 → アカウント → OAuth設定で、ご自身のGoogle OAuthクライアントIDとシークレットを追加してください(docs/google-setup.md を参照)。",
+    "noRefreshToken": "Googleがリフレッシュトークンを発行しませんでした。myaccount.google.com/permissions でNaushen Mailを削除してから、もう一度お試しください。",
+    "missingScope": "Naushen MailにはGmailの読み取りと管理の権限が必要です。もう一度接続し、すべての権限にチェックを入れたままにしてください。",
+    "profileFailed": "Googleのプロフィールを読み取れませんでした(HTTP {{status}})。",
+    "noEmail": "Googleがこのアカウントのメールアドレスを返しませんでした。",
+    "authRejected": "Googleが保存済みの認証情報を拒否しました。もう一度サインインしてください。",
+    "network": "Gmailとの通信でネットワークエラーが発生しました: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "先にMicrosoftのアプリケーション(クライアント)IDを追加してください: 設定 → アカウント → OAuth設定。",
+    "noEmail": "Microsoftがこのアカウントのメールアドレスを返しませんでした。",
+    "noInbox": "このメールボックスの受信トレイが見つかりませんでした。",
+    "deltaIncomplete": "Outlookの差分同期が完了しませんでした",
+    "categoryOnly": "編集できるのはOutlookのカテゴリのみです",
+    "categoryGone": "カテゴリ「{{name}}」は存在しません",
+    "attachmentUpload": "添付ファイルのアップロードに失敗しました({{status}})"
+  }
+}

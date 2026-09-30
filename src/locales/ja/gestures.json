@@ -1,0 +1,27 @@
+{
+  "move": {
+    "title": "スレッドを移動",
+    "commandLabel": "移動先",
+    "placeholder": "移動先…",
+    "noMatch": "一致するフォルダまたはラベルがありません",
+    "nowhere": "移動できる場所がありません",
+    "navigate": "移動",
+    "move": "移動",
+    "labelFallback": "ラベル",
+    "toLabel_other": "{{count}}件のスレッドを「{{name}}」に移動しました",
+    "skippedNoLabel": "一致するラベルがない{{count}}件はそのままです",
+    "skippedAlreadyThere": "{{count}}件はすでに移動済みです",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_other": "{{count}}件のスレッド"
+  },
+  "swipe": {
+    "restore": "元に戻す",
+    "restored": "スレッドを元に戻しました",
+    "notSpam": "迷惑メールではない",
+    "movedToInbox": "スレッドを受信トレイに移動しました",
+    "archive": "アーカイブ",
+    "archived": "スレッドをアーカイブしました"
+  }
+}

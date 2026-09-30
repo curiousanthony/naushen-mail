@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "previous7": "過去7日間",
+    "previous30": "過去30日間"
+  },
+  "actions": {
+    "cancel": "キャンセル",
+    "save": "保存",
+    "retry": "再試行",
+    "undo": "元に戻す"
+  },
+  "toast": {
+    "sendFailed": "メッセージを送信できませんでした。",
+    "sendFailedWithReason": "送信できませんでした: {{error}}"
+  },
+  "noSubject": "(件名なし)",
+  "role": {
+    "inbox": "受信トレイ",
+    "sent": "送信済み",
+    "drafts": "下書き",
+    "trash": "ゴミ箱",
+    "spam": "迷惑メール",
+    "archive": "アーカイブ",
+    "starred": "スター付き",
+    "important": "重要",
+    "all": "すべてのメール",
+    "reminders": "リマインダー"
+  },
+  "category": {
+    "social": "ソーシャル",
+    "promotions": "プロモーション",
+    "updates": "アップデート",
+    "forums": "フォーラム"
+  },
+  "color": {
+    "gray": "グレー",
+    "brown": "ブラウン",
+    "orange": "オレンジ",
+    "yellow": "イエロー",
+    "green": "グリーン",
+    "blue": "ブルー",
+    "purple": "パープル",
+    "pink": "ピンク",
+    "red": "レッド"
+  },
+  "searchOperators": {
+    "from": "送信者の名前またはアドレス",
+    "to": "受信者の名前またはアドレス",
+    "subject": "件名に含まれる語句",
+    "label": "ラベル名",
+    "hasAttachment": "ファイルが添付されている",
+    "isUnread": "未読のみ",
+    "isStarred": "スター付きのみ",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

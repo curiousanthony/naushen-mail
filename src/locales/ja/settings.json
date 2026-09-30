@@ -1,0 +1,407 @@
+{
+  "nav": {
+    "group": { "account": "アカウント", "mail": "メール", "app": "アプリ" },
+    "accounts": "アカウント",
+    "appearance": "外観と受信トレイ",
+    "signature": "署名",
+    "sending": "送信",
+    "labels": "ラベル",
+    "views": "ビュー",
+    "snippets": "スニペット",
+    "rules": "ルールとまとめ表示",
+    "shortcuts": "キーボードショートカット",
+    "about": "情報"
+  },
+  "modal": {
+    "label": "設定",
+    "sections": "設定のセクション",
+    "close": "閉じる",
+    "closeAria": "設定を閉じる",
+    "noAccounts": "アカウントがありません",
+    "accountCount_other": "{{count}}件のアカウント"
+  },
+  "ui": {
+    "saved": "保存しました",
+    "confirm": "確認",
+    "cancel": "キャンセル",
+    "labelColour": "ラベルの色",
+    "colors": {
+      "gray": "グレー", "brown": "ブラウン", "orange": "オレンジ", "yellow": "イエロー", "green": "グリーン",
+      "blue": "ブルー", "purple": "パープル", "pink": "ピンク", "red": "レッド"
+    }
+  },
+  "providers": { "demo": "デモ" },
+  "store": {
+    "darwin": "macOSキーチェーン",
+    "win32": "Windows資格情報マネージャー/DPAPI",
+    "linux": "システムのキーリング"
+  },
+  "errors": {
+    "unknown": "不明なエラー",
+    "missingGoogle": "先にGoogle OAuthクライアントIDを追加してください。Naushen Mailにはバックエンドがないため、（無料の）OAuthアプリはご自身で作成します。",
+    "missingMicrosoft": "先にMicrosoftアプリケーション（クライアント）IDを追加してください。Naushen Mailにはバックエンドがないため、（無料の）アプリはご自身で登録します。",
+    "clientRejected": "{{name}}がOAuthクライアントを拒否しました。下の「OAuthの設定」で認証情報を確認してください。（{{msg}}）",
+    "redirectRejected": "{{name}}がリダイレクトアドレスを拒否しました。「OAuthの設定」のリダイレクトの手順どおりに設定してください。（{{msg}}）",
+    "notInBuild": "{{name}}コネクタは、このビルドのNaushen Mailでは利用できません。",
+    "timedOut": "サインインがタイムアウトしました。もう一度お試しのうえ、数分以内にサインインを完了してください。",
+    "cancelled": "サインインがキャンセルされました。何も接続されていません。",
+    "offline": "{{name}}に接続できませんでした。インターネット接続を確認して、もう一度お試しください。",
+    "generic": "{{name}}を接続できませんでした。もう一度お試しください。",
+    "googleIdFormat": "GoogleクライアントIDは .apps.googleusercontent.com で終わります",
+    "guidFormat": "00000000-0000-0000-0000-000000000000 のようなGUIDを入力してください"
+  },
+  "accounts": {
+    "title": "アカウント",
+    "description": "Naushen Mailに接続しているメールアカウントです。アカウントをまたいでスレッドがまとめられることはありません。",
+    "connectedTitle": "接続済みのアカウント",
+    "empty": {
+      "title": "接続されたアカウントはありません",
+      "body": "Gmailを接続してメールを読み始めるか、デモアカウントを追加してNaushen Mailをオフラインで試せます。",
+      "body_outlook": "GmailまたはOutlookを接続してメールを読み始めるか、デモアカウントを追加してNaushen Mailをオフラインで試せます。"
+    },
+    "addTitle": "アカウントを追加",
+    "waiting": "サインインを待っています…",
+    "finishInBrowser": "ブラウザで完了してください",
+    "browserNote": "サインイン用のブラウザウィンドウが開きました。完了したらここに戻ってください。5分でタイムアウトします。",
+    "openGuide": "OAuth設定ガイドを開く",
+    "openAdvanced": "Googleクライアントの詳細設定を開く",
+    "connected": "{{email}}を接続しました",
+    "providers": {
+      "gmail": { "title": "Gmailを接続", "sub": "Googleアカウント" },
+      "outlook": { "title": "Outlookを接続", "sub": "Microsoftアカウント" },
+      "mock": { "title": "デモアカウントを追加", "sub": "サンプルメール（オフライン）" }
+    },
+    "status": {
+      "syncing": "同期中…",
+      "reauth": "再認証が必要です",
+      "error": "同期エラー",
+      "never": "未同期",
+      "justNow": "たった今同期しました",
+      "synced": "{{time}}に同期しました"
+    },
+    "row": {
+      "noPhoto": "プロフィール写真はまだありません。このアカウントに{{company}}の写真がある場合は、「再認証」でプロフィールの読み取りを許可してください。",
+      "reauthorize": "再認証",
+      "syncNow": "今すぐ同期",
+      "disconnect": "接続を解除",
+      "disconnectConfirm": "<b>{{email}}の接続を解除しますか?</b> このコンピュータ上のNaushen Mailから、メール、ラベル、ローカルのリマインダーが削除されます。{{provider}}のデータは削除されません。"
+    }
+  },
+  "oauth": {
+    "copied": "コピーしました",
+    "openConsole": "Google Cloud Consoleを開く",
+    "wizardTitle": "自分のGoogleクライアントでGmailを設定",
+    "advancedTitle": "詳細設定: 自分のGoogleクライアントを使用",
+    "intro": "Naushen Mailにはバックエンドがないため、Gmailを使うにはご自身でGoogle OAuthクライアントを作成する必要があります。無料で、所要時間は約10分です。入力した値はこのコンピュータにのみ保存され、Google以外には送信されません。デモアカウントはこの設定なしで使えます。",
+    "intro_outlook": "Naushen Mailにはバックエンドがないため、OAuthアプリはご自身で用意します（無料、各約10分）。入力した値はこのMacにのみ保存され、GoogleとMicrosoft以外には送信されません。デモアカウントはこの設定なしで使えます。",
+    "introBuiltIn": "Naushen MailにはGoogle接続が組み込まれているため、設定なしでGmailを接続できます。ご希望の場合のみ、自分のクライアントを使ってください。無料で、所要時間は約10分です。入力した値はこのコンピュータにのみ保存されます。",
+    "guideLink": "プロバイダ設定ガイドを読む（Gmail）",
+    "guideLink_outlook": "プロバイダ設定ガイドを読む（GmailとOutlook）",
+    "clientId": "クライアントID",
+    "clientSecret": "クライアントシークレット",
+    "secretHint": "Googleではデスクトップアプリのシークレットは機密扱いではありませんが、トークンエンドポイントでは引き続き必要です。",
+    "hideSecret": "シークレットを非表示",
+    "showSecret": "シークレットを表示",
+    "google": { "title": "Google (Gmail)" },
+    "wizard": {
+      "project": {
+        "title": "Google Cloudプロジェクトを作成",
+        "body": "Google Cloud Consoleにサインインし、「Naushen Mail」などの名前で新しいプロジェクトを作成します。無料で、請求先の設定は不要です。"
+      },
+      "api": {
+        "title": "Gmail APIを有効にする",
+        "body": "新しいプロジェクトでGmail APIのページを開き、「有効にする」をクリックします。"
+      },
+      "consent": {
+        "title": "同意画面を設定",
+        "body": "Google Auth Platform → 「始める」。下のアプリ名を使い、サポートと連絡先のメールアドレスにはご自身のメールアドレスを入力し、対象ユーザーは「外部」を選びます。",
+        "copyName": "アプリ名をコピー"
+      },
+      "scopes": {
+        "title": "Gmailの権限を追加",
+        "body": "データアクセス → 「スコープを追加または削除」→ 「スコープを手動で追加」に以下を貼り付け → 「テーブルに追加」→ 「更新」→ 「保存」。",
+        "copy": "スコープをコピー"
+      },
+      "testUser": {
+        "title": "自分をテストユーザーとして追加",
+        "body": "対象 → テストユーザー → 「ユーザーを追加」→ ご自身のGmailアドレスを入力します（複数可）。アプリが「テスト」の間は、リストにあるユーザーのみサインインできます。"
+      },
+      "client": {
+        "title": "デスクトップクライアントを作成",
+        "body": "クライアント → 「クライアントを作成」→ アプリケーションの種類: デスクトップアプリ → 「作成」。するとGoogleにクライアントIDとクライアントシークレットが表示されます。"
+      },
+      "paste": {
+        "title": "クライアントIDとシークレットを貼り付け",
+        "body": "両方の値をここにコピーしてください。値はこのコンピュータにのみ保存され、Google以外には送信されません。",
+        "connectHint": "有効なクライアントIDとシークレットを入力するとボタンが有効になります。"
+      }
+    },
+    "expiry": {
+      "title": "7日ごとのサインアウトを防ぐ（推奨）",
+      "body": "同意画面が「テスト」の間は、Googleのサインインが7日ごとに失効し、そのたびに「再認証」をクリックする必要があります。これを避けるには、「対象」を開いて「アプリを公開」を選び、「本番環境」にします。個人利用であればGoogleの審査は不要です。サインイン時に「未確認のアプリ」という警告が表示されるだけです（詳細 → Naushen Mailに移動）。",
+      "open": "「対象」ページを開く"
+    },
+    "microsoft": {
+      "title": "Microsoft (Outlook)",
+      "open": "Microsoft Entraを開く",
+      "clientId": "アプリケーション（クライアント）ID",
+      "adminNote": "職場または学校のテナントでは、一部の権限に管理者の同意が必要な場合があります。個人アカウントでは不要です。"
+    }
+  },
+  "guide": {
+    "microsoft": {
+      "register": "Microsoft Entraで: アプリの登録 → 新規登録。",
+      "name": "名前を「Naushen Mail」にします。サポートされるアカウントの種類: 任意の組織ディレクトリ内のアカウントと個人用のMicrosoftアカウント。",
+      "redirect": "リダイレクトURI: プラットフォームは「パブリック クライアント/ネイティブ（モバイルとデスクトップ）」、値は次のとおり:",
+      "copyId": "アプリケーション（クライアント）IDを上の入力欄にコピーします。",
+      "public": "認証 → パブリック クライアント フローを許可する → はい。",
+      "permissions": "APIのアクセス許可 → 追加 → Microsoft Graph → 委任されたアクセス許可:",
+      "noSecret": "クライアントシークレットは作成しないでください。Naushen Mailはパブリッククライアントで、PKCEを使用します。"
+    }
+  },
+  "about": {
+    "title": "情報",
+    "version": "バージョン {{version}}",
+    "versionLoading": "バージョン …",
+    "license": "ライセンス {{license}}",
+    "blurb": "Gmail向けの、落ち着いたキーボード中心のデスクトップメールクライアントです。メールはこのコンピュータにキャッシュされ、アカウントのトークンは{{store}}に保管されます。Naushen Mailに専用サーバーはなく、AI機能もありません。",
+    "blurb_outlook": "GmailとOutlook向けの、落ち着いたキーボード中心のデスクトップメールクライアントです。メールはこのコンピュータにキャッシュされ、アカウントのトークンは{{store}}に保管されます。Naushen Mailに専用サーバーはなく、AI機能もありません。",
+    "docsTitle": "ドキュメント",
+    "open": "開く",
+    "builtWith": "使用ソフトウェア",
+    "openSource": "オープンソースソフトウェアを、それぞれのライセンスに従って使用しています。",
+    "links": {
+      "setup": { "label": "プロバイダ設定ガイド", "desc": "Gmailを接続", "desc_outlook": "GmailとOutlookを接続" },
+      "decisions": { "label": "設計方針とアーキテクチャ", "desc": "技術スタック、トレードオフ、完了の定義" },
+      "design": { "label": "デザインシステム", "desc": "トークン、タイポグラフィ、モーション" },
+      "privacy": { "label": "プライバシーポリシー", "desc": "Naushen Mailが保存する内容と保存場所" },
+      "issues": { "label": "問題を報告", "desc": "GitHubでの不具合報告とアイデア" },
+      "source": { "label": "ソースコード", "desc": "GitHubのNaushen Mail" }
+    }
+  },
+  "appearance": {
+    "title": "外観と受信トレイ",
+    "description": "Naushen Mailの見た目と、受信トレイの動作を設定します。",
+    "groups": {
+      "appearance": "外観",
+      "counts": "サイドバーの件数",
+      "threadStyle": "スレッドの表示形式",
+      "listTitle": "リストのタイトル",
+      "inbox": "受信トレイ"
+    },
+    "language": {
+      "label": "言語",
+      "desc": "アプリの表示言語です。「システムのデフォルト」を選ぶとOSの言語に従います。",
+      "system": "システムのデフォルト"
+    },
+    "theme": {
+      "label": "テーマ",
+      "desc": "macOSに合わせるか、ライトまたはダークを選べます。変更はすぐに反映されます。",
+      "light": "ライト", "dark": "ダーク", "system": "システム"
+    },
+    "density": {
+      "label": "表示密度",
+      "comfortable": { "label": "ゆったり", "desc": "リスト、サイドバー、リーダーの余白を広めにします" },
+      "compact": { "label": "コンパクト", "desc": "行間を詰めて、より多くのスレッドを表示します" }
+    },
+    "accent": { "label": "アクセントカラー", "desc": "選択、フォーカス、未読の点、メインボタンに使われます。" },
+    "accents": {
+      "blue": "ブルー", "violet": "バイオレット", "pink": "ピンク", "orange": "オレンジ", "green": "グリーン", "teal": "ティール", "neutral": "ニュートラル"
+    },
+    "counts": {
+      "label": "未読件数の表示",
+      "desc": "サイドバーの未読バッジの表示方法です。上限表示では、未読が99件を超えると「99+」と表示されます。",
+      "cap": "99+で上限表示",
+      "exact": "正確な件数"
+    },
+    "threadStyle": {
+      "side": { "label": "サイドプレビュー", "desc": "リストの上に右側から開きます" },
+      "center": { "label": "センタープレビュー", "desc": "リストの上に中央のポップアップで開きます" },
+      "full": { "label": "全画面", "desc": "開いている間、リストを置き換えます" }
+    },
+    "listCount": {
+      "label": "ビューのタイトルの横にメール件数を表示",
+      "desc": "現在のリストにあるスレッドの数を、タイトル（受信トレイ、カテゴリなど）の右に表示します。初期設定ではオフです。"
+    },
+    "groupByDate": { "label": "日付でグループ化", "desc": "スレッドを「今日」「昨日」「過去7日間」などにまとめます。" },
+    "markRead": { "label": "開いたら既読にする", "desc": "スレッドを開くとすぐに既読になります。" },
+    "remoteImages": { "label": "リモート画像をブロック", "desc": "メール内の画像は、許可したときだけ読み込まれます。トラッキングピクセルから保護します。" },
+    "hideCategories": {
+      "label": "プロモーション/ソーシャル/アップデート/フォーラムを受信トレイに表示しない",
+      "desc": "Gmailのみ。受信トレイをメインのメールだけにし、その他はサイドバーの「カテゴリ」からすぐ開けます。初期設定ではオフで、オンにするまで何も変わりません。"
+    },
+    "avatars": {
+      "label": "アバターを表示",
+      "desc": "スレッドリストとリーダーに、Gravatar経由で送信者と受信者の写真を表示します。初期設定ではオフです。連絡先ごとに外部サービスへ問い合わせが発生するためです。"
+    },
+    "swipe": { "label": "スワイプジェスチャー", "desc": "スレッドを2本指でスワイプ: 左でアーカイブ、右でリマインダーを設定します。トラックパッドのみ。" },
+    "autoAdvance": {
+      "label": "自動で次へ移動",
+      "desc": "開いているスレッドをアーカイブ、ゴミ箱に移動、またはスヌーズした後の移動先です。",
+      "next": "次へ", "previous": "前へ", "close": "閉じる"
+    }
+  },
+  "sending": {
+    "title": "送信と通知",
+    "groups": { "sending": "送信", "notifications": "通知" },
+    "undo": {
+      "label": "送信を取り消す",
+      "desc": "「送信」を押した後、しばらくメッセージを保留して取り消せるようにします。",
+      "aria": "送信取り消しの待ち時間",
+      "off": "オフ",
+      "seconds": "{{seconds}}秒"
+    },
+    "notifications": {
+      "label": "デスクトップ通知",
+      "desc": "受信トレイに新着メールが届いたときにmacOSの通知を表示します。連続して届いた場合は1件にまとめられ、その受信トレイを表示中は通知されません。",
+      "off": "オフ", "all": "すべての新着メール", "people": "個人からのみ"
+    },
+    "dock": { "label": "Dockバッジ", "desc": "Dockアイコンに、受信トレイの未読メッセージ数を表示します。" }
+  },
+  "shortcuts": {
+    "title": "キーボードショートカット",
+    "description": "Naushen Mailはキーボードだけで操作できるように作られています。ショートカットは現在のところ固定です。",
+    "viewAll": "すべてのショートカットを表示",
+    "names": {
+      "commandMenu": "コマンドメニュー", "compose": "新規作成", "archive": "アーカイブ", "reply": "返信", "reminder": "リマインダーを設定",
+      "label": "ラベル", "search": "検索", "undo": "取り消し", "all": "すべてのショートカットを表示"
+    }
+  },
+  "labels": {
+    "title": "ラベル",
+    "description": "ラベルはアカウントと同期されます。色はNaushen Mailのローカルにのみ保存されます。",
+    "noAccounts": "アカウントがありません",
+    "noAccountsBody": "ラベルを管理するには、アカウントを接続してください。",
+    "none": "ラベルはまだありません。",
+    "rename": "ラベル「{{name}}」の名前を変更",
+    "deleteLabel": "ラベル「{{name}}」を削除",
+    "delete": "削除",
+    "deleteConfirm": "<b>「{{name}}」を削除しますか?</b> すべてのスレッドとアカウントからも削除されます。",
+    "new": "新規ラベル",
+    "newFor": "{{email}}の新規ラベル名",
+    "newColour": "新規ラベルの色",
+    "create": "作成"
+  },
+  "views": {
+    "title": "ビュー",
+    "description": "サイドバーに表示される保存済みのフィルタです。ドラッグして並べ替えられます。",
+    "count_other": "保存済みビュー{{count}}件",
+    "new": "新規ビュー",
+    "empty": {
+      "title": "保存済みのビューはありません",
+      "create": "ビューを作成",
+      "body": "ビューは、「未読」や「チームから」のような保存済みのフィルタです。サイドバーに表示されます。"
+    },
+    "moveUp": "{{name}}を上へ移動",
+    "moveDown": "{{name}}を下へ移動",
+    "deleteView": "{{name}}を削除",
+    "sidebar": "サイドバー",
+    "showInSidebar": "{{name}}をサイドバーに表示",
+    "delete": "削除",
+    "deleteConfirm": "<b>ビュー「{{name}}」を削除しますか?</b> メールには影響しません。",
+    "role": {
+      "inbox": "受信トレイ", "sent": "送信済み", "drafts": "下書き", "trash": "ゴミ箱", "spam": "迷惑メール", "archive": "アーカイブ",
+      "starred": "スター付き", "important": "重要", "all": "すべてのメール"
+    },
+    "filter": {
+      "reminders": "リマインダー",
+      "unread": "未読",
+      "starred": "スター付き",
+      "hasAttachment": "添付ファイルあり",
+      "from": "差出人: {{list}}",
+      "to": "宛先: {{list}}",
+      "subject": "件名「{{text}}」",
+      "text": "「{{text}}」",
+      "labels_other": "ラベル{{count}}件",
+      "accounts_other": "アカウント{{count}}件",
+      "all": "すべてのメール"
+    }
+  },
+  "snippets": {
+    "title": "スニペット",
+    "description": "どのメッセージにも挿入できる定型文です。このMacに保存されます。",
+    "new": "新規スニペット",
+    "saveFailed": "スニペットを保存できませんでした（ローカルストレージを利用できません）。",
+    "empty": {
+      "title": "スニペットはまだありません",
+      "create": "スニペットを作成",
+      "body": "空き日程、道順、丁寧なお断りなど、何度も入力する文章を保存しておけます。"
+    },
+    "untitled": "無題のスニペット",
+    "emptyPreview": "空",
+    "snippetFallback": "スニペット",
+    "deleteNamed": "{{name}}を削除",
+    "titleLabel": "タイトル",
+    "titlePlaceholder": "例: 打ち合わせの空き日程",
+    "shortcutLabel": "ショートカット",
+    "shortcutHint": "任意。作成画面で「/」の後にショートカットを入力すると、このスニペットを挿入できます。",
+    "shortcutPlaceholder": "meeting",
+    "shortcutTaken": "別のスニペットがすでに/{{shortcut}}を使用しています。",
+    "content": "内容",
+    "contentLabel": "スニペットの内容",
+    "contentPlaceholder": "挿入するテキストを入力…",
+    "delete": "削除",
+    "deleteConfirm": "<b>このスニペットを削除しますか?</b> この操作は取り消せません。",
+    "create": "スニペットを作成",
+    "save": "保存"
+  },
+  "rte": {
+    "formatting": "{{label}}の書式",
+    "bold": "太字 (⌘B)",
+    "italic": "斜体 (⌘I)",
+    "underline": "下線 (⌘U)",
+    "addLink": "リンクを追加",
+    "removeLink": "リンクを削除",
+    "clear": "書式をクリア",
+    "linkPlaceholder": "リンクを貼り付け（例: example.com）",
+    "linkAddress": "リンク先アドレス",
+    "applyLink": "リンクを適用"
+  },
+  "signature": {
+    "title": "署名",
+    "description": "新規メッセージの末尾に追加されます。署名はアカウントごとに設定します。",
+    "noAccounts": "アカウントがありません",
+    "noAccountsBody": "先にアカウントを接続してください。署名はアカウントごとに設定します。",
+    "account": "アカウント",
+    "inReplies": {
+      "label": "返信と転送にも含める",
+      "desc": "オフの場合、署名は新規メッセージにのみ追加されます。",
+      "aria": "返信と転送に署名を含める"
+    },
+    "templatesTitle": "テンプレート",
+    "templatesIntro": "よく使うレイアウトから始めて、プレースホルダのテキストを署名のほかの部分と同じように編集できます。",
+    "templatesAria": "署名テンプレート",
+    "templates": {
+      "minimal": { "label": "ミニマル", "description": "名前と肩書きのみ。写真なし。" },
+      "photo-left": { "label": "写真を左に", "description": "名前、肩書き、メールアドレスの横に丸い写真を配置します。" },
+      "compact": { "label": "コンパクト", "description": "名前、肩書き、電話番号を1行に配置します。" },
+      "classic": { "label": "クラシック", "description": "名前、肩書き、会社名、区切り線、連絡先の順に配置します。" }
+    },
+    "replaceConfirm": "現在の署名を<b>{{name}}</b>に置き換えますか? この操作は取り消せません。",
+    "replace": "置き換える",
+    "photo": {
+      "title": "署名の写真",
+      "hasImage": "名前の横に表示されます。画像は正方形に切り抜かれ、収まるサイズに縮小されます。",
+      "noImage": "画像がまだないため、頭文字が表示されます。追加すると名前の横に表示されます。",
+      "replace": "画像を置き換える…",
+      "choose": "画像を選択…",
+      "useAccount": "アカウントの画像を使用",
+      "remove": "削除",
+      "badType": "PNG、JPEG、GIF、WebPの画像を選択してください。",
+      "unusable": "その画像は使用できませんでした。",
+      "unreadable": "そのファイルを画像として読み込めませんでした。",
+      "empty": "その画像は空です。",
+      "unavailable": "画像処理を利用できません。"
+    },
+    "editorTitleFor": "{{email}}の署名",
+    "placeholder": "署名を入力（例: 名前と肩書き）…",
+    "preview": {
+      "title": "プレビュー",
+      "to": "宛先: <b>Sam Rivera</b>",
+      "subject": "件名: ご連絡の件",
+      "greeting": "Samさん",
+      "body": "本日はお電話をいただきありがとうございました。メモは明日の朝にお送りします。",
+      "none": "署名なし"
+    }
+  }
+}

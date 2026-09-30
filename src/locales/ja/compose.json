@@ -1,0 +1,211 @@
+{
+  "window": {
+    "newMessage": "新規メッセージ",
+    "composer": "メッセージ作成",
+    "minimise": "最小化",
+    "maximise": "最大化",
+    "restore": "元のサイズに戻す",
+    "expand": "展開",
+    "close": "閉じる"
+  },
+  "fields": {
+    "from": "差出人",
+    "to": "宛先",
+    "cc": "Cc",
+    "bcc": "Bcc",
+    "subject": "件名",
+    "noAccount": "アカウントなし",
+    "sendFrom": "送信元",
+    "signature": "署名"
+  },
+  "recipients": {
+    "remove": "{{email}}を削除",
+    "frequent": "よく使う宛先"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b>は<b>{{suggested}}</b>の入力ミスかもしれません",
+    "useDomain": "{{domain}}を使用",
+    "keepAsTyped": "そのままにする",
+    "mailingList": "これは<b>メーリングリスト</b>のようです。返信はリストの全員に届きます。",
+    "replyingTo_other": "<b>{{count}}人</b>に返信します。",
+    "replySenderOnly": "送信者のみに返信",
+    "dismiss": "閉じる"
+  },
+  "quote": {
+    "show": "引用部分を表示"
+  },
+  "attachments": {
+    "remove": "{{name}}を削除",
+    "totalOver": "{{size}} — 25 MBの上限を超えています",
+    "drop": "ファイルをドロップして添付",
+    "bytes_other": "{{count}}バイト",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "ファイルを添付",
+    "addSubject": "件名を追加",
+    "sendAnyway": "このまま送信"
+  },
+  "validation": {
+    "noRecipient": "宛先を1件以上追加してください。",
+    "invalidAddress_other": "{{count}}件の宛先が有効なメールアドレスではありません。",
+    "noSubject": "このメッセージには件名がありません。",
+    "empty": "このメッセージは空です。",
+    "missingAttachment": "添付ファイルについて触れていますが、何も添付されていません。"
+  },
+  "nudge": {
+    "empty": "このメッセージは空です。",
+    "typo": "{{domain}}は入力ミスかもしれません。",
+    "attachment": "「{{word}}」と書かれていますが、何も添付されていません。",
+    "noSubject": "件名がありません。"
+  },
+  "toolbar": {
+    "snippets": "スニペット",
+    "attach": "ファイルを添付",
+    "discard": "下書きを破棄",
+    "help": "書式のヘルプ",
+    "draftSaved": "下書きを保存しました",
+    "send": "送信"
+  },
+  "schedule": {
+    "title": "送信を予約",
+    "timePlaceholder": "Type a time… tomorrow 9am",
+    "timeLabel": "送信時刻を入力",
+    "confirm": "予約",
+    "pickFuture": "未来の時刻を選択してください",
+    "followUp_other": "{{count}}日以内に返信がなければ通知",
+    "detail": "{{day}} {{time}}",
+    "thisMorning": "今朝",
+    "thisAfternoon": "今日の午後",
+    "tomorrowMorning": "明日の朝",
+    "tomorrowAfternoon": "明日の午後",
+    "nextWeek": "来週",
+    "pickDateTime": "日時を選択",
+    "scheduledFor": "{{when}}に送信予約済み"
+  },
+  "toast": {
+    "discarded": "下書きを破棄しました",
+    "archived": "スレッドをアーカイブしました",
+    "sending": "送信中…",
+    "sent": "送信しました",
+    "sentFollowUp_other": "送信しました · 返信がなければ{{count}}日後にフォローアップ",
+    "scheduledFollowUp_other": "{{scheduled}} · {{count}}日後にフォローアップ",
+    "notSent": "送信できませんでした: {{reason}}",
+    "sendFailed": "メッセージを送信できませんでした",
+    "cancel": "キャンセル",
+    "undo": "元に戻す"
+  },
+  "snippets": {
+    "none": "スニペットはまだありません",
+    "newFromDraft": "+ この下書きから新規スニペットを作成",
+    "nameLabel": "スニペット名",
+    "namePlaceholder": "Webサイトのリンク",
+    "untitled": "無題のスニペット"
+  },
+  "help": {
+    "typing": "入力",
+    "smartTypography": "引用符、ダッシュ、省略記号の自動変換",
+    "formatting": "書式",
+    "insertBlock": "ブロックを挿入",
+    "emoji": "絵文字",
+    "textStyles": "太字、斜体、下線",
+    "strikethrough": "取り消し線",
+    "code": "コード",
+    "link": "リンク",
+    "snippet": "スニペット",
+    "headings": "見出し",
+    "bulletKeys": "- または *",
+    "bulletList": "箇条書き",
+    "numberedList": "番号付きリスト",
+    "todo": "ToDo",
+    "quote": "引用",
+    "codeBlock": "コードブロック",
+    "divider": "区切り線",
+    "send": "送信",
+    "sendArchive": "送信してアーカイブ",
+    "saveClose": "下書きを保存して閉じる"
+  },
+  "editor": {
+    "placeholder": "入力するか、「/」でブロックを挿入",
+    "placeholderShort": "入力するか、「/」を押す",
+    "toggle": "トグル",
+    "heading": "見出し{{level}}"
+  },
+  "slash": {
+    "noMatch": "一致するブロックがありません",
+    "insertSnippet": "スニペットを挿入",
+    "colour": "カラー",
+    "background": "背景",
+    "groups": {
+      "basic": "基本ブロック",
+      "media": "メディア",
+      "advanced": "高度なブロック",
+      "snippets": "スニペット"
+    },
+    "items": {
+      "text": { "title": "テキスト", "description": "プレーンテキストで書き始めます。" },
+      "h1": { "title": "見出し1", "description": "大きなセクション見出し。" },
+      "h2": { "title": "見出し2", "description": "中サイズのセクション見出し。" },
+      "h3": { "title": "見出し3", "description": "小さなセクション見出し。" },
+      "bulletList": { "title": "箇条書き", "description": "シンプルな箇条書きを作成します。" },
+      "orderedList": { "title": "番号付きリスト", "description": "番号付きのリストを作成します。" },
+      "taskList": { "title": "ToDoリスト", "description": "チェックリストでタスクを管理します。" },
+      "toggle": { "title": "トグルリスト", "description": "詳細を折りたたみの中に隠します。" },
+      "quote": { "title": "引用", "description": "引用文を記載します。" },
+      "divider": { "title": "区切り線", "description": "ブロックを視覚的に区切ります。" },
+      "callout": { "title": "コールアウト", "description": "文章を目立たせます。" },
+      "code": { "title": "コード", "description": "コードの断片を記載します。" },
+      "table": { "title": "表", "description": "シンプルな表を追加します。" },
+      "image": { "title": "画像", "description": "画像をアップロードまたはドロップします。" },
+      "link": { "title": "リンク", "description": "Webページへのリンクを挿入します。" },
+      "emoji": { "title": "絵文字", "description": "絵文字を検索して挿入します。" },
+      "textColor": { "title": "文字色", "description": "選択したテキストに色を付けます。" },
+      "backgroundColor": { "title": "背景色", "description": "選択したテキストをハイライトします。" }
+    },
+    "colors": {
+      "default": "デフォルト",
+      "gray": "グレー",
+      "brown": "ブラウン",
+      "orange": "オレンジ",
+      "yellow": "イエロー",
+      "green": "グリーン",
+      "blue": "ブルー",
+      "purple": "パープル",
+      "pink": "ピンク",
+      "red": "レッド"
+    }
+  },
+  "selection": {
+    "turnInto": "変換",
+    "bold": "太字",
+    "italic": "斜体",
+    "underline": "下線",
+    "strikethrough": "取り消し線",
+    "code": "コード",
+    "link": "リンク",
+    "colour": "カラー",
+    "text": "文字",
+    "background": "背景",
+    "pasteLink": "リンクを貼り付け…",
+    "apply": "適用",
+    "openLink": "リンクを開く",
+    "removeLink": "リンクを削除"
+  },
+  "link": {
+    "dialog": "リンクを編集",
+    "placeholder": "リンクを貼り付けまたは入力",
+    "urlLabel": "リンクURL",
+    "apply": "適用",
+    "applyLink": "リンクを適用",
+    "open": "リンクを開く",
+    "remove": "リンクを削除"
+  },
+  "image": {
+    "alignLeft": "左揃え",
+    "alignCenter": "中央揃え",
+    "alignRight": "右揃え"
+  },
+  "callout": {
+    "changeIcon": "コールアウトのアイコンを変更"
+  }
+}
