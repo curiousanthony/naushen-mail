@@ -7,6 +7,7 @@
  */
 
 import type { OutgoingAttachment } from '@shared/types'
+import i18n, { currentLocale } from '@/i18n'
 
 /** A paperclip attachment held by an open composer. */
 export interface PendingAttachment extends OutgoingAttachment {
@@ -20,13 +21,16 @@ export const MAX_TOTAL_BYTES = 25 * 1024 * 1024
 
 /** `1.4 MB`, `812 KB`, `0 bytes` — the composer chip label. */
 export function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes < 0) return '0 bytes'
-  if (bytes < 1024) return `${Math.round(bytes)} ${bytes === 1 ? 'byte' : 'bytes'}`
+  if (!Number.isFinite(bytes) || bytes < 0) return i18n.t('compose:attachments.bytes', { count: 0 })
+  if (bytes < 1024) return i18n.t('compose:attachments.bytes', { count: Math.round(bytes) })
   const units = ['KB', 'MB', 'GB']
   let value = bytes / 1024
   let unit = 0
   while (value >= 1024 && unit < units.length - 1) { value /= 1024; unit++ }
-  return `${value >= 10 || Number.isInteger(value) ? Math.round(value) : value.toFixed(1)} ${units[unit]}`
+  const shown = value >= 10 || Number.isInteger(value)
+    ? String(Math.round(value))
+    : new Intl.NumberFormat(currentLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)
+  return i18n.t('compose:attachments.size', { value: shown, unit: units[unit] })
 }
 
 export function totalBytes(list: { size: number }[]): number {

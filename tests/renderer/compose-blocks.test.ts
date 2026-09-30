@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest'
 import {
-  BLOCK_SHORTCUTS, BACKGROUND_COLORS, SLASH_ITEMS, TEXT_COLORS, filterSlashItems
+  BLOCK_SHORTCUTS, backgroundColors, slashItems, textColors, filterSlashItems
 } from '@/features/compose/slashItems'
 import { detectEmojiTrigger, detectSlashTrigger, searchEmoji } from '@/features/compose/trigger'
 import { buildOutgoing, inlineImagesToAttachments, planSend } from '@/features/compose/send'
@@ -20,7 +20,7 @@ const GIF_B64 = 'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 
 describe('slash menu catalogue', () => {
   it('offers every block the serializer can render', () => {
-    const actions = SLASH_ITEMS.map((i) => i.action)
+    const actions = slashItems().map((i) => i.action)
     for (const a of ['text', 'h1', 'h2', 'h3', 'bulletList', 'orderedList', 'taskList', 'toggle',
       'quote', 'divider', 'callout', 'code', 'table', 'image', 'link', 'emoji',
       'textColor', 'backgroundColor']) {
@@ -39,14 +39,14 @@ describe('slash menu catalogue', () => {
   })
 
   it('returns the curated order for an empty query and nothing for nonsense', () => {
-    expect(filterSlashItems('')).toHaveLength(SLASH_ITEMS.length)
+    expect(filterSlashItems('')).toHaveLength(slashItems().length)
     expect(filterSlashItems('zzzqqq')).toEqual([])
   })
 
   it('appends local snippets as their own group so /<name> works', () => {
     const snippets = [{ id: 's1', name: 'Website link' }]
     const all = filterSlashItems('', snippets)
-    expect(all.at(-1)).toMatchObject({ action: 'snippet', title: 'Website link', group: 'Snippets' })
+    expect(all.at(-1)).toMatchObject({ action: 'snippet', title: 'Website link', group: 'snippets' })
 
     const hit = filterSlashItems('website', snippets)
     expect(hit[0]).toMatchObject({ action: 'snippet', snippetId: 's1' })
@@ -59,11 +59,11 @@ describe('slash menu catalogue', () => {
   })
 
   it('keeps colour palettes aligned and literal (email cannot use CSS variables)', () => {
-    expect(TEXT_COLORS).toHaveLength(BACKGROUND_COLORS.length)
-    expect(TEXT_COLORS[0].value).toBe('')
+    expect(textColors()).toHaveLength(backgroundColors().length)
+    expect(textColors()[0].value).toBe('')
     // Both palettes lead with a "Default" entry that clears the mark.
-    expect(BACKGROUND_COLORS[0].value).toBe('')
-    for (const c of [...TEXT_COLORS, ...BACKGROUND_COLORS].filter((x) => x.value)) {
+    expect(backgroundColors()[0].value).toBe('')
+    for (const c of [...textColors(), ...backgroundColors()].filter((x) => x.value)) {
       expect(c.value, c.name).toMatch(/^#[0-9a-f]{6}$/i)
     }
   })

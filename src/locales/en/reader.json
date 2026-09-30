@@ -1,0 +1,139 @@
+{
+  "thread": {
+    "fallbackTitle": "Conversation",
+    "loading": "Loading conversation",
+    "unavailableTitle": "This conversation is no longer available.",
+    "unavailableHint": "It may have been deleted or moved.",
+    "resize": "Resize conversation panel"
+  },
+  "header": {
+    "collapse": "Collapse",
+    "collapseThread": "Collapse thread",
+    "archive": "Archive",
+    "archived": "Conversation archived",
+    "markUnread": "Mark as unread",
+    "markedUnread": "Marked as unread",
+    "setReminder": "Set reminder",
+    "star": "Star",
+    "unstar": "Unstar",
+    "label": "Label",
+    "unsubscribe": "Unsubscribe",
+    "unsubscribeWeb": "Opens in your browser",
+    "unsubscribeMail": "Sends an email",
+    "reportSpam": "Report spam",
+    "reportedSpam": "Reported as spam",
+    "trash": "Move to trash",
+    "trashed": "Moved to trash",
+    "noSubject": "(no subject)",
+    "messageCount_one": "{{count}} message",
+    "messageCount_other": "{{count}} messages"
+  },
+  "replyBar": {
+    "reply": "Reply",
+    "replyAll": "Reply all",
+    "forward": "Forward"
+  },
+  "message": {
+    "unread": "Unread",
+    "expand": "Expand message",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "showRecipientDetails": "Show recipient details",
+    "hideRecipientDetails": "Hide recipient details",
+    "toLine": "to {{recipients}}",
+    "toMe": "me",
+    "attachmentCount_one": "{{count}} attachment",
+    "attachmentCount_other": "{{count}} attachments",
+    "reply": "Reply",
+    "replyAll": "Reply all",
+    "forward": "Forward",
+    "copyField": "Copy {{label}}",
+    "copyAddress_one": "Copy {{label}} address",
+    "copyAddress_other": "Copy {{label}} addresses",
+    "copied": "Copied",
+    "detail": {
+      "from": "From",
+      "replyTo": "Reply-to",
+      "to": "To",
+      "cc": "Cc",
+      "bcc": "Bcc",
+      "date": "Date"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_one": "Remote image blocked",
+    "remoteImageBlocked_other": "{{count}} remote images blocked",
+    "loadImages": "Load images",
+    "alwaysLoad": "Always load",
+    "empty": "This message has no content.",
+    "frameTitle": "Message from {{sender}}",
+    "showAsDesigned": "Show as designed",
+    "adaptToDark": "Adapt to dark mode",
+    "showOriginalColours": "Show original colours",
+    "adaptColours": "Adapt colours to dark mode",
+    "original": "Original",
+    "adapt": "Adapt",
+    "showQuote": "Show quoted text",
+    "hideQuote": "Hide quoted text"
+  },
+  "attachments": {
+    "preview": "Preview {{name}}",
+    "download": "Download {{name}} — {{size}}"
+  },
+  "preview": {
+    "loading": "Loading preview…",
+    "failed": "Couldn't load a preview for this file.",
+    "unavailable": "No preview available for this file type.",
+    "download": "Download",
+    "close": "Close",
+    "closePreview": "Close preview"
+  },
+  "invite": {
+    "loading": "Reading invite…",
+    "sending": "Sending…",
+    "yes": "Yes",
+    "maybe": "Maybe",
+    "no": "No",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}, {{name}}.",
+    "sent": {
+      "accepted": "Reply sent — you're marked as yes",
+      "tentative": "Reply sent — you're marked as maybe",
+      "declined": "Reply sent — you're marked as no"
+    },
+    "failed": "Could not send your reply. Try again."
+  },
+  "code": {
+    "copyTooltip": "Copy verification code",
+    "copyAria": "Copy verification code {{code}}",
+    "copy": "Copy <b>{{code}}</b>",
+    "copied": "Copied {{code}}",
+    "copyFailed": "Could not copy the code",
+    "none": "No recent verification code here"
+  },
+  "shield": {
+    "blocked_one": "Blocked {{count}} tracker",
+    "blocked_other": "Blocked {{count}} trackers",
+    "trackingPixel": "Tracking pixel",
+    "note": "Trackers report that you opened this message. They stay blocked even when you load images."
+  },
+  "link": {
+    "mailTo": "mail to",
+    "call": "call",
+    "trackingStripped_one": "{{count}} tracking parameter stripped on open",
+    "trackingStripped_other": "{{count}} tracking parameters stripped on open",
+    "warningLabel": "Check this link",
+    "warning": "This link goes to <b>{{actual}}</b>, not <b>{{shown}}</b>.",
+    "openAnyway": "Open anyway",
+    "cancel": "Cancel",
+    "writeTo": "Write to this address",
+    "open": "Open link",
+    "copyAddress": "Copy address",
+    "copyLink": "Copy link",
+    "copyLinkClean": "Copy link (no tracking)",
+    "copyFailed": "Could not copy the link",
+    "copiedClean": "Link copied without tracking parameters",
+    "addressCopied": "Address copied",
+    "copied": "Link copied"
+  }
+}

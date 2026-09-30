@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ImageOff, Moon, Sun } from 'lucide-react'
 import type { Attachment, Message } from '@shared/types'
 import { sanitizeEmailHtml, type TrackerHit } from '@shared/sanitize'
@@ -97,6 +98,7 @@ interface Props {
  * the content, intercept link clicks and toggle quoted text without reloading the document.
  */
 export function MessageBody({ message, blockRemoteImages, onTrackers }: Props): JSX.Element {
+  const { t } = useTranslation('reader')
   const { tokens, dark } = useThemeTokens()
   const [loadImages, setLoadImages] = useState(false)
   const [showQuote, setShowQuote] = useState(false)
@@ -258,25 +260,25 @@ export function MessageBody({ message, blockRemoteImages, onTrackers }: Props): 
         <div className="msgbody__banner" role="status">
           <ImageOff size={15} aria-hidden />
           <span className="msgbody__banner-text">
-            {blockedCount === 1 ? 'Remote image blocked' : `${blockedCount} remote images blocked`}
+            {t('body.remoteImageBlocked', { count: blockedCount })}
           </span>
-          <button className="msgbody__banner-btn" onClick={() => setLoadImages(true)}>Load images</button>
+          <button className="msgbody__banner-btn" onClick={() => setLoadImages(true)}>{t('body.loadImages')}</button>
           <button
             className="msgbody__banner-btn"
             onClick={() => { setLoadImages(true); void alwaysLoadImages() }}
           >
-            Always load
+            {t('body.alwaysLoad')}
           </button>
         </div>
       )}
 
       {result.isEmpty ? (
-        <p className="msgbody__empty">This message has no content.</p>
+        <p className="msgbody__empty">{t('body.empty')}</p>
       ) : (
         <iframe
           ref={frame}
           className="msgbody__frame"
-          title={`Message from ${message.from.name ?? message.from.email}`}
+          title={t('body.frameTitle', { sender: message.from.name ?? message.from.email })}
           sandbox="allow-same-origin allow-popups"
           srcDoc={srcDoc}
           style={{ height }}
@@ -284,16 +286,16 @@ export function MessageBody({ message, blockRemoteImages, onTrackers }: Props): 
       )}
 
       {paper && !result.isEmpty && (
-        <Tooltip label={adapt ? 'Show as designed' : 'Adapt to dark mode'}>
+        <Tooltip label={adapt ? t('body.showAsDesigned') : t('body.adaptToDark')}>
           <button
             type="button"
             className="msgbody__adapt"
             aria-pressed={adapt}
-            aria-label={adapt ? 'Show original colours' : 'Adapt colours to dark mode'}
+            aria-label={adapt ? t('body.showOriginalColours') : t('body.adaptColours')}
             onClick={() => { const next = !adapt; setAdapt(next); saveAdapt(next) }}
           >
             {adapt ? <Sun size={13} aria-hidden /> : <Moon size={13} aria-hidden />}
-            <span>{adapt ? 'Original' : 'Adapt'}</span>
+            <span>{adapt ? t('body.original') : t('body.adapt')}</span>
           </button>
         </Tooltip>
       )}
@@ -305,14 +307,14 @@ export function MessageBody({ message, blockRemoteImages, onTrackers }: Props): 
         // The label span is visually hidden while collapsed (see msgbody__quote-label in
         // reader.css) — collapsed, this is an icon-only "•••" button, so it still needs a
         // tooltip even though there's a text node in the DOM.
-        <Tooltip label={showQuote ? 'Hide quoted text' : 'Show quoted text'}>
+        <Tooltip label={showQuote ? t('body.hideQuote') : t('body.showQuote')}>
           <button
             className={`msgbody__quote${showQuote ? ' is-open' : ''}`}
             onClick={() => setShowQuote((v) => !v)}
             aria-expanded={showQuote}
           >
             {showQuote ? <ChevronDown size={14} aria-hidden /> : <span className="msgbody__dots" aria-hidden>•••</span>}
-            <span className="msgbody__quote-label">{showQuote ? 'Hide quoted text' : 'Show quoted text'}</span>
+            <span className="msgbody__quote-label">{showQuote ? t('body.hideQuote') : t('body.showQuote')}</span>
           </button>
         </Tooltip>
       )}

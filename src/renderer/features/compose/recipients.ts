@@ -4,6 +4,7 @@
  */
 
 import type { Address } from '@shared/types'
+import i18n from '@/i18n'
 import { findAttachmentMention } from './safety'
 
 /**
@@ -109,17 +110,15 @@ export function validateCompose(input: {
   const warnings: string[] = []
   const all = [...input.to, ...input.cc, ...input.bcc]
 
-  if (!all.length) errors.push('Add at least one recipient.')
+  if (!all.length) errors.push(i18n.t('compose:validation.noRecipient'))
   const invalid = all.filter((a) => !isValidEmail(a.email))
   if (invalid.length) {
-    errors.push(invalid.length === 1
-      ? `${invalid[0].email} is not a valid email address.`
-      : `${invalid.length} recipients are not valid email addresses.`)
+    errors.push(i18n.t('compose:validation.invalidAddress', { count: invalid.length, email: invalid[0].email }))
   }
-  if (!input.subject.trim()) warnings.push('This message has no subject.')
-  if (!input.bodyText.trim() && !input.attachmentCount) warnings.push('This message is empty.')
+  if (!input.subject.trim()) warnings.push(i18n.t('compose:validation.noSubject'))
+  if (!input.bodyText.trim() && !input.attachmentCount) warnings.push(i18n.t('compose:validation.empty'))
   if (!input.attachmentCount && findAttachmentMention(input.bodyText)) {
-    warnings.push('You mentioned an attachment but nothing is attached.')
+    warnings.push(i18n.t('compose:validation.missingAttachment'))
   }
   return { errors, warnings }
 }

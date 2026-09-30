@@ -1,4 +1,5 @@
 import { CornerUpLeft, CornerUpRight, ReplyAll } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
 
 export type ReplyMode = 'reply' | 'replyAll' | 'forward'
@@ -18,6 +19,7 @@ interface Props {
  * `#reader-inline-compose-slot` at the bottom of the thread. This component only asks.
  */
 export function ReplyBar({ threadId, messageId, hidden }: Props): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const openComposer = useApp((s) => s.openComposer)
   if (hidden) return null
 
@@ -28,13 +30,13 @@ export function ReplyBar({ threadId, messageId, hidden }: Props): JSX.Element | 
   return (
     <div className="replybar">
       <button className="replybar__btn" onClick={() => open('reply')}>
-        <CornerUpLeft size={15} aria-hidden /> Reply <span className="replybar__key">r</span>
+        <CornerUpLeft size={15} aria-hidden /> {t('replyBar.reply')} <span className="replybar__key">r</span>
       </button>
       <button className="replybar__btn" onClick={() => open('replyAll')}>
-        <ReplyAll size={15} aria-hidden /> Reply all <span className="replybar__key">a</span>
+        <ReplyAll size={15} aria-hidden /> {t('replyBar.replyAll')} <span className="replybar__key">a</span>
       </button>
       <button className="replybar__btn" onClick={() => open('forward')}>
-        <CornerUpRight size={15} aria-hidden /> Forward <span className="replybar__key">f</span>
+        <CornerUpRight size={15} aria-hidden /> {t('replyBar.forward')} <span className="replybar__key">f</span>
       </button>
     </div>
   )

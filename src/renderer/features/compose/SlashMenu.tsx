@@ -7,8 +7,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/react'
 import * as icons from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import {
-  BACKGROUND_COLORS, TEXT_COLORS, filterSlashItems,
+  backgroundColors, filterSlashItems, textColors,
   type ColorChoice, type SlashAction, type SlashItem
 } from './slashItems'
 import { findByShortcut, type Snippet } from './snippets'
@@ -39,17 +40,18 @@ const Icon = ({ name, size = 16 }: { name: string; size?: number }): JSX.Element
 
 export function SlashMenu(props: Props): JSX.Element | null {
   const { editor, query, anchor, snippets, onClose, onConsume, onRequestImage, onRequestLink, mode = 'slash', snippetContext } = props
+  const { t } = useTranslation('compose')
   const [active, setActive] = useState(0)
   const [submenu, setSubmenu] = useState<null | { kind: 'color'; action: SlashAction }>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
   const items = mode === 'snippet'
     ? findByShortcut(snippets, query).map((s): SlashItem => ({
-        action: 'snippet', title: s.name, description: 'Insert snippet', icon: 'Braces', group: 'Snippets',
+        action: 'snippet', title: s.name, description: t('slash.insertSnippet'), icon: 'Braces', group: 'snippets', groupLabel: t('slash.groups.snippets'),
         keywords: [], hint: `;${s.shortcut}`, snippetId: s.id
       }))
     : filterSlashItems(query, snippets.map((s) => ({ id: s.id, name: s.name, shortcut: s.shortcut })))
-  const colors = submenu?.action === 'backgroundColor' ? BACKGROUND_COLORS : TEXT_COLORS
+  const colors = submenu?.action === 'backgroundColor' ? backgroundColors() : textColors()
 
   useEffect(() => { setActive(0); setSubmenu(null) }, [query])
 
@@ -99,7 +101,7 @@ export function SlashMenu(props: Props): JSX.Element | null {
   if (!items.length && !submenu) {
     return (
       <div className="cmp-menu" style={positionStyle(anchor)} role="listbox">
-        <div className="cmp-menu__empty">No blocks match</div>
+        <div className="cmp-menu__empty">{t('slash.noMatch')}</div>
       </div>
     )
   }
@@ -107,7 +109,7 @@ export function SlashMenu(props: Props): JSX.Element | null {
   if (submenu) {
     return (
       <div className="cmp-menu cmp-menu--colors" style={positionStyle(anchor)} role="listbox" ref={listRef}>
-        <div className="cmp-menu__group">{submenu.action === 'backgroundColor' ? 'Background' : 'Colour'}</div>
+        <div className="cmp-menu__group">{submenu.action === 'backgroundColor' ? t('slash.background') : t('slash.colour')}</div>
         {colors.map((c, i) => (
           <button
             key={c.name}
@@ -138,7 +140,7 @@ export function SlashMenu(props: Props): JSX.Element | null {
   return (
     <div className="cmp-menu" style={positionStyle(anchor)} role="listbox" ref={listRef}>
       {items.map((item, i) => {
-        const header = showGroups && item.group !== lastGroup ? item.group : null
+        const header = showGroups && item.group !== lastGroup ? item.groupLabel : null
         lastGroup = item.group
         return (
           <div key={`${item.action}-${item.snippetId ?? item.title}`}>
@@ -213,6 +215,6 @@ export function applySlashAction(editor: Editor, item: SlashItem, ctx: ApplyCont
 
 /** cmd+alt+<n> and the Turn-into menu share this. */
 export function applyBlockAction(editor: Editor, action: SlashAction, ctx: ApplyContext): void {
-  const item = { action, title: '', description: '', icon: '', group: 'Basic blocks', keywords: [] } as SlashItem
+  const item = { action, title: '', description: '', icon: '', group: 'basic', groupLabel: '', keywords: [] } as SlashItem
   applySlashAction(editor, item, ctx)
 }
