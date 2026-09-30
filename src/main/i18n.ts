@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import i18n from 'i18next'
 import { app } from 'electron'
 import { DEFAULT_LANGUAGE, LANGUAGES, resolveLanguage, type LanguagePref } from '@shared/languages'
