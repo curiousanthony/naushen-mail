@@ -1,4 +1,5 @@
 import { pkce, loopbackAuth, postForm } from '../../auth/oauth'
+import { mt } from '../../i18n'
 import { ensureAccessToken } from '../../auth/tokens'
 import type { StoredTokens } from '../types'
 import { GraphClient, ReauthRequiredError, type TokenSource } from './graph'
@@ -7,7 +8,7 @@ export const AUTHORIZE_URL = 'https://login.microsoftonline.com/common/oauth2/v2
 export const TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 export const SCOPES = 'openid profile email offline_access User.Read Mail.ReadWrite Mail.Send MailboxSettings.ReadWrite'
 
-export const MISSING_CLIENT_ID = 'Add your Microsoft Application (client) ID first: Settings → Accounts → OAuth setup.'
+export const missingClientId = (): string => mt('outlook.missingClientId')
 
 interface TokenResponse { access_token: string; refresh_token?: string; expires_in: number; scope?: string }
 
@@ -21,7 +22,7 @@ const toStored = (r: TokenResponse, prevRefresh = ''): StoredTokens => ({
  * (an Origin header would trigger AADSTS9002327 "SPA-only" errors) — do not switch this to a browser-context fetch.
  */
 export async function signIn(clientId: string): Promise<StoredTokens> {
-  if (!clientId.trim()) throw new Error(MISSING_CLIENT_ID)
+  if (!clientId.trim()) throw new Error(missingClientId())
   const { verifier, challenge } = pkce()
   const { code, redirectUri } = await loopbackAuth((redirectUri, state) => {
     const q = new URLSearchParams({
@@ -38,7 +39,7 @@ export async function signIn(clientId: string): Promise<StoredTokens> {
 
 /** Microsoft rotates refresh tokens: the returned one replaces the stored one (ensureAccessToken persists it before use). */
 export async function refreshTokens(clientId: string, refreshToken: string): Promise<StoredTokens> {
-  if (!clientId.trim()) throw new Error(MISSING_CLIENT_ID)
+  if (!clientId.trim()) throw new Error(missingClientId())
   const res = await postForm<TokenResponse>(TOKEN_URL, { client_id: clientId, scope: SCOPES, refresh_token: refreshToken, grant_type: 'refresh_token' })
   return toStored(res, refreshToken)
 }
@@ -76,7 +77,7 @@ export async function fetchProfile(accessToken: string, fetchImpl?: typeof fetch
   const c = new GraphClient({ tokens: { get: async () => accessToken }, fetchImpl, maxRetries: 2 })
   const me = await c.get<{ displayName?: string; mail?: string | null; userPrincipalName?: string }>('/me', { query: { $select: 'id,displayName,mail,userPrincipalName' } })
   const email = (me.mail || me.userPrincipalName || '').trim()
-  if (!email) throw new Error('Microsoft did not return an email address for this account.')
+  if (!email) throw new Error(mt('outlook.noEmail'))
   return { email, name: me.displayName?.trim() || email }
 }
 

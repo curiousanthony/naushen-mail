@@ -1,8 +1,10 @@
 /**
  * One small HTTP client for the Gmail REST API: bearer auth, query serialisation, JSON in/out,
  * retry with exponential backoff (429 / 5xx / rate-limit 403 / network errors), honours Retry-After,
- * and one forced token refresh on 401. No Electron imports: fully unit-testable with a stubbed fetch.
+ * and one forced token refresh on 401. Unit-testable with a stubbed fetch.
  */
+import { mt } from '../../i18n'
+
 export const GMAIL_BASE = 'https://gmail.googleapis.com/gmail/v1/users/me'
 export const GMAIL_UPLOAD_BASE = 'https://gmail.googleapis.com/upload/gmail/v1/users/me'
 
@@ -102,7 +104,7 @@ export class GmailHttp {
         })
       } catch (e) {
         // Network failure / timeout: retry with backoff.
-        if (attempt >= maxRetries) throw new GmailApiError(`Network error talking to Gmail: ${(e as Error).message}`, 0, 'network')
+        if (attempt >= maxRetries) throw new GmailApiError(mt('gmail.network', { message: (e as Error).message }), 0, 'network')
         await sleep(backoff(attempt, null, rand))
         continue
       }
@@ -120,7 +122,7 @@ export class GmailHttp {
         attempt-- // a credential refresh is not a "retry"
         continue
       }
-      if (res.status === 401) this.deps.onAuthRejected?.('Google rejected the stored credentials. Sign in again.')
+      if (res.status === 401) this.deps.onAuthRejected?.(mt('gmail.authRejected'))
       const retryable = res.status === 429 || res.status >= 500 || (res.status === 403 && err.reason !== undefined && RETRYABLE_REASONS.has(err.reason))
       if (!retryable || attempt >= maxRetries) throw err
       await sleep(backoff(attempt, parseRetryAfter(res.headers.get('retry-after')), rand))

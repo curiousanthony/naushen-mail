@@ -5,7 +5,8 @@ import type { Label, OutgoingMessage, ThreadAction } from '@shared/types'
 import { ensureAccessToken } from '../../auth/tokens'
 import type { AdapterFactoryDeps, NormalizedThread, ProviderAdapter, SyncPage } from '../types'
 import type { GmailHistoryResponse, GmailLabel, GmailMessage, GmailPart, GmailProfile, GmailThread } from './api-types'
-import { refreshAccessToken } from './auth'
+import { refreshAccessToken, resolveGoogleClient } from './auth'
+import { mt } from '../../i18n'
 import { decodeCursor, encodeCursor, type GmailCursor } from './cursor'
 import { diffHistory } from './history'
 import { GmailApiError, GmailHttp, pool } from './http'
@@ -77,8 +78,7 @@ export class GmailAdapter implements ProviderAdapter {
       () => this.deps.getTokens(),
       (t) => this.deps.saveTokens(t),
       (rt) => {
-        const { googleClientId, googleClientSecret } = this.deps.getSettings().oauth
-        return refreshAccessToken({ clientId: googleClientId, clientSecret: googleClientSecret }, rt, this.o.fetch)
+        return refreshAccessToken(resolveGoogleClient(this.deps.getSettings().oauth) ?? { clientId: '', clientSecret: '' }, rt, this.o.fetch)
       },
       (msg) => this.deps.markReauthNeeded(msg)
     ).finally(() => {
@@ -141,7 +141,7 @@ export class GmailAdapter implements ProviderAdapter {
 
   async fetchThread(remoteThreadId: string): Promise<NormalizedThread> {
     const n = normalizeThread(this.accountId, this.deps.account.email, await this.getThread(this.rid(remoteThreadId)))
-    if (!n) throw new Error('Thread not found')
+    if (!n) throw new Error(mt('errors.threadNotFound'))
     return n
   }
 
@@ -391,13 +391,13 @@ export class GmailAdapter implements ProviderAdapter {
     }
     const m = await this.http.get<GmailMessage>(`/messages/${mid}`, { format: 'full' })
     const part = findPart(m.payload, partId)
-    if (!part) throw new Error('Attachment not found')
+    if (!part) throw new Error(mt('errors.attachmentNotFound'))
     if (part.body?.data) return Buffer.from(part.body.data, 'base64url')
     if (part.body?.attachmentId) {
       const a = await this.http.get<{ data?: string }>(`/messages/${mid}/attachments/${encodeURIComponent(part.body.attachmentId)}`)
       return Buffer.from(a.data ?? '', 'base64url')
     }
-    throw new Error('Attachment has no content')
+    throw new Error(mt('errors.attachmentEmpty'))
   }
 }
 

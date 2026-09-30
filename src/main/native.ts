@@ -1,3 +1,4 @@
+import { mt, onMainLanguageChange } from './i18n'
 import { app, BrowserWindow, globalShortcut, Menu, screen } from 'electron'
 import type { Repo } from './db/repo'
 import type { SyncEngine } from './sync/engine'
@@ -55,11 +56,15 @@ export function setupNative(ctx: Ctx): void {
 
   // ---- Dock menu (right-click the Dock icon).
   if (process.platform === 'darwin') {
-    app.dock?.setMenu(Menu.buildFromTemplate([
-      { label: 'New Message', click: () => ctx.summon('compose') },
-      { label: 'Check Mail Now', click: () => { void engine.syncAll() } },
-      { label: 'Go to Inbox', click: () => ctx.summon('go-inbox') }
-    ]))
+    const setDockMenu = (): void => {
+      app.dock?.setMenu(Menu.buildFromTemplate([
+        { label: mt('menu.newMessage'), click: () => ctx.summon('compose') },
+        { label: mt('menu.checkMail'), click: () => { void engine.syncAll() } },
+        { label: mt('menu.goToInbox'), click: () => ctx.summon('go-inbox') }
+      ]))
+    }
+    setDockMenu()
+    onMainLanguageChange(setDockMenu)
   }
 }
 

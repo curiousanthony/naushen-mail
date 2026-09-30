@@ -3,7 +3,7 @@ import type { Repo } from '../../db/repo'
 import { connectors } from '../../accounts'
 import { deleteTokens, loadTokens, saveTokens } from '../../auth/tokens'
 import { OutlookAdapter } from './adapter'
-import { MISSING_CLIENT_ID, createTokenSource, fetchPhoto, fetchProfile, signIn } from './auth'
+import { missingClientId, createTokenSource, fetchPhoto, fetchProfile, signIn } from './auth'
 
 let repoRef: Repo | null = null
 
@@ -31,7 +31,7 @@ connectors.outlook = {
   async connect({ repo }) {
     repoRef = repo
     const clientId = repo.getSettings().oauth.microsoftClientId.trim()
-    if (!clientId) throw new Error(MISSING_CLIENT_ID)
+    if (!clientId) throw new Error(missingClientId())
     const tokens = await signIn(clientId)
     const { email, name } = await fetchProfile(tokens.accessToken)
     const avatarUrl = await fetchPhoto(tokens.accessToken)

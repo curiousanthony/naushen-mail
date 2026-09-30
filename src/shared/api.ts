@@ -80,7 +80,7 @@ export interface MailApi {
   'settings.get'(): Promise<AppSettings>
   'settings.set'(patch: Partial<AppSettings>): Promise<AppSettings>
   'app.openExternal'(url: string): Promise<void>
-  'app.platform'(): Promise<{ platform: string; version: string }>
+  'app.platform'(): Promise<{ platform: string; version: string; builtInOAuth: { google: boolean } }>
 }
 
 export type ApiMethod = keyof MailApi

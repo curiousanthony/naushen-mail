@@ -1,7 +1,8 @@
 /**
- * Pure planning logic for native notifications / Dock badge / window bounds. No Electron imports,
+ * Pure planning logic for native notifications / Dock badge / window bounds. No Electron API calls,
  * so it is unit-tested directly (tests/main/native.test.ts).
  */
+import { mt } from './i18n'
 
 export type NotifyMode = 'off' | 'all' | 'people'
 
@@ -79,15 +80,15 @@ export function planNotification(candidates: Candidate[], mode: NotifyMode, view
   if (eligible.length === 1) {
     return {
       kind: 'single', threadId: top.threadId, accountId: top.accountId,
-      title: top.fromName || top.fromEmail, body: [top.subject || '(no subject)', cleanSnippet(top.snippet)].filter(Boolean).join('\n')
+      title: top.fromName || top.fromEmail, body: [top.subject || mt('notify.noSubject'), cleanSnippet(top.snippet)].filter(Boolean).join('\n')
     }
   }
   const senders = [...new Set(eligible.map((c) => c.fromName || c.fromEmail))]
   const shown = senders.slice(0, 3).join(', ')
   return {
     kind: 'burst', count: eligible.length, threadId: top.threadId,
-    title: `${eligible.length} new messages`,
-    body: senders.length > 3 ? `${shown} and ${senders.length - 3} more` : shown
+    title: mt('notify.burstTitle', { count: eligible.length }),
+    body: senders.length > 3 ? mt('notify.burstBody', { names: shown, others: senders.length - 3 }) : shown
   }
 }
 
