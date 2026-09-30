@@ -1,0 +1,22 @@
+{
+  "card": {
+    "about": "{{name}}について",
+    "you": "あなた",
+    "compose": "作成",
+    "allMail": "すべてのメール",
+    "copy": "コピー",
+    "close": "閉じる"
+  },
+  "lastSeen": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "weekday": "先週の{{day}}"
+  },
+  "conversations": {
+    "none": "スレッドはまだありません",
+    "count_other": "{{count}}件のスレッド",
+    "countWithLast_other": "{{count}}件のスレッド · {{last}}"
+  },
+  "selectFirst": "スレッドを選択すると、やり取りの相手が表示されます",
+  "addressCopied": "アドレスをコピーしました"
+}

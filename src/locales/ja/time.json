@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "{{time}}に再表示",
+    "tomorrow": "明日{{time}}に再表示",
+    "weekday": "{{day}}{{time}}に再表示",
+    "date": "{{date}}に再表示"
+  },
+  "in": {
+    "minutes": "{{count}}分",
+    "hours": "{{count}}時間",
+    "days": "{{count}}日"
+  },
+  "chip": {
+    "reschedule": "リマインダーを再設定",
+    "rescheduleAria": "{{when}}。リマインダーを再設定",
+    "cancel": "フォローアップを取り消す",
+    "cancelAria": "{{in}}後にフォローアップ。フォローアップを取り消す",
+    "cancelled": "フォローアップを取り消しました",
+    "followUpIn": "{{in}}後にフォローアップ",
+    "noReply": "返信なし",
+    "noReplyTitle": "まだ返信がありません。クリックして閉じる",
+    "noReplyAria": "まだ返信がありません。閉じる",
+    "dismissed": "閉じました"
+  },
+  "when": {
+    "placeholder": "Type a time… tomorrow 3pm",
+    "ariaLabel": "時刻を入力",
+    "past": "その時刻はすでに過ぎています",
+    "unknown": "Try “tomorrow 3pm”, “fri”, “in 2 days” or “oct 12”"
+  }
+}

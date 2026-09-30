@@ -1,0 +1,133 @@
+{
+  "thread": {
+    "fallbackTitle": "スレッド",
+    "loading": "スレッドを読み込み中",
+    "unavailableTitle": "このスレッドは利用できなくなりました。",
+    "unavailableHint": "削除されたか、移動された可能性があります。",
+    "resize": "スレッドパネルのサイズを変更"
+  },
+  "header": {
+    "collapse": "折りたたむ",
+    "collapseThread": "スレッドを折りたたむ",
+    "archive": "アーカイブ",
+    "archived": "スレッドをアーカイブしました",
+    "markUnread": "未読にする",
+    "markedUnread": "未読にしました",
+    "setReminder": "リマインダーを設定",
+    "star": "スターを付ける",
+    "unstar": "スターを外す",
+    "label": "ラベル",
+    "unsubscribe": "配信を停止",
+    "unsubscribeWeb": "ブラウザで開きます",
+    "unsubscribeMail": "メールを送信します",
+    "reportSpam": "迷惑メールを報告",
+    "reportedSpam": "迷惑メールとして報告しました",
+    "trash": "ゴミ箱に移動",
+    "trashed": "ゴミ箱に移動しました",
+    "noSubject": "(件名なし)",
+    "messageCount_other": "{{count}}件のメッセージ"
+  },
+  "replyBar": {
+    "reply": "返信",
+    "replyAll": "全員に返信",
+    "forward": "転送"
+  },
+  "message": {
+    "unread": "未読",
+    "expand": "メッセージを展開",
+    "showDetails": "詳細を表示",
+    "hideDetails": "詳細を隠す",
+    "showRecipientDetails": "宛先の詳細を表示",
+    "hideRecipientDetails": "宛先の詳細を隠す",
+    "toLine": "宛先: {{recipients}}",
+    "toMe": "自分",
+    "attachmentCount_other": "添付ファイル{{count}}件",
+    "reply": "返信",
+    "replyAll": "全員に返信",
+    "forward": "転送",
+    "copyField": "{{label}}をコピー",
+    "copyAddress_other": "{{label}}のアドレスをコピー",
+    "copied": "コピーしました",
+    "detail": {
+      "from": "差出人",
+      "replyTo": "返信先",
+      "to": "宛先",
+      "cc": "Cc",
+      "bcc": "Bcc",
+      "date": "日付"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_other": "外部画像{{count}}件をブロックしました",
+    "loadImages": "画像を読み込む",
+    "alwaysLoad": "常に読み込む",
+    "empty": "このメッセージには内容がありません。",
+    "frameTitle": "{{sender}}からのメッセージ",
+    "showAsDesigned": "元のデザインで表示",
+    "adaptToDark": "ダークモードに合わせる",
+    "showOriginalColours": "元の色で表示",
+    "adaptColours": "ダークモードに合わせて色を調整",
+    "original": "オリジナル",
+    "adapt": "調整",
+    "showQuote": "引用部分を表示",
+    "hideQuote": "引用部分を隠す"
+  },
+  "attachments": {
+    "preview": "{{name}}をプレビュー",
+    "download": "{{name}}をダウンロード — {{size}}"
+  },
+  "preview": {
+    "loading": "プレビューを読み込み中…",
+    "failed": "このファイルのプレビューを読み込めませんでした。",
+    "unavailable": "この種類のファイルはプレビューできません。",
+    "download": "ダウンロード",
+    "close": "閉じる",
+    "closePreview": "プレビューを閉じる"
+  },
+  "invite": {
+    "loading": "招待状を読み込み中…",
+    "sending": "送信中…",
+    "yes": "はい",
+    "maybe": "未定",
+    "no": "いいえ",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}、{{name}}。",
+    "sent": {
+      "accepted": "返信しました — 「はい」で回答済みです",
+      "tentative": "返信しました — 「未定」で回答済みです",
+      "declined": "返信しました — 「いいえ」で回答済みです"
+    },
+    "failed": "返信を送信できませんでした。もう一度お試しください。"
+  },
+  "code": {
+    "copyTooltip": "認証コードをコピー",
+    "copyAria": "認証コード{{code}}をコピー",
+    "copy": "<b>{{code}}</b>をコピー",
+    "copied": "{{code}}をコピーしました",
+    "copyFailed": "コードをコピーできませんでした",
+    "none": "最近の認証コードはありません"
+  },
+  "shield": {
+    "blocked_other": "トラッカー{{count}}件をブロックしました",
+    "trackingPixel": "トラッキングピクセル",
+    "note": "トラッカーは、あなたがこのメッセージを開いたことを送信者に知らせます。画像を読み込んでも、ブロックされたままです。"
+  },
+  "link": {
+    "mailTo": "メール送信先",
+    "call": "電話",
+    "trackingStripped_other": "開く際にトラッキングパラメータ{{count}}件を削除しました",
+    "warningLabel": "このリンクを確認してください",
+    "warning": "このリンクの実際の移動先は<b>{{actual}}</b>で、表示されている<b>{{shown}}</b>ではありません。",
+    "openAnyway": "このまま開く",
+    "cancel": "キャンセル",
+    "writeTo": "このアドレスにメールを作成",
+    "open": "リンクを開く",
+    "copyAddress": "アドレスをコピー",
+    "copyLink": "リンクをコピー",
+    "copyLinkClean": "リンクをコピー(トラッキングなし)",
+    "copyFailed": "リンクをコピーできませんでした",
+    "copiedClean": "トラッキングパラメータを除いてリンクをコピーしました",
+    "addressCopied": "アドレスをコピーしました",
+    "copied": "リンクをコピーしました"
+  }
+}

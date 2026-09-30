@@ -1,0 +1,95 @@
+{
+  "aria": {
+    "mailboxes": "メールボックス"
+  },
+  "newMessage": "新規メッセージ",
+  "newView": "新規ビュー",
+  "editView": "ビューを編集",
+  "settings": "設定",
+  "options": "オプション",
+  "optionsFor": "{{name}}のオプション",
+  "optionsOf": "{{name}}のオプション",
+  "section": {
+    "views": "ビュー",
+    "mail": "メール",
+    "labels": "ラベル"
+  },
+  "categories": {
+    "label": "カテゴリ",
+    "tip": "Gmailのソーシャル/プロモーション/アップデート/フォーラムのタブ別にメールをまとめます"
+  },
+  "accounts": {
+    "all": "すべてのアカウント",
+    "count_other": "{{count}}件のアカウント",
+    "switch": "アカウントを切り替え",
+    "add": "アカウントを追加"
+  },
+  "search": {
+    "label": "検索",
+    "placeholder": "メールを検索",
+    "clear": "検索をクリア",
+    "people": "一致する人",
+    "operators": "検索演算子"
+  },
+  "label": {
+    "bundled": "受信トレイでまとめ表示中",
+    "bundle": "受信トレイでまとめる",
+    "stopBundling": "受信トレイでのまとめ表示を停止"
+  },
+  "summary": {
+    "allMail": "すべてのメール",
+    "unread": "未読",
+    "hasAttachment": "添付ファイルあり",
+    "label": "ラベル",
+    "from": "送信者 {{value}}",
+    "subject": "件名 {{value}}",
+    "noFilters": "フィルタなし"
+  },
+  "viewEditor": {
+    "intro": "ビューは保存したフィルタです。すでにあるメールにも、新着メールにも適用されます。",
+    "name": "ビュー名",
+    "icon": "アイコン",
+    "colour": "カラー",
+    "noColour": "カラーなし",
+    "filters": "フィルタ",
+    "account": "アカウント",
+    "mailbox": "メールボックス",
+    "allMail": "すべてのメール",
+    "anywhere": "すべての場所",
+    "from": "送信者",
+    "fromPlaceholder": "名前またはアドレス",
+    "fromContains": "送信者に次を含む",
+    "subject": "件名",
+    "subjectPlaceholder": "含む語句…",
+    "subjectContains": "件名に次を含む",
+    "unreadOnly": "未読のみ",
+    "hasAttachment": "添付ファイルあり",
+    "labels": "ラベル",
+    "delete": "削除",
+    "create": "ビューを作成",
+    "updated": "ビューを更新しました",
+    "created": "ビュー「{{name}}」を作成しました",
+    "deleted": "ビュー「{{name}}」を削除しました"
+  },
+  "viewIcon": {
+    "inbox": "受信トレイ",
+    "star": "スター",
+    "flag": "フラグ",
+    "tag": "タグ",
+    "users": "ユーザー",
+    "send": "送信",
+    "receipt": "レシート",
+    "megaphone": "メガホン",
+    "pin": "ピン",
+    "message": "メッセージ",
+    "newspaper": "新聞",
+    "flame": "炎",
+    "briefcase": "ブリーフケース",
+    "bell": "ベル",
+    "archive": "アーカイブ",
+    "heart": "ハート",
+    "bookmark": "ブックマーク",
+    "folder": "フォルダ",
+    "zap": "稲妻"
+  }
+}
