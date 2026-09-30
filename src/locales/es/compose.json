@@ -1,0 +1,277 @@
+{
+  "window": {
+    "newMessage": "Nuevo mensaje",
+    "composer": "Redactor de mensajes",
+    "minimise": "Minimizar",
+    "maximise": "Maximizar",
+    "restore": "Restaurar",
+    "expand": "Expandir",
+    "close": "Cerrar"
+  },
+  "fields": {
+    "from": "De",
+    "to": "Para",
+    "cc": "Cc",
+    "bcc": "Cco",
+    "subject": "Asunto",
+    "noAccount": "Sin cuenta",
+    "sendFrom": "Enviar desde",
+    "signature": "Firma"
+  },
+  "recipients": {
+    "remove": "Quitar {{email}}",
+    "frequent": "Frecuentes"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> parece un error de escritura de <b>{{suggested}}</b>",
+    "useDomain": "Usar {{domain}}",
+    "keepAsTyped": "Dejar como está",
+    "mailingList": "Parece una <b>lista de correo</b>; tu respuesta llegará a todos los miembros.",
+    "replyingTo_one": "Respondiendo a <b>{{count}} persona</b>.",
+    "replyingTo_other": "Respondiendo a <b>{{count}} personas</b>.",
+    "replyingTo_many": "Respondiendo a <b>{{count}} personas</b>.",
+    "replySenderOnly": "Responder solo al remitente",
+    "dismiss": "Descartar"
+  },
+  "quote": {
+    "show": "Mostrar texto citado"
+  },
+  "attachments": {
+    "remove": "Quitar {{name}}",
+    "totalOver": "{{size}} — supera el límite de 25 MB",
+    "drop": "Suelta archivos para adjuntarlos",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes",
+    "bytes_many": "{{count}} bytes",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Adjuntar un archivo",
+    "addSubject": "Añadir asunto",
+    "sendAnyway": "Enviar de todos modos"
+  },
+  "validation": {
+    "noRecipient": "Añade al menos un destinatario.",
+    "invalidAddress_one": "{{email}} no es una dirección de correo válida.",
+    "invalidAddress_other": "{{count}} destinatarios no son direcciones de correo válidas.",
+    "invalidAddress_many": "{{count}} destinatarios no son direcciones de correo válidas.",
+    "noSubject": "Este mensaje no tiene asunto.",
+    "empty": "Este mensaje está vacío.",
+    "missingAttachment": "Mencionaste un adjunto, pero no hay nada adjunto."
+  },
+  "nudge": {
+    "empty": "Este mensaje está vacío.",
+    "typo": "{{domain}} podría ser un error de escritura.",
+    "attachment": "Escribiste «{{word}}», pero no hay nada adjunto.",
+    "noSubject": "Sin asunto."
+  },
+  "toolbar": {
+    "snippets": "Fragmentos",
+    "attach": "Adjuntar archivos",
+    "discard": "Descartar borrador",
+    "help": "Ayuda de formato",
+    "draftSaved": "Borrador guardado",
+    "send": "Enviar"
+  },
+  "schedule": {
+    "title": "Programar envío",
+    "timePlaceholder": "Escribe una hora… tomorrow 9am",
+    "timeLabel": "Escribe una hora de envío",
+    "confirm": "Programar",
+    "pickFuture": "Elige una hora futura",
+    "followUp_one": "Recordarme si no hay respuesta en {{count}} día",
+    "followUp_other": "Recordarme si no hay respuesta en {{count}} días",
+    "followUp_many": "Recordarme si no hay respuesta en {{count}} días",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "Esta mañana",
+    "thisAfternoon": "Esta tarde",
+    "tomorrowMorning": "Mañana por la mañana",
+    "tomorrowAfternoon": "Mañana por la tarde",
+    "nextWeek": "La próxima semana",
+    "pickDateTime": "Elegir fecha y hora",
+    "scheduledFor": "Programado para {{when}}"
+  },
+  "toast": {
+    "discarded": "Borrador descartado",
+    "archived": "Conversación archivada",
+    "sending": "Enviando…",
+    "sent": "Enviado",
+    "sentFollowUp_one": "Enviado · seguimiento en {{count}} día si no hay respuesta",
+    "sentFollowUp_other": "Enviado · seguimiento en {{count}} días si no hay respuesta",
+    "sentFollowUp_many": "Enviado · seguimiento en {{count}} días si no hay respuesta",
+    "scheduledFollowUp_one": "{{scheduled}} · seguimiento en {{count}} día",
+    "scheduledFollowUp_other": "{{scheduled}} · seguimiento en {{count}} días",
+    "scheduledFollowUp_many": "{{scheduled}} · seguimiento en {{count}} días",
+    "notSent": "No enviado: {{reason}}",
+    "sendFailed": "No se pudo enviar el mensaje",
+    "cancel": "Cancelar",
+    "undo": "Deshacer"
+  },
+  "snippets": {
+    "none": "Aún no hay fragmentos",
+    "newFromDraft": "+ Nuevo fragmento a partir de este borrador",
+    "nameLabel": "Nombre del fragmento",
+    "namePlaceholder": "Enlace del sitio web",
+    "untitled": "Fragmento sin título"
+  },
+  "help": {
+    "typing": "Al escribir",
+    "smartTypography": "Comillas, guiones y puntos suspensivos tipográficos",
+    "formatting": "Formato",
+    "insertBlock": "Insertar un bloque",
+    "emoji": "Emoji",
+    "textStyles": "Negrita, cursiva, subrayado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "link": "Enlace",
+    "snippet": "Fragmento",
+    "headings": "Títulos",
+    "bulletKeys": "- o *",
+    "bulletList": "Lista con viñetas",
+    "numberedList": "Lista numerada",
+    "todo": "Tarea",
+    "quote": "Cita",
+    "codeBlock": "Bloque de código",
+    "divider": "Separador",
+    "send": "Enviar",
+    "sendArchive": "Enviar y archivar",
+    "saveClose": "Guardar borrador y cerrar"
+  },
+  "editor": {
+    "placeholder": "Escribe, o pulsa '/' para ver los bloques",
+    "placeholderShort": "Escribe, o pulsa '/'",
+    "toggle": "Alternar",
+    "heading": "Título {{level}}"
+  },
+  "slash": {
+    "noMatch": "Ningún bloque coincide",
+    "insertSnippet": "Insertar fragmento",
+    "colour": "Color",
+    "background": "Fondo",
+    "groups": {
+      "basic": "Bloques básicos",
+      "media": "Multimedia",
+      "advanced": "Avanzado",
+      "snippets": "Fragmentos"
+    },
+    "items": {
+      "text": {
+        "title": "Texto",
+        "description": "Empieza a escribir con texto sin formato."
+      },
+      "h1": {
+        "title": "Título 1",
+        "description": "Título de sección grande."
+      },
+      "h2": {
+        "title": "Título 2",
+        "description": "Título de sección mediano."
+      },
+      "h3": {
+        "title": "Título 3",
+        "description": "Título de sección pequeño."
+      },
+      "bulletList": {
+        "title": "Lista con viñetas",
+        "description": "Crea una lista sencilla con viñetas."
+      },
+      "orderedList": {
+        "title": "Lista numerada",
+        "description": "Crea una lista con números."
+      },
+      "taskList": {
+        "title": "Lista de tareas",
+        "description": "Haz seguimiento de tareas con una lista."
+      },
+      "toggle": {
+        "title": "Lista desplegable",
+        "description": "Oculta los detalles en un bloque plegable."
+      },
+      "quote": {
+        "title": "Cita",
+        "description": "Añade una cita."
+      },
+      "divider": {
+        "title": "Separador",
+        "description": "Separa bloques visualmente."
+      },
+      "callout": {
+        "title": "Destacado",
+        "description": "Haz que tu texto resalte."
+      },
+      "code": {
+        "title": "Código",
+        "description": "Añade un fragmento de código."
+      },
+      "table": {
+        "title": "Tabla",
+        "description": "Añade una tabla sencilla."
+      },
+      "image": {
+        "title": "Imagen",
+        "description": "Sube o suelta una imagen."
+      },
+      "link": {
+        "title": "Enlace",
+        "description": "Enlaza a una página web."
+      },
+      "emoji": {
+        "title": "Emoji",
+        "description": "Busca e inserta un emoji."
+      },
+      "textColor": {
+        "title": "Color del texto",
+        "description": "Da color al texto seleccionado."
+      },
+      "backgroundColor": {
+        "title": "Color de fondo",
+        "description": "Resalta el texto seleccionado."
+      }
+    },
+    "colors": {
+      "default": "Predeterminado",
+      "gray": "Gris",
+      "brown": "Marrón",
+      "orange": "Naranja",
+      "yellow": "Amarillo",
+      "green": "Verde",
+      "blue": "Azul",
+      "purple": "Morado",
+      "pink": "Rosa",
+      "red": "Rojo"
+    }
+  },
+  "selection": {
+    "turnInto": "Convertir en",
+    "bold": "Negrita",
+    "italic": "Cursiva",
+    "underline": "Subrayado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "link": "Enlace",
+    "colour": "Color",
+    "text": "Texto",
+    "background": "Fondo",
+    "pasteLink": "Pega un enlace…",
+    "apply": "Aplicar",
+    "openLink": "Abrir enlace",
+    "removeLink": "Quitar enlace"
+  },
+  "link": {
+    "dialog": "Editar enlace",
+    "placeholder": "Pega o escribe un enlace",
+    "urlLabel": "URL del enlace",
+    "apply": "Aplicar",
+    "applyLink": "Aplicar enlace",
+    "open": "Abrir enlace",
+    "remove": "Quitar enlace"
+  },
+  "image": {
+    "alignLeft": "Alinear a la izquierda",
+    "alignCenter": "Centrar",
+    "alignRight": "Alinear a la derecha"
+  },
+  "callout": {
+    "changeIcon": "Cambiar icono del destacado"
+  }
+}

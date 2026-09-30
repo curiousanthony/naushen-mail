@@ -1,0 +1,97 @@
+{
+  "aria": {
+    "mailboxes": "Buzones"
+  },
+  "newMessage": "Nuevo mensaje",
+  "newView": "Nueva vista",
+  "editView": "Editar vista",
+  "settings": "Ajustes",
+  "options": "Opciones",
+  "optionsFor": "Opciones de {{name}}",
+  "optionsOf": "Opciones de {{name}}",
+  "section": {
+    "views": "Vistas",
+    "mail": "Correo",
+    "labels": "Etiquetas"
+  },
+  "categories": {
+    "label": "Categorías",
+    "tip": "Correo agrupado por las pestañas Social, Promociones, Novedades y Foros de Gmail"
+  },
+  "accounts": {
+    "all": "Todas las cuentas",
+    "count_one": "{{count}} cuenta",
+    "count_other": "{{count}} cuentas",
+    "count_many": "{{count}} cuentas",
+    "switch": "Cambiar de cuenta",
+    "add": "Añadir cuenta"
+  },
+  "search": {
+    "label": "Buscar",
+    "placeholder": "Buscar en el correo",
+    "clear": "Borrar búsqueda",
+    "people": "Personas que coinciden",
+    "operators": "Operadores de búsqueda"
+  },
+  "label": {
+    "bundled": "Agrupada en la bandeja de entrada",
+    "bundle": "Agrupar en la bandeja de entrada",
+    "stopBundling": "Dejar de agrupar en la bandeja de entrada"
+  },
+  "summary": {
+    "allMail": "Todo el correo",
+    "unread": "no leídos",
+    "hasAttachment": "con adjunto",
+    "label": "etiqueta",
+    "from": "de {{value}}",
+    "subject": "asunto {{value}}",
+    "noFilters": "Sin filtros"
+  },
+  "viewEditor": {
+    "intro": "Las vistas son filtros guardados. Se aplican al correo que ya tienes y al que llegue.",
+    "name": "Nombre de la vista",
+    "icon": "Icono",
+    "colour": "Color",
+    "noColour": "Sin color",
+    "filters": "Filtros",
+    "account": "Cuenta",
+    "mailbox": "Buzón",
+    "allMail": "Todo el correo",
+    "anywhere": "En cualquier lugar",
+    "from": "De",
+    "fromPlaceholder": "nombre o dirección",
+    "fromContains": "De contiene",
+    "subject": "Asunto",
+    "subjectPlaceholder": "contiene…",
+    "subjectContains": "Asunto contiene",
+    "unreadOnly": "Solo no leídos",
+    "hasAttachment": "Con adjunto",
+    "labels": "Etiquetas",
+    "delete": "Eliminar",
+    "create": "Crear vista",
+    "updated": "Vista actualizada",
+    "created": "Vista «{{name}}» creada",
+    "deleted": "Vista «{{name}}» eliminada"
+  },
+  "viewIcon": {
+    "inbox": "bandeja",
+    "star": "estrella",
+    "flag": "bandera",
+    "tag": "etiqueta",
+    "users": "personas",
+    "send": "enviar",
+    "receipt": "recibo",
+    "megaphone": "megáfono",
+    "pin": "chincheta",
+    "message": "mensaje",
+    "newspaper": "periódico",
+    "flame": "llama",
+    "briefcase": "maletín",
+    "bell": "campana",
+    "archive": "archivo",
+    "heart": "corazón",
+    "bookmark": "marcador",
+    "folder": "carpeta",
+    "zap": "rayo"
+  }
+}

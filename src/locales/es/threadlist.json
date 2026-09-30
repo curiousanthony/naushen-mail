@@ -1,0 +1,318 @@
+{
+  "list": {
+    "ariaLabel": "Conversaciones",
+    "rowMenuLabel": "Acciones de la conversación"
+  },
+  "sender": {
+    "me": "Yo"
+  },
+  "title": {
+    "categories": "Categorías",
+    "reminders": "Recordatorios",
+    "searchFor": "Búsqueda: {{text}}",
+    "search": "Búsqueda",
+    "label": "Etiqueta",
+    "view": "Vista"
+  },
+  "row": {
+    "remind": "Recordar",
+    "unread": "No leído",
+    "select": "Seleccionar conversación",
+    "deselect": "Deseleccionar conversación",
+    "hasAttachments": "Tiene adjuntos",
+    "starred": "Destacado",
+    "notSpamTip": "No es spam: mover a la bandeja de entrada",
+    "notSpam": "No es spam",
+    "star": "Destacar",
+    "unstar": "Quitar destacado",
+    "markRead": "Marcar como leído",
+    "markUnread": "Marcar como no leído",
+    "setReminder": "Crear recordatorio",
+    "archive": "Archivar",
+    "moveToTrash": "Mover a la papelera",
+    "toastArchived": "Conversación archivada",
+    "toastTrashed": "Movida a la papelera"
+  },
+  "menu": {
+    "notSpam": "No es spam",
+    "restoreToInbox": "Restaurar a la bandeja de entrada",
+    "archive": "Archivar",
+    "markRead": "Marcar como leído",
+    "markUnread": "Marcar como no leído",
+    "removeStar": "Quitar destacado",
+    "star": "Destacar",
+    "setReminder": "Crear recordatorio…",
+    "label": "Etiquetar…",
+    "moveTo": "Mover a…",
+    "unmute": "Dejar de silenciar conversación",
+    "mute": "Silenciar conversación",
+    "reportSpam": "Marcar como spam",
+    "delete": "Eliminar"
+  },
+  "empty": {
+    "filtered": {
+      "title": "Sin coincidencias",
+      "body": "Ninguna conversación coincide con estos filtros."
+    },
+    "inbox": {
+      "title": "Estás al día.",
+      "body": "No hay nada nuevo en tu bandeja de entrada."
+    },
+    "sent": {
+      "title": "Aún no has enviado nada",
+      "body": "Los mensajes que envíes aparecerán aquí."
+    },
+    "drafts": {
+      "title": "Sin borradores",
+      "body": "Empieza un mensaje y se guardará aquí."
+    },
+    "trash": {
+      "title": "La papelera está vacía",
+      "body": "Las conversaciones eliminadas llegan primero aquí."
+    },
+    "spam": {
+      "title": "Sin spam",
+      "body": "Nada se ha marcado como spam."
+    },
+    "starred": {
+      "title": "Sin conversaciones destacadas",
+      "body": "Destaca una conversación para encontrarla rápido."
+    },
+    "mailbox": {
+      "title": "No hay correo aquí",
+      "body": "Este buzón está vacío."
+    },
+    "categories": {
+      "title": "Nada categorizado",
+      "body": "El correo de Social, Promociones, Novedades y Foros se agrupará aquí a medida que llegue."
+    },
+    "reminders": {
+      "title": "Sin recordatorios",
+      "body": "Las conversaciones que pospongas volverán aquí."
+    },
+    "label": {
+      "title": "Sin conversaciones",
+      "body": "Todavía nada tiene esta etiqueta."
+    },
+    "search": {
+      "title": "Sin resultados",
+      "body": "Nada coincide con «{{text}}»."
+    },
+    "view": {
+      "title": "Aún no hay nada aquí",
+      "body": "Ninguna conversación coincide con {{name}}.",
+      "thisView": "esta vista"
+    },
+    "searchHint": "Prueba con menos palabras, o busca por remitente con from:nombre."
+  },
+  "zero": {
+    "morning": {
+      "line1": "Bandeja vacía, y aún no es mediodía.",
+      "line2": "No hay nada aquí. Disfruta de un comienzo tranquilo."
+    },
+    "afternoon": {
+      "line1": "Todo despejado. Ve a hacer eso que estabas evitando.",
+      "line2": "No queda nada. La tarde es tuya."
+    },
+    "evening": {
+      "line1": "Nada más que responder. Cierra el portátil.",
+      "line2": "Bandeja vacía. Ahora la cena puede tener tu atención."
+    },
+    "night": {
+      "line1": "No hay nada aquí. A dormir.",
+      "line2": "Vacía. Lo que sea puede esperar a mañana."
+    }
+  },
+  "bundle": {
+    "newCount_one": "{{count}} nuevo",
+    "newCount_other": "{{count}} nuevos",
+    "newCount_many": "{{count}} nuevos",
+    "conversationCount_one": "{{count}} conversación",
+    "conversationCount_other": "{{count}} conversaciones",
+    "conversationCount_many": "{{count}} conversaciones",
+    "ariaLabel": "{{name}}, {{summary}}",
+    "archiveAll": "Archivar las {{count}}",
+    "archiveAllIn": "Archivar las {{count}} de {{name}}"
+  },
+  "bulk": {
+    "selectedAria_one": "{{count}} conversación seleccionada",
+    "selectedAria_other": "{{count}} conversaciones seleccionadas",
+    "selectedAria_many": "{{count}} conversaciones seleccionadas",
+    "selected": "{{count}} seleccionadas",
+    "movedToInbox_one": "{{count}} conversación movida a la bandeja de entrada",
+    "movedToInbox_other": "{{count}} conversaciones movidas a la bandeja de entrada",
+    "movedToInbox_many": "{{count}} conversaciones movidas a la bandeja de entrada",
+    "archived_one": "{{count}} conversación archivada",
+    "archived_other": "{{count}} conversaciones archivadas",
+    "archived_many": "{{count}} conversaciones archivadas",
+    "trashed_one": "{{count}} conversación movida a la papelera",
+    "trashed_other": "{{count}} conversaciones movidas a la papelera",
+    "trashed_many": "{{count}} conversaciones movidas a la papelera",
+    "notSpam": "No es spam",
+    "archive": "Archivar",
+    "trash": "Papelera",
+    "markRead": "Marcar leído",
+    "markUnread": "Marcar no leído",
+    "label": "Etiquetar",
+    "move": "Mover",
+    "remind": "Recordar",
+    "clearSelection": "Borrar selección",
+    "applyLabel": "Aplicar etiqueta",
+    "labelled": "Etiquetado como «{{name}}»"
+  },
+  "emptyTrash": {
+    "button": "Vaciar papelera",
+    "emptying": "Vaciando…",
+    "done_one": "Papelera vaciada · {{count}} conversación eliminada",
+    "done_other": "Papelera vaciada · {{count}} conversaciones eliminadas",
+    "done_many": "Papelera vaciada · {{count}} conversaciones eliminadas",
+    "confirm_one": "¿Eliminar definitivamente esta conversación de la papelera? No se puede deshacer.",
+    "confirm_other": "¿Eliminar definitivamente las {{count}} conversaciones de la papelera? No se puede deshacer.",
+    "confirm_many": "¿Eliminar definitivamente las {{count}} conversaciones de la papelera? No se puede deshacer."
+  },
+  "filter": {
+    "button": "Filtrar",
+    "groupByDate": "Agrupar conversaciones por fecha",
+    "groupDate": "Fecha",
+    "groupNone": "Sin grupos",
+    "active": "Filtros activos",
+    "remove": "Quitar filtro de {{prop}}",
+    "add": "Añadir un filtro",
+    "addShort": "Añadir",
+    "clearAll": "Borrar todo",
+    "saveAsView": "Guardar como vista…",
+    "labelFallback": "Etiqueta",
+    "accountFallback": "Cuenta",
+    "filterBy": "Filtrar por…",
+    "noMatchingProperty": "Ninguna propiedad coincide",
+    "subjectPlaceholder": "Palabra o frase del asunto",
+    "noLabels": "Aún no hay etiquetas",
+    "senderPlaceholder": "Nombre o dirección",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta",
+    "dateSingle": "Fecha",
+    "edit": "Editar filtro de {{prop}}",
+    "operator": "Operador",
+    "megabytes": "{{n}} MB",
+    "messageCount_one": "{{count}} mensaje",
+    "messageCount_other": "{{count}} mensajes",
+    "messageCount_many": "{{count}} mensajes",
+    "dateBetween": "{{from}} y {{to}}",
+    "unit": {
+      "mb": "MB",
+      "messages": "mensajes"
+    },
+    "group": {
+      "status": "Estado",
+      "people": "Personas",
+      "content": "Contenido",
+      "time": "Tiempo"
+    },
+    "prop": {
+      "read": {
+        "label": "Estado de lectura",
+        "hint": "No leído o ya leído"
+      },
+      "starred": {
+        "label": "Destacado",
+        "hint": "Marcado con una estrella"
+      },
+      "reminder": {
+        "label": "Recordatorio",
+        "hint": "Pospuesto o a la espera de respuesta"
+      },
+      "reply": {
+        "label": "Estado de respuesta",
+        "hint": "Quién escribió al final"
+      },
+      "label": {
+        "label": "Etiqueta",
+        "hint": "Cualquiera de las etiquetas elegidas"
+      },
+      "account": {
+        "label": "Cuenta",
+        "hint": "Qué buzón"
+      },
+      "from": {
+        "label": "De",
+        "hint": "Nombre, dirección o dominio del remitente"
+      },
+      "recipient": {
+        "label": "Enviado a",
+        "hint": "A mí directamente, o solo en copia"
+      },
+      "newsletter": {
+        "label": "Boletín",
+        "hint": "Tiene un enlace para cancelar la suscripción"
+      },
+      "subject": {
+        "label": "Asunto",
+        "hint": "El asunto contiene una palabra"
+      },
+      "attachment": {
+        "label": "Adjunto",
+        "hint": "Archivos, por tipo o tamaño"
+      },
+      "invite": {
+        "label": "Invitación de calendario",
+        "hint": "Incluye una invitación .ics"
+      },
+      "size": {
+        "label": "Longitud de la conversación",
+        "hint": "Un solo mensaje o una conversación larga"
+      },
+      "date": {
+        "label": "Fecha",
+        "hint": "Cuándo llegó el último mensaje"
+      }
+    },
+    "op": {
+      "is": "es",
+      "isAnyOf": "es cualquiera de",
+      "isDomain": "es el dominio",
+      "contains": "contiene",
+      "exists": "existe",
+      "doesNotExist": "no existe",
+      "isType": "es de tipo",
+      "isLargerThan": "es mayor que",
+      "isSingleMessage": "es un solo mensaje",
+      "isConversation": "es una conversación",
+      "hasAtLeast": "tiene al menos",
+      "isWithin": "está dentro de",
+      "isBefore": "es anterior a",
+      "isAfter": "es posterior a",
+      "isBetween": "está entre"
+    },
+    "value": {
+      "unread": "No leído",
+      "read": "Leído",
+      "starred": "Destacado",
+      "notStarred": "Sin destacar",
+      "toMe": "A mí",
+      "onlyCc": "Solo en copia",
+      "yes": "Sí",
+      "no": "No",
+      "snoozed": "Pospuesto",
+      "waitingForReply": "A la espera de respuesta",
+      "either": "Cualquiera",
+      "none": "Ninguno",
+      "awaiting": "A la espera de su respuesta (escribí yo al final)",
+      "needsReply": "Necesita mi respuesta (escribieron ellos al final)"
+    },
+    "preset": {
+      "today": "hoy",
+      "days7": "últimos 7 días",
+      "days30": "últimos 30 días",
+      "days90": "últimos 90 días",
+      "year": "este año"
+    },
+    "attachmentKind": {
+      "pdf": "PDF",
+      "image": "Imagen",
+      "document": "Documento",
+      "spreadsheet": "Hoja de cálculo",
+      "presentation": "Presentación",
+      "archive": "Archivo comprimido"
+    }
+  }
+}
