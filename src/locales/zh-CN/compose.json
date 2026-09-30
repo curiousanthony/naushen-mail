@@ -1,0 +1,211 @@
+{
+  "window": {
+    "newMessage": "新邮件",
+    "composer": "邮件编辑器",
+    "minimise": "最小化",
+    "maximise": "最大化",
+    "restore": "还原",
+    "expand": "展开",
+    "close": "关闭"
+  },
+  "fields": {
+    "from": "发件人",
+    "to": "收件人",
+    "cc": "抄送",
+    "bcc": "密送",
+    "subject": "主题",
+    "noAccount": "无账户",
+    "sendFrom": "发件账户",
+    "signature": "签名"
+  },
+  "recipients": {
+    "remove": "移除 {{email}}",
+    "frequent": "常用"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> 可能是 <b>{{suggested}}</b> 的拼写错误",
+    "useDomain": "使用 {{domain}}",
+    "keepAsTyped": "保持原样",
+    "mailingList": "这看起来是一个<b>邮件列表</b>，你的回复会发给列表中的所有人。",
+    "replyingTo_other": "正在回复 <b>{{count}} 人</b>。",
+    "replySenderOnly": "仅回复发件人",
+    "dismiss": "忽略"
+  },
+  "quote": {
+    "show": "显示引用内容"
+  },
+  "attachments": {
+    "remove": "移除 {{name}}",
+    "totalOver": "{{size}} — 超出 25 MB 限制",
+    "drop": "拖放文件以添加附件",
+    "bytes_other": "{{count}} 字节",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "添加附件",
+    "addSubject": "添加主题",
+    "sendAnyway": "仍然发送"
+  },
+  "validation": {
+    "noRecipient": "请至少添加一位收件人。",
+    "invalidAddress_other": "{{count}} 位收件人的电子邮件地址无效。",
+    "noSubject": "此邮件没有主题。",
+    "empty": "此邮件是空的。",
+    "missingAttachment": "你提到了附件，但没有添加任何附件。"
+  },
+  "nudge": {
+    "empty": "此邮件是空的。",
+    "typo": "{{domain}} 可能拼写有误。",
+    "attachment": "你写了“{{word}}”，但没有添加附件。",
+    "noSubject": "无主题。"
+  },
+  "toolbar": {
+    "snippets": "片段",
+    "attach": "添加文件",
+    "discard": "放弃草稿",
+    "help": "格式帮助",
+    "draftSaved": "草稿已保存",
+    "send": "发送"
+  },
+  "schedule": {
+    "title": "定时发送",
+    "timePlaceholder": "输入时间… tomorrow 9am",
+    "timeLabel": "输入发送时间",
+    "confirm": "定时",
+    "pickFuture": "请选择将来的时间",
+    "followUp_other": "如果 {{count}} 天内无人回复，提醒我",
+    "detail": "{{day}} {{time}}",
+    "thisMorning": "今天上午",
+    "thisAfternoon": "今天下午",
+    "tomorrowMorning": "明天上午",
+    "tomorrowAfternoon": "明天下午",
+    "nextWeek": "下周",
+    "pickDateTime": "选择日期和时间",
+    "scheduledFor": "已定时于{{when}}发送"
+  },
+  "toast": {
+    "discarded": "草稿已放弃",
+    "archived": "会话已归档",
+    "sending": "正在发送…",
+    "sent": "已发送",
+    "sentFollowUp_other": "已发送 · 若无人回复，将在 {{count}} 天后跟进",
+    "scheduledFollowUp_other": "{{scheduled}} · {{count}} 天后跟进",
+    "notSent": "未发送：{{reason}}",
+    "sendFailed": "无法发送邮件",
+    "cancel": "取消",
+    "undo": "撤销"
+  },
+  "snippets": {
+    "none": "还没有片段",
+    "newFromDraft": "+ 用此草稿新建片段",
+    "nameLabel": "片段名称",
+    "namePlaceholder": "网站链接",
+    "untitled": "未命名片段"
+  },
+  "help": {
+    "typing": "输入",
+    "smartTypography": "智能引号、破折号和省略号",
+    "formatting": "格式",
+    "insertBlock": "插入区块",
+    "emoji": "表情符号",
+    "textStyles": "粗体、斜体、下划线",
+    "strikethrough": "删除线",
+    "code": "代码",
+    "link": "链接",
+    "snippet": "片段",
+    "headings": "标题",
+    "bulletKeys": "- 或 *",
+    "bulletList": "项目符号列表",
+    "numberedList": "编号列表",
+    "todo": "待办事项",
+    "quote": "引用",
+    "codeBlock": "代码块",
+    "divider": "分隔线",
+    "send": "发送",
+    "sendArchive": "发送并归档",
+    "saveClose": "保存草稿并关闭"
+  },
+  "editor": {
+    "placeholder": "开始写作，或按“/”插入区块",
+    "placeholderShort": "开始写作，或按“/”",
+    "toggle": "折叠",
+    "heading": "标题 {{level}}"
+  },
+  "slash": {
+    "noMatch": "没有匹配的区块",
+    "insertSnippet": "插入片段",
+    "colour": "颜色",
+    "background": "背景",
+    "groups": {
+      "basic": "基本区块",
+      "media": "媒体",
+      "advanced": "高级",
+      "snippets": "片段"
+    },
+    "items": {
+      "text": { "title": "正文", "description": "直接用纯文本开始写作。" },
+      "h1": { "title": "标题 1", "description": "大号章节标题。" },
+      "h2": { "title": "标题 2", "description": "中号章节标题。" },
+      "h3": { "title": "标题 3", "description": "小号章节标题。" },
+      "bulletList": { "title": "项目符号列表", "description": "创建简单的项目符号列表。" },
+      "orderedList": { "title": "编号列表", "description": "创建带编号的列表。" },
+      "taskList": { "title": "待办列表", "description": "用清单跟踪任务。" },
+      "toggle": { "title": "折叠列表", "description": "将详细内容藏在可折叠区块中。" },
+      "quote": { "title": "引用", "description": "记录一段引文。" },
+      "divider": { "title": "分隔线", "description": "在视觉上分隔区块。" },
+      "callout": { "title": "提示框", "description": "让文字更醒目。" },
+      "code": { "title": "代码", "description": "记录一段代码。" },
+      "table": { "title": "表格", "description": "添加简单的表格。" },
+      "image": { "title": "图片", "description": "上传或拖入图片。" },
+      "link": { "title": "链接", "description": "链接到网页。" },
+      "emoji": { "title": "表情符号", "description": "搜索并插入表情符号。" },
+      "textColor": { "title": "文字颜色", "description": "为所选文字着色。" },
+      "backgroundColor": { "title": "背景颜色", "description": "高亮所选文字。" }
+    },
+    "colors": {
+      "default": "默认",
+      "gray": "灰色",
+      "brown": "棕色",
+      "orange": "橙色",
+      "yellow": "黄色",
+      "green": "绿色",
+      "blue": "蓝色",
+      "purple": "紫色",
+      "pink": "粉色",
+      "red": "红色"
+    }
+  },
+  "selection": {
+    "turnInto": "转换为",
+    "bold": "粗体",
+    "italic": "斜体",
+    "underline": "下划线",
+    "strikethrough": "删除线",
+    "code": "代码",
+    "link": "链接",
+    "colour": "颜色",
+    "text": "文字",
+    "background": "背景",
+    "pasteLink": "粘贴链接…",
+    "apply": "应用",
+    "openLink": "打开链接",
+    "removeLink": "移除链接"
+  },
+  "link": {
+    "dialog": "编辑链接",
+    "placeholder": "粘贴或输入链接",
+    "urlLabel": "链接网址",
+    "apply": "应用",
+    "applyLink": "应用链接",
+    "open": "打开链接",
+    "remove": "移除链接"
+  },
+  "image": {
+    "alignLeft": "左对齐",
+    "alignCenter": "居中对齐",
+    "alignRight": "右对齐"
+  },
+  "callout": {
+    "changeIcon": "更改提示框图标"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "move": {
+    "title": "移动会话",
+    "commandLabel": "移到",
+    "placeholder": "移到…",
+    "noMatch": "没有匹配的文件夹或标签",
+    "nowhere": "这些会话无处可移",
+    "navigate": "导航",
+    "move": "移动",
+    "labelFallback": "标签",
+    "toLabel_other": "{{count}} 个会话已移到“{{name}}”",
+    "skippedNoLabel": "{{count}} 个没有匹配的标签，保持原样",
+    "skippedAlreadyThere": "{{count}} 个已在其中",
+    "withNote": "{{message}}（{{note}}）"
+  },
+  "drag": {
+    "conversations_other": "{{count}} 个会话"
+  },
+  "swipe": {
+    "restore": "恢复",
+    "restored": "会话已恢复",
+    "notSpam": "不是垃圾邮件",
+    "movedToInbox": "会话已移到收件箱",
+    "archive": "归档",
+    "archived": "会话已归档"
+  }
+}
