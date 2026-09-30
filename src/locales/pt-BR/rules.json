@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "archived_one": "{{count}} arquivada",
+    "archived_other": "{{count}} arquivadas",
+    "trashed_one": "{{count}} movida para a Lixeira",
+    "trashed_other": "{{count}} movidas para a Lixeira",
+    "rescued_one": "{{count}} resgatada do Spam",
+    "rescued_other": "{{count}} resgatadas do Spam",
+    "markedRead_one": "{{count}} marcada como lida",
+    "markedRead_other": "{{count}} marcadas como lidas",
+    "starred_one": "{{count}} com estrela",
+    "starred_other": "{{count}} com estrela",
+    "labelled_one": "{{count}} com o marcador “{{name}}”",
+    "labelled_other": "{{count}} com o marcador “{{name}}”",
+    "labelFallback": "marcador"
+  },
+  "describe": {
+    "from": "De {{value}}",
+    "fromDomain": "De @{{value}}",
+    "subject": "Assunto contém “{{value}}”",
+    "noActions": "Nenhuma ação",
+    "actions": {
+      "archive": "pular a caixa de entrada",
+      "markRead": "marcar como lida",
+      "star": "marcar com estrela",
+      "trash": "mover para a Lixeira",
+      "neverSpam": "nunca enviar para o Spam",
+      "label": "marcar com “{{name}}”"
+    }
+  },
+  "form": {
+    "whenMailIs": "Quando o e-mail for",
+    "matchOn": "Corresponder a",
+    "matchValue": "Valor de correspondência",
+    "field": {
+      "from": { "label": "De", "placeholder": "nome@exemplo.com", "hint": "Exatamente este remetente." },
+      "fromDomain": { "label": "Domínio", "placeholder": "exemplo.com", "hint": "Qualquer pessoa deste domínio, incluindo subdomínios." },
+      "subject": { "label": "Assunto", "placeholder": "Palavras no assunto", "hint": "Qualquer assunto que contenha este texto." }
+    },
+    "moreConditions_one": "Mais {{count}} condição.",
+    "moreConditions_other": "Mais {{count}} condições.",
+    "then": "Então",
+    "actionsAria": "Ações",
+    "actions": {
+      "archive": "Pular caixa de entrada",
+      "markRead": "Marcar como lida",
+      "star": "Marcar com estrela",
+      "trash": "Mover para a Lixeira",
+      "neverSpam": "Nunca enviar para o Spam"
+    },
+    "applyLabel": "Aplicar marcador",
+    "none": "Nenhum",
+    "appliesTo": "Aplica-se a",
+    "allAccounts": "Todas as contas"
+  },
+  "section": {
+    "title": "Regras",
+    "description": "Filtros que rodam nos novos e-mails dentro do Naushen Mail. Ficam somente neste Mac: nada é criado no Gmail, e não rodam com o app fechado.",
+    "description_outlook": "Filtros que rodam nos novos e-mails dentro do Naushen Mail. Ficam somente neste Mac: nada é criado no Gmail nem no Outlook, e não rodam com o app fechado.",
+    "empty": {
+      "title": "Nenhuma regra ainda",
+      "body": "Abra uma conversa e pressione <k1>⌘</k1><k2>⇧</k2><k3>R</k3> para organizar automaticamente os e-mails desse remetente."
+    },
+    "removedAccount": "Conta removida",
+    "allAccounts": "Todas as contas",
+    "ruleAria": "Regra: {{condition}}",
+    "and": " e ",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "edit": "Editar regra",
+    "delete": "Excluir regra",
+    "deleteConfirm": "Excluir esta regra? Os e-mails já organizados continuam onde estão.",
+    "deleteAction": "Excluir",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "order": "As regras rodam de cima para baixo; todas as que corresponderem são aplicadas."
+  },
+  "bundles": {
+    "title": "Grupos da caixa de entrada",
+    "collapse": {
+      "label": "Recolher e-mails de baixo valor",
+      "desc": "Um marcador ou remetente agrupado vira uma única linha na Caixa de Entrada (por exemplo, “Newsletters · 7 novas”). E-mails com estrela nunca são agrupados. Nada é agrupado até você adicionar um grupo."
+    },
+    "kindLabel": "Marcador",
+    "kindSender": "Remetente",
+    "stop": "Parar de agrupar",
+    "bundleLabel": "Agrupar um marcador",
+    "bundleLabelDesc": "Ou clique com o botão direito em um marcador na barra lateral.",
+    "chooseLabel": "Escolha um marcador…"
+  },
+  "host": {
+    "title": "Criar regra",
+    "from": "de “{{subject}}”",
+    "noSubject": "(sem assunto)",
+    "cancel": "Cancelar",
+    "create": "Criar regra",
+    "createApply_one": "Criar e aplicar a {{count}}",
+    "createApply_other": "Criar e aplicar a {{count}}",
+    "undo": "Desfazer",
+    "note": "Local no Naushen Mail: nada é criado no Gmail.",
+    "note_outlook": "Local no Naushen Mail: nada é criado no Gmail nem no Outlook.",
+    "match": {
+      "incomplete": "Adicione um valor e uma ação",
+      "checking": "Verificando e-mails existentes…",
+      "none": "Nenhuma conversa existente corresponde",
+      "some_one": "Corresponde a {{count}} conversa existente",
+      "some_other": "Corresponde a {{count}} conversas existentes"
+    },
+    "toast": {
+      "createdApplied": "Regra criada · {{summary}}",
+      "existedApplied": "A regra já existia · {{summary}}",
+      "createdNothing": "Regra criada · nada precisou mudar",
+      "existedNothing": "A regra já existia · nada precisou mudar",
+      "alreadyHave": "Você já tem esta regra",
+      "created": "Regra criada. Ela filtra os novos e-mails neste Mac.",
+      "viewRules": "Ver regras",
+      "failed": "Não foi possível criar a regra",
+      "failedWith": "Não foi possível criar a regra: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "Esta conversa não tem mensagem recebida para criar uma regra.",
+    "undo": "Desfazer",
+    "ran": "Regra: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "{{count}} de {{name}} arquivada",
+    "archivedFrom_other": "{{count}} de {{name}} arquivadas",
+    "nothingFrom": "Nada de {{name}} na sua caixa de entrada",
+    "blocked": "{{name}} bloqueado. Novos e-mails vão para a Lixeira.",
+    "blockedMoved_one": "{{name}} bloqueado · {{count}} movida para a Lixeira. Novos e-mails vão para a Lixeira.",
+    "blockedMoved_other": "{{name}} bloqueado · {{count}} movidas para a Lixeira. Novos e-mails vão para a Lixeira.",
+    "archivedFromSender_one": "{{count}} deste remetente arquivada",
+    "archivedFromSender_other": "{{count}} deste remetente arquivadas",
+    "bundling": "Agrupando {{name}} na Caixa de Entrada",
+    "stoppedBundling": "{{name}} não é mais agrupado"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "aria": {
+    "mailboxes": "Caixas de correio"
+  },
+  "newMessage": "Nova mensagem",
+  "newView": "Nova visualização",
+  "editView": "Editar visualização",
+  "settings": "Ajustes",
+  "options": "Opções",
+  "optionsFor": "Opções de {{name}}",
+  "optionsOf": "Opções de {{name}}",
+  "section": {
+    "views": "Visualizações",
+    "mail": "E-mail",
+    "labels": "Marcadores"
+  },
+  "categories": {
+    "label": "Categorias",
+    "tip": "E-mails agrupados pelas abas Social / Promoções / Atualizações / Fóruns do Gmail"
+  },
+  "accounts": {
+    "all": "Todas as contas",
+    "count_one": "{{count}} conta",
+    "count_other": "{{count}} contas",
+    "switch": "Alternar conta",
+    "add": "Adicionar conta"
+  },
+  "search": {
+    "label": "Buscar",
+    "placeholder": "Buscar e-mails",
+    "clear": "Limpar busca",
+    "people": "Pessoas correspondentes",
+    "operators": "Operadores de busca"
+  },
+  "label": {
+    "bundled": "Agrupado na Caixa de Entrada",
+    "bundle": "Agrupar na Caixa de Entrada",
+    "stopBundling": "Parar de agrupar na Caixa de Entrada"
+  },
+  "summary": {
+    "allMail": "Todos os e-mails",
+    "unread": "não lidas",
+    "hasAttachment": "com anexo",
+    "label": "marcador",
+    "from": "de {{value}}",
+    "subject": "assunto {{value}}",
+    "noFilters": "Sem filtros"
+  },
+  "viewEditor": {
+    "intro": "Visualizações são filtros salvos. Valem para os e-mails que você já tem e para os novos.",
+    "name": "Nome da visualização",
+    "icon": "Ícone",
+    "colour": "Cor",
+    "noColour": "Sem cor",
+    "filters": "Filtros",
+    "account": "Conta",
+    "mailbox": "Caixa de correio",
+    "allMail": "Todos os e-mails",
+    "anywhere": "Qualquer lugar",
+    "from": "De",
+    "fromPlaceholder": "nome ou endereço",
+    "fromContains": "De contém",
+    "subject": "Assunto",
+    "subjectPlaceholder": "contém…",
+    "subjectContains": "Assunto contém",
+    "unreadOnly": "Somente não lidas",
+    "hasAttachment": "Com anexo",
+    "labels": "Marcadores",
+    "delete": "Excluir",
+    "create": "Criar visualização",
+    "updated": "Visualização atualizada",
+    "created": "Visualização “{{name}}” criada",
+    "deleted": "Visualização “{{name}}” excluída"
+  },
+  "viewIcon": {
+    "inbox": "caixa de entrada",
+    "star": "estrela",
+    "flag": "bandeira",
+    "tag": "etiqueta",
+    "users": "pessoas",
+    "send": "enviar",
+    "receipt": "recibo",
+    "megaphone": "megafone",
+    "pin": "alfinete",
+    "message": "mensagem",
+    "newspaper": "jornal",
+    "flame": "chama",
+    "briefcase": "maleta",
+    "bell": "sino",
+    "archive": "arquivo",
+    "heart": "coração",
+    "bookmark": "favorito",
+    "folder": "pasta",
+    "zap": "raio"
+  }
+}

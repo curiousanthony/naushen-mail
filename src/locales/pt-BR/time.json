@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "Volta {{time}}",
+    "tomorrow": "Volta amanhã {{time}}",
+    "weekday": "Volta {{day}} {{time}}",
+    "date": "Volta {{date}}"
+  },
+  "in": {
+    "minutes": "{{count}} min",
+    "hours": "{{count}} h",
+    "days": "{{count}} d"
+  },
+  "chip": {
+    "reschedule": "Reagendar lembrete",
+    "rescheduleAria": "{{when}}. Reagendar lembrete",
+    "cancel": "Cancelar acompanhamento",
+    "cancelAria": "Acompanhamento em {{in}}. Cancelar acompanhamento",
+    "cancelled": "Acompanhamento cancelado",
+    "followUpIn": "Acompanhamento em {{in}}",
+    "noReply": "Sem resposta ainda",
+    "noReplyTitle": "Sem resposta ainda. Clique para dispensar",
+    "noReplyAria": "Sem resposta ainda. Dispensar",
+    "dismissed": "Dispensado"
+  },
+  "when": {
+    "placeholder": "Digite um horário… tomorrow 3pm",
+    "ariaLabel": "Digite um horário",
+    "past": "Esse horário já passou",
+    "unknown": "Tente “tomorrow 3pm”, “fri”, “in 2 days” ou “oct 12”"
+  }
+}
