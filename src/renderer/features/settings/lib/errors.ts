@@ -1,4 +1,7 @@
+import i18n from 'i18next'
 import type { AppSettings, ProviderKind } from '@shared/types'
+
+const t = (key: string, options?: Record<string, unknown>): string => i18n.t(key, { ns: 'settings', ...options }) as string
 
 export interface FriendlyError {
   message: string
@@ -8,40 +11,44 @@ export interface FriendlyError {
 
 /** Electron wraps main-process errors as "Error invoking remote method 'api:x': Error: msg". */
 export function cleanIpcError(e: unknown): string {
-  const raw = e instanceof Error ? e.message : typeof e === 'string' ? e : 'Unknown error'
+  const raw = e instanceof Error ? e.message : typeof e === 'string' ? e : t('errors.unknown')
   return raw
     .replace(/^Error invoking remote method '[^']+':\s*/, '')
     .replace(/^(Error|TypeError):\s*/, '')
     .trim()
 }
 
-export const PROVIDER_LABEL: Record<ProviderKind, string> = { gmail: 'Gmail', outlook: 'Outlook', mock: 'Demo' }
+/** Provider names are product names and are not translated; only the demo account's label is. */
+export const providerLabel = (p: ProviderKind): string => (p === 'gmail' ? 'Gmail' : p === 'outlook' ? 'Outlook' : t('providers.demo'))
 
-/** Returns a message when the OAuth client for this provider has not been configured yet. */
-export function missingCredentials(provider: ProviderKind, oauth: AppSettings['oauth']): FriendlyError | null {
-  if (provider === 'gmail' && !oauth.googleClientId.trim()) {
-    return { message: 'Add your Google OAuth client ID first. Naushen Mail has no backend, so you create the (free) OAuth app yourself.', hint: 'oauth-setup' }
+/**
+ * Returns a message when the OAuth client for this provider has not been configured yet.
+ * With a built-in Google client (release builds) Gmail never needs your own credentials.
+ */
+export function missingCredentials(provider: ProviderKind, oauth: AppSettings['oauth'], builtInGoogle = false): FriendlyError | null {
+  if (provider === 'gmail' && !builtInGoogle && !oauth.googleClientId.trim()) {
+    return { message: t('errors.missingGoogle'), hint: 'oauth-setup' }
   }
   if (provider === 'outlook' && !oauth.microsoftClientId.trim()) {
-    return { message: 'Add your Microsoft application (client) ID first. Naushen Mail has no backend, so you register the (free) app yourself.', hint: 'oauth-setup' }
+    return { message: t('errors.missingMicrosoft'), hint: 'oauth-setup' }
   }
   return null
 }
 
 export function friendlyConnectError(provider: ProviderKind, e: unknown): FriendlyError {
   const msg = cleanIpcError(e)
-  const name = PROVIDER_LABEL[provider]
+  const name = providerLabel(provider)
   if (/client[\s_-]?id|client[\s_-]?secret|not configured|invalid_client|unauthorized_client|AADSTS700016|AADSTS7000218/i.test(msg)) {
-    return { message: `${name} rejected the OAuth client. Check the credentials in OAuth setup below. (${msg})`, hint: 'oauth-setup' }
+    return { message: t('errors.clientRejected', { name, msg }), hint: 'oauth-setup' }
   }
   if (/redirect[\s_-]?uri|AADSTS50011/i.test(msg)) {
-    return { message: `${name} rejected the redirect address. Follow the redirect step in OAuth setup exactly. (${msg})`, hint: 'oauth-setup' }
+    return { message: t('errors.redirectRejected', { name, msg }), hint: 'oauth-setup' }
   }
-  if (/not available in this build/i.test(msg)) return { message: `The ${name} connector is not available in this build of Naushen Mail.` }
-  if (/timed out/i.test(msg)) return { message: 'Sign-in timed out. Try again and finish signing in within a few minutes.' }
-  if (/access_denied|cancel/i.test(msg)) return { message: 'Sign-in was cancelled. Nothing was connected.' }
-  if (/ENOTFOUND|ECONNREFUSED|ETIMEDOUT|network|fetch failed|offline/i.test(msg)) return { message: `Couldn't reach ${name}. Check your internet connection and try again.` }
-  return { message: msg || `Couldn't connect ${name}. Try again.` }
+  if (/not available in this build/i.test(msg)) return { message: t('errors.notInBuild', { name }) }
+  if (/timed out/i.test(msg)) return { message: t('errors.timedOut') }
+  if (/access_denied|cancel/i.test(msg)) return { message: t('errors.cancelled') }
+  if (/ENOTFOUND|ECONNREFUSED|ETIMEDOUT|network|fetch failed|offline/i.test(msg)) return { message: t('errors.offline', { name }) }
+  return { message: msg || t('errors.generic', { name }) }
 }
 
 const GOOGLE_ID = /^[\w-]+\.apps\.googleusercontent\.com$/i
@@ -49,10 +56,10 @@ const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /** Soft validation for the OAuth fields. Returns a hint (not a blocker) or null when fine/empty. */
 export function validateGoogleClientId(v: string): string | null {
-  const t = v.trim()
-  return !t || GOOGLE_ID.test(t) ? null : 'Google client IDs end in .apps.googleusercontent.com'
+  const s = v.trim()
+  return !s || GOOGLE_ID.test(s) ? null : t('errors.googleIdFormat')
 }
 export function validateMicrosoftClientId(v: string): string | null {
-  const t = v.trim()
-  return !t || GUID.test(t) ? null : 'Expected a GUID like 00000000-0000-0000-0000-000000000000'
+  const s = v.trim()
+  return !s || GUID.test(s) ? null : t('errors.guidFormat')
 }

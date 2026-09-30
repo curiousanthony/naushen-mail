@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import './_i18n-en'
 import type { AppSettings, Counts, Label, Rule, Thread } from '../../src/shared/types'
 import { DEFAULT_SETTINGS } from '../../src/shared/types'
 import { dedupeLabels, expandLabelIds } from '../../src/renderer/lib/labels'

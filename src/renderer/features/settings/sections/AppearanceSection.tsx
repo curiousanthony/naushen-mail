@@ -1,17 +1,16 @@
 import { Monitor, Moon, Sun } from 'lucide-react'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import type { AppSettings } from '@shared/types'
+import { LANGUAGES, type LanguagePref } from '@shared/languages'
 import { useApp } from '@/lib/store'
-import { Group, Row, SectionTitle, Segmented, Switch } from '../ui'
+import { Group, Row, SectionTitle, Segmented, Select, Switch } from '../ui'
 import { extPatch, readExt, type Accent, type AutoAdvance, type CountMode, type ThreadStyle } from '../lib/settings-ext'
 import { ACCENTS } from '../lib/appearance'
 import { readShowListCount, showListCountPatch } from '@/features/threadlist/listPrefs'
 
-const STYLES: { value: ThreadStyle; label: string; desc: string }[] = [
-  { value: 'side', label: 'Side peek', desc: 'Opens from the right, over the list' },
-  { value: 'center', label: 'Center peek', desc: 'A centered popup over the list' },
-  { value: 'full', label: 'Full page', desc: 'Replaces the list while open' }
-]
+/** Names and blurbs are `settings:appearance.threadStyle.<value>.{label,desc}`. */
+const STYLES: ThreadStyle[] = ['side', 'center', 'full']
 
 function StylePreview({ kind }: { kind: ThreadStyle }): JSX.Element {
   return (
@@ -22,10 +21,8 @@ function StylePreview({ kind }: { kind: ThreadStyle }): JSX.Element {
   )
 }
 
-const DENSITIES: { value: 'comfortable' | 'compact'; label: string; desc: string }[] = [
-  { value: 'comfortable', label: 'Comfortable', desc: 'More breathing room in the list, sidebar and reader' },
-  { value: 'compact', label: 'Compact', desc: 'Tighter rows — more conversations on screen' }
-]
+/** Names and blurbs are `settings:appearance.density.<value>.{label,desc}`. */
+const DENSITIES: ('comfortable' | 'compact')[] = ['comfortable', 'compact']
 
 function DensityPreview({ kind }: { kind: 'comfortable' | 'compact' }): JSX.Element {
   return (
@@ -36,6 +33,7 @@ function DensityPreview({ kind }: { kind: 'comfortable' | 'compact' }): JSX.Elem
 }
 
 export function AppearanceSection(): JSX.Element {
+  const { t } = useTranslation('settings')
   const settings = useApp((s) => s.settings)
   const update = useApp((s) => s.updateSettings)
   const ext = readExt(settings)
@@ -43,30 +41,35 @@ export function AppearanceSection(): JSX.Element {
 
   return (
     <div>
-      <SectionTitle title="Appearance & inbox" description="How Mailroom looks and how the inbox behaves." />
+      <SectionTitle title={t('appearance.title')} description={t('appearance.description')} />
 
-      <Group title="Appearance">
-        <Row label="Theme" description="Follow macOS, or pick light or dark. Changes apply immediately.">
-          <Segmented label="Theme" value={settings.theme} onChange={(theme) => set({ theme })} options={[
-            { value: 'light', label: 'Light', icon: <Sun size={14} strokeWidth={1.5} /> },
-            { value: 'dark', label: 'Dark', icon: <Moon size={14} strokeWidth={1.5} /> },
-            { value: 'system', label: 'System', icon: <Monitor size={14} strokeWidth={1.5} /> }
+      <Group title={t('appearance.groups.appearance')}>
+        <Row label={t('appearance.language.label')} description={t('appearance.language.desc')} htmlFor="st-language">
+          <Select<LanguagePref> id="st-language" label={t('appearance.language.label')} width={200}
+            value={settings.language ?? 'system'} onChange={(language) => set({ language })}
+            options={[{ value: 'system', label: t('appearance.language.system') }, ...LANGUAGES.map((l) => ({ value: l.code as LanguagePref, label: l.native }))]} />
+        </Row>
+        <Row label={t('appearance.theme.label')} description={t('appearance.theme.desc')}>
+          <Segmented label={t('appearance.theme.label')} value={settings.theme} onChange={(theme) => set({ theme })} options={[
+            { value: 'light', label: t('appearance.theme.light'), icon: <Sun size={14} strokeWidth={1.5} /> },
+            { value: 'dark', label: t('appearance.theme.dark'), icon: <Moon size={14} strokeWidth={1.5} /> },
+            { value: 'system', label: t('appearance.theme.system'), icon: <Monitor size={14} strokeWidth={1.5} /> }
           ]} />
         </Row>
-        <div className="st-tstyle st-tstyle--pair" role="radiogroup" aria-label="Density">
-          {DENSITIES.map((o) => (
-            <button key={o.value} type="button" role="radio" aria-checked={settings.density === o.value}
-              className={clsx('st-tstyle__card', settings.density === o.value && 'is-active')} onClick={() => set({ density: o.value })}>
-              <DensityPreview kind={o.value} />
-              <span className="st-tstyle__label">{o.label}</span>
-              <span className="st-tstyle__desc">{o.desc}</span>
+        <div className="st-tstyle st-tstyle--pair" role="radiogroup" aria-label={t('appearance.density.label')}>
+          {DENSITIES.map((v) => (
+            <button key={v} type="button" role="radio" aria-checked={settings.density === v}
+              className={clsx('st-tstyle__card', settings.density === v && 'is-active')} onClick={() => set({ density: v })}>
+              <DensityPreview kind={v} />
+              <span className="st-tstyle__label">{t(`appearance.density.${v}.label`)}</span>
+              <span className="st-tstyle__desc">{t(`appearance.density.${v}.desc`)}</span>
             </button>
           ))}
         </div>
-        <Row label="Accent colour" description="Selection, focus, unread dots and primary buttons.">
-          <div className="st-accents" role="radiogroup" aria-label="Accent colour">
+        <Row label={t('appearance.accent.label')} description={t('appearance.accent.desc')}>
+          <div className="st-accents" role="radiogroup" aria-label={t('appearance.accent.label')}>
             {ACCENTS.map((a) => (
-              <button key={a.value} type="button" role="radio" aria-checked={ext.accent === a.value} aria-label={a.label} title={a.label}
+              <button key={a.value} type="button" role="radio" aria-checked={ext.accent === a.value} aria-label={t(`appearance.accents.${a.value}`)} title={t(`appearance.accents.${a.value}`)}
                 className={clsx('st-accent', ext.accent === a.value && 'is-active')} style={{ '--sw': `var(--sw-${a.value})` } as React.CSSProperties}
                 onClick={() => set(extPatch({ accent: a.value as Accent }))} />
             ))}
@@ -74,45 +77,45 @@ export function AppearanceSection(): JSX.Element {
         </Row>
       </Group>
 
-      <Group title="Sidebar counts">
-        <Row label="Unread count display" description="How unread badges in the sidebar are shown. The cap shows 99+ once a view has more than 99 unread.">
-          <Segmented<CountMode> label="Unread count display" value={ext.sidebarCountMode} onChange={(sidebarCountMode) => set(extPatch({ sidebarCountMode }))} options={[
-            { value: 'cap', label: '99+ cap' }, { value: 'exact', label: 'Exact count' }
+      <Group title={t('appearance.groups.counts')}>
+        <Row label={t('appearance.counts.label')} description={t('appearance.counts.desc')}>
+          <Segmented<CountMode> label={t('appearance.counts.label')} value={ext.sidebarCountMode} onChange={(sidebarCountMode) => set(extPatch({ sidebarCountMode }))} options={[
+            { value: 'cap', label: t('appearance.counts.cap') }, { value: 'exact', label: t('appearance.counts.exact') }
           ]} />
         </Row>
       </Group>
 
-      <Group title="Thread style">
-        <div className="st-tstyle" role="radiogroup" aria-label="Thread style">
-          {STYLES.map((o) => (
-            <button key={o.value} type="button" role="radio" aria-checked={ext.threadStyle === o.value}
-              className={clsx('st-tstyle__card', ext.threadStyle === o.value && 'is-active')} onClick={() => set(extPatch({ threadStyle: o.value }))}>
-              <StylePreview kind={o.value} />
-              <span className="st-tstyle__label">{o.label}</span>
-              <span className="st-tstyle__desc">{o.desc}</span>
+      <Group title={t('appearance.groups.threadStyle')}>
+        <div className="st-tstyle" role="radiogroup" aria-label={t('appearance.groups.threadStyle')}>
+          {STYLES.map((v) => (
+            <button key={v} type="button" role="radio" aria-checked={ext.threadStyle === v}
+              className={clsx('st-tstyle__card', ext.threadStyle === v && 'is-active')} onClick={() => set(extPatch({ threadStyle: v }))}>
+              <StylePreview kind={v} />
+              <span className="st-tstyle__label">{t(`appearance.threadStyle.${v}.label`)}</span>
+              <span className="st-tstyle__desc">{t(`appearance.threadStyle.${v}.desc`)}</span>
             </button>
           ))}
         </div>
       </Group>
 
-      <Group title="List title">
-        <Row label="Show email count next to view title" description="Shows how many conversations are in the current list, to the right of the title (Inbox, Categories, …). Off by default.">
-          <Switch label="Show email count next to view title" checked={readShowListCount(settings)} onChange={(v) => set(showListCountPatch(v))} />
+      <Group title={t('appearance.groups.listTitle')}>
+        <Row label={t('appearance.listCount.label')} description={t('appearance.listCount.desc')}>
+          <Switch label={t('appearance.listCount.label')} checked={readShowListCount(settings)} onChange={(v) => set(showListCountPatch(v))} />
         </Row>
       </Group>
 
-      <Group title="Inbox">
-        <Row label="Group by date" description="Group threads under Today, Yesterday, Last 7 days and so on."><Switch label="Group by date" checked={settings.groupByDate} onChange={(groupByDate) => set({ groupByDate })} /></Row>
-        <Row label="Mark as read when opened" description="A thread becomes read as soon as you open it."><Switch label="Mark as read when opened" checked={settings.markReadOnOpen} onChange={(markReadOnOpen) => set({ markReadOnOpen })} /></Row>
-        <Row label="Block remote images" description="Images in email are loaded only when you allow them. Protects against tracking pixels."><Switch label="Block remote images" checked={settings.blockRemoteImages} onChange={(blockRemoteImages) => set({ blockRemoteImages })} /></Row>
-        <Row label="Hide Promotions/Social/Updates/Forums from Inbox" description="Gmail only. Keeps the Inbox to Primary mail; the rest stays one click away under Categories in the sidebar. Off by default — nothing changes until you turn this on.">
-          <Switch label="Hide Promotions/Social/Updates/Forums from Inbox" checked={!!settings.hideCategoriesFromInbox} onChange={(hideCategoriesFromInbox) => set({ hideCategoriesFromInbox })} />
+      <Group title={t('appearance.groups.inbox')}>
+        <Row label={t('appearance.groupByDate.label')} description={t('appearance.groupByDate.desc')}><Switch label={t('appearance.groupByDate.label')} checked={settings.groupByDate} onChange={(groupByDate) => set({ groupByDate })} /></Row>
+        <Row label={t('appearance.markRead.label')} description={t('appearance.markRead.desc')}><Switch label={t('appearance.markRead.label')} checked={settings.markReadOnOpen} onChange={(markReadOnOpen) => set({ markReadOnOpen })} /></Row>
+        <Row label={t('appearance.remoteImages.label')} description={t('appearance.remoteImages.desc')}><Switch label={t('appearance.remoteImages.label')} checked={settings.blockRemoteImages} onChange={(blockRemoteImages) => set({ blockRemoteImages })} /></Row>
+        <Row label={t('appearance.hideCategories.label')} description={t('appearance.hideCategories.desc')}>
+          <Switch label={t('appearance.hideCategories.label')} checked={!!settings.hideCategoriesFromInbox} onChange={(hideCategoriesFromInbox) => set({ hideCategoriesFromInbox })} />
         </Row>
-        <Row label="Show avatars" description="Sender and recipient photos in the thread list and reader, via Gravatar. Off by default — Notion Mail didn't show them either, and it's one more thing pinging an outside service per contact."><Switch label="Show avatars" checked={settings.showAvatars} onChange={(showAvatars) => set({ showAvatars })} /></Row>
-        <Row label="Swipe gestures" description="Two-finger swipe on a conversation: left archives, right sets a reminder. Trackpads only."><Switch label="Swipe gestures" checked={ext.swipeGestures} onChange={(swipeGestures) => set(extPatch({ swipeGestures }))} /></Row>
-        <Row label="Auto-advance" description="Where to go after you archive, trash or snooze the open thread.">
-          <Segmented<AutoAdvance> label="Auto-advance" value={ext.autoAdvance} onChange={(autoAdvance) => set(extPatch({ autoAdvance }))} options={[
-            { value: 'next', label: 'Next' }, { value: 'previous', label: 'Previous' }, { value: 'close', label: 'Close' }
+        <Row label={t('appearance.avatars.label')} description={t('appearance.avatars.desc')}><Switch label={t('appearance.avatars.label')} checked={settings.showAvatars} onChange={(showAvatars) => set({ showAvatars })} /></Row>
+        <Row label={t('appearance.swipe.label')} description={t('appearance.swipe.desc')}><Switch label={t('appearance.swipe.label')} checked={ext.swipeGestures} onChange={(swipeGestures) => set(extPatch({ swipeGestures }))} /></Row>
+        <Row label={t('appearance.autoAdvance.label')} description={t('appearance.autoAdvance.desc')}>
+          <Segmented<AutoAdvance> label={t('appearance.autoAdvance.label')} value={ext.autoAdvance} onChange={(autoAdvance) => set(extPatch({ autoAdvance }))} options={[
+            { value: 'next', label: t('appearance.autoAdvance.next') }, { value: 'previous', label: t('appearance.autoAdvance.previous') }, { value: 'close', label: t('appearance.autoAdvance.close') }
           ]} />
         </Row>
       </Group>

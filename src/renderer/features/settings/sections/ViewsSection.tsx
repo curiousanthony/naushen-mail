@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import clsx from 'clsx'
+import { Trans, useTranslation } from 'react-i18next'
 import { ArrowDown, ArrowUp, GripVertical, LayoutList, Plus, Trash2 } from 'lucide-react'
 import type { View } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -8,6 +9,7 @@ import { describeFilter, dropOrder, moveView, reorderViews, sortViews } from '..
 import { VIEW_ICONS } from '../../sidebar/viewIcons'
 
 export function ViewsSection(): JSX.Element {
+  const { t } = useTranslation('settings')
   const views = useApp((s) => s.views)
   const setOverlay = useApp((s) => s.setOverlay)
   const refreshMeta = useApp((s) => s.refreshMeta)
@@ -35,12 +37,12 @@ export function ViewsSection(): JSX.Element {
 
   return (
     <div>
-      <SectionTitle title="Views" description="Saved filters that appear in the sidebar. Drag to reorder." />
-      <Group title={ordered.length ? `${ordered.length} saved ${ordered.length === 1 ? 'view' : 'views'}` : undefined} action={<Button size="sm" variant="primary" icon={<Plus size={14} />} onClick={() => setOverlay('view-editor')}>New view</Button>}>
+      <SectionTitle title={t('views.title')} description={t('views.description')} />
+      <Group title={ordered.length ? t('views.count', { count: ordered.length }) : undefined} action={<Button size="sm" variant="primary" icon={<Plus size={14} />} onClick={() => setOverlay('view-editor')}>{t('views.new')}</Button>}>
         {ordered.length === 0 ? (
-          <EmptyState icon={<LayoutList size={22} strokeWidth={1.5} />} title="No saved views"
-            action={<Button variant="primary" icon={<Plus size={14} />} onClick={() => setOverlay('view-editor')}>Create a view</Button>}>
-            A view is a saved filter, like “Unread” or “From my team”. It shows up in the sidebar.
+          <EmptyState icon={<LayoutList size={22} strokeWidth={1.5} />} title={t('views.empty.title')}
+            action={<Button variant="primary" icon={<Plus size={14} />} onClick={() => setOverlay('view-editor')}>{t('views.empty.create')}</Button>}>
+            {t('views.empty.body')}
           </EmptyState>
         ) : (
           <ul className="st-views" onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDrop(null) }}>
@@ -69,15 +71,15 @@ export function ViewsSection(): JSX.Element {
                     <span className="st-view__desc">{describeFilter(v.filter)}</span>
                   </span>
                   <span className="st-view__tools">
-                    <IconButton label={`Move ${v.name} up`} disabled={i === 0} onClick={() => void persist(moveView(views, v.id, -1))}><ArrowUp size={14} strokeWidth={1.75} /></IconButton>
-                    <IconButton label={`Move ${v.name} down`} disabled={i === ordered.length - 1} onClick={() => void persist(moveView(views, v.id, 1))}><ArrowDown size={14} strokeWidth={1.75} /></IconButton>
-                    <IconButton label={`Delete ${v.name}`} onClick={() => setConfirmId(v.id)}><Trash2 size={15} strokeWidth={1.5} /></IconButton>
+                    <IconButton label={t('views.moveUp', { name: v.name })} disabled={i === 0} onClick={() => void persist(moveView(views, v.id, -1))}><ArrowUp size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('views.moveDown', { name: v.name })} disabled={i === ordered.length - 1} onClick={() => void persist(moveView(views, v.id, 1))}><ArrowDown size={14} strokeWidth={1.75} /></IconButton>
+                    <IconButton label={t('views.deleteView', { name: v.name })} onClick={() => setConfirmId(v.id)}><Trash2 size={15} strokeWidth={1.5} /></IconButton>
                   </span>
-                  <span className="st-view__toggle"><span>Sidebar</span><Switch label={`Show ${v.name} in sidebar`} checked={v.showInSidebar} onChange={(on) => void toggle(v, on)} /></span>
+                  <span className="st-view__toggle"><span>{t('views.sidebar')}</span><Switch label={t('views.showInSidebar', { name: v.name })} checked={v.showInSidebar} onChange={(on) => void toggle(v, on)} /></span>
                 </div>
                 {confirmId === v.id && (
-                  <ConfirmBar confirmLabel="Delete" onCancel={() => setConfirmId(null)} onConfirm={() => void remove(v.id)}
-                    message={<><strong>Delete the view “{v.name}”?</strong> Your mail is not affected.</>} />
+                  <ConfirmBar confirmLabel={t('views.delete')} onCancel={() => setConfirmId(null)} onConfirm={() => void remove(v.id)}
+                    message={<Trans t={t} i18nKey="views.deleteConfirm" values={{ name: v.name }} components={{ b: <strong /> }} />} />
                 )}
               </li>
             ))}

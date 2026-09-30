@@ -2,17 +2,15 @@
  * The rule form's editable shape and its conversion to / from a stored `Rule`. Pure so it is
  * unit-tested; the form (RuleForm.tsx) is a thin view over it.
  */
+import i18n from 'i18next'
 import type { Rule, RuleAction, RuleCondition, RuleField, RuleStep } from '@shared/types'
 import type { RuleSuggestion } from '@shared/rules'
 import { isRuleComplete } from '@shared/rules'
 
 export type ToggleAction = 'archive' | 'markRead' | 'star' | 'trash' | 'neverSpam'
-export const TOGGLE_ACTIONS: { id: ToggleAction; label: string }[] = [
-  { id: 'archive', label: 'Skip inbox' },
-  { id: 'markRead', label: 'Mark as read' },
-  { id: 'star', label: 'Star' },
-  { id: 'trash', label: 'Move to Trash' },
-  { id: 'neverSpam', label: 'Never send to Spam' }
+/** Chip labels are `rules:form.actions.<id>`. */
+export const TOGGLE_ACTIONS: { id: ToggleAction }[] = [
+  { id: 'archive' }, { id: 'markRead' }, { id: 'star' }, { id: 'trash' }, { id: 'neverSpam' }
 ]
 
 export interface RuleDraft {
@@ -79,16 +77,17 @@ export const isDraftComplete = (d: RuleDraft): boolean =>
 
 /** "Archived 4 · Labelled 4 “Receipts”" — the toast after a rule ran. */
 export function summarizeSteps(steps: RuleStep[], labelName?: (id: string) => string | undefined): string {
+  const t = (key: string, options: Record<string, unknown>): string => i18n.t(key, { ns: 'rules', ...options }) as string
   return steps.map((s) => {
-    const n = s.threadIds.length
+    const count = s.threadIds.length
     switch (s.action.type) {
-      case 'archive': return `Archived ${n}`
-      case 'trash': return `Moved ${n} to Trash`
-      case 'notSpam': return `Rescued ${n} from Spam`
-      case 'markRead': return `Marked ${n} as read`
-      case 'star': return `Starred ${n}`
-      case 'addLabel': return `Labelled ${n} “${labelName?.(s.action.labelId) ?? 'label'}”`
-      default: return `${s.action.type} ${n}`
+      case 'archive': return t('summary.archived', { count })
+      case 'trash': return t('summary.trashed', { count })
+      case 'notSpam': return t('summary.rescued', { count })
+      case 'markRead': return t('summary.markedRead', { count })
+      case 'star': return t('summary.starred', { count })
+      case 'addLabel': return t('summary.labelled', { count, name: labelName?.(s.action.labelId) ?? t('summary.labelFallback', {}) })
+      default: return `${s.action.type} ${count}`
     }
   }).join(' · ')
 }

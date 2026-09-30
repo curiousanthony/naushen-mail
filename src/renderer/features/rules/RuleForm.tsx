@@ -1,4 +1,5 @@
 import { useMemo, type Ref } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, ChevronsUpDown, Tag } from 'lucide-react'
 import type { Account, Label, RuleField } from '@shared/types'
 import type { RuleSuggestion } from '@shared/rules'
@@ -6,20 +7,8 @@ import { dedupeLabels } from '@/lib/labels'
 import { TOGGLE_ACTIONS, toggleAction, withField, type RuleDraft } from './draft'
 import './rules.css'
 
-const FIELDS: { id: RuleField; label: string }[] = [
-  { id: 'from', label: 'From' },
-  { id: 'fromDomain', label: 'Domain' },
-  { id: 'subject', label: 'Subject' }
-]
-
-const PLACEHOLDER: Record<RuleField, string> = {
-  from: 'name@example.com', fromDomain: 'example.com', subject: 'Words in the subject'
-}
-const HINT: Record<RuleField, string> = {
-  from: 'This exact sender.',
-  fromDomain: 'Anyone at this domain, including its subdomains.',
-  subject: 'Any subject containing this text.'
-}
+/** Segment labels, placeholders and hints are `rules:form.field.<id>.{label,placeholder,hint}`. */
+const FIELDS: RuleField[] = ['from', 'fromDomain', 'subject']
 
 /**
  * The condition -> actions editor shared by the create popover and Settings -> Rules.
@@ -34,6 +23,7 @@ export function RuleForm({ draft, onChange, accounts, labels, suggestion, inputR
   suggestion?: RuleSuggestion | null
   inputRef?: Ref<HTMLInputElement>
 }): JSX.Element {
+  const { t } = useTranslation('rules')
   // One entry per distinct label name: a rule names its label, and it applies wherever that name exists.
   const labelNames = useMemo(
     () => dedupeLabels(labels.filter((l) => l.kind === 'user'), 'all').map((l) => l.name).sort((a, b) => a.localeCompare(b)),
@@ -47,36 +37,36 @@ export function RuleForm({ draft, onChange, accounts, labels, suggestion, inputR
   return (
     <div className="rf">
       <div className="rf__row">
-        <span className="rf__cap">When mail is</span>
-        <div className="rf__seg" role="radiogroup" aria-label="Match on">
+        <span className="rf__cap">{t('form.whenMailIs')}</span>
+        <div className="rf__seg" role="radiogroup" aria-label={t('form.matchOn')}>
           {FIELDS.map((f) => (
             <button
-              key={f.id} type="button" role="radio" aria-checked={draft.field === f.id}
-              className="rf__segopt" data-on={draft.field === f.id} onClick={() => setField(f.id)}
+              key={f} type="button" role="radio" aria-checked={draft.field === f}
+              className="rf__segopt" data-on={draft.field === f} onClick={() => setField(f)}
             >
-              {f.label}
+              {t(`form.field.${f}.label`)}
             </button>
           ))}
         </div>
       </div>
       <input
         ref={inputRef} className="rf__input" value={draft.value} spellCheck={false} autoComplete="off"
-        placeholder={PLACEHOLDER[draft.field]} aria-label="Match value"
+        placeholder={t(`form.field.${draft.field}.placeholder`)} aria-label={t('form.matchValue')}
         onChange={(e) => onChange({ ...draft, value: e.target.value })}
       />
       <p className="rf__hint">
-        {HINT[draft.field]}{draft.extra.length > 0 && ` Plus ${draft.extra.length} more condition${draft.extra.length === 1 ? '' : 's'}.`}
+        {t(`form.field.${draft.field}.hint`)}{draft.extra.length > 0 && ` ${t('form.moreConditions', { count: draft.extra.length })}`}
       </p>
 
-      <div className="rf__cap rf__cap--then">Then</div>
-      <div className="rf__chips" role="group" aria-label="Actions">
+      <div className="rf__cap rf__cap--then">{t('form.then')}</div>
+      <div className="rf__chips" role="group" aria-label={t('form.actionsAria')}>
         {TOGGLE_ACTIONS.map((a) => (
           <button
             key={a.id} type="button" className="rf__chip" aria-pressed={draft.actions[a.id]}
             data-on={draft.actions[a.id]} onClick={() => onChange(toggleAction(draft, a.id))}
           >
             {draft.actions[a.id] && <Check size={11} strokeWidth={2.5} />}
-            {a.label}
+            {t(`form.actions.${a.id}`)}
           </button>
         ))}
       </div>
@@ -84,10 +74,10 @@ export function RuleForm({ draft, onChange, accounts, labels, suggestion, inputR
       {labelNames.length > 0 && (
         <label className="rf__field">
           <Tag size={13} className="rf__fieldicon" />
-          <span>Apply label</span>
+          <span>{t('form.applyLabel')}</span>
           <span className="rf__select">
-            <select value={draft.label ?? ''} onChange={(e) => onChange({ ...draft, label: e.target.value || null })} aria-label="Apply label">
-              <option value="">None</option>
+            <select value={draft.label ?? ''} onChange={(e) => onChange({ ...draft, label: e.target.value || null })} aria-label={t('form.applyLabel')}>
+              <option value="">{t('form.none')}</option>
               {labelNames.map((n) => <option key={n} value={n}>{n}</option>)}
             </select>
             <ChevronsUpDown size={12} aria-hidden />
@@ -98,11 +88,11 @@ export function RuleForm({ draft, onChange, accounts, labels, suggestion, inputR
       {accounts.length > 1 && (
         <label className="rf__field">
           <span className="rf__fieldicon rf__fieldicon--dot" style={{ background: accounts.find((a) => a.id === draft.accountId)?.color ?? 'var(--c-text-3)' }} />
-          <span>Applies to</span>
+          <span>{t('form.appliesTo')}</span>
           <span className="rf__select">
-            <select value={draft.accountId ?? ''} onChange={(e) => onChange({ ...draft, accountId: e.target.value || null })} aria-label="Applies to">
+            <select value={draft.accountId ?? ''} onChange={(e) => onChange({ ...draft, accountId: e.target.value || null })} aria-label={t('form.appliesTo')}>
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.email}</option>)}
-              <option value="">All accounts</option>
+              <option value="">{t('form.allAccounts')}</option>
             </select>
             <ChevronsUpDown size={12} aria-hidden />
           </span>

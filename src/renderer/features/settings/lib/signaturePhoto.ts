@@ -1,3 +1,4 @@
+import i18n from 'i18next'
 import type { Account } from '@shared/types'
 import { initialsCell, photoCell } from '../sections/signatureTemplates'
 
@@ -53,15 +54,15 @@ export async function cropToSquareDataUri(file: Blob, px = PHOTO_PX): Promise<st
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = new Image()
       i.onload = () => resolve(i)
-      i.onerror = () => reject(new Error('That file could not be read as an image.'))
+      i.onerror = () => reject(new Error(i18n.t('settings:signature.photo.unreadable')))
       i.src = url
     })
     const side = Math.min(img.naturalWidth, img.naturalHeight)
-    if (!side) throw new Error('That image is empty.')
+    if (!side) throw new Error(i18n.t('settings:signature.photo.empty'))
     const canvas = document.createElement('canvas')
     canvas.width = canvas.height = px
     const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Image processing is unavailable.')
+    if (!ctx) throw new Error(i18n.t('settings:signature.photo.unavailable'))
     ctx.fillStyle = '#ffffff' // JPEG has no alpha; transparent PNGs land on white like the email body
     ctx.fillRect(0, 0, px, px)
     ctx.imageSmoothingQuality = 'high'

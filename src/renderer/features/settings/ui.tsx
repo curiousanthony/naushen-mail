@@ -1,6 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
 import type { Account, LabelColor } from '@shared/types'
 import { LABEL_COLORS } from '@shared/types'
@@ -125,7 +126,8 @@ export function TextInput({ className, invalid, ...rest }: React.InputHTMLAttrib
 }
 
 export function SavedTick({ show }: { show: boolean }): JSX.Element {
-  return <span className={clsx('st-saved', show && 'is-on')} aria-live="polite"><Check size={13} strokeWidth={2} />Saved</span>
+  const { t } = useTranslation('settings')
+  return <span className={clsx('st-saved', show && 'is-on')} aria-live="polite"><Check size={13} strokeWidth={2} />{t('ui.saved')}</span>
 }
 
 /* ------------------------------------------------------------------ account bits */
@@ -161,14 +163,15 @@ export function EmptyState({ icon, title, children, action }: { icon: ReactNode;
 export function ConfirmBar({ message, confirmLabel, onConfirm, onCancel, busy }: {
   message: ReactNode; confirmLabel: string; onConfirm: () => void; onCancel: () => void; busy?: boolean
 }): JSX.Element {
+  const { t } = useTranslation('settings')
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => { ref.current?.querySelector<HTMLElement>('.st-btn--default')?.focus() }, [])
   return (
-    <div ref={ref} className="st-confirm" role="alertdialog" aria-label="Confirm"
+    <div ref={ref} className="st-confirm" role="alertdialog" aria-label={t('ui.confirm')}
       onKeyDown={(e) => { if (e.key === 'Escape') { e.preventDefault(); onCancel() } }}>
       <div className="st-confirm__msg">{message}</div>
       <div className="st-confirm__actions">
-        <Button size="sm" onClick={onCancel}>Cancel</Button>
+        <Button size="sm" onClick={onCancel}>{t('ui.cancel')}</Button>
         <Button size="sm" variant="danger" busy={busy} onClick={onConfirm}>{confirmLabel}</Button>
       </div>
     </div>
@@ -214,21 +217,20 @@ export function Popover({ anchor, onClose, children, width = 200, label }: {
   )
 }
 
-const COLOR_NAMES: Record<LabelColor, string> = {
-  gray: 'Gray', brown: 'Brown', orange: 'Orange', yellow: 'Yellow', green: 'Green', blue: 'Blue', purple: 'Purple', pink: 'Pink', red: 'Red'
-}
-
 export function Swatch({ color, size = 14 }: { color?: LabelColor; size?: number }): JSX.Element {
   return <span className="st-swatch" style={{ width: size, height: size, background: `var(--chip-${color ?? 'gray'}-fg)`, boxShadow: `0 0 0 3px var(--chip-${color ?? 'gray'}-bg)` }} />
 }
 
-export function ColorPicker({ value, onChange, label = 'Label colour' }: { value?: LabelColor; onChange: (c: LabelColor) => void; label?: string }): JSX.Element {
+export function ColorPicker({ value, onChange, label: labelProp }: { value?: LabelColor; onChange: (c: LabelColor) => void; label?: string }): JSX.Element {
+  const { t } = useTranslation('settings')
+  const label = labelProp ?? t('ui.labelColour')
+  const COLOR_NAMES = (c: LabelColor): string => t(`ui.colors.${c}`)
   const [open, setOpen] = useState(false)
   const btn = useRef<HTMLButtonElement>(null)
   const id = useId()
   return (
     <>
-      <button ref={btn} type="button" className={clsx('st-colorbtn', open && 'is-open')} aria-label={`${label}: ${COLOR_NAMES[value ?? 'gray']}`}
+      <button ref={btn} type="button" className={clsx('st-colorbtn', open && 'is-open')} aria-label={`${label}: ${COLOR_NAMES(value ?? 'gray')}`}
         aria-haspopup="dialog" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
         <Swatch color={value} />
       </button>
@@ -241,7 +243,7 @@ export function ColorPicker({ value, onChange, label = 'Label colour' }: { value
                 <button key={c} type="button" role="radio" aria-checked={active} autoFocus={active}
                   className={clsx('st-swatches__opt', active && 'is-active')} onClick={() => { onChange(c); setOpen(false); btn.current?.focus() }}>
                   <Swatch color={c} size={12} />
-                  <span>{COLOR_NAMES[c]}</span>
+                  <span>{COLOR_NAMES(c)}</span>
                   {active && <Check className="st-swatches__check" size={14} strokeWidth={2} />}
                 </button>
               )

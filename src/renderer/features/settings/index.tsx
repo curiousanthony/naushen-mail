@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import clsx from 'clsx'
+import { useTranslation } from 'react-i18next'
 import { Braces, Info, Keyboard, LayoutList, ListFilter, Palette, PenLine, Send, Tag, UserRound, X } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { Tooltip } from '@/features/tooltip'
@@ -20,26 +21,27 @@ import './settings.css'
 
 type SectionId = 'accounts' | 'appearance' | 'signature' | 'sending' | 'labels' | 'views' | 'snippets' | 'rules' | 'shortcuts' | 'about'
 
-interface NavItem { id: SectionId; label: string; icon: ReactNode; render: () => JSX.Element }
+interface NavItem { id: SectionId; icon: ReactNode; render: () => JSX.Element }
 const icon = (I: typeof Palette): ReactNode => <I size={16} strokeWidth={1.5} />
 
-const NAV: { title: string; items: NavItem[] }[] = [
-  { title: 'Account', items: [{ id: 'accounts', label: 'Accounts', icon: icon(UserRound), render: () => <AccountsSection /> }] },
+/** Group and item names are translated as `settings:nav.group.<group>` / `settings:nav.<id>`. */
+const NAV: { group: 'account' | 'mail' | 'app'; items: NavItem[] }[] = [
+  { group: 'account', items: [{ id: 'accounts', icon: icon(UserRound), render: () => <AccountsSection /> }] },
   {
-    title: 'Mail', items: [
-      { id: 'appearance', label: 'Appearance & inbox', icon: icon(Palette), render: () => <AppearanceSection /> },
-      { id: 'signature', label: 'Signature', icon: icon(PenLine), render: () => <SignatureSection /> },
-      { id: 'sending', label: 'Sending', icon: icon(Send), render: () => <SendingSection /> },
-      { id: 'labels', label: 'Labels', icon: icon(Tag), render: () => <LabelsSection /> },
-      { id: 'views', label: 'Views', icon: icon(LayoutList), render: () => <ViewsSection /> },
-      { id: 'snippets', label: 'Snippets', icon: icon(Braces), render: () => <SnippetsSection /> },
-      { id: 'rules', label: 'Rules & bundles', icon: icon(ListFilter), render: () => <RulesSection /> }
+    group: 'mail', items: [
+      { id: 'appearance', icon: icon(Palette), render: () => <AppearanceSection /> },
+      { id: 'signature', icon: icon(PenLine), render: () => <SignatureSection /> },
+      { id: 'sending', icon: icon(Send), render: () => <SendingSection /> },
+      { id: 'labels', icon: icon(Tag), render: () => <LabelsSection /> },
+      { id: 'views', icon: icon(LayoutList), render: () => <ViewsSection /> },
+      { id: 'snippets', icon: icon(Braces), render: () => <SnippetsSection /> },
+      { id: 'rules', icon: icon(ListFilter), render: () => <RulesSection /> }
     ]
   },
   {
-    title: 'App', items: [
-      { id: 'shortcuts', label: 'Keyboard shortcuts', icon: icon(Keyboard), render: () => <ShortcutsSection /> },
-      { id: 'about', label: 'About', icon: icon(Info), render: () => <AboutSection /> }
+    group: 'app', items: [
+      { id: 'shortcuts', icon: icon(Keyboard), render: () => <ShortcutsSection /> },
+      { id: 'about', icon: icon(Info), render: () => <AboutSection /> }
     ]
   }
 ]
@@ -53,6 +55,7 @@ export function SettingsModal(): JSX.Element | null {
 }
 
 function SettingsDialog(): JSX.Element {
+  const { t } = useTranslation('settings')
   const setOverlay = useApp((s) => s.setOverlay)
   const accounts = useApp((s) => s.accounts)
   const [section, setSection] = useState<SectionId>(() => {
@@ -81,29 +84,29 @@ function SettingsDialog(): JSX.Element {
 
   return (
     <div className="st-scrim no-drag" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
-      <div ref={dialog} className="st-modal" role="dialog" aria-modal="true" aria-label="Settings" tabIndex={-1} onKeyDown={onKeyDown}>
-        <nav className="st-nav" aria-label="Settings sections">
+      <div ref={dialog} className="st-modal" role="dialog" aria-modal="true" aria-label={t('modal.label')} tabIndex={-1} onKeyDown={onKeyDown}>
+        <nav className="st-nav" aria-label={t('modal.sections')}>
           <div className="st-nav__who">
             {primary ? <Avatar account={primary} size={22} /> : <span className="st-nav__who-empty"><UserRound size={14} strokeWidth={1.5} /></span>}
             <span className="st-nav__who-text">
-              <strong>{primary ? primary.name || primary.email : 'Mailroom'}</strong>
-              <span>{accounts.length > 1 ? `${accounts.length} accounts` : primary ? primary.email : 'No accounts yet'}</span>
+              <strong>{primary ? primary.name || primary.email : 'Naushen Mail'}</strong>
+              <span>{accounts.length > 1 ? t('modal.accountCount', { count: accounts.length }) : primary ? primary.email : t('modal.noAccounts')}</span>
             </span>
           </div>
           {NAV.map((g) => (
-            <div key={g.title} className="st-nav__group">
-              <div className="st-nav__title">{g.title}</div>
+            <div key={g.group} className="st-nav__group">
+              <div className="st-nav__title">{t(`nav.group.${g.group}`)}</div>
               {g.items.map((i) => (
                 <button key={i.id} type="button" className={clsx('st-nav__item', i.id === section && 'is-active')} aria-current={i.id === section ? 'page' : undefined} onClick={() => choose(i.id)}>
-                  {i.icon}<span>{i.label}</span>
+                  {i.icon}<span>{t(`nav.${i.id}`)}</span>
                 </button>
               ))}
             </div>
           ))}
         </nav>
         <div className="st-pane" ref={pane}>
-          <Tooltip label="Close" shortcut="Esc">
-            <button type="button" className="st-close" aria-label="Close settings" onClick={close}><X size={16} strokeWidth={1.75} /></button>
+          <Tooltip label={t('modal.close')} shortcut="Esc">
+            <button type="button" className="st-close" aria-label={t('modal.closeAria')} onClick={close}><X size={16} strokeWidth={1.75} /></button>
           </Tooltip>
           <div className="st-pane__inner" key={current.id}>{current.render()}</div>
         </div>

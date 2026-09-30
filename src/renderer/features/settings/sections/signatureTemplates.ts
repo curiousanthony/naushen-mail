@@ -31,9 +31,8 @@ const RULE = '#e3e2e0'
 export type SignaturePreviewKind = 'minimal' | 'photo' | 'compact' | 'classic'
 
 export interface SignatureTemplate {
+  /** Its name and blurb are translated as `settings:signature.templates.<id>.{label,description}`. */
   id: string
-  label: string
-  description: string
   preview: SignaturePreviewKind
   body: string
 }
@@ -66,10 +65,10 @@ const CLASSIC = `
 `.trim()
 
 export const SIGNATURE_TEMPLATES: SignatureTemplate[] = [
-  { id: 'minimal', label: 'Minimal', description: 'Just your name and title — no photo.', preview: 'minimal', body: MINIMAL },
-  { id: 'photo-left', label: 'Photo left', description: 'A circular photo beside your name, title and email.', preview: 'photo', body: PHOTO_LEFT },
-  { id: 'compact', label: 'Compact', description: 'Name, title and phone on a single line.', preview: 'compact', body: COMPACT },
-  { id: 'classic', label: 'Classic block', description: 'Name, title, company, a divider, then contact info.', preview: 'classic', body: CLASSIC }
+  { id: 'minimal', preview: 'minimal', body: MINIMAL },
+  { id: 'photo-left', preview: 'photo', body: PHOTO_LEFT },
+  { id: 'compact', preview: 'compact', body: COMPACT },
+  { id: 'classic', preview: 'classic', body: CLASSIC }
 ]
 
 type TemplateAccount = Pick<Account, 'name' | 'email' | 'avatarUrl' | 'color'>

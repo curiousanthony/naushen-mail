@@ -1,25 +1,28 @@
 import { Keyboard } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
 import { Button, Group, SectionTitle } from '../ui'
 
+/** Key glyphs are not translated; the action names are `settings:shortcuts.names.<id>`. */
 const KEYS: [string, string[]][] = [
-  ['Command menu', ['⌘', 'K']], ['Compose', ['C']], ['Archive', ['E']], ['Reply', ['R']], ['Set reminder', ['H']],
-  ['Label', ['L']], ['Search', ['/']], ['Undo', ['Z']], ['Show all shortcuts', ['?']]
+  ['commandMenu', ['⌘', 'K']], ['compose', ['C']], ['archive', ['E']], ['reply', ['R']], ['reminder', ['H']],
+  ['label', ['L']], ['search', ['/']], ['undo', ['Z']], ['all', ['?']]
 ]
 
 export function ShortcutsSection(): JSX.Element {
+  const { t } = useTranslation('settings')
   const setOverlay = useApp((s) => s.setOverlay)
   return (
     <div>
-      <SectionTitle title="Keyboard shortcuts" description="Mailroom is built to be driven from the keyboard. Shortcuts are fixed for now." />
+      <SectionTitle title={t('shortcuts.title')} description={t('shortcuts.description')} />
       <Group>
         <div className="st-keys">
-          {KEYS.map(([name, keys]) => (
-            <div key={name} className="st-keys__row"><span>{name}</span><span className="st-keys__caps">{keys.map((k) => <kbd key={k}>{k}</kbd>)}</span></div>
+          {KEYS.map(([id, keys]) => (
+            <div key={id} className="st-keys__row"><span>{t(`shortcuts.names.${id}`)}</span><span className="st-keys__caps">{keys.map((k) => <kbd key={k}>{k}</kbd>)}</span></div>
           ))}
         </div>
         <div className="st-keys__foot">
-          <Button variant="primary" icon={<Keyboard size={14} />} onClick={() => setOverlay('shortcuts')}>View all shortcuts</Button>
+          <Button variant="primary" icon={<Keyboard size={14} />} onClick={() => setOverlay('shortcuts')}>{t('shortcuts.viewAll')}</Button>
         </div>
       </Group>
     </div>
