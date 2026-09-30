@@ -1,0 +1,24 @@
+{
+  "card": {
+    "about": "{{name}} के बारे में",
+    "you": "आप",
+    "compose": "लिखें",
+    "allMail": "सभी मेल",
+    "copy": "कॉपी करें",
+    "close": "बंद करें"
+  },
+  "lastSeen": {
+    "today": "आज",
+    "yesterday": "कल",
+    "weekday": "पिछले {{day}}"
+  },
+  "conversations": {
+    "none": "अभी कोई बातचीत नहीं",
+    "count_one": "{{count}} बातचीत",
+    "count_other": "{{count}} बातचीत",
+    "countWithLast_one": "{{count}} बातचीत · {{last}}",
+    "countWithLast_other": "{{count}} बातचीत · {{last}}"
+  },
+  "selectFirst": "यह देखने के लिए कि बातचीत किसके साथ है, कोई बातचीत चुनें",
+  "addressCopied": "पता कॉपी हो गया"
+}

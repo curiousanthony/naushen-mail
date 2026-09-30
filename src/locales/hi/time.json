@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "{{time}} पर वापस",
+    "tomorrow": "कल {{time}} पर वापस",
+    "weekday": "{{day}} {{time}} पर वापस",
+    "date": "{{date}} को वापस"
+  },
+  "in": {
+    "minutes": "{{count}} मि",
+    "hours": "{{count}} घं",
+    "days": "{{count}} दि"
+  },
+  "chip": {
+    "reschedule": "रिमाइंडर का समय बदलें",
+    "rescheduleAria": "{{when}}। रिमाइंडर का समय बदलें",
+    "cancel": "फ़ॉलो-अप रद्द करें",
+    "cancelAria": "{{in}} में फ़ॉलो-अप। फ़ॉलो-अप रद्द करें",
+    "cancelled": "फ़ॉलो-अप रद्द हो गया",
+    "followUpIn": "{{in}} में फ़ॉलो-अप",
+    "noReply": "अभी तक जवाब नहीं आया",
+    "noReplyTitle": "अभी तक जवाब नहीं आया। हटाने के लिए क्लिक करें",
+    "noReplyAria": "अभी तक जवाब नहीं आया। हटाएँ",
+    "dismissed": "हटा दिया गया"
+  },
+  "when": {
+    "placeholder": "समय लिखें… tomorrow 3pm",
+    "ariaLabel": "समय लिखें",
+    "past": "वह समय बीत चुका है",
+    "unknown": "आज़माएँ “tomorrow 3pm”, “fri”, “in 2 days” या “oct 12”"
+  }
+}

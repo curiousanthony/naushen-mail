@@ -1,0 +1,29 @@
+{
+  "move": {
+    "title": "बातचीत ले जाएँ",
+    "commandLabel": "यहाँ ले जाएँ",
+    "placeholder": "यहाँ ले जाएँ…",
+    "noMatch": "कोई मेल खाता फ़ोल्डर या लेबल नहीं",
+    "nowhere": "इन्हें ले जाने के लिए कोई जगह नहीं",
+    "navigate": "नेविगेट करें",
+    "move": "ले जाएँ",
+    "labelFallback": "लेबल",
+    "toLabel_one": "बातचीत “{{name}}” में ले जाई गई",
+    "toLabel_other": "{{count}} बातचीत “{{name}}” में ले जाई गईं",
+    "skippedNoLabel": "{{count}} बिना मेल खाते लेबल के जस की तस रहीं",
+    "skippedAlreadyThere": "{{count}} पहले से वहीं हैं",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} बातचीत",
+    "conversations_other": "{{count}} बातचीत"
+  },
+  "swipe": {
+    "restore": "वापस लाएँ",
+    "restored": "बातचीत वापस लाई गई",
+    "notSpam": "स्पैम नहीं",
+    "movedToInbox": "बातचीत इनबॉक्स में ले जाई गई",
+    "archive": "आर्काइव",
+    "archived": "बातचीत आर्काइव हो गई"
+  }
+}
