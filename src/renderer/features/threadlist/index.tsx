@@ -17,7 +17,6 @@ import { readShowListCount } from './listPrefs'
 import { runCommand } from '../commands/runner'
 import { useCommandUi } from '../commands/ui-store'
 import { isEditableElement } from '../commands/keys'
-import { VIEW_ICONS } from '../sidebar/viewIcons'
 import { activeCount } from '@shared/filters'
 import { useFilters } from './filterState'
 import {
