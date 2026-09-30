@@ -1,0 +1,96 @@
+{
+  "aria": {
+    "mailboxes": "मेलबॉक्स"
+  },
+  "newMessage": "नया संदेश",
+  "newView": "नया व्यू",
+  "editView": "व्यू बदलें",
+  "settings": "सेटिंग",
+  "options": "विकल्प",
+  "optionsFor": "{{name}} के विकल्प",
+  "optionsOf": "{{name}} के विकल्प",
+  "section": {
+    "views": "व्यू",
+    "mail": "मेल",
+    "labels": "लेबल"
+  },
+  "categories": {
+    "label": "श्रेणियाँ",
+    "tip": "Gmail के सोशल / प्रमोशन / अपडेट / फ़ोरम टैब के अनुसार समूहबद्ध मेल"
+  },
+  "accounts": {
+    "all": "सभी खाते",
+    "count_one": "{{count}} खाता",
+    "count_other": "{{count}} खाते",
+    "switch": "खाता बदलें",
+    "add": "खाता जोड़ें"
+  },
+  "search": {
+    "label": "खोजें",
+    "placeholder": "मेल खोजें",
+    "clear": "खोज साफ़ करें",
+    "people": "मेल खाते लोग",
+    "operators": "खोज ऑपरेटर"
+  },
+  "label": {
+    "bundled": "इनबॉक्स में बंडल किया गया",
+    "bundle": "इनबॉक्स में बंडल करें",
+    "stopBundling": "इनबॉक्स में बंडल करना बंद करें"
+  },
+  "summary": {
+    "allMail": "सभी मेल",
+    "unread": "अपठित",
+    "hasAttachment": "अटैचमेंट है",
+    "label": "लेबल",
+    "from": "प्रेषक {{value}}",
+    "subject": "विषय {{value}}",
+    "noFilters": "कोई फ़िल्टर नहीं"
+  },
+  "viewEditor": {
+    "intro": "व्यू सहेजे हुए फ़िल्टर हैं। ये आपके मौजूदा और आने वाले, दोनों तरह के मेल पर लागू होते हैं।",
+    "name": "व्यू का नाम",
+    "icon": "आइकन",
+    "colour": "रंग",
+    "noColour": "कोई रंग नहीं",
+    "filters": "फ़िल्टर",
+    "account": "खाता",
+    "mailbox": "मेलबॉक्स",
+    "allMail": "सभी मेल",
+    "anywhere": "कहीं भी",
+    "from": "प्रेषक",
+    "fromPlaceholder": "नाम या पता",
+    "fromContains": "प्रेषक में शामिल",
+    "subject": "विषय",
+    "subjectPlaceholder": "इसमें शामिल हो…",
+    "subjectContains": "विषय में शामिल",
+    "unreadOnly": "केवल अपठित",
+    "hasAttachment": "अटैचमेंट है",
+    "labels": "लेबल",
+    "delete": "हटाएँ",
+    "create": "व्यू बनाएँ",
+    "updated": "व्यू अपडेट हो गया",
+    "created": "व्यू “{{name}}” बन गया",
+    "deleted": "व्यू “{{name}}” हटा दिया गया"
+  },
+  "viewIcon": {
+    "inbox": "इनबॉक्स",
+    "star": "तारा",
+    "flag": "झंडा",
+    "tag": "टैग",
+    "users": "लोग",
+    "send": "भेजें",
+    "receipt": "रसीद",
+    "megaphone": "मेगाफ़ोन",
+    "pin": "पिन",
+    "message": "संदेश",
+    "newspaper": "अख़बार",
+    "flame": "लौ",
+    "briefcase": "ब्रीफ़केस",
+    "bell": "घंटी",
+    "archive": "आर्काइव",
+    "heart": "दिल",
+    "bookmark": "बुकमार्क",
+    "folder": "फ़ोल्डर",
+    "zap": "बिजली"
+  }
+}

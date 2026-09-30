@@ -1,0 +1,217 @@
+{
+  "window": {
+    "newMessage": "नया संदेश",
+    "composer": "संदेश लिखने की विंडो",
+    "minimise": "छोटा करें",
+    "maximise": "बड़ा करें",
+    "restore": "पहले जैसा करें",
+    "expand": "फैलाएँ",
+    "close": "बंद करें"
+  },
+  "fields": {
+    "from": "प्रेषक",
+    "to": "प्रति",
+    "cc": "Cc",
+    "bcc": "Bcc",
+    "subject": "विषय",
+    "noAccount": "कोई खाता नहीं",
+    "sendFrom": "यहाँ से भेजें",
+    "signature": "हस्ताक्षर"
+  },
+  "recipients": {
+    "remove": "{{email}} हटाएँ",
+    "frequent": "अक्सर"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> शायद <b>{{suggested}}</b> की गलत वर्तनी है",
+    "useDomain": "{{domain}} इस्तेमाल करें",
+    "keepAsTyped": "जैसा लिखा है वैसा रखें",
+    "mailingList": "यह <b>मेलिंग लिस्ट</b> लगती है; आपका जवाब उसके सभी सदस्यों को जाएगा।",
+    "replyingTo_one": "<b>{{count}} व्यक्ति</b> को जवाब दे रहे हैं।",
+    "replyingTo_other": "<b>{{count}} लोगों</b> को जवाब दे रहे हैं।",
+    "replySenderOnly": "केवल प्रेषक को जवाब दें",
+    "dismiss": "हटाएँ"
+  },
+  "quote": {
+    "show": "उद्धृत टेक्स्ट दिखाएँ"
+  },
+  "attachments": {
+    "remove": "{{name}} हटाएँ",
+    "totalOver": "{{size}} — 25 MB की सीमा से ज़्यादा",
+    "drop": "अटैच करने के लिए फ़ाइलें यहाँ छोड़ें",
+    "bytes_one": "{{count}} बाइट",
+    "bytes_other": "{{count}} बाइट",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "फ़ाइल अटैच करें",
+    "addSubject": "विषय जोड़ें",
+    "sendAnyway": "फिर भी भेजें"
+  },
+  "validation": {
+    "noRecipient": "कम से कम एक प्राप्तकर्ता जोड़ें।",
+    "invalidAddress_one": "{{email}} मान्य ईमेल पता नहीं है।",
+    "invalidAddress_other": "{{count}} प्राप्तकर्ताओं के ईमेल पते मान्य नहीं हैं।",
+    "noSubject": "इस संदेश में कोई विषय नहीं है।",
+    "empty": "यह संदेश खाली है।",
+    "missingAttachment": "आपने अटैचमेंट का ज़िक्र किया है, लेकिन कुछ अटैच नहीं है।"
+  },
+  "nudge": {
+    "empty": "यह संदेश खाली है।",
+    "typo": "{{domain}} शायद गलत लिखा गया है।",
+    "attachment": "आपने “{{word}}” लिखा है, लेकिन कुछ अटैच नहीं है।",
+    "noSubject": "कोई विषय नहीं।"
+  },
+  "toolbar": {
+    "snippets": "स्निपेट",
+    "attach": "फ़ाइलें अटैच करें",
+    "discard": "ड्राफ़्ट हटाएँ",
+    "help": "फ़ॉर्मैटिंग सहायता",
+    "draftSaved": "ड्राफ़्ट सहेजा गया",
+    "send": "भेजें"
+  },
+  "schedule": {
+    "title": "भेजने का समय तय करें",
+    "timePlaceholder": "समय लिखें… tomorrow 9am",
+    "timeLabel": "भेजने का समय लिखें",
+    "confirm": "शेड्यूल करें",
+    "pickFuture": "भविष्य का कोई समय चुनें",
+    "followUp_one": "{{count}} दिन में जवाब न आए तो याद दिलाएँ",
+    "followUp_other": "{{count}} दिन में जवाब न आए तो याद दिलाएँ",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "आज सुबह",
+    "thisAfternoon": "आज दोपहर",
+    "tomorrowMorning": "कल सुबह",
+    "tomorrowAfternoon": "कल दोपहर",
+    "nextWeek": "अगले सप्ताह",
+    "pickDateTime": "तारीख़ और समय चुनें",
+    "scheduledFor": "{{when}} के लिए शेड्यूल किया गया"
+  },
+  "toast": {
+    "discarded": "ड्राफ़्ट हटा दिया गया",
+    "archived": "बातचीत आर्काइव हो गई",
+    "sending": "भेजा जा रहा है…",
+    "sent": "भेज दिया गया",
+    "sentFollowUp_one": "भेज दिया गया · जवाब न आने पर {{count}} दिन में फ़ॉलो-अप",
+    "sentFollowUp_other": "भेज दिया गया · जवाब न आने पर {{count}} दिन में फ़ॉलो-अप",
+    "scheduledFollowUp_one": "{{scheduled}} · {{count}} दिन में फ़ॉलो-अप",
+    "scheduledFollowUp_other": "{{scheduled}} · {{count}} दिन में फ़ॉलो-अप",
+    "notSent": "भेजा नहीं गया: {{reason}}",
+    "sendFailed": "संदेश नहीं भेजा जा सका",
+    "cancel": "रद्द करें",
+    "undo": "पूर्ववत करें"
+  },
+  "snippets": {
+    "none": "अभी कोई स्निपेट नहीं",
+    "newFromDraft": "+ इस ड्राफ़्ट से नया स्निपेट",
+    "nameLabel": "स्निपेट का नाम",
+    "namePlaceholder": "वेबसाइट लिंक",
+    "untitled": "बिना शीर्षक का स्निपेट"
+  },
+  "help": {
+    "typing": "टाइपिंग",
+    "smartTypography": "स्मार्ट कोट्स, डैश और एलिप्सिस",
+    "formatting": "फ़ॉर्मैटिंग",
+    "insertBlock": "ब्लॉक जोड़ें",
+    "emoji": "इमोजी",
+    "textStyles": "बोल्ड, इटैलिक, रेखांकित",
+    "strikethrough": "स्ट्राइकथ्रू",
+    "code": "कोड",
+    "link": "लिंक",
+    "snippet": "स्निपेट",
+    "headings": "शीर्षक",
+    "bulletKeys": "- या *",
+    "bulletList": "बुलेट सूची",
+    "numberedList": "क्रमांकित सूची",
+    "todo": "टू-डू",
+    "quote": "उद्धरण",
+    "codeBlock": "कोड ब्लॉक",
+    "divider": "विभाजक",
+    "send": "भेजें",
+    "sendArchive": "भेजें और आर्काइव करें",
+    "saveClose": "ड्राफ़्ट सहेजें और बंद करें"
+  },
+  "editor": {
+    "placeholder": "लिखें, या ब्लॉक के लिए '/' दबाएँ",
+    "placeholderShort": "लिखें, या '/' दबाएँ",
+    "toggle": "फैलाएँ/समेटें",
+    "heading": "शीर्षक {{level}}"
+  },
+  "slash": {
+    "noMatch": "कोई ब्लॉक मेल नहीं खाता",
+    "insertSnippet": "स्निपेट जोड़ें",
+    "colour": "रंग",
+    "background": "पृष्ठभूमि",
+    "groups": {
+      "basic": "बुनियादी ब्लॉक",
+      "media": "मीडिया",
+      "advanced": "एडवांस्ड",
+      "snippets": "स्निपेट"
+    },
+    "items": {
+      "text": { "title": "टेक्स्ट", "description": "सादे टेक्स्ट में लिखना शुरू करें।" },
+      "h1": { "title": "शीर्षक 1", "description": "बड़ा अनुभाग शीर्षक।" },
+      "h2": { "title": "शीर्षक 2", "description": "मध्यम अनुभाग शीर्षक।" },
+      "h3": { "title": "शीर्षक 3", "description": "छोटा अनुभाग शीर्षक।" },
+      "bulletList": { "title": "बुलेट सूची", "description": "सरल बुलेट सूची बनाएँ।" },
+      "orderedList": { "title": "क्रमांकित सूची", "description": "क्रमांक वाली सूची बनाएँ।" },
+      "taskList": { "title": "टू-डू सूची", "description": "चेकलिस्ट से कार्यों पर नज़र रखें।" },
+      "toggle": { "title": "टॉगल सूची", "description": "ब्योरा समेटने योग्य हिस्से में छिपाएँ।" },
+      "quote": { "title": "उद्धरण", "description": "कोई उद्धरण दर्ज करें।" },
+      "divider": { "title": "विभाजक", "description": "ब्लॉकों को अलग-अलग दिखाएँ।" },
+      "callout": { "title": "कॉलआउट", "description": "लिखे को अलग से उभारें।" },
+      "code": { "title": "कोड", "description": "कोड का अंश दर्ज करें।" },
+      "table": { "title": "तालिका", "description": "सरल तालिका जोड़ें।" },
+      "image": { "title": "छवि", "description": "तस्वीर अपलोड करें या यहाँ छोड़ें।" },
+      "link": { "title": "लिंक", "description": "वेब के किसी पेज का लिंक दें।" },
+      "emoji": { "title": "इमोजी", "description": "इमोजी खोजें और जोड़ें।" },
+      "textColor": { "title": "टेक्स्ट का रंग", "description": "चुने हुए टेक्स्ट को रंग दें।" },
+      "backgroundColor": { "title": "पृष्ठभूमि का रंग", "description": "चुने हुए टेक्स्ट को हाइलाइट करें।" }
+    },
+    "colors": {
+      "default": "डिफ़ॉल्ट",
+      "gray": "स्लेटी",
+      "brown": "भूरा",
+      "orange": "नारंगी",
+      "yellow": "पीला",
+      "green": "हरा",
+      "blue": "नीला",
+      "purple": "बैंगनी",
+      "pink": "गुलाबी",
+      "red": "लाल"
+    }
+  },
+  "selection": {
+    "turnInto": "बदलें",
+    "bold": "बोल्ड",
+    "italic": "इटैलिक",
+    "underline": "रेखांकित",
+    "strikethrough": "स्ट्राइकथ्रू",
+    "code": "कोड",
+    "link": "लिंक",
+    "colour": "रंग",
+    "text": "टेक्स्ट",
+    "background": "पृष्ठभूमि",
+    "pasteLink": "लिंक पेस्ट करें…",
+    "apply": "लागू करें",
+    "openLink": "लिंक खोलें",
+    "removeLink": "लिंक हटाएँ"
+  },
+  "link": {
+    "dialog": "लिंक बदलें",
+    "placeholder": "लिंक पेस्ट करें या लिखें",
+    "urlLabel": "लिंक URL",
+    "apply": "लागू करें",
+    "applyLink": "लिंक लागू करें",
+    "open": "लिंक खोलें",
+    "remove": "लिंक हटाएँ"
+  },
+  "image": {
+    "alignLeft": "बाएँ संरेखित करें",
+    "alignCenter": "बीच में संरेखित करें",
+    "alignRight": "दाएँ संरेखित करें"
+  },
+  "callout": {
+    "changeIcon": "कॉलआउट आइकन बदलें"
+  }
+}

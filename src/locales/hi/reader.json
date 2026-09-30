@@ -1,0 +1,139 @@
+{
+  "thread": {
+    "fallbackTitle": "बातचीत",
+    "loading": "बातचीत लोड हो रही है",
+    "unavailableTitle": "यह बातचीत अब उपलब्ध नहीं है।",
+    "unavailableHint": "हो सकता है इसे हटा दिया गया हो या कहीं और ले जाया गया हो।",
+    "resize": "बातचीत पैनल का आकार बदलें"
+  },
+  "header": {
+    "collapse": "समेटें",
+    "collapseThread": "बातचीत समेटें",
+    "archive": "आर्काइव",
+    "archived": "बातचीत आर्काइव हो गई",
+    "markUnread": "अपठित चिह्नित करें",
+    "markedUnread": "अपठित चिह्नित किया गया",
+    "setReminder": "रिमाइंडर सेट करें",
+    "star": "स्टार लगाएँ",
+    "unstar": "स्टार हटाएँ",
+    "label": "लेबल",
+    "unsubscribe": "सदस्यता छोड़ें",
+    "unsubscribeWeb": "आपके ब्राउज़र में खुलेगा",
+    "unsubscribeMail": "एक ईमेल भेजेगा",
+    "reportSpam": "स्पैम रिपोर्ट करें",
+    "reportedSpam": "स्पैम के रूप में रिपोर्ट किया गया",
+    "trash": "ट्रैश में ले जाएँ",
+    "trashed": "ट्रैश में ले जाया गया",
+    "noSubject": "(कोई विषय नहीं)",
+    "messageCount_one": "{{count}} संदेश",
+    "messageCount_other": "{{count}} संदेश"
+  },
+  "replyBar": {
+    "reply": "जवाब दें",
+    "replyAll": "सभी को जवाब दें",
+    "forward": "फ़ॉरवर्ड करें"
+  },
+  "message": {
+    "unread": "अपठित",
+    "expand": "संदेश फैलाएँ",
+    "showDetails": "ब्योरा दिखाएँ",
+    "hideDetails": "ब्योरा छिपाएँ",
+    "showRecipientDetails": "प्राप्तकर्ता का ब्योरा दिखाएँ",
+    "hideRecipientDetails": "प्राप्तकर्ता का ब्योरा छिपाएँ",
+    "toLine": "प्रति {{recipients}}",
+    "toMe": "मुझे",
+    "attachmentCount_one": "{{count}} अटैचमेंट",
+    "attachmentCount_other": "{{count}} अटैचमेंट",
+    "reply": "जवाब दें",
+    "replyAll": "सभी को जवाब दें",
+    "forward": "फ़ॉरवर्ड करें",
+    "copyField": "{{label}} कॉपी करें",
+    "copyAddress_one": "{{label}} का पता कॉपी करें",
+    "copyAddress_other": "{{label}} के पते कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "detail": {
+      "from": "प्रेषक",
+      "replyTo": "जवाब का पता",
+      "to": "प्रति",
+      "cc": "Cc",
+      "bcc": "Bcc",
+      "date": "तारीख़"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_one": "बाहरी छवि ब्लॉक की गई",
+    "remoteImageBlocked_other": "{{count}} बाहरी छवियाँ ब्लॉक की गईं",
+    "loadImages": "छवियाँ लोड करें",
+    "alwaysLoad": "हमेशा लोड करें",
+    "empty": "इस संदेश में कोई सामग्री नहीं है।",
+    "frameTitle": "{{sender}} का संदेश",
+    "showAsDesigned": "मूल डिज़ाइन में दिखाएँ",
+    "adaptToDark": "डार्क मोड के अनुसार ढालें",
+    "showOriginalColours": "मूल रंग दिखाएँ",
+    "adaptColours": "रंगों को डार्क मोड के अनुसार ढालें",
+    "original": "मूल",
+    "adapt": "ढालें",
+    "showQuote": "उद्धृत टेक्स्ट दिखाएँ",
+    "hideQuote": "उद्धृत टेक्स्ट छिपाएँ"
+  },
+  "attachments": {
+    "preview": "{{name}} का पूर्वावलोकन",
+    "download": "{{name}} डाउनलोड करें — {{size}}"
+  },
+  "preview": {
+    "loading": "पूर्वावलोकन लोड हो रहा है…",
+    "failed": "इस फ़ाइल का पूर्वावलोकन लोड नहीं हो सका।",
+    "unavailable": "इस प्रकार की फ़ाइल का पूर्वावलोकन उपलब्ध नहीं है।",
+    "download": "डाउनलोड",
+    "close": "बंद करें",
+    "closePreview": "पूर्वावलोकन बंद करें"
+  },
+  "invite": {
+    "loading": "निमंत्रण पढ़ा जा रहा है…",
+    "sending": "भेजा जा रहा है…",
+    "yes": "हाँ",
+    "maybe": "शायद",
+    "no": "नहीं",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}, {{name}}।",
+    "sent": {
+      "accepted": "जवाब भेज दिया गया — आपको “हाँ” चिह्नित किया गया है",
+      "tentative": "जवाब भेज दिया गया — आपको “शायद” चिह्नित किया गया है",
+      "declined": "जवाब भेज दिया गया — आपको “नहीं” चिह्नित किया गया है"
+    },
+    "failed": "आपका जवाब नहीं भेजा जा सका। फिर कोशिश करें।"
+  },
+  "code": {
+    "copyTooltip": "सत्यापन कोड कॉपी करें",
+    "copyAria": "सत्यापन कोड {{code}} कॉपी करें",
+    "copy": "<b>{{code}}</b> कॉपी करें",
+    "copied": "{{code}} कॉपी हो गया",
+    "copyFailed": "कोड कॉपी नहीं हो सका",
+    "none": "यहाँ कोई हाल का सत्यापन कोड नहीं है"
+  },
+  "shield": {
+    "blocked_one": "{{count}} ट्रैकर ब्लॉक किया गया",
+    "blocked_other": "{{count}} ट्रैकर ब्लॉक किए गए",
+    "trackingPixel": "ट्रैकिंग पिक्सेल",
+    "note": "ट्रैकर बताते हैं कि आपने यह संदेश खोला। छवियाँ लोड करने पर भी वे ब्लॉक ही रहते हैं।"
+  },
+  "link": {
+    "mailTo": "ईमेल भेजें",
+    "call": "कॉल करें",
+    "trackingStripped_one": "खोलते समय {{count}} ट्रैकिंग पैरामीटर हटाया गया",
+    "trackingStripped_other": "खोलते समय {{count}} ट्रैकिंग पैरामीटर हटाए गए",
+    "warningLabel": "इस लिंक को जाँच लें",
+    "warning": "यह लिंक <b>{{shown}}</b> नहीं, बल्कि <b>{{actual}}</b> पर जाता है।",
+    "openAnyway": "फिर भी खोलें",
+    "cancel": "रद्द करें",
+    "writeTo": "इस पते पर लिखें",
+    "open": "लिंक खोलें",
+    "copyAddress": "पता कॉपी करें",
+    "copyLink": "लिंक कॉपी करें",
+    "copyLinkClean": "लिंक कॉपी करें (बिना ट्रैकिंग)",
+    "copyFailed": "लिंक कॉपी नहीं हो सका",
+    "copiedClean": "लिंक ट्रैकिंग पैरामीटर हटाकर कॉपी हो गया",
+    "addressCopied": "पता कॉपी हो गया",
+    "copied": "लिंक कॉपी हो गया"
+  }
+}

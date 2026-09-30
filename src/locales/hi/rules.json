@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "archived_one": "{{count}} आर्काइव किया गया",
+    "archived_other": "{{count}} आर्काइव किए गए",
+    "trashed_one": "{{count}} ट्रैश में ले जाया गया",
+    "trashed_other": "{{count}} ट्रैश में ले जाए गए",
+    "rescued_one": "{{count}} स्पैम से बचाया गया",
+    "rescued_other": "{{count}} स्पैम से बचाए गए",
+    "markedRead_one": "{{count}} पढ़ा हुआ चिह्नित किया गया",
+    "markedRead_other": "{{count}} पढ़े हुए चिह्नित किए गए",
+    "starred_one": "{{count}} पर स्टार लगाया गया",
+    "starred_other": "{{count}} पर स्टार लगाया गया",
+    "labelled_one": "{{count}} पर “{{name}}” लेबल लगाया गया",
+    "labelled_other": "{{count}} पर “{{name}}” लेबल लगाया गया",
+    "labelFallback": "लेबल"
+  },
+  "describe": {
+    "from": "प्रेषक {{value}}",
+    "fromDomain": "प्रेषक @{{value}}",
+    "subject": "विषय में “{{value}}” शामिल है",
+    "noActions": "कोई कार्रवाई नहीं",
+    "actions": {
+      "archive": "इनबॉक्स छोड़ें",
+      "markRead": "पढ़ा हुआ चिह्नित करें",
+      "star": "स्टार लगाएँ",
+      "trash": "ट्रैश में ले जाएँ",
+      "neverSpam": "कभी स्पैम में न भेजें",
+      "label": "लेबल “{{name}}” लगाएँ"
+    }
+  },
+  "form": {
+    "whenMailIs": "जब मेल हो",
+    "matchOn": "इस पर मिलान करें",
+    "matchValue": "मिलान का मान",
+    "field": {
+      "from": { "label": "प्रेषक", "placeholder": "name@example.com", "hint": "बिल्कुल यही प्रेषक।" },
+      "fromDomain": { "label": "डोमेन", "placeholder": "example.com", "hint": "इस डोमेन का कोई भी व्यक्ति, उसके सबडोमेन समेत।" },
+      "subject": { "label": "विषय", "placeholder": "विषय में शब्द", "hint": "जिस भी विषय में यह टेक्स्ट हो।" }
+    },
+    "moreConditions_one": "साथ में {{count}} और शर्त।",
+    "moreConditions_other": "साथ में {{count}} और शर्तें।",
+    "then": "तब",
+    "actionsAria": "कार्रवाइयाँ",
+    "actions": {
+      "archive": "इनबॉक्स छोड़ें",
+      "markRead": "पढ़ा हुआ चिह्नित करें",
+      "star": "स्टार लगाएँ",
+      "trash": "ट्रैश में ले जाएँ",
+      "neverSpam": "कभी स्पैम में न भेजें"
+    },
+    "applyLabel": "लेबल लगाएँ",
+    "none": "कोई नहीं",
+    "appliesTo": "लागू होगा",
+    "allAccounts": "सभी खाते"
+  },
+  "section": {
+    "title": "नियम",
+    "description": "ऐसे फ़िल्टर जो Naushen Mail के भीतर नए मेल पर चलते हैं। ये केवल इसी Mac पर रहते हैं: Gmail में कुछ नहीं बनता, और ऐप बंद होने पर ये नहीं चलते।",
+    "description_outlook": "ऐसे फ़िल्टर जो Naushen Mail के भीतर नए मेल पर चलते हैं। ये केवल इसी Mac पर रहते हैं: Gmail या Outlook में कुछ नहीं बनता, और ऐप बंद होने पर ये नहीं चलते।",
+    "empty": {
+      "title": "अभी कोई नियम नहीं",
+      "body": "किसी बातचीत को खोलकर <k1>⌘</k1><k2>⇧</k2><k3>R</k3> दबाएँ, ताकि उस प्रेषक का मेल अपने-आप छँट जाए।"
+    },
+    "removedAccount": "हटाया गया खाता",
+    "allAccounts": "सभी खाते",
+    "ruleAria": "नियम: {{condition}}",
+    "and": " और ",
+    "moveUp": "ऊपर ले जाएँ",
+    "moveDown": "नीचे ले जाएँ",
+    "edit": "नियम बदलें",
+    "delete": "नियम हटाएँ",
+    "deleteConfirm": "यह नियम हटाएँ? पहले से छँटा मेल जहाँ है वहीं रहेगा।",
+    "deleteAction": "हटाएँ",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "order": "नियम ऊपर से नीचे चलते हैं; मेल खाने वाला हर नियम लागू होता है।"
+  },
+  "bundles": {
+    "title": "इनबॉक्स बंडल",
+    "collapse": {
+      "label": "कम काम के मेल समेटें",
+      "desc": "बंडल किया गया लेबल या प्रेषक इनबॉक्स में एक ही पंक्ति बन जाता है (जैसे “न्यूज़लेटर · 7 नए”)। स्टार वाला मेल कभी बंडल नहीं होता। जब तक आप कोई जोड़ें नहीं, कुछ बंडल नहीं होता।"
+    },
+    "kindLabel": "लेबल",
+    "kindSender": "प्रेषक",
+    "stop": "बंडल करना बंद करें",
+    "bundleLabel": "लेबल बंडल करें",
+    "bundleLabelDesc": "या साइडबार में किसी लेबल पर राइट-क्लिक करें।",
+    "chooseLabel": "लेबल चुनें…"
+  },
+  "host": {
+    "title": "नियम बनाएँ",
+    "from": "“{{subject}}” से",
+    "noSubject": "(कोई विषय नहीं)",
+    "cancel": "रद्द करें",
+    "create": "नियम बनाएँ",
+    "createApply_one": "बनाएँ और {{count}} पर लागू करें",
+    "createApply_other": "बनाएँ और {{count}} पर लागू करें",
+    "undo": "पूर्ववत करें",
+    "note": "केवल Naushen Mail में: Gmail में कुछ नहीं बनता।",
+    "note_outlook": "केवल Naushen Mail में: Gmail या Outlook में कुछ नहीं बनता।",
+    "match": {
+      "incomplete": "एक मान और एक कार्रवाई जोड़ें",
+      "checking": "मौजूदा मेल जाँचा जा रहा है…",
+      "none": "कोई मौजूदा बातचीत मेल नहीं खाती",
+      "some_one": "{{count}} मौजूदा बातचीत से मेल खाता है",
+      "some_other": "{{count}} मौजूदा बातचीत से मेल खाता है"
+    },
+    "toast": {
+      "createdApplied": "नियम बन गया · {{summary}}",
+      "existedApplied": "नियम पहले से मौजूद था · {{summary}}",
+      "createdNothing": "नियम बन गया · कुछ बदलने की ज़रूरत नहीं थी",
+      "existedNothing": "नियम पहले से मौजूद था · कुछ बदलने की ज़रूरत नहीं थी",
+      "alreadyHave": "यह नियम आपके पास पहले से है",
+      "created": "नियम बन गया। यह इस Mac पर नए मेल को फ़िल्टर करेगा।",
+      "viewRules": "नियम देखें",
+      "failed": "नियम नहीं बन सका",
+      "failedWith": "नियम नहीं बन सका: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "इस बातचीत में कोई आया हुआ संदेश नहीं है जिससे नियम बनाया जा सके।",
+    "undo": "पूर्ववत करें",
+    "ran": "नियम: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "{{name}} के {{count}} आर्काइव किए गए",
+    "archivedFrom_other": "{{name}} के {{count}} आर्काइव किए गए",
+    "nothingFrom": "इनबॉक्स में {{name}} का कुछ नहीं है",
+    "blocked": "{{name}} ब्लॉक किया गया। आगे का मेल ट्रैश में जाएगा।",
+    "blockedMoved_one": "{{name}} ब्लॉक किया गया · {{count}} ट्रैश में ले जाया गया। आगे का मेल ट्रैश में जाएगा।",
+    "blockedMoved_other": "{{name}} ब्लॉक किया गया · {{count}} ट्रैश में ले जाए गए। आगे का मेल ट्रैश में जाएगा।",
+    "archivedFromSender_one": "इस प्रेषक के {{count}} आर्काइव किए गए",
+    "archivedFromSender_other": "इस प्रेषक के {{count}} आर्काइव किए गए",
+    "bundling": "इनबॉक्स में {{name}} को बंडल किया जा रहा है",
+    "stoppedBundling": "{{name}} को बंडल करना बंद किया गया"
+  }
+}

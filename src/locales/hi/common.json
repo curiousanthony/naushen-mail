@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "आज",
+    "yesterday": "कल",
+    "previous7": "पिछले 7 दिन",
+    "previous30": "पिछले 30 दिन"
+  },
+  "actions": {
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "retry": "फिर कोशिश करें",
+    "undo": "पूर्ववत करें"
+  },
+  "toast": {
+    "sendFailed": "संदेश नहीं भेजा जा सका।",
+    "sendFailedWithReason": "भेजा नहीं जा सका: {{error}}"
+  },
+  "noSubject": "(कोई विषय नहीं)",
+  "role": {
+    "inbox": "इनबॉक्स",
+    "sent": "भेजे गए",
+    "drafts": "ड्राफ़्ट",
+    "trash": "ट्रैश",
+    "spam": "स्पैम",
+    "archive": "आर्काइव",
+    "starred": "स्टार वाले",
+    "important": "महत्वपूर्ण",
+    "all": "सभी मेल",
+    "reminders": "रिमाइंडर"
+  },
+  "category": {
+    "social": "सोशल",
+    "promotions": "प्रमोशन",
+    "updates": "अपडेट",
+    "forums": "फ़ोरम"
+  },
+  "color": {
+    "gray": "स्लेटी",
+    "brown": "भूरा",
+    "orange": "नारंगी",
+    "yellow": "पीला",
+    "green": "हरा",
+    "blue": "नीला",
+    "purple": "बैंगनी",
+    "pink": "गुलाबी",
+    "red": "लाल"
+  },
+  "searchOperators": {
+    "from": "भेजने वाले का नाम या पता",
+    "to": "पाने वाले का नाम या पता",
+    "subject": "विषय में शब्द",
+    "label": "लेबल का नाम",
+    "hasAttachment": "फ़ाइल संलग्न है",
+    "isUnread": "केवल अपठित",
+    "isStarred": "केवल स्टार वाले",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

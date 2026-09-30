@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "settings": "सेटिंग…",
+    "file": "फ़ाइल",
+    "newMessage": "नया संदेश",
+    "addAccount": "खाता जोड़ें…",
+    "edit": "संपादन",
+    "view": "दृश्य",
+    "commandMenu": "कमांड मेन्यू",
+    "search": "खोजें",
+    "toggleSidebar": "साइडबार दिखाएँ/छिपाएँ",
+    "reloadWindow": "विंडो रीलोड करें",
+    "mailbox": "मेलबॉक्स",
+    "goToInbox": "इनबॉक्स पर जाएँ",
+    "checkMail": "अभी मेल जाँचें"
+  },
+  "notify": {
+    "archive": "आर्काइव",
+    "markRead": "पढ़ा हुआ चिह्नित करें",
+    "dismiss": "हटाएँ",
+    "noSubject": "(कोई विषय नहीं)",
+    "burstTitle_one": "{{count}} नया संदेश",
+    "burstTitle_other": "{{count}} नए संदेश",
+    "burstBody": "{{names}} और {{others}} अन्य"
+  },
+  "oauth": {
+    "connectedTitle": "आप कनेक्ट हो गए हैं",
+    "connectedBody": "आप यह टैब बंद करके Naushen Mail पर लौट सकते हैं।",
+    "failedTitle": "कुछ गड़बड़ हो गई",
+    "invalidResponse": "अमान्य प्रतिक्रिया।",
+    "authFailed": "प्रमाणीकरण विफल रहा: {{error}}",
+    "authInvalid": "अमान्य प्रमाणीकरण प्रतिक्रिया",
+    "timedOut": "साइन-इन का समय समाप्त हो गया"
+  },
+  "errors": {
+    "notSignedIn": "साइन इन नहीं है",
+    "sessionExpired": "आपका सत्र समाप्त हो गया। फिर से साइन इन करें।",
+    "threadNotFound": "बातचीत नहीं मिली",
+    "accountNotConnected": "खाता कनेक्ट नहीं है",
+    "connectorUnavailable": "इस बिल्ड में {{provider}} कनेक्टर उपलब्ध नहीं है।",
+    "providerUnavailable": "प्रदाता उपलब्ध नहीं है",
+    "actionFailed": "कार्रवाई विफल रही: {{message}}",
+    "attachmentNotFound": "अटैचमेंट नहीं मिला",
+    "attachmentEmpty": "अटैचमेंट में कोई सामग्री नहीं है"
+  },
+  "gmail": {
+    "missingClient": "इस बिल्ड में Google साइन-इन कॉन्फ़िगर नहीं है। सेटिंग → खाते → OAuth सेटअप में अपना Google OAuth क्लाइंट ID और सीक्रेट जोड़ें (docs/google-setup.md देखें)।",
+    "noRefreshToken": "Google ने रीफ़्रेश टोकन जारी नहीं किया। myaccount.google.com/permissions पर जाकर Naushen Mail हटाएँ और फिर कोशिश करें।",
+    "missingScope": "Naushen Mail को आपका Gmail पढ़ने और प्रबंधित करने की अनुमति चाहिए। फिर से कनेक्ट करें और सभी अनुमतियाँ चुनी रहने दें।",
+    "profileFailed": "आपकी Google प्रोफ़ाइल नहीं पढ़ी जा सकी (HTTP {{status}})।",
+    "noEmail": "Google ने इस खाते का ईमेल पता नहीं लौटाया।",
+    "authRejected": "Google ने सहेजे गए क्रेडेंशियल अस्वीकार कर दिए। फिर से साइन इन करें।",
+    "network": "Gmail से संपर्क करते समय नेटवर्क त्रुटि: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "पहले अपना Microsoft ऐप्लिकेशन (क्लाइंट) ID जोड़ें: सेटिंग → खाते → OAuth सेटअप।",
+    "noEmail": "Microsoft ने इस खाते का ईमेल पता नहीं लौटाया।",
+    "noInbox": "इस मेलबॉक्स का इनबॉक्स फ़ोल्डर नहीं मिला।",
+    "deltaIncomplete": "Outlook डेल्टा सिंक पूरा नहीं हुआ",
+    "categoryOnly": "केवल Outlook श्रेणियाँ संपादित की जा सकती हैं",
+    "categoryGone": "श्रेणी \"{{name}}\" अब मौजूद नहीं है",
+    "attachmentUpload": "अटैचमेंट अपलोड विफल रहा ({{status}})"
+  }
+}
