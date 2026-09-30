@@ -33,7 +33,15 @@ export interface GmailAdapterOptions {
 
 const HISTORY_TYPES = ['messageAdded', 'messageDeleted', 'labelAdded', 'labelRemoved']
 const EXTRA_MAILBOXES = ['TRASH', 'SPAM'] as const
-const EXTRA_PER_MAILBOX = 25
+const EXTRA_PER_MAILBOX = 100
+
+/**
+ * Category backfill plan, one entry per step: the newest inbox mail of each Gmail tab, unread first
+ * (a small slice so unread badges are right quickly), then the wider recent slice. The main crawl is
+ * recency-ordered across all mail, so without this older category mail never reaches the store.
+ */
+export const CATEGORY_STEPS: { label: string; unread: boolean; limit: number }[] = ['CATEGORY_PROMOTIONS', 'CATEGORY_SOCIAL', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
+  .flatMap((label) => [{ label, unread: true, limit: 100 }, { label, unread: false, limit: 300 }])
 
 export class GmailAdapter implements ProviderAdapter {
   readonly kind = 'gmail' as const
@@ -158,7 +166,11 @@ export class GmailAdapter implements ProviderAdapter {
   async sync(cursor: string | null): Promise<SyncPage> {
     const c = decodeCursor(cursor)
     if (!c) return this.firstBackfillPage(cursor !== null)
-    return c.phase === 'backfill' ? this.backfillPage(c, false) : this.incremental(c)
+    if (c.phase === 'backfill') return this.backfillPage(c, false)
+    if (c.phase === 'categories') return this.categoriesPage(c)
+    // One-time migration: cursors written before the category backfill existed run it once, keeping all data.
+    if (!c.cat) return this.categoriesPage({ v: 1, phase: 'categories', historyId: c.historyId, step: 0, fetched: 0, pending: c.pending })
+    return this.incremental(c)
   }
 
   private async firstBackfillPage(reset: boolean): Promise<SyncPage> {
@@ -196,9 +208,29 @@ export class GmailAdapter implements ProviderAdapter {
     }
     const { threads } = await this.hydrate([...idSet])
     return {
-      threads, deletedRemoteThreadIds: [], hasMore: false, reset,
-      cursor: encodeCursor({ v: 1, phase: 'incremental', historyId: c.historyId })
+      threads, deletedRemoteThreadIds: [], hasMore: true, reset,
+      cursor: encodeCursor({ v: 1, phase: 'categories', historyId: c.historyId, step: 0, fetched: 0 })
     }
+  }
+
+  /** One page of the per-category backfill (see CATEGORY_STEPS). */
+  private async categoriesPage(c: Extract<GmailCursor, { phase: 'categories' }>): Promise<SyncPage> {
+    const plan = CATEGORY_STEPS[c.step]
+    if (!plan) {
+      return { threads: [], deletedRemoteThreadIds: [], hasMore: false, cursor: encodeCursor({ v: 1, phase: 'incremental', historyId: c.historyId, pending: c.pending, cat: true }) }
+    }
+    const res = await this.http.get<{ threads?: { id: string }[]; nextPageToken?: string }>('/threads', {
+      labelIds: [plan.label, 'INBOX'], ...(plan.unread ? { q: 'is:unread' } : {}),
+      maxResults: Math.max(1, Math.min(100, plan.limit - c.fetched)), pageToken: c.pageToken, fields: 'threads(id),nextPageToken'
+    })
+    const ids = (res.threads ?? []).map((t) => t.id)
+    const { threads } = await this.hydrate(ids)
+    const fetched = c.fetched + ids.length
+    const more = !!res.nextPageToken && fetched < plan.limit && ids.length > 0
+    const next: GmailCursor = more
+      ? { ...c, pageToken: res.nextPageToken, fetched }
+      : { v: 1, phase: 'categories', historyId: c.historyId, step: c.step + 1, fetched: 0, pending: c.pending }
+    return { threads, deletedRemoteThreadIds: [], cursor: encodeCursor(next), hasMore: true }
   }
 
   private async incremental(c: Extract<GmailCursor, { phase: 'incremental' }>): Promise<SyncPage> {
@@ -230,7 +262,7 @@ export class GmailAdapter implements ProviderAdapter {
     const batch = pending.slice(0, this.o.hydrateBatch)
     const rest = pending.slice(this.o.hydrateBatch)
     const { threads, missing } = await this.hydrate(batch)
-    const next: GmailCursor = rest.length ? { v: 1, phase: 'incremental', historyId, pending: rest } : { v: 1, phase: 'incremental', historyId }
+    const next: GmailCursor = rest.length ? { v: 1, phase: 'incremental', historyId, pending: rest, cat: true } : { v: 1, phase: 'incremental', historyId, cat: true }
     return { threads, deletedRemoteThreadIds: missing, cursor: encodeCursor(next), hasMore: rest.length > 0 }
   }
 

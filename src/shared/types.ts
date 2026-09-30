@@ -159,6 +159,8 @@ export interface ThreadFilter {
   /** Inbox only: drop threads whose only category tag is Social/Promotions/Updates/Forums
    *  (CATEGORY_PERSONAL/Primary always stays). Driven by AppSettings.hideCategoriesFromInbox. */
   excludeCategories?: boolean
+  /** Inbox only: keep only threads carrying a Social/Promotions/Updates/Forums tag (never Primary). Categories view. */
+  onlyCategories?: boolean
 }
 
 export interface ThreadQuery {

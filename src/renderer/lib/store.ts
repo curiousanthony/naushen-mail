@@ -105,7 +105,7 @@ export function navToFilter(
     }
     // Same underlying set as Inbox, deliberately *not* applying `excludeCategories` -- this is
     // the one place categorized mail is always visible, hidden-from-inbox or not.
-    case 'categories': return { ...base, role: 'inbox' }
+    case 'categories': return { ...base, role: 'inbox', onlyCategories: true }
     case 'snoozed': return { ...base, onlySnoozed: true }
     case 'search': {
       // Gmail/Notion-Mail-style operators (from:, to:, subject:, has:attachment, is:unread,

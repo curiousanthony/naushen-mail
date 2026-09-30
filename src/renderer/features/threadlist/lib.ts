@@ -58,10 +58,9 @@ export function groupThreads(threads: Thread[], byDate: boolean, now = Date.now(
 
 /**
  * The "Categories" nav: every category's mail in one list, grouped under a header per category
- * (Primary / Social / Promotions / Updates / Forums, Gmail's own tab order — see
- * `categoryGroups`), each bucket in the same last-message-first order the query returned. A
- * thread with no category label yet (not re-synced since this feature shipped) buckets under
- * Primary rather than vanishing — see `categoryGroups`'s doc for why that's the safe default.
+ * (Social / Promotions / Updates / Forums, Gmail's own tab order — see
+ * `categoryGroups`), each bucket in the same last-message-first order the query returned. Threads
+ * with no non-Primary category label are dropped (Primary is not part of this view).
  * Empty categories are omitted, same as an empty date bucket never rendering a header.
  */
 export function groupByCategory(threads: Thread[], labels: Label[], accountId: string): Group[] {
@@ -71,7 +70,8 @@ export function groupByCategory(threads: Thread[], labels: Label[], accountId: s
   for (const l of labels) if (l.kind === 'category') remoteIdOf.set(l.id, l.remoteId)
   const buckets = new Map<string, Thread[]>()
   for (const t of threads) {
-    const remoteId = t.labelIds.map((id) => remoteIdOf.get(id)).find((x): x is string => !!x) ?? 'CATEGORY_PERSONAL'
+    const remoteId = t.labelIds.map((id) => remoteIdOf.get(id)).find((x): x is string => !!x && x !== 'CATEGORY_PERSONAL')
+    if (!remoteId) continue
     const bucket = buckets.get(remoteId)
     if (bucket) bucket.push(t); else buckets.set(remoteId, [t])
   }

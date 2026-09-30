@@ -233,6 +233,9 @@ export class Repo {
         if (f.excludeCategories) {
           w.push(`NOT EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.kind = 'category' AND l.remote_id != 'CATEGORY_PERSONAL')`)
         }
+        if (f.onlyCategories) {
+          w.push(`EXISTS (SELECT 1 FROM thread_labels tl JOIN labels l ON l.id = tl.label_id WHERE tl.thread_id = t.id AND l.kind = 'category' AND l.remote_id != 'CATEGORY_PERSONAL')`)
+        }
         break
       case 'sent': w.push(roleExists('sent')); break
       case 'drafts': w.push(roleExists('drafts')); break

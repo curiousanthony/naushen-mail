@@ -36,8 +36,8 @@ export const MAIL_ITEMS: MailItem[] = [
   { id: 'sent', name: 'Sent', role: 'sent' },
   { id: 'drafts', name: 'Drafts', role: 'drafts' },
   { id: 'snoozed', name: 'Reminders', snoozed: true },
-  { id: 'trash', name: 'Trash', role: 'trash' },
-  { id: 'spam', name: 'Spam', role: 'spam' }
+  { id: 'spam', name: 'Spam', role: 'spam' },
+  { id: 'trash', name: 'Trash', role: 'trash' }
 ]
 
 export const mailNav = (m: MailItem): Nav =>
@@ -103,7 +103,8 @@ export const unreadForGroup = (counts: Counts, accountId: string, g: LabelGroup)
 // ---------------------------------------------------------------- categories (Gmail only)
 
 /** Gmail's inbox-tab category names in Gmail's own tab order. Mirrors main/providers/gmail/labels.ts. */
-export const CATEGORY_ORDER = ['CATEGORY_PERSONAL', 'CATEGORY_SOCIAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
+/** Primary (CATEGORY_PERSONAL) is deliberately absent: it is the plain Inbox, never a Categories row. */
+export const CATEGORY_ORDER = ['CATEGORY_SOCIAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
 
 /**
  * Category labels for the sidebar's "Categories" section, one row per distinct category
