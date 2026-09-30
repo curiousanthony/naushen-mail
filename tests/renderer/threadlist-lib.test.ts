@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Label, Thread } from '../../src/shared/types'
 import {
-  EMPTY_CHIPS, applyChips, chipCount, emptyCopy, flatten, groupThreads, offsetsOf, rangeIds,
+  emptyCopy, flatten, groupThreads, offsetsOf, rangeIds,
   rowLabels, scrollOffsetFor, senderText, unionIds, windowRange, WINDOW_THRESHOLD
 } from '../../src/renderer/features/threadlist/lib'
 
@@ -20,32 +20,6 @@ const thread = (p: Partial<Thread> & { id: string }): Thread => ({
 })
 
 const metrics = { rowH: 40, headerH: 28 }
-
-describe('chips', () => {
-  const threads = [
-    thread({ id: '1', unread: true, participants: [{ name: 'Léa Martin', email: 'lea@x.io' }] }),
-    thread({ id: '2', hasAttachments: true, participants: [{ email: 'bob@acme.example' }] }),
-    thread({ id: '3', labelIds: ['a:L_Travel'], participants: [{ name: 'Bob', email: 'bob@x.io' }] })
-  ]
-
-  it('is a no-op when nothing is set', () => {
-    expect(chipCount(EMPTY_CHIPS)).toBe(0)
-    expect(applyChips(threads, EMPTY_CHIPS)).toBe(threads)
-  })
-
-  it('ANDs unread, attachments, labels and from', () => {
-    expect(applyChips(threads, { ...EMPTY_CHIPS, unread: true }).map((t) => t.id)).toEqual(['1'])
-    expect(applyChips(threads, { ...EMPTY_CHIPS, attachments: true }).map((t) => t.id)).toEqual(['2'])
-    expect(applyChips(threads, { ...EMPTY_CHIPS, labelIds: ['a:L_Travel'] }).map((t) => t.id)).toEqual(['3'])
-    expect(applyChips(threads, { ...EMPTY_CHIPS, unread: true, attachments: true })).toEqual([])
-  })
-
-  it('matches from against both name and email, case-insensitively', () => {
-    expect(applyChips(threads, { ...EMPTY_CHIPS, from: 'LÉA' }).map((t) => t.id)).toEqual(['1'])
-    expect(applyChips(threads, { ...EMPTY_CHIPS, from: 'bob' }).map((t) => t.id)).toEqual(['2', '3'])
-    expect(applyChips(threads, { ...EMPTY_CHIPS, from: '   ' })).toEqual(threads)
-  })
-})
 
 describe('groupThreads', () => {
   it('buckets by date label, keeping list order', () => {

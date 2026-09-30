@@ -146,8 +146,10 @@ export interface ThreadFilter {
   from?: string[]
   to?: string[]
   subjectContains?: string[]
+  /** true => has real attachments, false => none. */
   hasAttachment?: boolean
   unread?: boolean
+  /** true => starred only, false => not starred. */
   starred?: boolean
   /** Full-text query (FTS over subject/snippet/body/participants). */
   text?: string
@@ -155,13 +157,42 @@ export interface ThreadFilter {
   includeSnoozed?: boolean
   onlySnoozed?: boolean
   after?: number
+  /** Rolling window resolved at query time (so saved views keep rolling); ANDed with after/before. */
+  recent?: 'today' | '7d' | '30d' | '90d' | 'year'
   before?: number
   /** Inbox only: drop threads whose only category tag is Social/Promotions/Updates/Forums
    *  (CATEGORY_PERSONAL/Primary always stays). Driven by AppSettings.hideCategoriesFromInbox. */
   excludeCategories?: boolean
   /** Inbox only: keep only threads carrying a Social/Promotions/Updates/Forums tag (never Primary). Categories view. */
   onlyCategories?: boolean
+
+  // ---- Additive fields (all optional, so previously saved views keep loading unchanged).
+  // Every one is ANDed with the rest of the filter and evaluated locally against SQLite.
+
+  /** Each inner list is "any of these labels"; the lists are ANDed (so a chip can narrow a label nav). */
+  labelGroups?: string[][]
+  /** Every entry must appear in the subject (subjectContains is OR; this is AND). */
+  subjectAll?: string[]
+  /** Thread has (true) / has no (false) message carrying a List-Unsubscribe header (newsletters, promos). */
+  hasUnsubscribe?: boolean
+  /** Thread carries a calendar invite (text/calendar or .ics attachment). */
+  hasInvite?: boolean
+  /** Some real (non-inline) attachment is of one of these kinds. */
+  attachmentKinds?: AttachmentKind[]
+  /** Some real (non-inline) attachment is at least this many bytes. */
+  minAttachmentSize?: number
+  /** 'to': I was a direct recipient of a message someone else sent. 'cc': I was only Cc'd. */
+  addressedTo?: 'to' | 'cc'
+  /** 'me': my message is the latest (awaiting a reply). 'them': someone else's is (needs my reply). */
+  lastFrom?: 'me' | 'them'
+  /** Conversation length bounds (messages). Single message = max 1; conversation = min 2. */
+  minMessages?: number
+  maxMessages?: number
+  /** 'snoozed': snoozed right now. 'reminder': has a "remind if no reply" set. 'any': either. 'none': neither. */
+  reminderState?: 'snoozed' | 'reminder' | 'any' | 'none'
 }
+
+export type AttachmentKind = 'pdf' | 'image' | 'document' | 'spreadsheet' | 'presentation' | 'archive'
 
 export interface ThreadQuery {
   filter: ThreadFilter

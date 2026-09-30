@@ -5,6 +5,8 @@ import type {
 import { DEFAULT_SETTINGS } from '@shared/types'
 import { parseSearchQuery } from './searchQuery'
 import { expandLabelIds } from './labels'
+import { compileConditions, mergeFilters } from '@shared/filters'
+import { clearConditions, useFilters } from '@/features/threadlist/filterState'
 
 /** What the list area is currently showing. */
 export type Nav =
@@ -121,6 +123,17 @@ export function navToFilter(
 }
 
 let toastSeq = 1
+let refreshSeq = 0
+
+/** Layer the thread list's Filter-bar conditions onto the nav's own filter (all AND-ed, all local SQL). */
+function withConditions(base: ThreadFilter, labels: Label[], accountId: string): ThreadFilter {
+  const { conditions } = useFilters.getState()
+  if (!conditions.length) return base
+  const patch = compileConditions(conditions)
+  // Same-named labels across accounts are one label in "All accounts", so a label condition matches any of them.
+  if (patch.labelGroups) patch.labelGroups = patch.labelGroups.map((g) => g.flatMap((id) => expandLabelIds(labels, id, accountId)))
+  return mergeFilters(base, patch)
+}
 let refreshTimer: ReturnType<typeof setTimeout> | null = null
 
 // Which account (or 'all') was last focused, so relaunching the app returns to it instead of
@@ -174,7 +187,9 @@ export const useApp = create<AppState>((set, get) => ({
   async refreshThreads() {
     const { nav, accountId, views, labels, settings } = get()
     set({ loading: true })
-    const res = await window.api.invoke('threads.list', { filter: navToFilter(nav, accountId, views, labels, settings), limit: 300 })
+    const seq = ++refreshSeq
+    const res = await window.api.invoke('threads.list', { filter: withConditions(navToFilter(nav, accountId, views, labels, settings), labels, accountId), limit: 300 })
+    if (seq !== refreshSeq) return // a newer query (nav / filter change) is in flight; let it win
     // Drop stale selection.
     const ids = new Set(res.threads.map((t) => t.id))
     set((s) => ({
@@ -184,8 +199,8 @@ export const useApp = create<AppState>((set, get) => ({
     }))
   },
 
-  setNav(nav) { set({ nav, selectedIds: [], openThreadId: null, focusedId: null }); void get().refreshThreads() },
-  setAccount(id) { saveLastAccount(id); set({ accountId: id, selectedIds: [], openThreadId: null }); void get().refreshThreads() },
+  setNav(nav) { clearConditions(); set({ nav, selectedIds: [], openThreadId: null, focusedId: null }); void get().refreshThreads() },
+  setAccount(id) { clearConditions(); saveLastAccount(id); set({ accountId: id, selectedIds: [], openThreadId: null }); void get().refreshThreads() },
   focus(id) { set({ focusedId: id }) },
   toggleSelect(id) { set((s) => ({ selectedIds: s.selectedIds.includes(id) ? s.selectedIds.filter((x) => x !== id) : [...s.selectedIds, id] })) },
   clearSelection() { set({ selectedIds: [] }) },

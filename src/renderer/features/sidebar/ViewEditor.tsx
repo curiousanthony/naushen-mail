@@ -108,6 +108,8 @@ export function ViewEditor(): JSX.Element | null {
     if (list(subject)) filter.subjectContains = list(subject)
     if (unread) filter.unread = true
     if (attachment) filter.hasAttachment = true
+    // Criteria this editor has no field for (dates, sizes, reply status...) ride along from "Save as view".
+    if (!base && seed?.extra) Object.assign(filter, seed.extra)
 
     const view: View = {
       id: base?.id ?? crypto.randomUUID(),
