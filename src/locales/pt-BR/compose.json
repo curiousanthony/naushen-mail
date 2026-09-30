@@ -1,0 +1,217 @@
+{
+  "window": {
+    "newMessage": "Nova mensagem",
+    "composer": "Editor de mensagem",
+    "minimise": "Minimizar",
+    "maximise": "Maximizar",
+    "restore": "Restaurar",
+    "expand": "Expandir",
+    "close": "Fechar"
+  },
+  "fields": {
+    "from": "De",
+    "to": "Para",
+    "cc": "Cc",
+    "bcc": "Cco",
+    "subject": "Assunto",
+    "noAccount": "Nenhuma conta",
+    "sendFrom": "Enviar de",
+    "signature": "Assinatura"
+  },
+  "recipients": {
+    "remove": "Remover {{email}}",
+    "frequent": "Frequentes"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> parece um erro de digitação de <b>{{suggested}}</b>",
+    "useDomain": "Usar {{domain}}",
+    "keepAsTyped": "Manter como digitado",
+    "mailingList": "Parece uma <b>lista de e-mails</b>; sua resposta vai para todos nela.",
+    "replyingTo_one": "Respondendo a <b>{{count}} pessoa</b>.",
+    "replyingTo_other": "Respondendo a <b>{{count}} pessoas</b>.",
+    "replySenderOnly": "Responder só ao remetente",
+    "dismiss": "Dispensar"
+  },
+  "quote": {
+    "show": "Mostrar texto citado"
+  },
+  "attachments": {
+    "remove": "Remover {{name}}",
+    "totalOver": "{{size}} — acima do limite de 25 MB",
+    "drop": "Solte arquivos para anexar",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Anexar um arquivo",
+    "addSubject": "Adicionar assunto",
+    "sendAnyway": "Enviar mesmo assim"
+  },
+  "validation": {
+    "noRecipient": "Adicione pelo menos um destinatário.",
+    "invalidAddress_one": "{{email}} não é um endereço de e-mail válido.",
+    "invalidAddress_other": "{{count}} destinatários não são endereços de e-mail válidos.",
+    "noSubject": "Esta mensagem não tem assunto.",
+    "empty": "Esta mensagem está vazia.",
+    "missingAttachment": "Você mencionou um anexo, mas nada está anexado."
+  },
+  "nudge": {
+    "empty": "Esta mensagem está vazia.",
+    "typo": "{{domain}} pode ser um erro de digitação.",
+    "attachment": "Você escreveu “{{word}}”, mas nada está anexado.",
+    "noSubject": "Sem assunto."
+  },
+  "toolbar": {
+    "snippets": "Trechos",
+    "attach": "Anexar arquivos",
+    "discard": "Descartar rascunho",
+    "help": "Ajuda de formatação",
+    "draftSaved": "Rascunho salvo",
+    "send": "Enviar"
+  },
+  "schedule": {
+    "title": "Programar envio",
+    "timePlaceholder": "Digite um horário… tomorrow 9am",
+    "timeLabel": "Digite um horário de envio",
+    "confirm": "Programar",
+    "pickFuture": "Escolha um horário no futuro",
+    "followUp_one": "Lembrar se não houver resposta em {{count}} dia",
+    "followUp_other": "Lembrar se não houver resposta em {{count}} dias",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "Esta manhã",
+    "thisAfternoon": "Esta tarde",
+    "tomorrowMorning": "Amanhã de manhã",
+    "tomorrowAfternoon": "Amanhã à tarde",
+    "nextWeek": "Semana que vem",
+    "pickDateTime": "Escolher data e hora",
+    "scheduledFor": "Programada para {{when}}"
+  },
+  "toast": {
+    "discarded": "Rascunho descartado",
+    "archived": "Conversa arquivada",
+    "sending": "Enviando…",
+    "sent": "Enviada",
+    "sentFollowUp_one": "Enviada · acompanhamento em {{count}} dia se não houver resposta",
+    "sentFollowUp_other": "Enviada · acompanhamento em {{count}} dias se não houver resposta",
+    "scheduledFollowUp_one": "{{scheduled}} · acompanhamento em {{count}} dia",
+    "scheduledFollowUp_other": "{{scheduled}} · acompanhamento em {{count}} dias",
+    "notSent": "Não enviada: {{reason}}",
+    "sendFailed": "Não foi possível enviar a mensagem",
+    "cancel": "Cancelar",
+    "undo": "Desfazer"
+  },
+  "snippets": {
+    "none": "Nenhum trecho ainda",
+    "newFromDraft": "+ Novo trecho a partir deste rascunho",
+    "nameLabel": "Nome do trecho",
+    "namePlaceholder": "Link do site",
+    "untitled": "Trecho sem título"
+  },
+  "help": {
+    "typing": "Digitação",
+    "smartTypography": "Aspas, travessões e reticências inteligentes",
+    "formatting": "Formatação",
+    "insertBlock": "Inserir um bloco",
+    "emoji": "Emoji",
+    "textStyles": "Negrito, itálico, sublinhado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "link": "Link",
+    "snippet": "Trecho",
+    "headings": "Títulos",
+    "bulletKeys": "- ou *",
+    "bulletList": "Lista com marcadores",
+    "numberedList": "Lista numerada",
+    "todo": "Tarefa",
+    "quote": "Citação",
+    "codeBlock": "Bloco de código",
+    "divider": "Divisor",
+    "send": "Enviar",
+    "sendArchive": "Enviar e arquivar",
+    "saveClose": "Salvar rascunho e fechar"
+  },
+  "editor": {
+    "placeholder": "Escreva ou digite '/' para blocos",
+    "placeholderShort": "Escreva ou digite '/'",
+    "toggle": "Alternar",
+    "heading": "Título {{level}}"
+  },
+  "slash": {
+    "noMatch": "Nenhum bloco corresponde",
+    "insertSnippet": "Inserir trecho",
+    "colour": "Cor",
+    "background": "Fundo",
+    "groups": {
+      "basic": "Blocos básicos",
+      "media": "Mídia",
+      "advanced": "Avançado",
+      "snippets": "Trechos"
+    },
+    "items": {
+      "text": { "title": "Texto", "description": "Comece a escrever com texto simples." },
+      "h1": { "title": "Título 1", "description": "Título grande de seção." },
+      "h2": { "title": "Título 2", "description": "Título médio de seção." },
+      "h3": { "title": "Título 3", "description": "Título pequeno de seção." },
+      "bulletList": { "title": "Lista com marcadores", "description": "Crie uma lista simples com marcadores." },
+      "orderedList": { "title": "Lista numerada", "description": "Crie uma lista com numeração." },
+      "taskList": { "title": "Lista de tarefas", "description": "Acompanhe tarefas com um checklist." },
+      "toggle": { "title": "Lista recolhível", "description": "Oculte detalhes em um bloco recolhível." },
+      "quote": { "title": "Citação", "description": "Registre uma citação." },
+      "divider": { "title": "Divisor", "description": "Separe blocos visualmente." },
+      "callout": { "title": "Destaque", "description": "Faça o texto se destacar." },
+      "code": { "title": "Código", "description": "Registre um trecho de código." },
+      "table": { "title": "Tabela", "description": "Adicione uma tabela simples." },
+      "image": { "title": "Imagem", "description": "Envie ou solte uma imagem." },
+      "link": { "title": "Link", "description": "Crie um link para uma página da web." },
+      "emoji": { "title": "Emoji", "description": "Busque e insira um emoji." },
+      "textColor": { "title": "Cor do texto", "description": "Colora o texto selecionado." },
+      "backgroundColor": { "title": "Cor de fundo", "description": "Destaque o texto selecionado." }
+    },
+    "colors": {
+      "default": "Padrão",
+      "gray": "Cinza",
+      "brown": "Marrom",
+      "orange": "Laranja",
+      "yellow": "Amarelo",
+      "green": "Verde",
+      "blue": "Azul",
+      "purple": "Roxo",
+      "pink": "Rosa",
+      "red": "Vermelho"
+    }
+  },
+  "selection": {
+    "turnInto": "Transformar em",
+    "bold": "Negrito",
+    "italic": "Itálico",
+    "underline": "Sublinhado",
+    "strikethrough": "Tachado",
+    "code": "Código",
+    "link": "Link",
+    "colour": "Cor",
+    "text": "Texto",
+    "background": "Fundo",
+    "pasteLink": "Cole um link…",
+    "apply": "Aplicar",
+    "openLink": "Abrir link",
+    "removeLink": "Remover link"
+  },
+  "link": {
+    "dialog": "Editar link",
+    "placeholder": "Cole ou digite um link",
+    "urlLabel": "URL do link",
+    "apply": "Aplicar",
+    "applyLink": "Aplicar link",
+    "open": "Abrir link",
+    "remove": "Remover link"
+  },
+  "image": {
+    "alignLeft": "Alinhar à esquerda",
+    "alignCenter": "Centralizar",
+    "alignRight": "Alinhar à direita"
+  },
+  "callout": {
+    "changeIcon": "Alterar ícone do destaque"
+  }
+}

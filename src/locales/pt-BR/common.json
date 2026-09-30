@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "previous7": "Últimos 7 dias",
+    "previous30": "Últimos 30 dias"
+  },
+  "actions": {
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "retry": "Tentar novamente",
+    "undo": "Desfazer"
+  },
+  "toast": {
+    "sendFailed": "Não foi possível enviar a mensagem.",
+    "sendFailedWithReason": "Não foi possível enviar: {{error}}"
+  },
+  "noSubject": "(sem assunto)",
+  "role": {
+    "inbox": "Caixa de Entrada",
+    "sent": "Enviados",
+    "drafts": "Rascunhos",
+    "trash": "Lixeira",
+    "spam": "Spam",
+    "archive": "Arquivados",
+    "starred": "Com estrela",
+    "important": "Importantes",
+    "all": "Todos os e-mails",
+    "reminders": "Lembretes"
+  },
+  "category": {
+    "social": "Social",
+    "promotions": "Promoções",
+    "updates": "Atualizações",
+    "forums": "Fóruns"
+  },
+  "color": {
+    "gray": "cinza",
+    "brown": "marrom",
+    "orange": "laranja",
+    "yellow": "amarelo",
+    "green": "verde",
+    "blue": "azul",
+    "purple": "roxo",
+    "pink": "rosa",
+    "red": "vermelho"
+  },
+  "searchOperators": {
+    "from": "nome ou endereço do remetente",
+    "to": "nome ou endereço do destinatário",
+    "subject": "palavras no assunto",
+    "label": "nome do marcador",
+    "hasAttachment": "com arquivo anexado",
+    "isUnread": "somente não lidas",
+    "isStarred": "somente com estrela",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

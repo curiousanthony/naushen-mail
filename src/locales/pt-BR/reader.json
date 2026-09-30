@@ -1,0 +1,139 @@
+{
+  "thread": {
+    "fallbackTitle": "Conversa",
+    "loading": "Carregando conversa",
+    "unavailableTitle": "Esta conversa não está mais disponível.",
+    "unavailableHint": "Ela pode ter sido excluída ou movida.",
+    "resize": "Redimensionar painel da conversa"
+  },
+  "header": {
+    "collapse": "Recolher",
+    "collapseThread": "Recolher conversa",
+    "archive": "Arquivar",
+    "archived": "Conversa arquivada",
+    "markUnread": "Marcar como não lida",
+    "markedUnread": "Marcada como não lida",
+    "setReminder": "Definir lembrete",
+    "star": "Marcar com estrela",
+    "unstar": "Remover estrela",
+    "label": "Marcador",
+    "unsubscribe": "Cancelar inscrição",
+    "unsubscribeWeb": "Abre no navegador",
+    "unsubscribeMail": "Envia um e-mail",
+    "reportSpam": "Denunciar spam",
+    "reportedSpam": "Denunciada como spam",
+    "trash": "Mover para a lixeira",
+    "trashed": "Movida para a lixeira",
+    "noSubject": "(sem assunto)",
+    "messageCount_one": "{{count}} mensagem",
+    "messageCount_other": "{{count}} mensagens"
+  },
+  "replyBar": {
+    "reply": "Responder",
+    "replyAll": "Responder a todos",
+    "forward": "Encaminhar"
+  },
+  "message": {
+    "unread": "Não lida",
+    "expand": "Expandir mensagem",
+    "showDetails": "Mostrar detalhes",
+    "hideDetails": "Ocultar detalhes",
+    "showRecipientDetails": "Mostrar detalhes dos destinatários",
+    "hideRecipientDetails": "Ocultar detalhes dos destinatários",
+    "toLine": "para {{recipients}}",
+    "toMe": "mim",
+    "attachmentCount_one": "{{count}} anexo",
+    "attachmentCount_other": "{{count}} anexos",
+    "reply": "Responder",
+    "replyAll": "Responder a todos",
+    "forward": "Encaminhar",
+    "copyField": "Copiar {{label}}",
+    "copyAddress_one": "Copiar endereço de {{label}}",
+    "copyAddress_other": "Copiar endereços de {{label}}",
+    "copied": "Copiado",
+    "detail": {
+      "from": "De",
+      "replyTo": "Responder para",
+      "to": "Para",
+      "cc": "Cc",
+      "bcc": "Cco",
+      "date": "Data"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_one": "Imagem remota bloqueada",
+    "remoteImageBlocked_other": "{{count}} imagens remotas bloqueadas",
+    "loadImages": "Carregar imagens",
+    "alwaysLoad": "Sempre carregar",
+    "empty": "Esta mensagem não tem conteúdo.",
+    "frameTitle": "Mensagem de {{sender}}",
+    "showAsDesigned": "Mostrar como foi criada",
+    "adaptToDark": "Adaptar ao modo escuro",
+    "showOriginalColours": "Mostrar cores originais",
+    "adaptColours": "Adaptar cores ao modo escuro",
+    "original": "Original",
+    "adapt": "Adaptar",
+    "showQuote": "Mostrar texto citado",
+    "hideQuote": "Ocultar texto citado"
+  },
+  "attachments": {
+    "preview": "Pré-visualizar {{name}}",
+    "download": "Baixar {{name}} — {{size}}"
+  },
+  "preview": {
+    "loading": "Carregando pré-visualização…",
+    "failed": "Não foi possível carregar a pré-visualização deste arquivo.",
+    "unavailable": "Sem pré-visualização para este tipo de arquivo.",
+    "download": "Baixar",
+    "close": "Fechar",
+    "closePreview": "Fechar pré-visualização"
+  },
+  "invite": {
+    "loading": "Lendo convite…",
+    "sending": "Enviando…",
+    "yes": "Sim",
+    "maybe": "Talvez",
+    "no": "Não",
+    "replySubject": "{{response}}: {{summary}}",
+    "replyBody": "{{response}}, {{name}}.",
+    "sent": {
+      "accepted": "Resposta enviada — você confirmou presença",
+      "tentative": "Resposta enviada — você marcou talvez",
+      "declined": "Resposta enviada — você recusou"
+    },
+    "failed": "Não foi possível enviar sua resposta. Tente novamente."
+  },
+  "code": {
+    "copyTooltip": "Copiar código de verificação",
+    "copyAria": "Copiar código de verificação {{code}}",
+    "copy": "Copiar <b>{{code}}</b>",
+    "copied": "{{code}} copiado",
+    "copyFailed": "Não foi possível copiar o código",
+    "none": "Nenhum código de verificação recente aqui"
+  },
+  "shield": {
+    "blocked_one": "{{count}} rastreador bloqueado",
+    "blocked_other": "{{count}} rastreadores bloqueados",
+    "trackingPixel": "Pixel de rastreamento",
+    "note": "Rastreadores avisam que você abriu esta mensagem. Eles continuam bloqueados mesmo quando você carrega as imagens."
+  },
+  "link": {
+    "mailTo": "enviar e-mail para",
+    "call": "ligar para",
+    "trackingStripped_one": "{{count}} parâmetro de rastreamento removido ao abrir",
+    "trackingStripped_other": "{{count}} parâmetros de rastreamento removidos ao abrir",
+    "warningLabel": "Verifique este link",
+    "warning": "Este link leva a <b>{{actual}}</b>, e não a <b>{{shown}}</b>.",
+    "openAnyway": "Abrir mesmo assim",
+    "cancel": "Cancelar",
+    "writeTo": "Escrever para este endereço",
+    "open": "Abrir link",
+    "copyAddress": "Copiar endereço",
+    "copyLink": "Copiar link",
+    "copyLinkClean": "Copiar link (sem rastreamento)",
+    "copyFailed": "Não foi possível copiar o link",
+    "copiedClean": "Link copiado sem parâmetros de rastreamento",
+    "addressCopied": "Endereço copiado",
+    "copied": "Link copiado"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "move": {
+    "title": "Mover conversa",
+    "commandLabel": "Mover para",
+    "placeholder": "Mover para…",
+    "noMatch": "Nenhuma pasta ou marcador correspondente",
+    "nowhere": "Não há para onde mover",
+    "navigate": "Navegar",
+    "move": "Mover",
+    "labelFallback": "marcador",
+    "toLabel_one": "Conversa movida para “{{name}}”",
+    "toLabel_other": "{{count}} conversas movidas para “{{name}}”",
+    "skippedNoLabel": "{{count}} sem marcador correspondente foram mantidas como estão",
+    "skippedAlreadyThere": "{{count}} já estavam lá",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} conversa",
+    "conversations_other": "{{count}} conversas"
+  },
+  "swipe": {
+    "restore": "Restaurar",
+    "restored": "Conversa restaurada",
+    "notSpam": "Não é spam",
+    "movedToInbox": "Conversa movida para a caixa de entrada",
+    "archive": "Arquivar",
+    "archived": "Conversa arquivada"
+  }
+}

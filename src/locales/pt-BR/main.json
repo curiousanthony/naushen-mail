@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "settings": "Ajustes…",
+    "file": "Arquivo",
+    "newMessage": "Nova Mensagem",
+    "addAccount": "Adicionar Conta…",
+    "edit": "Editar",
+    "view": "Visualizar",
+    "commandMenu": "Menu de Comandos",
+    "search": "Buscar",
+    "toggleSidebar": "Alternar Barra Lateral",
+    "reloadWindow": "Recarregar Janela",
+    "mailbox": "Caixa de Correio",
+    "goToInbox": "Ir para a Caixa de Entrada",
+    "checkMail": "Verificar E-mails Agora"
+  },
+  "notify": {
+    "archive": "Arquivar",
+    "markRead": "Marcar como Lida",
+    "dismiss": "Dispensar",
+    "noSubject": "(sem assunto)",
+    "burstTitle_one": "{{count}} nova mensagem",
+    "burstTitle_other": "{{count}} novas mensagens",
+    "burstBody": "{{names}} e mais {{others}}"
+  },
+  "oauth": {
+    "connectedTitle": "Conectado",
+    "connectedBody": "Você pode fechar esta aba e voltar ao Naushen Mail.",
+    "failedTitle": "Algo deu errado",
+    "invalidResponse": "Resposta inválida.",
+    "authFailed": "Falha na autorização: {{error}}",
+    "authInvalid": "Resposta de autorização inválida",
+    "timedOut": "Tempo de login esgotado"
+  },
+  "errors": {
+    "notSignedIn": "Sessão não iniciada",
+    "sessionExpired": "Sua sessão expirou. Faça login novamente.",
+    "threadNotFound": "Conversa não encontrada",
+    "accountNotConnected": "Conta não conectada",
+    "connectorUnavailable": "O conector do {{provider}} não está disponível nesta versão.",
+    "providerUnavailable": "Provedor indisponível",
+    "actionFailed": "Falha na ação: {{message}}",
+    "attachmentNotFound": "Anexo não encontrado",
+    "attachmentEmpty": "O anexo não tem conteúdo"
+  },
+  "gmail": {
+    "missingClient": "O login do Google não está configurado nesta versão. Adicione seu próprio ID de cliente e segredo OAuth do Google em Ajustes → Contas → Configuração do OAuth (veja docs/google-setup.md).",
+    "noRefreshToken": "O Google não emitiu um token de atualização. Remova o Naushen Mail em myaccount.google.com/permissions e tente novamente.",
+    "missingScope": "O Naushen Mail precisa de permissão para ler e gerenciar seu Gmail. Conecte novamente e deixe todas as permissões marcadas.",
+    "profileFailed": "Não foi possível ler seu perfil do Google (HTTP {{status}}).",
+    "noEmail": "O Google não retornou um endereço de e-mail para esta conta.",
+    "authRejected": "O Google rejeitou as credenciais salvas. Faça login novamente.",
+    "network": "Erro de rede ao falar com o Gmail: {{message}}"
+  },
+  "outlook": {
+    "missingClientId": "Primeiro, adicione o ID do aplicativo (cliente) da Microsoft: Ajustes → Contas → Configuração do OAuth.",
+    "noEmail": "A Microsoft não retornou um endereço de e-mail para esta conta.",
+    "noInbox": "Não foi possível encontrar a pasta Caixa de Entrada desta caixa de correio.",
+    "deltaIncomplete": "A rodada delta do Outlook não foi concluída",
+    "categoryOnly": "Só é possível editar categorias do Outlook",
+    "categoryGone": "A categoria \"{{name}}\" não existe mais",
+    "attachmentUpload": "Falha no envio do anexo ({{status}})"
+  }
+}
