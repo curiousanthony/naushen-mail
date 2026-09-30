@@ -1,0 +1,161 @@
+{
+  "summary": {
+    "archived_one": "{{count}} archivado",
+    "archived_other": "{{count}} archivados",
+    "archived_many": "{{count}} archivados",
+    "trashed_one": "{{count}} movido a la papelera",
+    "trashed_other": "{{count}} movidos a la papelera",
+    "trashed_many": "{{count}} movidos a la papelera",
+    "rescued_one": "{{count}} rescatado del spam",
+    "rescued_other": "{{count}} rescatados del spam",
+    "rescued_many": "{{count}} rescatados del spam",
+    "markedRead_one": "{{count}} marcado como leído",
+    "markedRead_other": "{{count}} marcados como leídos",
+    "markedRead_many": "{{count}} marcados como leídos",
+    "starred_one": "{{count}} destacado",
+    "starred_other": "{{count}} destacados",
+    "starred_many": "{{count}} destacados",
+    "labelled_one": "{{count}} etiquetado como «{{name}}»",
+    "labelled_other": "{{count}} etiquetados como «{{name}}»",
+    "labelled_many": "{{count}} etiquetados como «{{name}}»",
+    "labelFallback": "etiqueta"
+  },
+  "describe": {
+    "from": "De {{value}}",
+    "fromDomain": "De @{{value}}",
+    "subject": "El asunto contiene «{{value}}»",
+    "noActions": "Sin acciones",
+    "actions": {
+      "archive": "omitir la bandeja de entrada",
+      "markRead": "marcar como leído",
+      "star": "destacar",
+      "trash": "mover a la papelera",
+      "neverSpam": "no enviar nunca al spam",
+      "label": "etiquetar como «{{name}}»"
+    }
+  },
+  "form": {
+    "whenMailIs": "Cuando el correo sea",
+    "matchOn": "Coincidir por",
+    "matchValue": "Valor de coincidencia",
+    "field": {
+      "from": {
+        "label": "De",
+        "placeholder": "nombre@example.com",
+        "hint": "Este remitente exacto."
+      },
+      "fromDomain": {
+        "label": "Dominio",
+        "placeholder": "example.com",
+        "hint": "Cualquiera de este dominio, incluidos sus subdominios."
+      },
+      "subject": {
+        "label": "Asunto",
+        "placeholder": "Palabras del asunto",
+        "hint": "Cualquier asunto que contenga este texto."
+      }
+    },
+    "moreConditions_one": "Más {{count}} condición.",
+    "moreConditions_other": "Más {{count}} condiciones.",
+    "moreConditions_many": "Más {{count}} condiciones.",
+    "then": "Entonces",
+    "actionsAria": "Acciones",
+    "actions": {
+      "archive": "Omitir bandeja de entrada",
+      "markRead": "Marcar como leído",
+      "star": "Destacar",
+      "trash": "Mover a la papelera",
+      "neverSpam": "No enviar nunca al spam"
+    },
+    "applyLabel": "Aplicar etiqueta",
+    "none": "Ninguna",
+    "appliesTo": "Se aplica a",
+    "allAccounts": "Todas las cuentas"
+  },
+  "section": {
+    "title": "Reglas",
+    "description": "Filtros que se ejecutan con el correo nuevo dentro de Naushen Mail. Son locales de este Mac: no se crea nada en Gmail y no funcionan mientras la app está cerrada.",
+    "description_outlook": "Filtros que se ejecutan con el correo nuevo dentro de Naushen Mail. Son locales de este Mac: no se crea nada en Gmail ni en Outlook y no funcionan mientras la app está cerrada.",
+    "empty": {
+      "title": "Aún no hay reglas",
+      "body": "Abre una conversación y pulsa <k1>⌘</k1><k2>⇧</k2><k3>R</k3> para organizar automáticamente el correo de ese remitente."
+    },
+    "removedAccount": "Cuenta eliminada",
+    "allAccounts": "Todas las cuentas",
+    "ruleAria": "Regla: {{condition}}",
+    "and": " y ",
+    "moveUp": "Subir",
+    "moveDown": "Bajar",
+    "edit": "Editar regla",
+    "delete": "Eliminar regla",
+    "deleteConfirm": "¿Eliminar esta regla? El correo que ya se organizó se queda donde está.",
+    "deleteAction": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "order": "Las reglas se ejecutan de arriba abajo; se aplican todas las que coincidan."
+  },
+  "bundles": {
+    "title": "Grupos de la bandeja de entrada",
+    "collapse": {
+      "label": "Agrupar correo de poco valor",
+      "desc": "Una etiqueta o remitente agrupado se convierte en una sola fila de tu bandeja de entrada (por ejemplo, «Boletines · 7 nuevos»). El correo destacado nunca se agrupa. No se agrupa nada hasta que añadas un grupo."
+    },
+    "kindLabel": "Etiqueta",
+    "kindSender": "Remitente",
+    "stop": "Dejar de agrupar",
+    "bundleLabel": "Agrupar una etiqueta",
+    "bundleLabelDesc": "O haz clic derecho en una etiqueta de la barra lateral.",
+    "chooseLabel": "Elige una etiqueta…"
+  },
+  "host": {
+    "title": "Crear regla",
+    "from": "de «{{subject}}»",
+    "noSubject": "(sin asunto)",
+    "cancel": "Cancelar",
+    "create": "Crear regla",
+    "createApply_one": "Crear y aplicar a {{count}}",
+    "createApply_other": "Crear y aplicar a {{count}}",
+    "createApply_many": "Crear y aplicar a {{count}}",
+    "undo": "Deshacer",
+    "note": "Local de Naushen Mail: no se crea nada en Gmail.",
+    "note_outlook": "Local de Naushen Mail: no se crea nada en Gmail ni en Outlook.",
+    "match": {
+      "incomplete": "Añade un valor y una acción",
+      "checking": "Revisando el correo existente…",
+      "none": "Ninguna conversación existente coincide",
+      "some_one": "Coincide con {{count}} conversación existente",
+      "some_other": "Coincide con {{count}} conversaciones existentes",
+      "some_many": "Coincide con {{count}} conversaciones existentes"
+    },
+    "toast": {
+      "createdApplied": "Regla creada · {{summary}}",
+      "existedApplied": "La regla ya existía · {{summary}}",
+      "createdNothing": "Regla creada · no hizo falta cambiar nada",
+      "existedNothing": "La regla ya existía · no hizo falta cambiar nada",
+      "alreadyHave": "Ya tienes esta regla",
+      "created": "Regla creada. Filtra el correo nuevo en este Mac.",
+      "viewRules": "Ver reglas",
+      "failed": "No se pudo crear la regla",
+      "failedWith": "No se pudo crear la regla: {{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "Esta conversación no tiene ningún mensaje recibido a partir del cual crear una regla.",
+    "undo": "Deshacer",
+    "ran": "Regla: {{summary}}",
+    "ranWith": "{{condition}}: {{summary}}",
+    "archivedFrom_one": "{{count}} de {{name}} archivado",
+    "archivedFrom_other": "{{count}} de {{name}} archivados",
+    "archivedFrom_many": "{{count}} de {{name}} archivados",
+    "nothingFrom": "No hay nada de {{name}} en tu bandeja de entrada",
+    "blocked": "{{name}} bloqueado. El correo futuro irá a la papelera.",
+    "blockedMoved_one": "{{name}} bloqueado · {{count}} movido a la papelera. El correo futuro irá a la papelera.",
+    "blockedMoved_other": "{{name}} bloqueado · {{count}} movidos a la papelera. El correo futuro irá a la papelera.",
+    "blockedMoved_many": "{{name}} bloqueado · {{count}} movidos a la papelera. El correo futuro irá a la papelera.",
+    "archivedFromSender_one": "{{count}} de este remitente archivado",
+    "archivedFromSender_other": "{{count}} de este remitente archivados",
+    "archivedFromSender_many": "{{count}} de este remitente archivados",
+    "bundling": "Agrupando {{name}} en tu bandeja de entrada",
+    "stoppedBundling": "Se dejó de agrupar {{name}}"
+  }
+}

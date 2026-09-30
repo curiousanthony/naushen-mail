@@ -1,0 +1,31 @@
+{
+  "move": {
+    "title": "Mover conversación",
+    "commandLabel": "Mover a",
+    "placeholder": "Mover a…",
+    "noMatch": "Ninguna carpeta o etiqueta coincide",
+    "nowhere": "No hay adónde moverlas",
+    "navigate": "Navegar",
+    "move": "Mover",
+    "labelFallback": "etiqueta",
+    "toLabel_one": "Conversación movida a «{{name}}»",
+    "toLabel_other": "{{count}} conversaciones movidas a «{{name}}»",
+    "toLabel_many": "{{count}} conversaciones movidas a «{{name}}»",
+    "skippedNoLabel": "{{count}} sin una etiqueta coincidente se dejaron como estaban",
+    "skippedAlreadyThere": "{{count}} ya estaban ahí",
+    "withNote": "{{message}} ({{note}})"
+  },
+  "drag": {
+    "conversations_one": "{{count}} conversación",
+    "conversations_other": "{{count}} conversaciones",
+    "conversations_many": "{{count}} conversaciones"
+  },
+  "swipe": {
+    "restore": "Restaurar",
+    "restored": "Conversación restaurada",
+    "notSpam": "No es spam",
+    "movedToInbox": "Conversación movida a la bandeja de entrada",
+    "archive": "Archivar",
+    "archived": "Conversación archivada"
+  }
+}
