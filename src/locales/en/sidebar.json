@@ -1,0 +1,96 @@
+{
+  "aria": {
+    "mailboxes": "Mailboxes"
+  },
+  "newMessage": "New message",
+  "newView": "New view",
+  "editView": "Edit view",
+  "settings": "Settings",
+  "options": "Options",
+  "optionsFor": "Options for {{name}}",
+  "optionsOf": "{{name}} options",
+  "section": {
+    "views": "Views",
+    "mail": "Mail",
+    "labels": "Labels"
+  },
+  "categories": {
+    "label": "Categories",
+    "tip": "Mail grouped by Gmail's Social / Promotions / Updates / Forums tabs"
+  },
+  "accounts": {
+    "all": "All accounts",
+    "count_one": "{{count}} account",
+    "count_other": "{{count}} accounts",
+    "switch": "Switch account",
+    "add": "Add account"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Search mail",
+    "clear": "Clear search",
+    "people": "Matching people",
+    "operators": "Search operators"
+  },
+  "label": {
+    "bundled": "Bundled in Inbox",
+    "bundle": "Bundle in Inbox",
+    "stopBundling": "Stop bundling in Inbox"
+  },
+  "summary": {
+    "allMail": "All mail",
+    "unread": "unread",
+    "hasAttachment": "has attachment",
+    "label": "label",
+    "from": "from {{value}}",
+    "subject": "subject {{value}}",
+    "noFilters": "No filters"
+  },
+  "viewEditor": {
+    "intro": "Views are saved filters. They apply to mail you already have and to anything new.",
+    "name": "View name",
+    "icon": "Icon",
+    "colour": "Colour",
+    "noColour": "No colour",
+    "filters": "Filters",
+    "account": "Account",
+    "mailbox": "Mailbox",
+    "allMail": "All mail",
+    "anywhere": "Anywhere",
+    "from": "From",
+    "fromPlaceholder": "name or address",
+    "fromContains": "From contains",
+    "subject": "Subject",
+    "subjectPlaceholder": "contains…",
+    "subjectContains": "Subject contains",
+    "unreadOnly": "Unread only",
+    "hasAttachment": "Has attachment",
+    "labels": "Labels",
+    "delete": "Delete",
+    "create": "Create view",
+    "updated": "View updated",
+    "created": "View “{{name}}” created",
+    "deleted": "View “{{name}}” deleted"
+  },
+  "viewIcon": {
+    "inbox": "inbox",
+    "star": "star",
+    "flag": "flag",
+    "tag": "tag",
+    "users": "users",
+    "send": "send",
+    "receipt": "receipt",
+    "megaphone": "megaphone",
+    "pin": "pin",
+    "message": "message",
+    "newspaper": "newspaper",
+    "flame": "flame",
+    "briefcase": "briefcase",
+    "bell": "bell",
+    "archive": "archive",
+    "heart": "heart",
+    "bookmark": "bookmark",
+    "folder": "folder",
+    "zap": "zap"
+  }
+}

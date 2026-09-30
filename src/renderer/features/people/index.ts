@@ -3,6 +3,7 @@
  * and the `i` "sender info" command. <SenderCard/> is hosted by CommandPalette.
  */
 import { useApp } from '@/lib/store'
+import i18n from '@/i18n'
 import { cancelClose, cancelOpen, usePeopleUi } from './store'
 
 export { SenderCard } from './SenderCard'
@@ -39,5 +40,5 @@ export function toggleSenderInfo(): void {
     ui.open({ email: who.email, name: who.name, rect: { left: r.left + 24, top: r.top, right: r.right, bottom: r.bottom }, via: 'key' })
     return
   }
-  s.toast({ message: 'Select a conversation to see who it is with', duration: 2200 })
+  s.toast({ message: i18n.t('people:selectFirst'), duration: 2200 })
 }

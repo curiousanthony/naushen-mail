@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Copy, PenLine, Search } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { PersonInfo } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { displayName, listTime } from '@/lib/format'
@@ -24,6 +25,7 @@ export function SenderCard(): JSX.Element | null {
 }
 
 function CardBody(): JSX.Element | null {
+  const { t: tr } = useTranslation('people')
   const card = usePeopleUi((s) => s.card)!
   const close = usePeopleUi((s) => s.close)
   const [info, setInfo] = useState<PersonInfo | null>(null)
@@ -91,14 +93,14 @@ function CardBody(): JSX.Element | null {
       data-above={pos?.above || undefined}
       style={{ width: CARD_W, left: pos?.left ?? card.rect.left, top: pos?.top ?? card.rect.bottom + 6, visibility: pos ? 'visible' : 'hidden' }}
       role="dialog"
-      aria-label={`About ${displayName(address)}`}
+      aria-label={tr('card.about', { name: displayName(address) })}
       onMouseEnter={cancelClose}
       onMouseLeave={() => { if (!byKey) hoverLeave() }}
     >
       <div className="ppl-card__head">
         <PersonAvatar address={address} size={40} />
         <div className="ppl-card__id">
-          <div className="ppl-card__name">{displayName(address)}{isMe && <span className="ppl-card__me">you</span>}</div>
+          <div className="ppl-card__name">{displayName(address)}{isMe && <span className="ppl-card__me">{tr('card.you')}</span>}</div>
           <div className="ppl-card__email">{card.email}</div>
         </div>
       </div>
@@ -110,7 +112,7 @@ function CardBody(): JSX.Element | null {
             <li key={t.id}>
               <button type="button" className="ppl-thread" onClick={() => openThread(t.id)}>
                 {byKey ? <kbd className="cmd-key">{i + 1}</kbd> : <span className="ppl-thread__dot" data-on={t.unread} aria-hidden />}
-                <span className="ppl-thread__subject">{t.subject || '(no subject)'}</span>
+                <span className="ppl-thread__subject">{t.subject || tr('common:noSubject')}</span>
                 <span className="ppl-thread__time">{listTime(t.lastMessageAt)}</span>
               </button>
             </li>
@@ -120,16 +122,16 @@ function CardBody(): JSX.Element | null {
 
       <div className="ppl-card__actions">
         <button type="button" className="ppl-act" onClick={() => { close(); composeTo(address) }}>
-          <PenLine size={14} strokeWidth={1.5} /><span>Compose</span>{byKey && <Keys binding="c" />}
+          <PenLine size={14} strokeWidth={1.5} /><span>{tr('card.compose')}</span>{byKey && <Keys binding="c" />}
         </button>
         <button type="button" className="ppl-act" onClick={() => { close(); allMailFrom(card.email) }}>
-          <Search size={14} strokeWidth={1.5} /><span>All mail</span>{byKey && <Keys binding="a" />}
+          <Search size={14} strokeWidth={1.5} /><span>{tr('card.allMail')}</span>{byKey && <Keys binding="a" />}
         </button>
         <button type="button" className="ppl-act" onClick={() => { close(); void copyAddress(card.email) }}>
-          <Copy size={14} strokeWidth={1.5} /><span>Copy</span>{byKey && <Keys binding="y" />}
+          <Copy size={14} strokeWidth={1.5} /><span>{tr('card.copy')}</span>{byKey && <Keys binding="y" />}
         </button>
       </div>
-      {byKey && <div className="ppl-card__foot"><kbd className="cmd-key cmd-key--word">esc</kbd><span>close</span></div>}
+      {byKey && <div className="ppl-card__foot"><kbd className="cmd-key cmd-key--word">esc</kbd><span>{tr('card.close')}</span></div>}
     </div>
   )
 }

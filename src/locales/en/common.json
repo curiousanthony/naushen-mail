@@ -4,5 +4,55 @@
     "yesterday": "Yesterday",
     "previous7": "Previous 7 days",
     "previous30": "Previous 30 days"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "retry": "Retry",
+    "undo": "Undo"
+  },
+  "toast": {
+    "sendFailed": "Couldn't send the message.",
+    "sendFailedWithReason": "Couldn't send: {{error}}"
+  },
+  "noSubject": "(no subject)",
+  "role": {
+    "inbox": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "trash": "Trash",
+    "spam": "Spam",
+    "archive": "Archive",
+    "starred": "Starred",
+    "important": "Important",
+    "all": "All Mail",
+    "reminders": "Reminders"
+  },
+  "category": {
+    "social": "Social",
+    "promotions": "Promotions",
+    "updates": "Updates",
+    "forums": "Forums"
+  },
+  "color": {
+    "gray": "gray",
+    "brown": "brown",
+    "orange": "orange",
+    "yellow": "yellow",
+    "green": "green",
+    "blue": "blue",
+    "purple": "purple",
+    "pink": "pink",
+    "red": "red"
+  },
+  "searchOperators": {
+    "from": "sender name or address",
+    "to": "recipient name or address",
+    "subject": "words in the subject",
+    "label": "label name",
+    "hasAttachment": "has a file attached",
+    "isUnread": "unread only",
+    "isStarred": "starred only",
+    "dateFormat": "YYYY-MM-DD"
   }
 }

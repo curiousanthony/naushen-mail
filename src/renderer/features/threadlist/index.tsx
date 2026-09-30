@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
 import { usePreviewStore } from '@/features/preview'
 import { Row } from './Row'
@@ -40,6 +41,7 @@ const DENSITY: Record<'comfortable' | 'compact', Metrics> = {
 
 /** The conversation list: view title, filter chips, date groups, selection and hover actions. */
 export function ThreadList(): JSX.Element {
+  const { t } = useTranslation('threadlist')
   const threads = useApp((s) => s.threads)
   const total = useApp((s) => s.total)
   const loading = useApp((s) => s.loading)
@@ -271,7 +273,7 @@ export function ThreadList(): JSX.Element {
 
       <div
         className="tl__scroll" ref={scroller} onScroll={onScroll}
-        role="listbox" aria-multiselectable aria-label="Conversations" tabIndex={0}
+        role="listbox" aria-multiselectable aria-label={t('list.ariaLabel')} tabIndex={0}
         aria-activedescendant={focusedId ? `trow-${focusedId}` : undefined}
         onMouseDown={clearKbd} onMouseMove={listKbd ? clearKbd : undefined}
         // Tab into the list lands the cursor on the first row (or keeps the current one), no opening.
@@ -325,7 +327,7 @@ export function ThreadList(): JSX.Element {
       <BulkBar selected={selectedThreads} labels={labels} />
       {menu && menuThread && (
         <RowMenu
-          x={menu.x} y={menu.y} label="Conversation actions"
+          x={menu.x} y={menu.y} label={t('list.rowMenuLabel')}
           items={buildRowMenu(menuThread, navRole)} onPick={pickMenu} onClose={closeMenu}
         />
       )}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Trash2 } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { Popover, useAnchor } from '../sidebar/Popover'
@@ -10,6 +11,7 @@ import { Popover, useAnchor } from '../sidebar/Popover'
  * Gmail/Outlook delete, not only a local one. There is no undo for it, hence the confirm.
  */
 export function EmptyTrashButton(): JSX.Element | null {
+  const { t: tr } = useTranslation('threadlist')
   const accountId = useApp((s) => s.accountId)
   const total = useApp((s) => s.total)
   const act = useApp((s) => s.act)
@@ -27,7 +29,7 @@ export function EmptyTrashButton(): JSX.Element | null {
       const ids = threads.map((t) => t.id)
       close()
       if (ids.length) await act({ type: 'deleteForever' }, ids)
-      toast({ message: ids.length === 1 ? 'Trash emptied · 1 conversation deleted' : `Trash emptied · ${ids.length} conversations deleted` })
+      toast({ message: tr('emptyTrash.done', { count: ids.length }) })
     } finally {
       setBusy(false)
     }
@@ -36,16 +38,16 @@ export function EmptyTrashButton(): JSX.Element | null {
   return (
     <>
       <button className="tl__tool tl__tool--danger" onClick={toggle} aria-haspopup="dialog" aria-expanded={!!anchor}>
-        <Trash2 size={14} /> Empty trash
+        <Trash2 size={14} /> {tr('emptyTrash.button')}
       </button>
       {anchor && (
-        <Popover anchor={anchor} onClose={close} align="end" width={252} label="Empty trash">
+        <Popover anchor={anchor} onClose={close} align="end" width={252} label={tr('emptyTrash.button')}>
           <div className="menu__confirm">
-            <p>Permanently delete {total === 1 ? 'this conversation' : `all ${total} conversations`} in Trash? This can't be undone.</p>
+            <p>{tr('emptyTrash.confirm', { count: total })}</p>
             <div className="menu__confirm-actions">
-              <button className="menu__confirm-cancel" onClick={close} disabled={busy}>Cancel</button>
+              <button className="menu__confirm-cancel" onClick={close} disabled={busy}>{tr('common:actions.cancel')}</button>
               <button className="menu__confirm-danger" onClick={() => void confirm()} disabled={busy}>
-                {busy ? 'Emptying…' : 'Empty trash'}
+                {busy ? tr('emptyTrash.emptying') : tr('emptyTrash.button')}
               </button>
             </div>
           </div>

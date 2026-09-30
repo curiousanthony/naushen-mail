@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
 import { groupShortcuts } from './sheet'
 import { Keys } from './Keycaps'
@@ -13,6 +14,7 @@ export function ShortcutsHelp(): JSX.Element | null {
 }
 
 function SheetBody(): JSX.Element {
+  const { t } = useTranslation('commands')
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const close = (): void => useApp.getState().setOverlay(null)
@@ -20,17 +22,17 @@ function SheetBody(): JSX.Element {
   useEffect(() => { inputRef.current?.focus() }, [])
 
   return (
-    <Overlay onClose={close} width={760} top="9vh" label="Keyboard shortcuts" className="cmd-sheet">
+    <Overlay onClose={close} width={760} top="9vh" label={t('sheet.title')} className="cmd-sheet">
       <div className="cmd-sheet__head">
-        <h2 className="cmd-sheet__title">Keyboard shortcuts</h2>
-        <button className="cmd-iconbtn" aria-label="Close" onClick={close}><X size={16} strokeWidth={1.5} /></button>
+        <h2 className="cmd-sheet__title">{t('sheet.title')}</h2>
+        <button className="cmd-iconbtn" aria-label={t('common.close')} onClick={close}><X size={16} strokeWidth={1.5} /></button>
       </div>
       <div className="cmd-inputrow cmd-inputrow--sm cmd-sheet__search">
         <Search size={16} strokeWidth={1.5} className="cmd-inputrow__icon" />
-        <input ref={inputRef} className="cmd-input cmd-input--sm" placeholder="Search shortcuts…" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search shortcuts" />
+        <input ref={inputRef} className="cmd-input cmd-input--sm" placeholder={t('sheet.search')} value={query} onChange={(e) => setQuery(e.target.value)} aria-label={t('sheet.searchLabel')} />
       </div>
       <div className="cmd-sheet__body">
-        {sections.length === 0 && <div className="cmd-empty">No shortcuts match “{query}”.</div>}
+        {sections.length === 0 && <div className="cmd-empty">{t('sheet.noMatch', { query })}</div>}
         <div className="cmd-sheet__cols">
           {sections.map((g) => (
             <section key={g.section} className="cmd-sheet__section">
@@ -42,7 +44,7 @@ function SheetBody(): JSX.Element {
                     <Keys binding={s.keys[0]} display={s.display} then />
                     {!s.display && s.keys.length > 1 && s.keys[1] !== s.keys[0] && s.id !== 'account.switch' && (
                       <>
-                        <span className="cmd-keys__or">or</span>
+                        <span className="cmd-keys__or">{t('sheet.or')}</span>
                         <Keys binding={s.keys.find((k, i) => i > 0 && !['backspace'].includes(k)) ?? s.keys[1]} then />
                       </>
                     )}
@@ -54,8 +56,8 @@ function SheetBody(): JSX.Element {
         </div>
       </div>
       <div className="cmd-footer cmd-footer--sheet">
-        <span>Single-key shortcuts work whenever you are not typing.</span>
-        <span><kbd className="cmd-key cmd-key--word">esc</kbd> Close</span>
+        <span>{t('sheet.footer')}</span>
+        <span><kbd className="cmd-key cmd-key--word">esc</kbd> {t('common.close')}</span>
       </div>
     </Overlay>
   )

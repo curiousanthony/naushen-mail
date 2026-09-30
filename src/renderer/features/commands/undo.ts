@@ -1,4 +1,5 @@
 import type { ThreadAction } from '@shared/types'
+import i18n from '@/i18n'
 
 export interface UndoEntry {
   id: number
@@ -55,23 +56,21 @@ export class UndoStack {
   clear(): void { this.items = [] }
 }
 
-const noun = (n: number): string => (n === 1 ? 'Conversation' : `${n} conversations`)
-
 /** Toast copy: "Conversation archived", "3 conversations moved to trash". */
 export function toastText(kind: 'archive' | 'unarchive' | 'trash' | 'untrash' | 'spam' | 'notSpam' | 'read' | 'unread' | 'star' | 'unstar' | 'mute' | 'unmute', n: number): string {
-  const subj = noun(n)
+  const o = { count: n }
   switch (kind) {
-    case 'archive': return `${subj} archived`
-    case 'unarchive': return `${subj} moved to inbox`
-    case 'trash': return `${subj} moved to trash`
-    case 'untrash': return `${subj} restored`
-    case 'spam': return `${subj} reported as spam`
-    case 'notSpam': return `${subj} moved to inbox`
-    case 'read': return `${subj} marked as read`
-    case 'unread': return `${subj} marked as unread`
-    case 'star': return `${subj} starred`
-    case 'unstar': return `${subj} unstarred`
-    case 'mute': return `${subj} muted. Replies will skip your inbox`
-    case 'unmute': return `${subj} unmuted and moved to inbox`
+    case 'archive': return i18n.t('commands:toast.archive', o)
+    case 'unarchive': return i18n.t('commands:toast.unarchive', o)
+    case 'trash': return i18n.t('commands:toast.trash', o)
+    case 'untrash': return i18n.t('commands:toast.untrash', o)
+    case 'spam': return i18n.t('commands:toast.spam', o)
+    case 'notSpam': return i18n.t('commands:toast.notSpam', o)
+    case 'read': return i18n.t('commands:toast.read', o)
+    case 'unread': return i18n.t('commands:toast.unread', o)
+    case 'star': return i18n.t('commands:toast.star', o)
+    case 'unstar': return i18n.t('commands:toast.unstar', o)
+    case 'mute': return i18n.t('commands:toast.mute', o)
+    case 'unmute': return i18n.t('commands:toast.unmute', o)
   }
 }

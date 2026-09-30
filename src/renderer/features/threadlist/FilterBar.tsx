@@ -3,15 +3,19 @@ import {
   AlarmClock, BookmarkPlus, Calendar, CalendarDays, Check, Inbox, LayoutList, ListFilter, MailOpen,
   MessagesSquare, Newspaper, Paperclip, Plus, Reply, Star, Tag, Type, User, Users, X, type LucideIcon
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import {
-  ATTACHMENT_KINDS, DATE_PRESETS, ENUM_VALUES, PROPS, PROP_GROUPS, PROP_ORDER, activeCount, compileConditions,
-  describeCondition, isActive, newCondition, type FilterCondition, type FilterProp
+  PROPS, PROP_GROUPS, PROP_ORDER, activeCount, compileConditions,
+  isActive, newCondition, type FilterCondition, type FilterProp
 } from '@shared/filters'
 import type { AttachmentKind, Contact, Label, ThreadFilter } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { useViewEditor } from '@/features/sidebar/viewEditorState'
 import { accountTags, ambiguousLabelNames } from '@/features/sidebar/lib'
 import { useFilters, setConditions } from './filterState'
+import {
+  attachmentKinds, datePresets, describeConditionText, enumOptions, groupText, opOptions, propText
+} from './filterText'
 
 export interface FilterBarProps {
   labels: Label[]
@@ -43,6 +47,7 @@ function refreshSoon(): void {
  * SQLite over the whole mailbox -- not just the rows on screen.
  */
 export function FilterBar({ labels, showGroupToggle = true }: FilterBarProps): JSX.Element {
+  const { t } = useTranslation('threadlist')
   const settings = useApp((s) => s.settings)
   const accounts = useApp((s) => s.accounts)
   const nav = useApp((s) => s.nav)
@@ -58,10 +63,10 @@ export function FilterBar({ labels, showGroupToggle = true }: FilterBarProps): J
   const tags = useMemo(() => accountTags(accounts), [accounts])
   const labelName = (id: string): string => {
     const l = labels.find((x) => x.id === id)
-    if (!l) return 'Label'
+    if (!l) return t('filter.labelFallback')
     return ambiguous.has(l.name) && tags[l.accountId] ? `${l.name} (${tags[l.accountId]})` : l.name
   }
-  const accountName = (id: string): string => accounts.find((a) => a.id === id)?.email ?? 'Account'
+  const accountName = (id: string): string => accounts.find((a) => a.id === id)?.email ?? t('filter.accountFallback')
   const ctx = { labelName, accountName }
 
   const commit = (next: FilterCondition[]): void => { setConditions(next); refreshSoon() }
@@ -109,22 +114,22 @@ export function FilterBar({ labels, showGroupToggle = true }: FilterBarProps): J
             className="tl__tool" data-on={n > 0 || picker} aria-haspopup="dialog" aria-expanded={picker}
             onClick={() => { setEditing(null); setPicker((v) => !v) }}
           >
-            <ListFilter size={14} /> Filter{n > 0 ? ` · ${n}` : ''}
+            <ListFilter size={14} /> {t('filter.button')}{n > 0 ? ` · ${n}` : ''}
           </button>
           {picker && <PropertyPicker props={available} onPick={add} onClose={() => setPicker(false)} />}
         </span>
         {showGroupToggle && (
-          <button className="tl__tool" onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })} title="Group conversations by date">
-            <LayoutList size={14} /> {settings.groupByDate ? 'Date' : 'No groups'}
+          <button className="tl__tool" onClick={() => void updateSettings({ groupByDate: !settings.groupByDate })} title={t('filter.groupByDate')}>
+            <LayoutList size={14} /> {settings.groupByDate ? t('filter.groupDate') : t('filter.groupNone')}
           </button>
         )}
       </div>
 
       {conds.length > 0 && (
-        <div className="tl__chiprow" role="group" aria-label="Active filters">
+        <div className="tl__chiprow" role="group" aria-label={t('filter.active')}>
           {conds.map((c) => {
             const Icon = ICONS[c.prop]
-            const [prop, op, value] = describeCondition(c, ctx)
+            const [prop, op, value] = describeConditionText(c, ctx)
             return (
               <span key={c.id} className="tl__anchor">
                 <span className="tl__fchip" data-open={editing === c.id} data-pending={!isActive(c)}>
@@ -137,7 +142,7 @@ export function FilterBar({ labels, showGroupToggle = true }: FilterBarProps): J
                     <span className="tl__fchip-op">{op}</span>
                     {value && <span className="tl__fchip-val">{value}</span>}
                   </button>
-                  <button className="tl__fchip-x" onClick={() => remove(c.id)} aria-label={`Remove ${prop} filter`}><X size={11} /></button>
+                  <button className="tl__fchip-x" onClick={() => remove(c.id)} aria-label={t('filter.remove', { prop })}><X size={11} /></button>
                 </span>
                 {editing === c.id && (
                   <ConditionEditor
@@ -148,10 +153,10 @@ export function FilterBar({ labels, showGroupToggle = true }: FilterBarProps): J
               </span>
             )
           })}
-          <button className="tl__fadd" onClick={() => { setEditing(null); setPicker(true) }} aria-label="Add a filter"><Plus size={12} /> Add</button>
-          {conds.length > 1 && <button className="tl__clear" onClick={() => { commit([]); setEditing(null) }}>Clear all</button>}
+          <button className="tl__fadd" onClick={() => { setEditing(null); setPicker(true) }} aria-label={t('filter.add')}><Plus size={12} /> {t('filter.addShort')}</button>
+          {conds.length > 1 && <button className="tl__clear" onClick={() => { commit([]); setEditing(null) }}>{t('filter.clearAll')}</button>}
           {n > 0 && (
-            <button className="tl__clear tl__fsave" onClick={saveAsView}><BookmarkPlus size={12} /> Save as view…</button>
+            <button className="tl__clear tl__fsave" onClick={saveAsView}><BookmarkPlus size={12} /> {t('filter.saveAsView')}</button>
           )}
         </div>
       )}
@@ -183,13 +188,14 @@ function Popover({ onClose, label, children, wide }: { onClose(): void; label: s
 // ---------------------------------------------------------------- property picker
 
 function PropertyPicker({ props, onPick, onClose }: { props: FilterProp[]; onPick(p: FilterProp): void; onClose(): void }): JSX.Element {
+  const { t } = useTranslation('threadlist')
   const [q, setQ] = useState('')
   const [active, setActive] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => inputRef.current?.focus(), [])
 
   const shown = props.filter((p) => {
-    const d = PROPS[p]
+    const d = propText(p)
     return !q.trim() || `${d.label} ${d.hint}`.toLowerCase().includes(q.trim().toLowerCase())
   })
   useEffect(() => setActive(0), [q])
@@ -202,9 +208,9 @@ function PropertyPicker({ props, onPick, onClose }: { props: FilterProp[]; onPic
   }
 
   return (
-    <Popover onClose={onClose} label="Add a filter">
+    <Popover onClose={onClose} label={t('filter.add')}>
       <input
-        ref={inputRef} className="tl__pop-search" placeholder="Filter by…" value={q} onChange={(e) => setQ(e.target.value)}
+        ref={inputRef} className="tl__pop-search" placeholder={t('filter.filterBy')} value={q} onChange={(e) => setQ(e.target.value)}
         onKeyDown={onKeyDown} role="combobox" aria-expanded aria-controls="fprop-list" aria-activedescendant={shown[active] ? `fprop-${shown[active]}` : undefined}
       />
       <div id="fprop-list" className="tl__pop-list" role="listbox">
@@ -212,8 +218,8 @@ function PropertyPicker({ props, onPick, onClose }: { props: FilterProp[]; onPic
           const items = shown.filter((p) => PROPS[p].group === g)
           if (!items.length) return null
           return (
-            <div key={g} role="group" aria-label={g}>
-              <div className="tl__pop-group">{g}</div>
+            <div key={g} role="group" aria-label={groupText(g)}>
+              <div className="tl__pop-group">{groupText(g)}</div>
               {items.map((p) => {
                 const Icon = ICONS[p]
                 return (
@@ -223,15 +229,15 @@ function PropertyPicker({ props, onPick, onClose }: { props: FilterProp[]; onPic
                     onMouseEnter={() => setActive(shown.indexOf(p))} onClick={() => onPick(p)}
                   >
                     <Icon size={14} className="tl__pop-icon" />
-                    <span className="tl__pop-name">{PROPS[p].label}</span>
-                    <span className="tl__pop-hint">{PROPS[p].hint}</span>
+                    <span className="tl__pop-name">{propText(p).label}</span>
+                    <span className="tl__pop-hint">{propText(p).hint}</span>
                   </button>
                 )
               })}
             </div>
           )
         })}
-        {!shown.length && <div className="tl__pop-empty">No matching property</div>}
+        {!shown.length && <div className="tl__pop-empty">{t('filter.noMatchingProperty')}</div>}
       </div>
     </Popover>
   )
@@ -249,6 +255,7 @@ interface EditorProps {
 }
 
 function ConditionEditor({ cond, labels, accounts, owner, onChange, onClose }: EditorProps): JSX.Element {
+  const { t } = useTranslation('threadlist')
   const def = PROPS[cond.prop]
   const bodyRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -259,7 +266,7 @@ function ConditionEditor({ cond, labels, accounts, owner, onChange, onClose }: E
     const cur = list ?? []
     return cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]
   }
-  const enums = ENUM_VALUES[cond.prop]
+  const enums = enumOptions(cond.prop)
 
   let body: ReactNode = null
   if (enums) {
@@ -269,7 +276,7 @@ function ConditionEditor({ cond, labels, accounts, owner, onChange, onClose }: E
   } else if (cond.prop === 'subject') {
     body = (
       <input
-        className="tl__pop-input" placeholder="Word or phrase in the subject" value={cond.value ?? ''}
+        className="tl__pop-input" placeholder={t('filter.subjectPlaceholder')} value={cond.value ?? ''}
         onChange={(e) => onChange({ value: e.target.value })} onKeyDown={(e) => { if (e.key === 'Enter') onClose() }}
       />
     )
@@ -279,28 +286,28 @@ function ConditionEditor({ cond, labels, accounts, owner, onChange, onClose }: E
         items={labels.map((l) => ({ key: l.id, label: l.name, sub: owner(l), dot: `var(--chip-${l.color ?? 'gray'}-fg)` }))}
         selected={cond.values ?? []} onToggle={(k) => onChange({ values: toggle(cond.values, k) })}
       />
-    ) : <div className="tl__pop-empty">No labels yet</div>
+    ) : <div className="tl__pop-empty">{t('filter.noLabels')}</div>
   } else if (cond.prop === 'account') {
     body = <CheckList items={accounts.map((a) => ({ key: a.id, label: a.email }))} selected={cond.values ?? []} onToggle={(k) => onChange({ values: toggle(cond.values, k) })} />
   } else if (cond.prop === 'attachment') {
     if (cond.op === 'type') {
-      body = <CheckList items={ATTACHMENT_KINDS.map((k) => ({ key: k.key, label: k.label }))} selected={cond.values ?? []} onToggle={(k) => onChange({ values: toggle(cond.values, k) as AttachmentKind[] })} />
+      body = <CheckList items={attachmentKinds()} selected={cond.values ?? []} onToggle={(k) => onChange({ values: toggle(cond.values, k) as AttachmentKind[] })} />
     } else if (cond.op === 'larger') {
-      body = <NumberField value={cond.n ?? 1} unit="MB" presets={[1, 5, 10, 25]} onChange={(n) => onChange({ n })} />
+      body = <NumberField value={cond.n ?? 1} unit={t('filter.unit.mb')} presets={[1, 5, 10, 25]} onChange={(n) => onChange({ n })} />
     }
   } else if (cond.prop === 'size') {
-    if (cond.op === 'atleast') body = <NumberField value={cond.n ?? 2} unit="messages" presets={[3, 5, 10]} min={2} onChange={(n) => onChange({ n })} />
+    if (cond.op === 'atleast') body = <NumberField value={cond.n ?? 2} unit={t('filter.unit.messages')} presets={[3, 5, 10]} min={2} onChange={(n) => onChange({ n })} />
   } else if (cond.prop === 'date') {
     if (cond.op === 'within') {
-      body = <RadioList options={DATE_PRESETS} value={cond.value} onPick={(v) => onChange({ value: v })} />
+      body = <RadioList options={datePresets()} value={cond.value} onPick={(v) => onChange({ value: v })} />
     } else {
       body = (
         <div className="tl__pop-dates">
           {cond.op !== 'before' && (
-            <label>{cond.op === 'between' ? 'From' : 'Date'}<input type="date" value={cond.from ?? ''} max={cond.to || undefined} onChange={(e) => onChange({ from: e.target.value })} /></label>
+            <label>{cond.op === 'between' ? t('filter.dateFrom') : t('filter.dateSingle')}<input type="date" value={cond.from ?? ''} max={cond.to || undefined} onChange={(e) => onChange({ from: e.target.value })} /></label>
           )}
           {cond.op !== 'after' && (
-            <label>{cond.op === 'between' ? 'To' : 'Date'}<input type="date" value={cond.to ?? ''} min={cond.from || undefined} onChange={(e) => onChange({ to: e.target.value })} /></label>
+            <label>{cond.op === 'between' ? t('filter.dateTo') : t('filter.dateSingle')}<input type="date" value={cond.to ?? ''} min={cond.from || undefined} onChange={(e) => onChange({ to: e.target.value })} /></label>
           )}
         </div>
       )
@@ -315,12 +322,12 @@ function ConditionEditor({ cond, labels, accounts, owner, onChange, onClose }: E
   }
 
   return (
-    <Popover onClose={onClose} label={`Edit ${def.label} filter`} wide={cond.prop === 'label' || cond.prop === 'reply' || cond.prop === 'newsletter'}>
+    <Popover onClose={onClose} label={t('filter.edit', { prop: propText(cond.prop).label })} wide={cond.prop === 'label' || cond.prop === 'reply' || cond.prop === 'newsletter'}>
       <div className="tl__pop-head">
-        <span className="tl__pop-title">{def.label}</span>
+        <span className="tl__pop-title">{propText(cond.prop).label}</span>
         {def.ops.length > 1 && (
-          <select className="tl__pop-select" value={cond.op} onChange={(e) => setOp(e.target.value)} aria-label="Operator">
-            {def.ops.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+          <select className="tl__pop-select" value={cond.op} onChange={(e) => setOp(e.target.value)} aria-label={t('filter.operator')}>
+            {opOptions(cond.prop, def.ops.map((o) => o.key)).map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
           </select>
         )}
       </div>
@@ -385,6 +392,7 @@ function NumberField({ value, unit, presets, min = 1, onChange }: { value: numbe
  * composer uses). In "domain" mode the suggestions collapse to distinct domains.
  */
 function SenderInput({ value, domain, onChange, onDone }: { value: string; domain: boolean; onChange(v: string): void; onDone(): void }): JSX.Element {
+  const { t: tr } = useTranslation('threadlist')
   const [list, setList] = useState<Contact[]>([])
   const [active, setActive] = useState(-1)
   useEffect(() => {
@@ -417,7 +425,7 @@ function SenderInput({ value, domain, onChange, onDone }: { value: string; domai
   return (
     <div className="tl__pop-sender">
       <input
-        className="tl__pop-input" value={value} placeholder={domain ? 'example.com' : 'Name or address'}
+        className="tl__pop-input" value={value} placeholder={domain ? 'example.com' : tr('filter.senderPlaceholder')}
         onChange={(e) => onChange(e.target.value)} onKeyDown={onKeyDown} role="combobox" aria-expanded={options.length > 0} aria-autocomplete="list"
       />
       {options.length > 0 && !options.some((o) => o.key === value.trim()) && (

@@ -1,4 +1,5 @@
 import type { Label, SystemRole, Thread, ThreadAction } from '@shared/types'
+import i18n from '@/i18n'
 
 /**
  * Where a conversation can be moved to, by drag & drop on the sidebar or the `v` picker.
@@ -33,7 +34,6 @@ export function roleLabelIds(labels: Label[], role: SystemRole): Set<string> {
 }
 
 const has = (t: Thread, ids: Set<string>): boolean => t.labelIds.some((l) => ids.has(l))
-const noun = (n: number): string => (n === 1 ? 'Conversation' : `${n} conversations`)
 
 /**
  * What moving `threads` to `dest` does. `navRole` is the mailbox being viewed: restoring from
@@ -53,33 +53,33 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
       apply = threads.filter((t) => !has(t, inbox))
       const action: ThreadAction = navRole === 'trash' ? { type: 'untrash' } : navRole === 'spam' ? { type: 'notSpam' } : { type: 'unarchive' }
       steps.push({ ids: apply.map((t) => t.id), action })
-      message = `${noun(apply.length)} moved to inbox`
+      message = i18n.t('commands:toast.unarchive', { count: apply.length })
       break
     }
     case 'archive':
       apply = threads.filter((t) => has(t, inbox))
       steps.push({ ids: apply.map((t) => t.id), action: { type: 'archive' } })
-      message = `${noun(apply.length)} archived`
+      message = i18n.t('commands:toast.archive', { count: apply.length })
       break
     case 'trash':
       apply = threads.filter((t) => !has(t, trash))
       steps.push({ ids: apply.map((t) => t.id), action: { type: 'trash' } })
-      message = `${noun(apply.length)} moved to trash`
+      message = i18n.t('commands:toast.trash', { count: apply.length })
       break
     case 'spam':
       apply = threads.filter((t) => !has(t, spam))
       steps.push({ ids: apply.map((t) => t.id), action: { type: 'spam' } })
-      message = `${noun(apply.length)} reported as spam`
+      message = i18n.t('commands:toast.spam', { count: apply.length })
       break
     case 'starred':
       apply = threads.filter((t) => !t.starred)
       steps.push({ ids: apply.map((t) => t.id), action: { type: 'star' } })
-      message = `${noun(apply.length)} starred`
+      message = i18n.t('commands:toast.star', { count: apply.length })
       break
     case 'label': {
       // Labels are per account. A thread of another account gets that account's label of the
       // same name (Receipts on Gmail -> Receipts on Outlook); with no such label it is left alone.
-      const name = labels.find((l) => l.id === dest.labelId)?.name ?? 'label'
+      const name = labels.find((l) => l.id === dest.labelId)?.name ?? i18n.t('gestures:move.labelFallback')
       const want = name.toLowerCase()
       const resolve = (t: Thread): string | null => {
         if (t.accountId === dest.accountId) return dest.labelId
@@ -99,7 +99,7 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
       for (const [labelId, ids] of byLabel) steps.push({ ids, action: { type: 'addLabel', labelId } })
       const out = apply.filter((t) => has(t, inbox))
       if (out.length) steps.push({ ids: out.map((t) => t.id), action: { type: 'archive' } })
-      message = `${noun(apply.length)} moved to “${name}”`
+      message = i18n.t('gestures:move.toLabel', { count: apply.length, name })
       break
     }
   }
@@ -109,13 +109,16 @@ export function planMove(threads: Thread[], dest: Dest, labels: Label[], navRole
 /** Toast copy when part of a multi-account selection was skipped. */
 export function skippedNote(plan: MovePlan, dest: Dest): string {
   if (!plan.skipped || !plan.apply.length) return plan.message
-  const why = dest.kind === 'label' ? `${plan.skipped} without a matching label left as is` : `${plan.skipped} already there`
-  return `${plan.message} (${why})`
+  const why = dest.kind === 'label'
+    ? i18n.t('gestures:move.skippedNoLabel', { count: plan.skipped })
+    : i18n.t('gestures:move.skippedAlreadyThere', { count: plan.skipped })
+  return i18n.t('gestures:move.withNote', { message: plan.message, note: why })
 }
 
 /** The action a right-to-left swipe (and its reveal strip) performs, given the mailbox. */
 export function swipeArchiveAction(navRole: SystemRole | null): { action: ThreadAction; label: string; done: string } {
-  if (navRole === 'trash') return { action: { type: 'untrash' }, label: 'Restore', done: 'Conversation restored' }
-  if (navRole === 'spam') return { action: { type: 'notSpam' }, label: 'Not spam', done: 'Conversation moved to inbox' }
-  return { action: { type: 'archive' }, label: 'Archive', done: 'Conversation archived' }
+  const t = i18n.getFixedT(null, 'gestures')
+  if (navRole === 'trash') return { action: { type: 'untrash' }, label: t('swipe.restore'), done: t('swipe.restored') }
+  if (navRole === 'spam') return { action: { type: 'notSpam' }, label: t('swipe.notSpam'), done: t('swipe.movedToInbox') }
+  return { action: { type: 'archive' }, label: t('swipe.archive'), done: t('swipe.archived') }
 }

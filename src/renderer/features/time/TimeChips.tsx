@@ -1,4 +1,5 @@
 import { BellRing, Clock, MailQuestion, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { formatBack, formatIn, localeDefaults } from './format'
@@ -13,6 +14,7 @@ import './time.css'
  *  - follow-up fired:    "No reply yet"         click -> dismiss
  */
 export function TimeChips({ thread }: { thread: Thread }): JSX.Element | null {
+  const { t } = useTranslation('time')
   const act = useApp((s) => s.act)
   const focus = useApp((s) => s.focus)
   const setOverlay = useApp((s) => s.setOverlay)
@@ -32,7 +34,7 @@ export function TimeChips({ thread }: { thread: Thread }): JSX.Element | null {
     void act({ type: 'remind', at: null }, [thread.id])
     toast({
       message,
-      actionLabel: at ? 'Undo' : undefined,
+      actionLabel: at ? t('common:actions.undo') : undefined,
       onAction: at ? () => void window.api.invoke('threads.act', [thread.id], { type: 'remind', at }) : undefined
     })
   }
@@ -43,26 +45,26 @@ export function TimeChips({ thread }: { thread: Thread }): JSX.Element | null {
         <button
           className="tf-chip" onMouseDown={stop}
           onClick={(e) => { e.stopPropagation(); focus(thread.id); setOverlay('snooze') }}
-          title="Reschedule reminder" aria-label={`${formatBack(snoozed, now, hour12)}. Reschedule reminder`}
+          title={t('chip.reschedule')} aria-label={t('chip.rescheduleAria', { when: formatBack(snoozed, now, hour12) })}
         >
           <BellRing size={11} strokeWidth={1.75} aria-hidden />{formatBack(snoozed, now, hour12)}
         </button>
       )}
       {pending && (
         <button
-          className="tf-chip" onMouseDown={stop} onClick={(e) => cancel(e, 'Follow-up cancelled')}
-          title="Cancel follow-up" aria-label={`Follow-up in ${formatIn(pending, now)}. Cancel follow-up`}
+          className="tf-chip" onMouseDown={stop} onClick={(e) => cancel(e, t('chip.cancelled'))}
+          title={t('chip.cancel')} aria-label={t('chip.cancelAria', { in: formatIn(pending, now) })}
         >
-          <Clock size={11} strokeWidth={1.75} aria-hidden />Follow-up in {formatIn(pending, now)}
+          <Clock size={11} strokeWidth={1.75} aria-hidden />{t('chip.followUpIn', { in: formatIn(pending, now) })}
           <X size={10} strokeWidth={2} className="tf-chip__x" aria-hidden />
         </button>
       )}
       {fired && (
         <button
-          className="tf-chip tf-chip--alert" onMouseDown={stop} onClick={(e) => cancel(e, 'Dismissed')}
-          title="No reply yet. Click to dismiss" aria-label="No reply yet. Dismiss"
+          className="tf-chip tf-chip--alert" onMouseDown={stop} onClick={(e) => cancel(e, t('chip.dismissed'))}
+          title={t('chip.noReplyTitle')} aria-label={t('chip.noReplyAria')}
         >
-          <MailQuestion size={11} strokeWidth={1.75} aria-hidden />No reply yet
+          <MailQuestion size={11} strokeWidth={1.75} aria-hidden />{t('chip.noReply')}
           <X size={10} strokeWidth={2} className="tf-chip__x" aria-hidden />
         </button>
       )}

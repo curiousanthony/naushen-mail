@@ -1,4 +1,6 @@
 import { format } from 'date-fns'
+import i18n, { currentLocale } from '@/i18n'
+import { dateLocale } from '@/i18n/dateLocale'
 
 /** Reminder ("snooze") presets and date formatting. Pure; `now` is injectable for tests. */
 
@@ -29,16 +31,16 @@ const sameDay = (a: Date, b: Date): boolean =>
 export function getSnoozePresets(now: Date = new Date()): SnoozePreset[] {
   const out: SnoozePreset[] = []
   const later = new Date(Math.ceil((now.getTime() + 3 * HOUR) / HALF_HOUR) * HALF_HOUR)
-  if (sameDay(later, now)) out.push({ id: 'later', label: 'Later today', at: later })
-  if (now.getHours() < 15) out.push({ id: 'evening', label: 'This evening', at: atTime(now, 0, 18) })
+  if (sameDay(later, now)) out.push({ id: 'later', label: i18n.t('commands:snooze.later'), at: later })
+  if (now.getHours() < 15) out.push({ id: 'evening', label: i18n.t('commands:snooze.evening'), at: atTime(now, 0, 18) })
   // Small hours (before 5 AM): "tomorrow 8 AM" would be a day and a half away; today's morning is meant.
-  if (now.getHours() < 5) out.push({ id: 'tomorrow', label: 'This morning', at: atTime(now, 0, 8) })
-  else out.push({ id: 'tomorrow', label: 'Tomorrow', at: atTime(now, 1, 8) })
+  if (now.getHours() < 5) out.push({ id: 'tomorrow', label: i18n.t('commands:snooze.thisMorning'), at: atTime(now, 0, 8) })
+  else out.push({ id: 'tomorrow', label: i18n.t('commands:snooze.tomorrow'), at: atTime(now, 1, 8) })
   const dow = now.getDay() // 0 = Sunday
-  if (dow >= 1 && dow <= 4) out.push({ id: 'weekend', label: 'This weekend', at: atTime(now, 6 - dow, 8) })
+  if (dow >= 1 && dow <= 4) out.push({ id: 'weekend', label: i18n.t('commands:snooze.weekend'), at: atTime(now, 6 - dow, 8) })
   let toMonday = (8 - dow) % 7 || 7
   if (toMonday === 1) toMonday = 8
-  out.push({ id: 'nextweek', label: 'Next week', at: atTime(now, toMonday, 8) })
+  out.push({ id: 'nextweek', label: i18n.t('commands:snooze.nextWeek'), at: atTime(now, toMonday, 8) })
   return out
 }
 
@@ -52,10 +54,10 @@ export const DEFAULT_HOUR = 8
 export type FollowUpPresetId = 'fu2d' | 'fu3d' | 'fu1w' | 'fu2w'
 export function getFollowUpPresets(now: Date = new Date()): Array<{ id: FollowUpPresetId; label: string; at: Date }> {
   return [
-    { id: 'fu2d', label: 'In 2 days', at: atTime(now, 2, DEFAULT_HOUR) },
-    { id: 'fu3d', label: 'In 3 days', at: atTime(now, 3, DEFAULT_HOUR) },
-    { id: 'fu1w', label: 'In 1 week', at: atTime(now, 7, DEFAULT_HOUR) },
-    { id: 'fu2w', label: 'In 2 weeks', at: atTime(now, 14, DEFAULT_HOUR) }
+    { id: 'fu2d', label: i18n.t('commands:snooze.in2Days'), at: atTime(now, 2, DEFAULT_HOUR) },
+    { id: 'fu3d', label: i18n.t('commands:snooze.in3Days'), at: atTime(now, 3, DEFAULT_HOUR) },
+    { id: 'fu1w', label: i18n.t('commands:snooze.in1Week'), at: atTime(now, 7, DEFAULT_HOUR) },
+    { id: 'fu2w', label: i18n.t('commands:snooze.in2Weeks'), at: atTime(now, 14, DEFAULT_HOUR) }
   ]
 }
 
@@ -78,14 +80,15 @@ export function orderByUsage<T extends { id: string }>(presets: T[], usage: Reco
 /** Row hint / toast text: "Today, 6:00 PM", "Tomorrow, 8:00 AM", "Sat, 8:00 AM", "Oct 12, 8:00 AM". */
 export function formatReminderDate(ts: number | Date, now: Date = new Date(), sentence = false): string {
   const d = ts instanceof Date ? ts : new Date(ts)
-  const time = format(d, 'h:mm a')
+  const time = format(d, 'p', { locale: dateLocale() }) // localised short time: "6:00 PM" in English
   const dayDiff = Math.round((atTime(d, 0, 12).getTime() - atTime(now, 0, 12).getTime()) / (24 * HOUR))
-  let s: string
-  if (dayDiff === 0) s = `Today, ${time}`
-  else if (dayDiff === 1) s = `Tomorrow, ${time}`
-  else if (dayDiff > 1 && dayDiff < 7) s = `${format(d, 'EEE')}, ${time}`
-  else s = `${format(d, d.getFullYear() === now.getFullYear() ? 'MMM d' : 'MMM d, yyyy')}, ${time}`
-  return sentence ? s.replace(/^(Today|Tomorrow)/, (m) => m.toLowerCase()) : s
+  const intl = (o: Intl.DateTimeFormatOptions): string => new Intl.DateTimeFormat(currentLocale(), o).format(d)
+  // `sentence`: the phrase sits inside a sentence ("Reminder set for today, 6:00 PM"), so today/tomorrow are lower-cased.
+  if (dayDiff === 0) return i18n.t(sentence ? 'commands:snooze.when.todayInline' : 'commands:snooze.when.today', { time })
+  if (dayDiff === 1) return i18n.t(sentence ? 'commands:snooze.when.tomorrowInline' : 'commands:snooze.when.tomorrow', { time })
+  if (dayDiff > 1 && dayDiff < 7) return i18n.t('commands:snooze.when.weekday', { day: intl({ weekday: 'short' }), time })
+  const date = d.getFullYear() === now.getFullYear() ? intl({ month: 'short', day: 'numeric' }) : intl({ month: 'short', day: 'numeric', year: 'numeric' })
+  return i18n.t('commands:snooze.when.date', { date, time })
 }
 
 export const toDateInput = (d: Date): string => format(d, 'yyyy-MM-dd')

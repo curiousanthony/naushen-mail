@@ -1,5 +1,6 @@
 import { forwardRef, useMemo } from 'react'
 import { CalendarClock, CornerDownLeft } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_HOUR } from '@/features/commands/snooze'
 import { localeDefaults } from './format'
 import { parseWhen, type ParsedWhen } from './parse'
@@ -33,7 +34,8 @@ interface Props {
  * "Type a time…" input with a live preview line underneath. The preview reserves its height so
  * the panel never jumps while typing.
  */
-export const WhenField = forwardRef<HTMLInputElement, Props>(function WhenField({ value, onChange, placeholder = 'Type a time… tomorrow 3pm', onSubmit, ariaLabel = 'Type a time', autoFocus }, ref) {
+export const WhenField = forwardRef<HTMLInputElement, Props>(function WhenField({ value, onChange, placeholder, onSubmit, ariaLabel, autoFocus }, ref) {
+  const { t } = useTranslation('time')
   const state = useMemo(() => whenState(value), [value])
   return (
     <div className="tw">
@@ -43,8 +45,8 @@ export const WhenField = forwardRef<HTMLInputElement, Props>(function WhenField(
           ref={ref}
           className="tw__input"
           value={value}
-          placeholder={placeholder}
-          aria-label={ariaLabel}
+          placeholder={placeholder ?? t('when.placeholder')}
+          aria-label={ariaLabel ?? t('when.ariaLabel')}
           autoFocus={autoFocus}
           spellCheck={false}
           autoComplete="off"
@@ -56,8 +58,8 @@ export const WhenField = forwardRef<HTMLInputElement, Props>(function WhenField(
       </label>
       <div className="tw__preview" data-state={state.kind} aria-live="polite">
         {state.kind === 'ok' && (<><span className="tw__when">{state.when.label}</span><CornerDownLeft size={12} strokeWidth={1.75} aria-hidden /></>)}
-        {state.kind === 'past' && <span>That time has already passed</span>}
-        {state.kind === 'unknown' && <span>Try “tomorrow 3pm”, “fri”, “in 2 days” or “oct 12”</span>}
+        {state.kind === 'past' && <span>{t('when.past')}</span>}
+        {state.kind === 'unknown' && <span>{t('when.unknown')}</span>}
       </div>
     </div>
   )
