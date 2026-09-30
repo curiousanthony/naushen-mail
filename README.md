@@ -30,9 +30,15 @@ Naushen Mail brings the ergonomics of Notion Mail to your desktop: a block-style
 the sidebar, a side-peek reader, and a command palette on `Cmd/Ctrl+K`. It talks directly to your mail provider from
 your own computer. There is no Naushen server, no telemetry and no AI. It is not affiliated with Notion.
 
-> **Status: early (0.1.x).** Only **Gmail** is supported today. Outlook / Microsoft 365 support is implemented in the
-> code but hidden until a Microsoft app registration exists, so it is **coming**, not available. A **Demo** account lets
-> you try the whole UI offline.
+> **Status: early (0.1.x).** Only **Gmail** is supported today.
+>
+> **Heads-up: connecting Gmail needs a one-time personal Google setup (about 10 minutes, free).** Google charges for the
+> security review that a mail app needs to offer one-click "Sign in with Google", and this project does not pay for it. Instead,
+> an in-app wizard walks you through creating *your own* Google OAuth client, and your mail access then never touches anyone
+> else's Google project. Details: [docs/google-setup.md](docs/google-setup.md).
+>
+> Outlook and IMAP accounts are planned (see the [roadmap](#roadmap)). A **Demo** account lets you try the whole UI offline
+> without any setup.
 
 ## Download
 
@@ -55,6 +61,10 @@ to find the exact asset. Full instructions: [docs/install.md](docs/install.md).
   `xattr -dr com.apple.quarantine "/Applications/Naushen Mail.app"`.
 - **Windows (SmartScreen):** click **More info**, then **Run anyway**.
 
+Then add your account: **Settings, Accounts, Add account, Gmail** starts the setup wizard
+([step by step](docs/google-setup.md)). Google will show a "hasn't verified this app" screen for your own client; click
+**Advanced, Go to Naushen Mail**. That is expected and fine for personal use.
+
 ## Features
 
 - **Views**: saved filters (with group and sort) in the sidebar, plus Mail folders and coloured labels.
@@ -72,6 +82,14 @@ to find the exact asset. Full instructions: [docs/install.md](docs/install.md).
 
 Not included on purpose: AI features, Notion accounts or workspaces.
 
+## Roadmap
+
+- **IMAP / app-password accounts**: read any mailbox, including Gmail, without creating anything in Google Cloud.
+- **Outlook / Microsoft 365**: implemented in the code but hidden until a Microsoft app registration exists.
+- **Signed and notarised builds**, so the first-launch warnings go away.
+
+No dates are promised. Ideas and votes are welcome in the [issues](https://github.com/curiousanthony/naushen-mail/issues).
+
 ## Supported languages
 
 English, French, Spanish, German, Portuguese (Brazil), Russian, Simplified Chinese, Japanese and Hindi.
@@ -79,7 +97,7 @@ Change it in Settings, or follow your system. Adding or fixing a translation is 
 
 ## Privacy
 
-- There is **no Naushen server**. The app talks only to Google (and, later, Microsoft) from your device.
+- There is **no Naushen server**. The app talks only to Google (and, later, other providers) from your device.
 - **No telemetry, no analytics, no crash reporting.**
 - Mail is cached **locally** in a SQLite database on your machine.
 - Sign-in tokens are encrypted with your OS secure store (macOS Keychain, Windows DPAPI, Linux Secret Service via Electron `safeStorage`).
@@ -102,7 +120,8 @@ In plain terms:
 
 It was chosen so that people can use, audit and contribute to the app freely while nobody can repackage it and sell it
 as a competing product in the meantime. This summary is not legal advice; the [LICENSE](LICENSE) text is what applies.
-Learn more at [fsl.software](https://fsl.software).
+The license's SPDX identifier is **`FSL-1.1-ALv2`** ("ALv2" = Apache License 2.0 as the future license); it is sometimes written
+"FSL-1.1-Apache-2.0". Learn more at [fsl.software](https://fsl.software).
 
 ## Build from source
 
@@ -113,8 +132,8 @@ npm install
 npm run dev
 ```
 
-Needs Node.js 24. See [docs/building.md](docs/building.md) for packaging and [docs/google-setup.md](docs/google-setup.md)
-if you want to use your own Google OAuth client. Try the **Demo** account (Settings, Add account, Demo) to explore offline.
+Needs Node.js 24. See [docs/building.md](docs/building.md) for packaging. To read real Gmail you need your own Google OAuth
+client ([docs/google-setup.md](docs/google-setup.md)). Try the **Demo** account (Settings, Add account, Demo) to explore offline.
 
 ## Contributing
 

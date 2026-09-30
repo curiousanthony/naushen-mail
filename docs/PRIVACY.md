@@ -9,7 +9,8 @@ Effective date: 2026-09-30. Questions: open an issue at <https://github.com/curi
 - Mail and settings are stored locally, and sign-in tokens are encrypted with your operating system's secure store.
 
 ## What the app accesses
-When you sign in with Google, you grant the app these permissions:
+Naushen Mail signs in with an OAuth client that you create in your own Google Cloud project, so your mail access is
+granted to your own client, not to a shared app run by the developer. When you sign in with Google, you grant the app these permissions:
 
 | Permission (scope) | Why |
 |---|---|
