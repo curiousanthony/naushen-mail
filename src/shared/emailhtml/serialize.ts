@@ -35,6 +35,27 @@ interface Ctx {
 // ------------------------------------------------------------------ public API
 
 /**
+ * A signature may carry a `data:` image (e.g. the "Photo left" picture). Gmail and most webmail
+ * do not render `data:` image sources in received mail, so each one is lifted out into an inline
+ * MIME part and referenced as `cid:` -- the same mechanism as images in the message body.
+ * The same data URI appearing twice is attached once.
+ */
+function inlineSignatureImages(html: string, ctx: Ctx): string {
+  const seen = new Map<string, string>()
+  return html.replace(/(<img\b[^>]*?\bsrc\s*=\s*)(["'])(data:[^"']*)\2/gi, (whole, pre: string, q: string, src: string) => {
+    const data = parseDataUri(src)
+    if (!data) return whole
+    let cid = seen.get(src)
+    if (!cid) {
+      cid = `${ctx.cidPrefix}-${++ctx.seq}@mailroom.local`
+      seen.set(src, cid)
+      ctx.images.push({ cid, filename: `signature-${ctx.seq}.${extFor(data.mimeType)}`, mimeType: data.mimeType, dataBase64: data.dataBase64 })
+    }
+    return `${pre}${q}cid:${safeCid(cid) ?? ''}${q}`
+  })
+}
+
+/**
  * Serialise a composer document to `{ html, text, inlineImages }`.
  *
  * `inlineImages` must be attached to the MIME message as inline parts with the matching
@@ -49,7 +70,7 @@ export function serializeToEmailHtml(doc: unknown, opts: SerializeOptions = {}):
   const parts: string[] = [body || emptyParagraph()]
 
   if (opts.signatureHtml && opts.signatureHtml.trim()) {
-    parts.push(`<div${style('margin:24px 0 0', `color:${INK}`)}>${opts.signatureHtml}</div>`)
+    parts.push(`<div${style('margin:24px 0 0', `color:${INK}`)}>${inlineSignatureImages(opts.signatureHtml, ctx)}</div>`)
   }
   if (opts.quoted) parts.push(renderQuote(opts.quoted))
 

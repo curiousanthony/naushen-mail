@@ -15,6 +15,8 @@ export interface Connector {
   connect(deps: { repo: Repo }): Promise<{ account: Account; adapter: import('./providers/types').ProviderAdapter }>
   /** Rebuilds an adapter for an existing account at app start. */
   restore(account: Account, deps: { repo: Repo }): import('./providers/types').ProviderAdapter | null
+  /** Fetch the account's profile photo as a `data:` URI (undefined when there is none). Backfills accounts connected before avatars were stored. */
+  refreshAvatar?(account: Account, deps: { repo: Repo }): Promise<string | undefined>
   /** Called when the account is removed (delete stored tokens). */
   forget?(account: Account): void
 }
@@ -67,4 +69,15 @@ export function removeAccount(id: string, repo: Repo, engine: SyncEngine): void 
   engine.unregister(id)
   if (a) connectors[a.provider]?.forget?.(a)
   repo.deleteAccount(id)
+}
+
+/** Backfill missing profile photos in the background; never throws, never blocks launch. */
+export async function refreshAvatars(repo: Repo, engine: SyncEngine): Promise<void> {
+  for (const a of repo.listAccounts()) {
+    if (a.avatarUrl || a.provider === 'mock') continue
+    try {
+      const avatarUrl = await connectors[a.provider]?.refreshAvatar?.(a, { repo })
+      if (avatarUrl) { repo.patchAccount(a.id, { avatarUrl }); engine.emit({ type: 'changed' }) }
+    } catch { /* offline / reauth needed: retried next launch */ }
+  }
 }

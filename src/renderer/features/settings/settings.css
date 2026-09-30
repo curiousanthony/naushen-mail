@@ -129,7 +129,8 @@
 .st-saved { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--c-text-2); opacity: 0; transform: translateY(2px); transition: opacity 160ms, transform 160ms; pointer-events: none; }
 .st-saved.is-on { opacity: 1; transform: none; }
 
-.st-avatar { display: inline-grid; place-items: center; border-radius: 50%; color: var(--c-accent-text); font-weight: 600; flex: none; }
+.st-avatar { position: relative; overflow: hidden; display: inline-grid; place-items: center; border-radius: 50%; color: var(--c-accent-text); font-weight: 600; flex: none; }
+.st-avatar__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .st-swatch { display: inline-block; border-radius: 50%; flex: none; }
 .st-pill { display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 8px; border-radius: 10px; background: var(--c-bg-hover); color: var(--c-text-2); font-size: 12px; }
 .st-pill--ok { background: var(--chip-green-bg); color: var(--chip-green-fg); }
@@ -172,6 +173,7 @@
 .st-account__name { display: flex; align-items: center; gap: 8px; font-weight: 500; }
 .st-account__name > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .st-account__email { font-size: 12.5px; color: var(--c-text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-account__hint { font-size: 11.5px; color: var(--c-text-3); margin-top: 2px; }
 .st-account__status { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--c-text-2); flex: none; max-width: 220px; }
 .st-account__status span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .st-account__status.is-warn { color: var(--chip-orange-fg); }
@@ -373,3 +375,10 @@ kbd { min-width: 22px; height: 22px; padding: 0 6px; display: inline-grid; place
 }
 .st-accent:hover { transform: scale(1.14); }
 .st-accent.is-active { box-shadow: 0 0 0 2px var(--c-bg-raised), 0 0 0 4px var(--sw); }
+
+.st-sigphoto { display: flex; gap: 14px; align-items: flex-start; padding-top: 6px; }
+.st-sigphoto__thumb { width: 64px; height: 64px; flex: none; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--c-bg-hover); color: var(--c-text-3); box-shadow: inset 0 0 0 1px var(--c-divider); }
+.st-sigphoto__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.st-sigphoto__body { min-width: 0; flex: 1; }
+.st-sigphoto__body .st-muted { margin: 0 0 8px; }
+.st-sigphoto__actions { display: flex; flex-wrap: wrap; gap: 6px; }

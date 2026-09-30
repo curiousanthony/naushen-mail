@@ -48,6 +48,9 @@ function AccountRow({ account, now, onConnect, connecting }: { account: Account;
             <span className={clsx('st-badge', `st-badge--${account.provider}`)}>{PROVIDER_LABEL[account.provider]}</span>
           </div>
           <div className="st-account__email">{account.email}</div>
+          {!account.avatarUrl && account.provider !== 'mock' && account.status !== 'reauth' && (
+            <div className="st-account__hint">No profile photo yet. If {account.provider === 'gmail' ? 'Google' : 'Microsoft'} has one for this account, use Reauthorize to allow reading your profile.</div>
+          )}
         </div>
         <div className={clsx('st-account__status', `is-${status.tone}`)}>
           {status.tone === 'busy' || busy ? <Spinner size={12} /> : status.tone === 'ok' ? <span className="st-dot" /> : <AlertCircle size={13} strokeWidth={1.75} />}
@@ -56,8 +59,8 @@ function AccountRow({ account, now, onConnect, connecting }: { account: Account;
       </div>
       {!confirming && (
         <div className="st-account__actions">
-          {account.status === 'reauth' && (
-            <Button size="sm" variant="primary" busy={connecting} icon={<ShieldAlert size={13} />} onClick={() => onConnect(account.provider)}>Reauthorize</Button>
+          {(account.status === 'reauth' || (!account.avatarUrl && account.provider !== 'mock')) && (
+            <Button size="sm" variant={account.status === 'reauth' ? 'primary' : 'default'} busy={connecting} icon={<ShieldAlert size={13} />} onClick={() => onConnect(account.provider)}>Reauthorize</Button>
           )}
           <Button size="sm" busy={busy} icon={<RefreshCw size={13} />} onClick={() => void sync()}>Sync now</Button>
           <Button size="sm" variant="ghost" className="st-danger-text" onClick={() => setConfirming(true)}>Disconnect</Button>

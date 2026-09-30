@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import clsx from 'clsx'
-import { PenLine } from 'lucide-react'
+import { ImagePlus, PenLine, Trash2, UserRound } from 'lucide-react'
 import { useApp } from '@/lib/store'
-import { AccountSelect, ConfirmBar, EmptyState, Group, Row, SavedTick, SectionTitle, Switch } from '../ui'
+import { AccountSelect, Button, ConfirmBar, EmptyState, Group, Row, SavedTick, SectionTitle, Switch } from '../ui'
 import { RichTextEditor } from './RichTextEditor'
 import { useDebouncedCallback, useFlash } from '../lib/hooks'
 import { extPatch, readExt } from '../lib/settings-ext'
 import { sanitizeSignature } from '../lib/signatureSanitize'
+import { cropToSquareDataUri, readSignaturePhoto, writeSignaturePhoto } from '../lib/signaturePhoto'
 import { renderSignatureTemplate, SIGNATURE_TEMPLATES, type SignaturePreviewKind, type SignatureTemplate } from './signatureTemplates'
 
 /** CSS-only mock of a template's layout — never the template's real HTML (see AppearanceSection's `StylePreview`). */
@@ -56,6 +57,8 @@ export function SignatureSection(): JSX.Element {
   const [overrideHtml, setOverrideHtml] = useState<string | null>(null)
   const [applyTick, setApplyTick] = useState(0)
   const [pendingTemplate, setPendingTemplate] = useState<SignatureTemplate | null>(null)
+  const [photoErr, setPhotoErr] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => { if (!accounts.some((a) => a.id === accountId)) setAccountId(accounts[0]?.id ?? '') }, [accounts, accountId])
   currentId.current = accountId
@@ -88,6 +91,29 @@ export function SignatureSection(): JSX.Element {
     save.call(currentId.current, html)
     save.flush()
     setPendingTemplate(null)
+  }
+
+  const photo = useMemo(() => readSignaturePhoto(previewHtml), [previewHtml])
+
+  /** Swap the signature's photo cell and show it live in the editor + preview. */
+  const changePhoto = (next: string | null | 'account'): void => {
+    if (!account) return
+    const html = writeSignaturePhoto(preview, next, account)
+    if (html === null) return
+    const clean = sanitizeSignature(html)
+    setOverrideHtml(clean)
+    setApplyTick((t) => t + 1)
+    setPreview(clean)
+    save.call(currentId.current, clean)
+    save.flush()
+  }
+
+  const onPickFile = async (file: File | undefined): Promise<void> => {
+    if (fileRef.current) fileRef.current.value = ''
+    if (!file) return
+    setPhotoErr('')
+    if (!file.type.startsWith('image/') || file.type === 'image/svg+xml') { setPhotoErr('Choose a PNG, JPEG, GIF or WebP image.'); return }
+    try { changePhoto(await cropToSquareDataUri(file)) } catch (e) { setPhotoErr(e instanceof Error ? e.message : 'Could not use that image.') }
   }
 
   const pickTemplate = (tpl: SignatureTemplate): void => {
@@ -133,6 +159,31 @@ export function SignatureSection(): JSX.Element {
           />
         )}
       </Group>
+
+      {photo.kind !== 'none' && account && (
+        <Group title="Signature photo">
+          <div className="st-sigphoto">
+            <span className="st-sigphoto__thumb" aria-hidden>
+              {photo.kind === 'image' ? <img src={photo.src} alt="" /> : <UserRound size={22} strokeWidth={1.5} />}
+            </span>
+            <div className="st-sigphoto__body">
+              <p className="st-muted">{photo.kind === 'image' ? 'Shown beside your name. Pictures are cropped to a square and shrunk to fit.' : 'No picture yet, so your initial is shown. Add one to appear beside your name.'}</p>
+              <div className="st-sigphoto__actions">
+                <Button size="sm" icon={<ImagePlus size={13} />} onClick={() => fileRef.current?.click()}>{photo.kind === 'image' ? 'Replace picture…' : 'Choose picture…'}</Button>
+                {account.avatarUrl && photo.kind === 'image' && photo.src !== account.avatarUrl && (
+                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>Use account picture</Button>
+                )}
+                {account.avatarUrl && photo.kind === 'initials' && (
+                  <Button size="sm" variant="ghost" onClick={() => changePhoto('account')}>Use account picture</Button>
+                )}
+                {photo.kind === 'image' && <Button size="sm" variant="ghost" className="st-danger-text" icon={<Trash2 size={13} />} onClick={() => changePhoto(null)}>Remove</Button>}
+              </div>
+              {photoErr && <div className="st-inline-error" role="alert">{photoErr}</div>}
+            </div>
+            <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden onChange={(e) => void onPickFile(e.target.files?.[0])} />
+          </div>
+        </Group>
+      )}
 
       <Group title={`Signature${account ? ` for ${account.email}` : ''}`} action={<SavedTick show={saved} />}>
         <RichTextEditor label="Signature" resetKey={`${accountId}:${applyTick}`} initialHtml={initial} placeholder="Write a signature, e.g. your name and title…" minHeight={132}
