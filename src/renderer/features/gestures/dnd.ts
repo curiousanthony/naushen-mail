@@ -1,6 +1,7 @@
 import { useEffect, useRef, type DragEvent } from 'react'
 import { create } from 'zustand'
 import type { Thread } from '@shared/types'
+import i18n from '@/i18n'
 import { useApp } from '@/lib/store'
 import { moveThreads } from './move'
 import { destKey, planMove, type Dest } from './plan'
@@ -42,7 +43,7 @@ export function dragPayload(row: Thread, selectedIds: string[], all: Thread[]): 
   return [row]
 }
 
-const noun = (n: number): string => (n === 1 ? '1 conversation' : `${n} conversations`)
+const noun = (n: number): string => i18n.t('gestures:drag.conversations', { count: n })
 
 /** Small pill shown under the cursor while dragging ("3 conversations"). */
 function makeGhost(threads: Thread[]): HTMLElement {
@@ -51,7 +52,7 @@ function makeGhost(threads: Thread[]): HTMLElement {
   const first = threads[0]
   el.innerHTML = '<span class="dragghost__icon"></span><span class="dragghost__text"></span>'
   const text = el.querySelector('.dragghost__text')!
-  text.textContent = threads.length === 1 ? (first.subject || '(no subject)') : noun(threads.length)
+  text.textContent = threads.length === 1 ? (first.subject || i18n.t('common:noSubject')) : noun(threads.length)
   if (threads.length > 1) el.dataset.stack = String(Math.min(threads.length, 3))
   document.body.appendChild(el)
   return el

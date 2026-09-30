@@ -39,7 +39,7 @@ const MAIL_DROP: Record<string, Dest> = {
 
 /** Left navigation: accounts, compose, search, Views, Mail, Labels, Settings. */
 export function Sidebar(): JSX.Element {
-  const { t } = useTranslation('sidebar')
+  const { t, i18n } = useTranslation('sidebar')
   const accounts = useApp((s) => s.accounts)
   const labels = useApp((s) => s.labels)
   const views = useApp((s) => s.views)
@@ -61,7 +61,8 @@ export function Sidebar(): JSX.Element {
   // "All accounts": same-named labels across accounts are one row (per-account rows otherwise).
   const labelRows = useMemo(() => mergedLabels(labels, accountId), [labels, accountId])
   // Gmail only; empty (and the row hidden) for Outlook-only setups — see categoryGroups.
-  const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- category names are localised, so re-derive on a language change
+  const categoryRows = useMemo(() => categoryGroups(labels, accountId), [labels, accountId, i18n.language])
   const categoryCounts = useCategoryCounts(categoryRows, accountId, counts)
   const categoryUnread = useMemo(() => Object.values(categoryCounts).reduce((a, b) => a + b, 0), [categoryCounts])
   const tags = useMemo(() => accountTags(accounts), [accounts])

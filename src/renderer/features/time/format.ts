@@ -8,7 +8,8 @@ export function localeDefaults(): { hour12: boolean; weekStartsOn: 0 | 1 | 6; da
   let weekStartsOn: 0 | 1 | 6 = 1
   let dateOrder: 'mdy' | 'dmy' = 'mdy'
   try {
-    const loc = currentLocale()
+    // The OS locale (region included) decides 12/24h, week start and numeric date order; the UI language only names things.
+    const loc = typeof navigator !== 'undefined' ? navigator.language : currentLocale()
     hour12 = new Intl.DateTimeFormat(loc, { hour: 'numeric' }).resolvedOptions().hour12 ?? true
     const L = new Intl.Locale(loc ?? 'en-US') as Intl.Locale & { weekInfo?: { firstDay: number }; getWeekInfo?: () => { firstDay: number } }
     const first = (L.getWeekInfo ? L.getWeekInfo() : L.weekInfo)?.firstDay // 1 = Monday ... 7 = Sunday

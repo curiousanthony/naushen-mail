@@ -41,7 +41,7 @@ const DENSITY: Record<'comfortable' | 'compact', Metrics> = {
 
 /** The conversation list: view title, filter chips, date groups, selection and hover actions. */
 export function ThreadList(): JSX.Element {
-  const { t } = useTranslation('threadlist')
+  const { t, i18n } = useTranslation('threadlist')
   const threads = useApp((s) => s.threads)
   const total = useApp((s) => s.total)
   const loading = useApp((s) => s.loading)
@@ -94,7 +94,8 @@ export function ThreadList(): JSX.Element {
       : bundling
         ? buildItems(buildEntries(visible, bundleDefs, labels, myEmails), settings.groupByDate, expanded)
         : flatten(groupThreads(visible, settings.groupByDate)),
-    [nav.kind, bundling, visible, bundleDefs, labels, myEmails, settings.groupByDate, expanded, accountId]
+    // `i18n.language`: group headers (Today / Yesterday, category names) are localised text baked into the items.
+    [nav.kind, bundling, visible, bundleDefs, labels, myEmails, settings.groupByDate, expanded, accountId, i18n.language]
   )
   // Tell the keyboard layer what is on screen (j/k stops, what `e` and Enter mean on a bundle).
   useEffect(() => {
