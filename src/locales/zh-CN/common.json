@@ -54,5 +54,9 @@
     "isUnread": "仅未读",
     "isStarred": "仅星标",
     "dateFormat": "YYYY-MM-DD"
+  },
+  "defaultViews": {
+    "unread": "未读",
+    "attachments": "含附件"
   }
 }

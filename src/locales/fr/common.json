@@ -54,5 +54,9 @@
     "isUnread": "non lus uniquement",
     "isStarred": "favoris uniquement",
     "dateFormat": "YYYY-MM-DD"
+  },
+  "defaultViews": {
+    "unread": "Non lus",
+    "attachments": "Avec pièces jointes"
   }
 }

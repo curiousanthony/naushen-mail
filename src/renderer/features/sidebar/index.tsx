@@ -1,3 +1,4 @@
+import i18n from '@/i18n'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -450,18 +451,21 @@ function ViewRow({ view, count, active, onClick }: {
   const openEditor = useViewEditor((s) => s.open)
   const dotColor = view.color ? `var(--chip-${view.color}-fg)` : undefined
   const Icon = view.emoji ? VIEW_ICONS[view.emoji] : undefined
+  // The two seeded views are stored in English; show them translated until the user renames them.
+  const seeded = ({ 'view-unread': ['Unread', 'unread'], 'view-attachments': ['With attachments', 'attachments'] } as Record<string, [string, string]>)[view.id]
+  const label = seeded && view.name === seeded[0] ? i18n.t(`common:defaultViews.${seeded[1]}`) : view.name
 
   return (
     <div className="row__wrap">
       <button
-        className="row" data-active={active} onClick={onClick} title={view.name}
+        className="row" data-active={active} onClick={onClick} title={label}
         onContextMenu={(e) => { e.preventDefault(); toggle(e) }}
       >
         <span className="row__lead">
           {Icon ? <Icon size={16} />
             : <span className="row__dot" style={{ background: dotColor ?? 'var(--c-text-3)' }} />}
         </span>
-        <span className="row__label">{view.name}</span>
+        <span className="row__label">{label}</span>
         <Badge n={count} />
       </button>
       <Tooltip label={t('options')}>

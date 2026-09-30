@@ -27,7 +27,7 @@ export function onMainLanguageChange(cb: () => void): () => void {
 
 export function setMainLanguage(pref: LanguagePref | undefined): void {
   const locale = typeof app?.getLocale === 'function' ? app.getLocale() : 'en'
-  void instance.changeLanguage(resolveLanguage(pref, locale)).then(() => { for (const cb of listeners) cb() })
+  void instance.changeLanguage(resolveLanguage(pref, locale)).then(() => { for (const cb of [...listeners]) cb() })
 }
 /** Translate a main-process string: `mt('notify.newMail', { count })`. */
 export const mt = (key: string, options?: Record<string, unknown>): string => instance.t(key, options) as string

@@ -54,5 +54,9 @@
     "isUnread": "solo no leídos",
     "isStarred": "solo destacados",
     "dateFormat": "YYYY-MM-DD"
+  },
+  "defaultViews": {
+    "unread": "No leídos",
+    "attachments": "Con adjuntos"
   }
 }
