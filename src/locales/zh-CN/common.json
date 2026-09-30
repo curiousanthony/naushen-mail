@@ -1,0 +1,58 @@
+{
+  "date": {
+    "today": "今天",
+    "yesterday": "昨天",
+    "previous7": "过去 7 天",
+    "previous30": "过去 30 天"
+  },
+  "actions": {
+    "cancel": "取消",
+    "save": "保存",
+    "retry": "重试",
+    "undo": "撤销"
+  },
+  "toast": {
+    "sendFailed": "无法发送邮件。",
+    "sendFailedWithReason": "无法发送：{{error}}"
+  },
+  "noSubject": "（无主题）",
+  "role": {
+    "inbox": "收件箱",
+    "sent": "已发送",
+    "drafts": "草稿",
+    "trash": "废纸篓",
+    "spam": "垃圾邮件",
+    "archive": "归档",
+    "starred": "星标",
+    "important": "重要",
+    "all": "所有邮件",
+    "reminders": "提醒"
+  },
+  "category": {
+    "social": "社交",
+    "promotions": "推广",
+    "updates": "动态",
+    "forums": "论坛"
+  },
+  "color": {
+    "gray": "灰色",
+    "brown": "棕色",
+    "orange": "橙色",
+    "yellow": "黄色",
+    "green": "绿色",
+    "blue": "蓝色",
+    "purple": "紫色",
+    "pink": "粉色",
+    "red": "红色"
+  },
+  "searchOperators": {
+    "from": "发件人姓名或地址",
+    "to": "收件人姓名或地址",
+    "subject": "主题中的字词",
+    "label": "标签名称",
+    "hasAttachment": "带有附件",
+    "isUnread": "仅未读",
+    "isStarred": "仅星标",
+    "dateFormat": "YYYY-MM-DD"
+  }
+}

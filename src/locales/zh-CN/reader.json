@@ -1,0 +1,133 @@
+{
+  "thread": {
+    "fallbackTitle": "会话",
+    "loading": "正在载入会话",
+    "unavailableTitle": "此会话已不可用。",
+    "unavailableHint": "它可能已被删除或移动。",
+    "resize": "调整会话面板大小"
+  },
+  "header": {
+    "collapse": "收起",
+    "collapseThread": "收起会话",
+    "archive": "归档",
+    "archived": "会话已归档",
+    "markUnread": "标为未读",
+    "markedUnread": "已标为未读",
+    "setReminder": "设置提醒",
+    "star": "加星标",
+    "unstar": "取消星标",
+    "label": "标签",
+    "unsubscribe": "退订",
+    "unsubscribeWeb": "在浏览器中打开",
+    "unsubscribeMail": "发送一封邮件",
+    "reportSpam": "举报垃圾邮件",
+    "reportedSpam": "已举报为垃圾邮件",
+    "trash": "移到废纸篓",
+    "trashed": "已移到废纸篓",
+    "noSubject": "（无主题）",
+    "messageCount_other": "{{count}} 封邮件"
+  },
+  "replyBar": {
+    "reply": "回复",
+    "replyAll": "全部回复",
+    "forward": "转发"
+  },
+  "message": {
+    "unread": "未读",
+    "expand": "展开邮件",
+    "showDetails": "显示详情",
+    "hideDetails": "隐藏详情",
+    "showRecipientDetails": "显示收件人详情",
+    "hideRecipientDetails": "隐藏收件人详情",
+    "toLine": "发给 {{recipients}}",
+    "toMe": "我",
+    "attachmentCount_other": "{{count}} 个附件",
+    "reply": "回复",
+    "replyAll": "全部回复",
+    "forward": "转发",
+    "copyField": "拷贝{{label}}",
+    "copyAddress_other": "拷贝{{label}}地址",
+    "copied": "已拷贝",
+    "detail": {
+      "from": "发件人",
+      "replyTo": "回复至",
+      "to": "收件人",
+      "cc": "抄送",
+      "bcc": "密送",
+      "date": "日期"
+    }
+  },
+  "body": {
+    "remoteImageBlocked_other": "已阻止 {{count}} 张远程图片",
+    "loadImages": "载入图片",
+    "alwaysLoad": "始终载入",
+    "empty": "此邮件没有内容。",
+    "frameTitle": "来自 {{sender}} 的邮件",
+    "showAsDesigned": "按原设计显示",
+    "adaptToDark": "适配深色模式",
+    "showOriginalColours": "显示原始颜色",
+    "adaptColours": "将颜色适配深色模式",
+    "original": "原始",
+    "adapt": "适配",
+    "showQuote": "显示引用内容",
+    "hideQuote": "隐藏引用内容"
+  },
+  "attachments": {
+    "preview": "预览 {{name}}",
+    "download": "下载 {{name}} — {{size}}"
+  },
+  "preview": {
+    "loading": "正在载入预览…",
+    "failed": "无法载入此文件的预览。",
+    "unavailable": "此文件类型不支持预览。",
+    "download": "下载",
+    "close": "关闭",
+    "closePreview": "关闭预览"
+  },
+  "invite": {
+    "loading": "正在读取邀请…",
+    "sending": "正在发送…",
+    "yes": "接受",
+    "maybe": "待定",
+    "no": "拒绝",
+    "replySubject": "{{response}}：{{summary}}",
+    "replyBody": "{{response}}，{{name}}。",
+    "sent": {
+      "accepted": "回复已发送，你已标记为接受",
+      "tentative": "回复已发送，你已标记为待定",
+      "declined": "回复已发送，你已标记为拒绝"
+    },
+    "failed": "无法发送你的回复。请重试。"
+  },
+  "code": {
+    "copyTooltip": "拷贝验证码",
+    "copyAria": "拷贝验证码 {{code}}",
+    "copy": "拷贝 <b>{{code}}</b>",
+    "copied": "已拷贝 {{code}}",
+    "copyFailed": "无法拷贝验证码",
+    "none": "此处没有近期的验证码"
+  },
+  "shield": {
+    "blocked_other": "已阻止 {{count}} 个追踪器",
+    "trackingPixel": "追踪像素",
+    "note": "追踪器会告知发件人你已打开此邮件。即使载入图片，它们也会保持被阻止。"
+  },
+  "link": {
+    "mailTo": "写邮件给",
+    "call": "拨打",
+    "trackingStripped_other": "打开时已移除 {{count}} 个追踪参数",
+    "warningLabel": "请检查此链接",
+    "warning": "此链接指向 <b>{{actual}}</b>，而不是 <b>{{shown}}</b>。",
+    "openAnyway": "仍然打开",
+    "cancel": "取消",
+    "writeTo": "给此地址写邮件",
+    "open": "打开链接",
+    "copyAddress": "拷贝地址",
+    "copyLink": "拷贝链接",
+    "copyLinkClean": "拷贝链接（无追踪）",
+    "copyFailed": "无法拷贝链接",
+    "copiedClean": "已拷贝不含追踪参数的链接",
+    "addressCopied": "地址已拷贝",
+    "copied": "链接已拷贝"
+  }
+}

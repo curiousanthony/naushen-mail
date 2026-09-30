@@ -1,0 +1,407 @@
+{
+  "nav": {
+    "group": { "account": "账户", "mail": "邮件", "app": "应用" },
+    "accounts": "账户",
+    "appearance": "外观与收件箱",
+    "signature": "签名",
+    "sending": "发送",
+    "labels": "标签",
+    "views": "视图",
+    "snippets": "片段",
+    "rules": "规则与合并",
+    "shortcuts": "键盘快捷键",
+    "about": "关于"
+  },
+  "modal": {
+    "label": "设置",
+    "sections": "设置分区",
+    "close": "关闭",
+    "closeAria": "关闭设置",
+    "noAccounts": "还没有账户",
+    "accountCount_other": "{{count}} 个账户"
+  },
+  "ui": {
+    "saved": "已保存",
+    "confirm": "确认",
+    "cancel": "取消",
+    "labelColour": "标签颜色",
+    "colors": {
+      "gray": "灰色", "brown": "棕色", "orange": "橙色", "yellow": "黄色", "green": "绿色",
+      "blue": "蓝色", "purple": "紫色", "pink": "粉色", "red": "红色"
+    }
+  },
+  "providers": { "demo": "演示" },
+  "store": {
+    "darwin": "macOS 钥匙串",
+    "win32": "Windows 凭据管理器/DPAPI",
+    "linux": "系统密钥环"
+  },
+  "errors": {
+    "unknown": "未知错误",
+    "missingGoogle": "请先添加你的 Google OAuth 客户端 ID。Naushen Mail 没有后端服务器，因此需要你自己创建（免费的）OAuth 应用。",
+    "missingMicrosoft": "请先添加你的 Microsoft 应用程序（客户端）ID。Naushen Mail 没有后端服务器，因此需要你自己注册（免费的）应用。",
+    "clientRejected": "{{name}} 拒绝了 OAuth 客户端。请检查下方 OAuth 设置中的凭据。（{{msg}}）",
+    "redirectRejected": "{{name}} 拒绝了重定向地址。请严格按照 OAuth 设置中的重定向步骤操作。（{{msg}}）",
+    "notInBuild": "此版本的 Naushen Mail 不提供 {{name}} 连接器。",
+    "timedOut": "登录超时。请重试，并在几分钟内完成登录。",
+    "cancelled": "登录已取消，未连接任何账户。",
+    "offline": "无法连接到 {{name}}。请检查网络连接后重试。",
+    "generic": "无法连接 {{name}}。请重试。",
+    "googleIdFormat": "Google 客户端 ID 以 .apps.googleusercontent.com 结尾",
+    "guidFormat": "应为类似 00000000-0000-0000-0000-000000000000 的 GUID"
+  },
+  "accounts": {
+    "title": "账户",
+    "description": "已连接到 Naushen Mail 的邮件账户。不同账户的会话不会合并。",
+    "connectedTitle": "已连接的账户",
+    "empty": {
+      "title": "没有已连接的账户",
+      "body": "连接 Gmail 开始收信，或添加演示账户离线体验 Naushen Mail。",
+      "body_outlook": "连接 Gmail 或 Outlook 开始收信，或添加演示账户离线体验 Naushen Mail。"
+    },
+    "addTitle": "添加账户",
+    "waiting": "正在等待登录…",
+    "finishInBrowser": "请在浏览器中完成",
+    "browserNote": "已打开浏览器窗口用于登录。完成后请回到这里；五分钟后将超时。",
+    "openGuide": "打开 OAuth 设置指南",
+    "openAdvanced": "打开高级 Google 客户端设置",
+    "connected": "已连接 {{email}}",
+    "providers": {
+      "gmail": { "title": "连接 Gmail", "sub": "Google 账户" },
+      "outlook": { "title": "连接 Outlook", "sub": "Microsoft 账户" },
+      "mock": { "title": "添加演示账户", "sub": "示例邮件，离线可用" }
+    },
+    "status": {
+      "syncing": "正在同步…",
+      "reauth": "需要重新授权",
+      "error": "同步出错",
+      "never": "尚未同步",
+      "justNow": "刚刚同步",
+      "synced": "{{time}}已同步"
+    },
+    "row": {
+      "noPhoto": "还没有头像。如果 {{company}} 为此账户设置了头像，请点按“重新授权”以允许读取你的个人资料。",
+      "reauthorize": "重新授权",
+      "syncNow": "立即同步",
+      "disconnect": "断开连接",
+      "disconnectConfirm": "<b>断开 {{email}}？</b>该账户的邮件、标签和本地提醒将从这台电脑上的 Naushen Mail 中移除。{{provider}} 上不会删除任何内容。"
+    }
+  },
+  "oauth": {
+    "copied": "已拷贝",
+    "openConsole": "打开 Google Cloud 控制台",
+    "wizardTitle": "使用你自己的 Google 客户端设置 Gmail",
+    "advancedTitle": "高级：使用你自己的 Google 客户端",
+    "intro": "Naushen Mail 没有后端服务器，因此 Gmail 需要一个由你自己创建的 Google OAuth 客户端。它是免费的，大约需要十分钟。这些值只保存在这台电脑上，除 Google 外不会发送到任何地方。演示账户无需任何设置即可使用。",
+    "intro_outlook": "Naushen Mail 没有后端服务器，因此 OAuth 应用需要由你自己创建（免费，每个约十分钟）。这些值只保存在这台 Mac 上，除 Google 和 Microsoft 外不会发送到任何地方。演示账户无需任何设置即可使用。",
+    "introBuiltIn": "Naushen Mail 已内置 Google 连接，无需任何设置即可连接 Gmail。只有在你更愿意时，才需要使用自己的客户端。这是免费的，大约需要十分钟；这些值只保存在这台电脑上。",
+    "guideLink": "阅读完整的服务商设置指南（Gmail）",
+    "guideLink_outlook": "阅读完整的服务商设置指南（Gmail 和 Outlook）",
+    "clientId": "客户端 ID",
+    "clientSecret": "客户端密钥",
+    "secretHint": "Google 将桌面应用的密钥视为非机密信息，但令牌端点仍然需要它。",
+    "hideSecret": "隐藏密钥",
+    "showSecret": "显示密钥",
+    "google": { "title": "Google（Gmail）" },
+    "wizard": {
+      "project": {
+        "title": "创建 Google Cloud 项目",
+        "body": "登录 Google Cloud 控制台并创建新项目，例如“Naushen Mail”。它是免费的，无需绑定付款方式。"
+      },
+      "api": {
+        "title": "启用 Gmail API",
+        "body": "在新项目中打开 Gmail API 页面，然后点按“启用”。"
+      },
+      "consent": {
+        "title": "设置同意屏幕",
+        "body": "Google Auth Platform → 开始使用。使用下方的应用名称，将你自己的电子邮件作为支持和联系地址，并选择“外部”受众群体。",
+        "copyName": "拷贝应用名称"
+      },
+      "scopes": {
+        "title": "添加 Gmail 权限",
+        "body": "数据访问 → 添加或移除范围 → 将下列内容粘贴到“手动添加范围”中 → 添加到表格 → 更新 → 保存。",
+        "copy": "拷贝范围"
+      },
+      "testUser": {
+        "title": "将自己添加为测试用户",
+        "body": "受众群体 → 测试用户 → 添加用户 → 输入你自己的 Gmail 地址。应用处于测试状态时，只有列出的用户才能登录。"
+      },
+      "client": {
+        "title": "创建桌面客户端",
+        "body": "客户端 → 创建客户端 → 应用类型：桌面应用 → 创建。随后 Google 会显示客户端 ID 和客户端密钥。"
+      },
+      "paste": {
+        "title": "粘贴客户端 ID 和密钥",
+        "body": "将两个值拷贝到这里。它们只保存在这台电脑上，除 Google 外不会发送到任何地方。",
+        "connectHint": "输入有效的客户端 ID 和密钥后，按钮才可使用。"
+      }
+    },
+    "expiry": {
+      "title": "避免每 7 天退出登录（推荐）",
+      "body": "同意屏幕处于测试状态时，Google 会每 7 天让你的登录失效，你需要点按“重新授权”。要避免这种情况，请打开“受众群体”并选择“发布应用”，使其处于正式版状态。个人使用无需通过 Google 的验证：登录时 Google 只会显示“未经验证的应用”警告（高级 → 前往 Naushen Mail）。",
+      "open": "打开“受众群体”页面"
+    },
+    "microsoft": {
+      "title": "Microsoft（Outlook）",
+      "open": "打开 Microsoft Entra",
+      "clientId": "应用程序（客户端）ID",
+      "adminNote": "工作或学校租户的某些权限可能需要管理员同意；个人账户则不需要。"
+    }
+  },
+  "guide": {
+    "microsoft": {
+      "register": "在 Microsoft Entra 中：应用注册 → 新注册。",
+      "name": "命名为“Naushen Mail”。支持的账户类型：任何组织目录中的账户和个人 Microsoft 账户。",
+      "redirect": "重定向 URI：平台选择“公共客户端/本机（移动和桌面）”，值为：",
+      "copyId": "将应用程序（客户端）ID 拷贝到上方的字段中。",
+      "public": "身份验证 → 允许公共客户端流 → 是。",
+      "permissions": "API 权限 → 添加 → Microsoft Graph → 委托的权限：",
+      "noSecret": "不要创建客户端密码。Naushen Mail 是公共客户端，使用 PKCE。"
+    }
+  },
+  "about": {
+    "title": "关于",
+    "version": "版本 {{version}}",
+    "versionLoading": "版本 …",
+    "license": "许可证：{{license}}",
+    "blurb": "一款安静、以键盘为先的 Gmail 桌面邮件客户端。你的邮件缓存在这台电脑上，账户令牌保存在{{store}}中。Naushen Mail 没有自己的服务器，也没有 AI 功能。",
+    "blurb_outlook": "一款安静、以键盘为先的 Gmail 和 Outlook 桌面邮件客户端。你的邮件缓存在这台电脑上，账户令牌保存在{{store}}中。Naushen Mail 没有自己的服务器，也没有 AI 功能。",
+    "docsTitle": "文档",
+    "open": "打开",
+    "builtWith": "构建于",
+    "openSource": "开源软件，按其各自的许可证使用。",
+    "links": {
+      "setup": { "label": "服务商设置指南", "desc": "连接 Gmail", "desc_outlook": "连接 Gmail 和 Outlook" },
+      "decisions": { "label": "决策与架构", "desc": "技术栈、取舍、完成标准" },
+      "design": { "label": "设计系统", "desc": "设计令牌、字体、动效" },
+      "privacy": { "label": "隐私政策", "desc": "Naushen Mail 存储什么、存在哪里" },
+      "issues": { "label": "报告问题", "desc": "在 GitHub 上提交缺陷和想法" },
+      "source": { "label": "源代码", "desc": "GitHub 上的 Naushen Mail" }
+    }
+  },
+  "appearance": {
+    "title": "外观与收件箱",
+    "description": "Naushen Mail 的外观以及收件箱的行为。",
+    "groups": {
+      "appearance": "外观",
+      "counts": "边栏计数",
+      "threadStyle": "会话样式",
+      "listTitle": "列表标题",
+      "inbox": "收件箱"
+    },
+    "language": {
+      "label": "语言",
+      "desc": "应用使用的语言。“跟随系统”将与操作系统保持一致。",
+      "system": "跟随系统"
+    },
+    "theme": {
+      "label": "主题",
+      "desc": "跟随 macOS，或选择浅色或深色。更改会立即生效。",
+      "light": "浅色", "dark": "深色", "system": "跟随系统"
+    },
+    "density": {
+      "label": "密度",
+      "comfortable": { "label": "舒适", "desc": "列表、边栏和阅读区留有更多空间" },
+      "compact": { "label": "紧凑", "desc": "行距更小，屏幕上显示更多会话" }
+    },
+    "accent": { "label": "强调色", "desc": "用于选中、焦点、未读圆点和主要按钮。" },
+    "accents": {
+      "blue": "蓝色", "violet": "紫罗兰", "pink": "粉色", "orange": "橙色", "green": "绿色", "teal": "青色", "neutral": "中性"
+    },
+    "counts": {
+      "label": "未读数显示",
+      "desc": "边栏中未读徽标的显示方式。上限模式下，视图的未读数超过 99 时显示 99+。",
+      "cap": "99+ 上限",
+      "exact": "精确数字"
+    },
+    "threadStyle": {
+      "side": { "label": "侧边预览", "desc": "从右侧滑出，覆盖在列表上" },
+      "center": { "label": "居中预览", "desc": "列表上方的居中弹窗" },
+      "full": { "label": "整页", "desc": "打开时取代列表" }
+    },
+    "listCount": {
+      "label": "在视图标题旁显示邮件数量",
+      "desc": "在标题（收件箱、分类等）右侧显示当前列表中的会话数量。默认关闭。"
+    },
+    "groupByDate": { "label": "按日期分组", "desc": "将会话归入今天、昨天、过去 7 天等分组下。" },
+    "markRead": { "label": "打开时标为已读", "desc": "打开会话后，它会立即变为已读。" },
+    "remoteImages": { "label": "阻止远程图片", "desc": "邮件中的图片仅在你允许时才会载入，以防追踪像素。" },
+    "hideCategories": {
+      "label": "在收件箱中隐藏推广/社交/动态/论坛邮件",
+      "desc": "仅限 Gmail。让收件箱只保留“主要”邮件，其余邮件仍可在边栏的“分类”中一键查看。默认关闭，开启前不会有任何变化。"
+    },
+    "avatars": {
+      "label": "显示头像",
+      "desc": "通过 Gravatar 在会话列表和阅读区显示发件人和收件人的照片。默认关闭，因为这会为每位联系人多请求一次外部服务。"
+    },
+    "swipe": { "label": "轻扫手势", "desc": "在会话上用双指轻扫：向左归档，向右设置提醒。仅限触控板。" },
+    "autoAdvance": {
+      "label": "自动前进",
+      "desc": "归档、删除或延后当前会话后跳转到哪里。",
+      "next": "下一个", "previous": "上一个", "close": "关闭"
+    }
+  },
+  "sending": {
+    "title": "发送与通知",
+    "groups": { "sending": "发送", "notifications": "通知" },
+    "undo": {
+      "label": "撤销发送",
+      "desc": "点按“发送”后将邮件暂留片刻，以便你收回。",
+      "aria": "撤销发送的延迟时间",
+      "off": "关闭",
+      "seconds": "{{seconds}} 秒"
+    },
+    "notifications": {
+      "label": "桌面通知",
+      "desc": "收件箱收到新邮件时显示 macOS 通知。连续到达的邮件会合并为一条；正在查看该收件箱时不会提醒。",
+      "off": "关闭", "all": "所有新邮件", "people": "仅限联系人"
+    },
+    "dock": { "label": "程序坞标记", "desc": "在程序坞图标上显示收件箱未读邮件数量。" }
+  },
+  "shortcuts": {
+    "title": "键盘快捷键",
+    "description": "Naushen Mail 专为键盘操作而设计。目前快捷键是固定的。",
+    "viewAll": "查看所有快捷键",
+    "names": {
+      "commandMenu": "命令菜单", "compose": "写邮件", "archive": "归档", "reply": "回复", "reminder": "设置提醒",
+      "label": "标签", "search": "搜索", "undo": "撤销", "all": "显示所有快捷键"
+    }
+  },
+  "labels": {
+    "title": "标签",
+    "description": "标签会与你的账户同步。颜色仅保存在 Naushen Mail 本地。",
+    "noAccounts": "还没有账户",
+    "noAccountsBody": "连接账户后即可管理其标签。",
+    "none": "还没有标签。",
+    "rename": "重命名标签 {{name}}",
+    "deleteLabel": "删除标签 {{name}}",
+    "delete": "删除",
+    "deleteConfirm": "<b>删除“{{name}}”？</b>它将从所有会话和账户本身中移除。",
+    "new": "新建标签",
+    "newFor": "{{email}} 的新标签名称",
+    "newColour": "新标签颜色",
+    "create": "创建"
+  },
+  "views": {
+    "title": "视图",
+    "description": "显示在边栏中的已保存筛选条件。拖动可重新排序。",
+    "count_other": "{{count}} 个已保存的视图",
+    "new": "新建视图",
+    "empty": {
+      "title": "没有已保存的视图",
+      "create": "创建视图",
+      "body": "视图是已保存的筛选条件，例如“未读”或“来自我的团队”。它会显示在边栏中。"
+    },
+    "moveUp": "上移 {{name}}",
+    "moveDown": "下移 {{name}}",
+    "deleteView": "删除 {{name}}",
+    "sidebar": "边栏",
+    "showInSidebar": "在边栏中显示 {{name}}",
+    "delete": "删除",
+    "deleteConfirm": "<b>删除视图“{{name}}”？</b>你的邮件不受影响。",
+    "role": {
+      "inbox": "收件箱", "sent": "已发送", "drafts": "草稿", "trash": "废纸篓", "spam": "垃圾邮件", "archive": "归档",
+      "starred": "星标", "important": "重要", "all": "所有邮件"
+    },
+    "filter": {
+      "reminders": "提醒",
+      "unread": "未读",
+      "starred": "星标",
+      "hasAttachment": "带附件",
+      "from": "发件人 {{list}}",
+      "to": "收件人 {{list}}",
+      "subject": "主题“{{text}}”",
+      "text": "“{{text}}”",
+      "labels_other": "{{count}} 个标签",
+      "accounts_other": "{{count}} 个账户",
+      "all": "所有邮件"
+    }
+  },
+  "snippets": {
+    "title": "片段",
+    "description": "可插入任何邮件的常用文本。保存在这台 Mac 上。",
+    "new": "新建片段",
+    "saveFailed": "无法保存片段（本地存储不可用）。",
+    "empty": {
+      "title": "还没有片段",
+      "create": "创建片段",
+      "body": "保存你反复输入的内容：空闲时间、路线说明、礼貌的婉拒。"
+    },
+    "untitled": "未命名片段",
+    "emptyPreview": "空",
+    "snippetFallback": "片段",
+    "deleteNamed": "删除 {{name}}",
+    "titleLabel": "标题",
+    "titlePlaceholder": "例如：会议空闲时间",
+    "shortcutLabel": "快捷输入",
+    "shortcutHint": "可选。在写信时输入“/”加快捷输入，即可插入此片段。",
+    "shortcutPlaceholder": "meeting",
+    "shortcutTaken": "另一个片段已在使用 /{{shortcut}}。",
+    "content": "内容",
+    "contentLabel": "片段内容",
+    "contentPlaceholder": "输入要插入的文字…",
+    "delete": "删除",
+    "deleteConfirm": "<b>删除此片段？</b>此操作无法撤销。",
+    "create": "创建片段",
+    "save": "保存"
+  },
+  "rte": {
+    "formatting": "{{label}}格式",
+    "bold": "粗体（⌘B）",
+    "italic": "斜体（⌘I）",
+    "underline": "下划线（⌘U）",
+    "addLink": "添加链接",
+    "removeLink": "移除链接",
+    "clear": "清除格式",
+    "linkPlaceholder": "粘贴链接，例如 example.com",
+    "linkAddress": "链接地址",
+    "applyLink": "应用链接"
+  },
+  "signature": {
+    "title": "签名",
+    "description": "添加在新邮件末尾。每个账户都有自己的签名。",
+    "noAccounts": "还没有账户",
+    "noAccountsBody": "请先连接账户；每个账户都有自己的签名。",
+    "account": "账户",
+    "inReplies": {
+      "label": "在回复和转发中包含",
+      "desc": "关闭后，签名只会添加到新邮件中。",
+      "aria": "在回复和转发中包含签名"
+    },
+    "templatesTitle": "模板",
+    "templatesIntro": "从常见版式开始，然后像编辑签名的其他部分一样修改占位文字。",
+    "templatesAria": "签名模板",
+    "templates": {
+      "minimal": { "label": "极简", "description": "只有姓名和职位，没有照片。" },
+      "photo-left": { "label": "照片居左", "description": "圆形照片位于姓名、职位和邮箱旁。" },
+      "compact": { "label": "紧凑", "description": "姓名、职位和电话排成一行。" },
+      "classic": { "label": "经典区块", "description": "姓名、职位、公司，然后是分隔线和联系方式。" }
+    },
+    "replaceConfirm": "用<b>{{name}}</b>替换当前签名？此操作无法撤销。",
+    "replace": "替换",
+    "photo": {
+      "title": "签名照片",
+      "hasImage": "显示在你的姓名旁。图片会被裁剪为正方形并缩小以适配。",
+      "noImage": "还没有图片，目前显示你的姓名首字。添加图片后会显示在姓名旁。",
+      "replace": "替换图片…",
+      "choose": "选择图片…",
+      "useAccount": "使用账户头像",
+      "remove": "移除",
+      "badType": "请选择 PNG、JPEG、GIF 或 WebP 图片。",
+      "unusable": "无法使用该图片。",
+      "unreadable": "无法将该文件作为图片读取。",
+      "empty": "该图片是空的。",
+      "unavailable": "图片处理不可用。"
+    },
+    "editorTitleFor": "{{email}} 的签名",
+    "placeholder": "写下签名，例如你的姓名和职位…",
+    "preview": {
+      "title": "预览",
+      "to": "收件人：<b>Sam Rivera</b>",
+      "subject": "主题：Following up",
+      "greeting": "Sam 你好，",
+      "body": "谢谢你今天的快速通话。我明天上午把记录发给你。",
+      "none": "无签名"
+    }
+  }
+}

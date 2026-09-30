@@ -1,0 +1,125 @@
+{
+  "summary": {
+    "archived_other": "已归档 {{count}} 个",
+    "trashed_other": "已将 {{count}} 个移到废纸篓",
+    "rescued_other": "已从垃圾邮件中救回 {{count}} 个",
+    "markedRead_other": "已将 {{count}} 个标为已读",
+    "starred_other": "已为 {{count}} 个加星标",
+    "labelled_other": "已为 {{count}} 个添加标签“{{name}}”",
+    "labelFallback": "标签"
+  },
+  "describe": {
+    "from": "发件人为 {{value}}",
+    "fromDomain": "发件人来自 @{{value}}",
+    "subject": "主题包含“{{value}}”",
+    "noActions": "无操作",
+    "actions": {
+      "archive": "跳过收件箱",
+      "markRead": "标为已读",
+      "star": "加星标",
+      "trash": "移到废纸篓",
+      "neverSpam": "从不移入垃圾邮件",
+      "label": "添加标签“{{name}}”"
+    }
+  },
+  "form": {
+    "whenMailIs": "当邮件满足",
+    "matchOn": "匹配项",
+    "matchValue": "匹配值",
+    "field": {
+      "from": { "label": "发件人", "placeholder": "name@example.com", "hint": "仅限此确切发件人。" },
+      "fromDomain": { "label": "域名", "placeholder": "example.com", "hint": "此域名下的任何人，包括其子域名。" },
+      "subject": { "label": "主题", "placeholder": "主题中的字词", "hint": "主题包含此文字的任何邮件。" }
+    },
+    "moreConditions_other": "另有 {{count}} 个条件。",
+    "then": "则",
+    "actionsAria": "操作",
+    "actions": {
+      "archive": "跳过收件箱",
+      "markRead": "标为已读",
+      "star": "加星标",
+      "trash": "移到废纸篓",
+      "neverSpam": "从不移入垃圾邮件"
+    },
+    "applyLabel": "添加标签",
+    "none": "无",
+    "appliesTo": "适用于",
+    "allAccounts": "所有账户"
+  },
+  "section": {
+    "title": "规则",
+    "description": "在 Naushen Mail 内对新邮件运行的筛选规则。它们仅保存在这台 Mac 上：不会在 Gmail 中创建任何内容，应用关闭时也不会运行。",
+    "description_outlook": "在 Naushen Mail 内对新邮件运行的筛选规则。它们仅保存在这台 Mac 上：不会在 Gmail 或 Outlook 中创建任何内容，应用关闭时也不会运行。",
+    "empty": {
+      "title": "还没有规则",
+      "body": "打开一个会话并按 <k1>⌘</k1><k2>⇧</k2><k3>R</k3>，即可自动整理该发件人的邮件。"
+    },
+    "removedAccount": "已移除的账户",
+    "allAccounts": "所有账户",
+    "ruleAria": "规则：{{condition}}",
+    "and": "，且",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "edit": "编辑规则",
+    "delete": "删除规则",
+    "deleteConfirm": "删除此规则？已整理的邮件会保持原位。",
+    "deleteAction": "删除",
+    "cancel": "取消",
+    "save": "保存",
+    "order": "规则按从上到下的顺序运行，所有匹配的规则都会生效。"
+  },
+  "bundles": {
+    "title": "收件箱合并",
+    "collapse": {
+      "label": "折叠低价值邮件",
+      "desc": "被合并的标签或发件人会在收件箱中显示为一行（例如“Newsletters · 7 封新邮件”）。星标邮件不会被合并。在你添加之前不会合并任何内容。"
+    },
+    "kindLabel": "标签",
+    "kindSender": "发件人",
+    "stop": "停止合并",
+    "bundleLabel": "合并一个标签",
+    "bundleLabelDesc": "或在边栏中右键点按标签。",
+    "chooseLabel": "选择标签…"
+  },
+  "host": {
+    "title": "创建规则",
+    "from": "来自“{{subject}}”",
+    "noSubject": "（无主题）",
+    "cancel": "取消",
+    "create": "创建规则",
+    "createApply_other": "创建并应用于 {{count}} 个",
+    "undo": "撤销",
+    "note": "仅存在于 Naushen Mail 本地：不会在 Gmail 中创建任何内容。",
+    "note_outlook": "仅存在于 Naushen Mail 本地：不会在 Gmail 或 Outlook 中创建任何内容。",
+    "match": {
+      "incomplete": "请添加一个值和一个操作",
+      "checking": "正在检查现有邮件…",
+      "none": "没有匹配的现有会话",
+      "some_other": "匹配 {{count}} 个现有会话"
+    },
+    "toast": {
+      "createdApplied": "规则已创建 · {{summary}}",
+      "existedApplied": "规则已存在 · {{summary}}",
+      "createdNothing": "规则已创建 · 无需更改",
+      "existedNothing": "规则已存在 · 无需更改",
+      "alreadyHave": "你已经有这条规则了",
+      "created": "规则已创建。它会筛选这台 Mac 上的新邮件。",
+      "viewRules": "查看规则",
+      "failed": "无法创建规则",
+      "failedWith": "无法创建规则：{{message}}"
+    }
+  },
+  "toast": {
+    "noIncoming": "此会话没有可用来创建规则的收到的邮件。",
+    "undo": "撤销",
+    "ran": "规则：{{summary}}",
+    "ranWith": "{{condition}}：{{summary}}",
+    "archivedFrom_other": "已归档来自 {{name}} 的 {{count}} 个",
+    "nothingFrom": "收件箱中没有来自 {{name}} 的邮件",
+    "blocked": "已屏蔽 {{name}}。今后的邮件将进入废纸篓。",
+    "blockedMoved_other": "已屏蔽 {{name}} · {{count}} 个已移到废纸篓。今后的邮件将进入废纸篓。",
+    "archivedFromSender_other": "已归档来自此发件人的 {{count}} 个",
+    "bundling": "正在收件箱中合并 {{name}}",
+    "stoppedBundling": "已停止合并 {{name}}"
+  }
+}

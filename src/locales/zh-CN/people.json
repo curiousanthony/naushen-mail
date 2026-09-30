@@ -1,0 +1,22 @@
+{
+  "card": {
+    "about": "关于 {{name}}",
+    "you": "你",
+    "compose": "写邮件",
+    "allMail": "所有邮件",
+    "copy": "拷贝",
+    "close": "关闭"
+  },
+  "lastSeen": {
+    "today": "今天",
+    "yesterday": "昨天",
+    "weekday": "上{{day}}"
+  },
+  "conversations": {
+    "none": "暂无会话",
+    "count_other": "{{count}} 个会话",
+    "countWithLast_other": "{{count}} 个会话 · {{last}}"
+  },
+  "selectFirst": "选择一个会话，查看对方是谁",
+  "addressCopied": "地址已拷贝"
+}

@@ -1,0 +1,63 @@
+{
+  "menu": {
+    "settings": "设置…",
+    "file": "文件",
+    "newMessage": "新邮件",
+    "addAccount": "添加账户…",
+    "edit": "编辑",
+    "view": "显示",
+    "commandMenu": "命令菜单",
+    "search": "搜索",
+    "toggleSidebar": "切换边栏",
+    "reloadWindow": "重新载入窗口",
+    "mailbox": "邮箱",
+    "goToInbox": "前往收件箱",
+    "checkMail": "立即检查邮件"
+  },
+  "notify": {
+    "archive": "归档",
+    "markRead": "标为已读",
+    "dismiss": "忽略",
+    "noSubject": "（无主题）",
+    "burstTitle_other": "{{count}} 封新邮件",
+    "burstBody": "{{names}} 等另外 {{others}} 人"
+  },
+  "oauth": {
+    "connectedTitle": "已连接",
+    "connectedBody": "你可以关闭此标签页并返回 Naushen Mail。",
+    "failedTitle": "出了点问题",
+    "invalidResponse": "响应无效。",
+    "authFailed": "授权失败：{{error}}",
+    "authInvalid": "授权响应无效",
+    "timedOut": "登录超时"
+  },
+  "errors": {
+    "notSignedIn": "未登录",
+    "sessionExpired": "会话已过期。请重新登录。",
+    "threadNotFound": "找不到该会话",
+    "accountNotConnected": "账户未连接",
+    "connectorUnavailable": "此版本不提供 {{provider}} 连接器。",
+    "providerUnavailable": "服务商不可用",
+    "actionFailed": "操作失败：{{message}}",
+    "attachmentNotFound": "找不到附件",
+    "attachmentEmpty": "附件没有内容"
+  },
+  "gmail": {
+    "missingClient": "此版本尚未配置 Google 登录。请在“设置 → 账户 → OAuth 设置”中添加你自己的 Google OAuth 客户端 ID 和密钥（参见 docs/google-setup.md）。",
+    "noRefreshToken": "Google 没有发放刷新令牌。请在 myaccount.google.com/permissions 中移除 Naushen Mail，然后重试。",
+    "missingScope": "Naushen Mail 需要获得读取和管理你的 Gmail 的权限。请重新连接，并保持所有权限均已勾选。",
+    "profileFailed": "无法读取你的 Google 个人资料（HTTP {{status}}）。",
+    "noEmail": "Google 没有返回此账户的电子邮件地址。",
+    "authRejected": "Google 拒绝了已存储的凭据。请重新登录。",
+    "network": "与 Gmail 通信时出现网络错误：{{message}}"
+  },
+  "outlook": {
+    "missingClientId": "请先添加你的 Microsoft 应用程序（客户端）ID：设置 → 账户 → OAuth 设置。",
+    "noEmail": "Microsoft 没有返回此账户的电子邮件地址。",
+    "noInbox": "找不到此邮箱的收件箱文件夹。",
+    "deltaIncomplete": "Outlook 增量同步未完成",
+    "categoryOnly": "只能编辑 Outlook 类别",
+    "categoryGone": "类别“{{name}}”已不存在",
+    "attachmentUpload": "附件上传失败（{{status}}）"
+  }
+}

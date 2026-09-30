@@ -1,0 +1,95 @@
+{
+  "aria": {
+    "mailboxes": "邮箱"
+  },
+  "newMessage": "新邮件",
+  "newView": "新建视图",
+  "editView": "编辑视图",
+  "settings": "设置",
+  "options": "选项",
+  "optionsFor": "{{name}}的选项",
+  "optionsOf": "{{name}}选项",
+  "section": {
+    "views": "视图",
+    "mail": "邮件",
+    "labels": "标签"
+  },
+  "categories": {
+    "label": "分类",
+    "tip": "按 Gmail 的社交 / 推广 / 动态 / 论坛标签页分组的邮件"
+  },
+  "accounts": {
+    "all": "所有账户",
+    "count_other": "{{count}} 个账户",
+    "switch": "切换账户",
+    "add": "添加账户"
+  },
+  "search": {
+    "label": "搜索",
+    "placeholder": "搜索邮件",
+    "clear": "清除搜索",
+    "people": "匹配的联系人",
+    "operators": "搜索运算符"
+  },
+  "label": {
+    "bundled": "已在收件箱中合并",
+    "bundle": "在收件箱中合并",
+    "stopBundling": "停止在收件箱中合并"
+  },
+  "summary": {
+    "allMail": "所有邮件",
+    "unread": "未读",
+    "hasAttachment": "带附件",
+    "label": "标签",
+    "from": "来自 {{value}}",
+    "subject": "主题 {{value}}",
+    "noFilters": "无筛选条件"
+  },
+  "viewEditor": {
+    "intro": "视图是已保存的筛选条件，适用于现有邮件和之后收到的新邮件。",
+    "name": "视图名称",
+    "icon": "图标",
+    "colour": "颜色",
+    "noColour": "无颜色",
+    "filters": "筛选条件",
+    "account": "账户",
+    "mailbox": "邮箱",
+    "allMail": "所有邮件",
+    "anywhere": "任意位置",
+    "from": "发件人",
+    "fromPlaceholder": "姓名或地址",
+    "fromContains": "发件人包含",
+    "subject": "主题",
+    "subjectPlaceholder": "包含…",
+    "subjectContains": "主题包含",
+    "unreadOnly": "仅未读",
+    "hasAttachment": "带附件",
+    "labels": "标签",
+    "delete": "删除",
+    "create": "创建视图",
+    "updated": "视图已更新",
+    "created": "已创建视图“{{name}}”",
+    "deleted": "已删除视图“{{name}}”"
+  },
+  "viewIcon": {
+    "inbox": "收件箱",
+    "star": "星标",
+    "flag": "旗标",
+    "tag": "标签",
+    "users": "用户",
+    "send": "发送",
+    "receipt": "收据",
+    "megaphone": "扩音器",
+    "pin": "图钉",
+    "message": "消息",
+    "newspaper": "报纸",
+    "flame": "火焰",
+    "briefcase": "公文包",
+    "bell": "铃铛",
+    "archive": "归档",
+    "heart": "心形",
+    "bookmark": "书签",
+    "folder": "文件夹",
+    "zap": "闪电"
+  }
+}

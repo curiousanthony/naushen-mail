@@ -1,0 +1,31 @@
+{
+  "back": {
+    "today": "{{time}} 返回",
+    "tomorrow": "明天 {{time}} 返回",
+    "weekday": "{{day}} {{time}} 返回",
+    "date": "{{date}} 返回"
+  },
+  "in": {
+    "minutes": "{{count}} 分钟",
+    "hours": "{{count}} 小时",
+    "days": "{{count}} 天"
+  },
+  "chip": {
+    "reschedule": "重新安排提醒",
+    "rescheduleAria": "{{when}}。重新安排提醒",
+    "cancel": "取消跟进",
+    "cancelAria": "{{in}}后跟进。取消跟进",
+    "cancelled": "已取消跟进",
+    "followUpIn": "{{in}}后跟进",
+    "noReply": "尚无回复",
+    "noReplyTitle": "尚无回复。点按以忽略",
+    "noReplyAria": "尚无回复。忽略",
+    "dismissed": "已忽略"
+  },
+  "when": {
+    "placeholder": "输入时间… tomorrow 3pm",
+    "ariaLabel": "输入时间",
+    "past": "该时间已过",
+    "unknown": "试试 “tomorrow 3pm”、“fri”、“in 2 days” 或 “oct 12”"
+  }
+}
