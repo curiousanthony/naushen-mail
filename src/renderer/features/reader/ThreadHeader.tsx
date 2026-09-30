@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { TimeChips } from '@/features/time/TimeChips'
 import {
   Archive, BellOff, ChevronsRight, Clock, MailOpen, ShieldAlert, Star, Tag, Trash2
@@ -26,6 +27,7 @@ interface Props {
  * button's own tooltip), so neither ever did anything a keystroke or the collapse button didn't.
  */
 export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
+  const { t } = useTranslation('reader')
   const act = useApp((s) => s.act)
   const setOverlay = useApp((s) => s.setOverlay)
 
@@ -45,8 +47,8 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
     <header className="reader__header">
       <div className="reader__header-inner">
         <div className="reader__actions no-drag">
-          <Tooltip label="Collapse" shortcut="Esc">
-            <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label="Collapse thread">
+          <Tooltip label={t('header.collapse')} shortcut="Esc">
+            <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label={t('header.collapseThread')}>
               <ChevronsRight size={19} aria-hidden />
             </button>
           </Tooltip>
@@ -59,27 +61,27 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
 
           {/* Triage first (most-reached-for), then organise, then the rarely-wanted, with the
               destructive Trash alone at the far right so it is never hit by accident. */}
-          <Tooltip label="Archive" shortcut="E">
-            <button className="reader__btn" onClick={() => void act({ type: 'archive' }, ids, 'Conversation archived')} aria-label="Archive">
+          <Tooltip label={t('header.archive')} shortcut="E">
+            <button className="reader__btn" onClick={() => void act({ type: 'archive' }, ids, t('header.archived'))} aria-label={t('header.archive')}>
               <Archive size={19} aria-hidden />
             </button>
           </Tooltip>
-          <Tooltip label="Mark as unread" shortcut="U">
-            <button className="reader__btn" onClick={() => void act({ type: 'markUnread' }, ids, 'Marked as unread')} aria-label="Mark as unread">
+          <Tooltip label={t('header.markUnread')} shortcut="U">
+            <button className="reader__btn" onClick={() => void act({ type: 'markUnread' }, ids, t('header.markedUnread'))} aria-label={t('header.markUnread')}>
               <MailOpen size={19} aria-hidden />
             </button>
           </Tooltip>
-          <Tooltip label="Set reminder" shortcut="H">
-            <button className="reader__btn" onClick={() => setOverlay('snooze')} aria-label="Set reminder">
+          <Tooltip label={t('header.setReminder')} shortcut="H">
+            <button className="reader__btn" onClick={() => setOverlay('snooze')} aria-label={t('header.setReminder')}>
               <Clock size={19} aria-hidden />
             </button>
           </Tooltip>
-          <Tooltip label={thread.starred ? 'Unstar' : 'Star'} shortcut="S">
+          <Tooltip label={thread.starred ? t('header.unstar') : t('header.star')} shortcut="S">
             <button
               className="reader__btn"
               onClick={() => void act({ type: thread.starred ? 'unstar' : 'star' }, ids)}
               aria-pressed={thread.starred}
-              aria-label={thread.starred ? 'Unstar' : 'Star'}
+              aria-label={thread.starred ? t('header.unstar') : t('header.star')}
             >
               <Star
                 size={19}
@@ -92,35 +94,35 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
 
           <span className="reader__sep" aria-hidden />
 
-          <Tooltip label="Label" shortcut="L">
-            <button className="reader__btn" onClick={() => setOverlay('label-picker')} aria-label="Label">
+          <Tooltip label={t('header.label')} shortcut="L">
+            <button className="reader__btn" onClick={() => setOverlay('label-picker')} aria-label={t('header.label')}>
               <Tag size={19} aria-hidden />
             </button>
           </Tooltip>
           {unsub && (
-            <Tooltip label={unsub.kind === 'http' ? 'Opens in your browser' : 'Sends an email'}>
+            <Tooltip label={unsub.kind === 'http' ? t('header.unsubscribeWeb') : t('header.unsubscribeMail')}>
               <button className="reader__btn" onClick={unsubscribe}>
                 <BellOff size={19} aria-hidden />
-                <span className="reader__btn-label">Unsubscribe</span>
+                <span className="reader__btn-label">{t('header.unsubscribe')}</span>
               </button>
             </Tooltip>
           )}
-          <Tooltip label="Report spam" shortcut="!">
-            <button className="reader__btn" onClick={() => void act({ type: 'spam' }, ids, 'Reported as spam')} aria-label="Report spam">
+          <Tooltip label={t('header.reportSpam')} shortcut="!">
+            <button className="reader__btn" onClick={() => void act({ type: 'spam' }, ids, t('header.reportedSpam'))} aria-label={t('header.reportSpam')}>
               <ShieldAlert size={19} aria-hidden />
             </button>
           </Tooltip>
 
           <span className="reader__sep" aria-hidden />
 
-          <Tooltip label="Move to trash" shortcut="#">
-            <button className="reader__btn is-danger" onClick={() => void act({ type: 'trash' }, ids, 'Moved to trash')} aria-label="Move to trash">
+          <Tooltip label={t('header.trash')} shortcut="#">
+            <button className="reader__btn is-danger" onClick={() => void act({ type: 'trash' }, ids, t('header.trashed'))} aria-label={t('header.trash')}>
               <Trash2 size={19} aria-hidden />
             </button>
           </Tooltip>
         </div>
 
-        <h1 className="reader__subject selectable">{thread.subject || '(no subject)'}</h1>
+        <h1 className="reader__subject selectable">{thread.subject || t('header.noSubject')}</h1>
 
         {(threadLabels.length > 0 || thread.messageCount > 1 || thread.snoozedUntil || thread.reminderAt || thread.followUpFiredAt) && (
           <div className="reader__meta">
@@ -129,7 +131,7 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
               <span key={l.id} className="reader__chip" style={chipStyle(l.color)}>{l.name}</span>
             ))}
             {thread.messageCount > 1 && (
-              <span className="reader__count">{thread.messageCount} messages</span>
+              <span className="reader__count">{t('header.messageCount', { count: thread.messageCount })}</span>
             )}
           </div>
         )}

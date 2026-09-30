@@ -10,6 +10,7 @@
 
 import type { Address } from '@shared/types'
 import type { DocNode } from '@shared/emailhtml'
+import { currentLocale } from '@/i18n'
 
 export interface SnippetContext {
   /** First recipient in To (falls back to Cc). */
@@ -17,7 +18,7 @@ export interface SnippetContext {
   /** Sending identity. */
   me?: { name?: string; email?: string } | null
   now?: Date
-  /** BCP-47 tag for `{{date}}`; defaults to the runtime locale. */
+  /** BCP-47 tag for `{{date}}`; defaults to the UI language. */
   locale?: string
 }
 
@@ -67,9 +68,9 @@ export function resolveVariable(key: string, ctx: SnippetContext): string | null
     case 'my_email': return ctx.me?.email || null
     case 'date':
     case 'today':
-      return new Intl.DateTimeFormat(ctx.locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(now)
-    case 'weekday': return new Intl.DateTimeFormat(ctx.locale, { weekday: 'long' }).format(now)
-    case 'time': return new Intl.DateTimeFormat(ctx.locale, { hour: '2-digit', minute: '2-digit' }).format(now)
+      return new Intl.DateTimeFormat(ctx.locale ?? currentLocale(), { day: 'numeric', month: 'long', year: 'numeric' }).format(now)
+    case 'weekday': return new Intl.DateTimeFormat(ctx.locale ?? currentLocale(), { weekday: 'long' }).format(now)
+    case 'time': return new Intl.DateTimeFormat(ctx.locale ?? currentLocale(), { hour: '2-digit', minute: '2-digit' }).format(now)
     case 'cursor': return CURSOR_MARK
     default: return null
   }

@@ -14,15 +14,17 @@ import { useCallback, useRef, useState } from 'react'
 import { Image as TiptapImage } from '@tiptap/extension-image'
 import { NodeViewWrapper, ReactNodeViewRenderer, type ReactNodeViewProps } from '@tiptap/react'
 import { AlignCenter, AlignLeft, AlignRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { Tooltip } from '@/features/tooltip'
 import { IMAGE_MIN_WIDTH, resizedWidth, type ImageResizeSide } from './imageResize'
 
 export type ImageAlign = 'left' | 'center' | 'right'
 
-const ALIGN_OPTIONS: { value: ImageAlign; label: string; Icon: typeof AlignLeft }[] = [
-  { value: 'left', label: 'Align left', Icon: AlignLeft },
-  { value: 'center', label: 'Align center', Icon: AlignCenter },
-  { value: 'right', label: 'Align right', Icon: AlignRight }
+const alignOptions = (): { value: ImageAlign; label: string; Icon: typeof AlignLeft }[] => [
+  { value: 'left', label: i18n.t('compose:image.alignLeft'), Icon: AlignLeft },
+  { value: 'center', label: i18n.t('compose:image.alignCenter'), Icon: AlignCenter },
+  { value: 'right', label: i18n.t('compose:image.alignRight'), Icon: AlignRight }
 ]
 
 function readAlign(v: unknown): ImageAlign {
@@ -38,6 +40,7 @@ interface DragState {
 }
 
 function ImageView({ node, updateAttributes, selected, editor }: ReactNodeViewProps): JSX.Element {
+  useTranslation('compose') // subscribes the align labels to language changes
   const [hovered, setHovered] = useState(false)
   // Only committed to the doc (via `updateAttributes`) on pointer-up — every ProseMirror
   // transaction re-triggers the composer's autosave, so committing on every `pointermove`
@@ -152,7 +155,7 @@ function ImageView({ node, updateAttributes, selected, editor }: ReactNodeViewPr
               onPointerCancel={endDrag}
             />
             <div className="cmp-image-align" contentEditable={false} onDragStart={noNativeDrag}>
-              {ALIGN_OPTIONS.map(({ value, label, Icon }) => (
+              {alignOptions().map(({ value, label, Icon }) => (
                 <Tooltip key={value} label={label}>
                   <button
                     type="button"

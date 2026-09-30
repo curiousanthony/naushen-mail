@@ -1,8 +1,9 @@
-import { currentLocale } from '@/i18n'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n, { currentLocale } from '@/i18n'
 import { Calendar, Check, MapPin } from 'lucide-react'
 import type { Attachment, Message } from '@shared/types'
-import { buildIcsReply, parseIcs, RSVP_LABEL, type IcsEvent, type Rsvp } from '@shared/ics'
+import { buildIcsReply, parseIcs, type IcsEvent, type Rsvp } from '@shared/ics'
 import { useApp } from '@/lib/store'
 import { extensionOf } from './fileKinds'
 
@@ -13,6 +14,13 @@ const isIcs = (a: Attachment): boolean =>
 export function findInvite(attachments: Attachment[]): Attachment | undefined {
   return attachments.find(isIcs)
 }
+
+/** The user-facing word for each RSVP answer, in the UI language. */
+const rsvpLabel = (r: Rsvp): string =>
+  r === 'ACCEPTED' ? i18n.t('reader:invite.yes') : r === 'TENTATIVE' ? i18n.t('reader:invite.maybe') : i18n.t('reader:invite.no')
+
+const rsvpSentToast = (r: Rsvp): string =>
+  r === 'ACCEPTED' ? i18n.t('reader:invite.sent.accepted') : r === 'TENTATIVE' ? i18n.t('reader:invite.sent.tentative') : i18n.t('reader:invite.sent.declined')
 
 const RSVP_KEY = (uid: string): string => `mailroom.rsvp.${uid}`
 const loadResponse = (uid: string): Rsvp | null => {
@@ -39,6 +47,7 @@ function formatWhen(ev: IcsEvent): string {
  * updates their calendar, not a provider-specific API call.
  */
 export function InviteCard({ message, attachment }: { message: Message; attachment: Attachment }): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const account = useApp((s) => s.accounts.find((a) => a.id === message.accountId))
   const toast = useApp((s) => s.toast)
   const [event, setEvent] = useState<IcsEvent | null | undefined>(undefined) // undefined = loading
@@ -58,7 +67,7 @@ export function InviteCard({ message, attachment }: { message: Message; attachme
   }, [message.id, attachment.id])
 
   if (event === null) return null // not a parsable invite — say nothing rather than show a broken card
-  if (event === undefined) return <div className="invite invite--loading">Reading invite…</div>
+  if (event === undefined) return <div className="invite invite--loading">{t('invite.loading')}</div>
   if (!account || !event.organizer) return null // no one to send the reply to
 
   const respond = async (rsvp: Rsvp): Promise<void> => {
@@ -69,9 +78,9 @@ export function InviteCard({ message, attachment }: { message: Message; attachme
         accountId: account.id,
         to: [event.organizer!],
         cc: [], bcc: [],
-        subject: `${RSVP_LABEL[rsvp]}: ${event.summary}`,
-        html: `<p>${RSVP_LABEL[rsvp]}, ${escapeHtml(account.name)}.</p>`,
-        text: `${RSVP_LABEL[rsvp]}, ${account.name}.`,
+        subject: t('invite.replySubject', { response: rsvpLabel(rsvp), summary: event.summary }),
+        html: `<p>${escapeHtml(t('invite.replyBody', { response: rsvpLabel(rsvp), name: account.name }))}</p>`,
+        text: t('invite.replyBody', { response: rsvpLabel(rsvp), name: account.name }),
         attachments: [{
           filename: 'invite.ics', mimeType: 'text/calendar; method=REPLY; charset=UTF-8',
           dataBase64: btoa(unescape(encodeURIComponent(ics)))
@@ -80,9 +89,9 @@ export function InviteCard({ message, attachment }: { message: Message; attachme
       })
       saveResponse(event.uid, rsvp)
       setResponse(rsvp)
-      toast({ message: `Reply sent — you're marked as ${RSVP_LABEL[rsvp].toLowerCase()}` })
+      toast({ message: rsvpSentToast(rsvp) })
     } catch {
-      toast({ message: 'Could not send your reply. Try again.' })
+      toast({ message: t('invite.failed') })
     } finally {
       setSending(null)
     }
@@ -104,7 +113,7 @@ export function InviteCard({ message, attachment }: { message: Message; attachme
               onClick={() => void respond(r)}
             >
               {response === r && <Check size={12} aria-hidden />}
-              {sending === r ? 'Sending…' : RSVP_LABEL[r]}
+              {sending === r ? t('invite.sending') : rsvpLabel(r)}
             </button>
           ))}
         </div>

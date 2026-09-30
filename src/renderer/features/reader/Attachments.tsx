@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Download, Eye, File, FileArchive, FileAudio, FileCode, FileImage, FileSpreadsheet,
   FileText, FileType, FileVideo, Presentation
@@ -40,6 +41,7 @@ interface Props {
  * same as clicking anywhere on a non-previewable chip does.
  */
 export function Attachments({ messageId, attachments }: Props): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const [busy, setBusy] = useState<string | null>(null)
   const [preview, setPreview] = useState<Attachment | null>(null)
   const list = visibleAttachments(attachments)
@@ -68,7 +70,7 @@ export function Attachments({ messageId, attachments }: Props): JSX.Element | nu
         const tint = TINTS[kind]
         const previewable = isPreviewable(kind)
         return (
-          <Tooltip key={a.id} label={previewable ? `Preview ${a.filename}` : `Download ${a.filename} — ${formatBytes(a.size)}`}>
+          <Tooltip key={a.id} label={previewable ? t('attachments.preview', { name: a.filename }) : t('attachments.download', { name: a.filename, size: formatBytes(a.size) })}>
             <button
               className="att"
               onClick={() => open(a)}

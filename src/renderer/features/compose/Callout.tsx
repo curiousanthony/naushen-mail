@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Node, mergeAttributes } from '@tiptap/core'
 import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer, type ReactNodeViewProps } from '@tiptap/react'
 import { CALLOUT_EMOJI } from './slashItems'
@@ -21,6 +22,7 @@ declare module '@tiptap/core' {
 }
 
 function CalloutView({ node, updateAttributes, editor }: ReactNodeViewProps): JSX.Element {
+  const { t } = useTranslation('compose')
   const [open, setOpen] = useState(false)
   const emoji = (node.attrs.emoji as string) || '💡'
 
@@ -31,7 +33,7 @@ function CalloutView({ node, updateAttributes, editor }: ReactNodeViewProps): JS
           type="button"
           className="cmp-callout__emoji"
           contentEditable={false}
-          aria-label="Change callout icon"
+          aria-label={t('callout.changeIcon')}
           disabled={!editor.isEditable}
           onMouseDown={(e) => { e.preventDefault(); setOpen((v) => !v) }}
         >

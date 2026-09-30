@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
+import { Trans, useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { ShieldAlert } from 'lucide-react'
 import { cleanTrackingParams, describeLink, phishingHint, type PhishingHint } from '@shared/sanitize/links'
 import { useApp } from '@/lib/store'
@@ -138,6 +140,7 @@ export function useLinkGuard(frame: RefObject<HTMLIFrameElement | null>, reloadK
  * A link whose visible text names a different site gets the host in the warning colour.
  */
 export function LinkPill({ link, host }: { link: HoverLink | null; host: HTMLElement | null }): JSX.Element | null {
+  const { t } = useTranslation('reader')
   if (!link || !host) return null
   const parts = describeLink(link.href)
   const cleaned = cleanTrackingParams(link.href)
@@ -145,12 +148,12 @@ export function LinkPill({ link, host }: { link: HoverLink | null; host: HTMLEle
   return createPortal(
     <div className="linkpill" role="status" data-warn={hint ? 'true' : undefined}>
       {parts.scheme === 'http' && <span className="linkpill__insecure">http://</span>}
-      {parts.scheme === 'mailto' && <span className="linkpill__scheme">mail to </span>}
-      {parts.scheme === 'tel' && <span className="linkpill__scheme">call </span>}
+      {parts.scheme === 'mailto' && <span className="linkpill__scheme">{t('link.mailTo')} </span>}
+      {parts.scheme === 'tel' && <span className="linkpill__scheme">{t('link.call')} </span>}
       <span className="linkpill__host">{parts.host}</span>
       {parts.rest && <span className="linkpill__rest">{parts.rest}</span>}
       {cleaned.removed.length > 0 && (
-        <span className="linkpill__note">{cleaned.removed.length === 1 ? '1 tracking parameter' : `${cleaned.removed.length} tracking parameters`} stripped on open</span>
+        <span className="linkpill__note">{t('link.trackingStripped', { count: cleaned.removed.length })}</span>
       )}
     </div>,
     host
@@ -162,16 +165,17 @@ export function LinkPill({ link, host }: { link: HoverLink | null; host: HTMLEle
 export function LinkWarning({ pending, onOpen, onCancel }: {
   pending: PendingLink; onOpen(): void; onCancel(): void
 }): JSX.Element {
+  const { t } = useTranslation('reader')
   const cancel = useRef<HTMLButtonElement>(null)
   useEffect(() => { cancel.current?.focus() }, [pending])
   return (
-    <div className="linkwarn" role="alertdialog" aria-label="Check this link">
+    <div className="linkwarn" role="alertdialog" aria-label={t('link.warningLabel')}>
       <ShieldAlert size={15} aria-hidden />
       <span className="linkwarn__text">
-        This link goes to <b>{pending.hint.actual}</b>, not <b>{pending.hint.shown}</b>.
+        <Trans t={t} i18nKey="link.warning" values={{ actual: pending.hint.actual, shown: pending.hint.shown }} components={{ b: <b /> }} />
       </span>
-      <button type="button" className="linkwarn__btn" onClick={onOpen}>Open anyway</button>
-      <button type="button" className="linkwarn__btn linkwarn__btn--primary" ref={cancel} onClick={onCancel}>Cancel</button>
+      <button type="button" className="linkwarn__btn" onClick={onOpen}>{t('link.openAnyway')}</button>
+      <button type="button" className="linkwarn__btn linkwarn__btn--primary" ref={cancel} onClick={onCancel}>{t('link.cancel')}</button>
     </div>
   )
 }
@@ -180,6 +184,7 @@ export function LinkWarning({ pending, onOpen, onCancel }: {
 
 /** Right-click on a link: open or copy it, without tracking parameters. */
 export function LinkMenu({ menu, onClose }: { menu: LinkMenuState | null; onClose(): void }): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const root = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null)
 
@@ -220,7 +225,7 @@ export function LinkMenu({ menu, onClose }: { menu: LinkMenuState | null; onClos
     const text = isMail ? describeLink(menu.href).host : cleaned.url
     const ok = await copyText(text)
     useApp.getState().toast({
-      message: !ok ? 'Could not copy the link' : cleaned.removed.length ? 'Link copied without tracking parameters' : isMail ? 'Address copied' : 'Link copied',
+      message: !ok ? i18n.t('reader:link.copyFailed') : cleaned.removed.length ? i18n.t('reader:link.copiedClean') : isMail ? i18n.t('reader:link.addressCopied') : i18n.t('reader:link.copied'),
       duration: 2200
     })
     onClose()
@@ -232,10 +237,10 @@ export function LinkMenu({ menu, onClose }: { menu: LinkMenuState | null; onClos
       style={{ left: pos?.left ?? menu.x, top: pos?.top ?? menu.y, visibility: pos ? 'visible' : 'hidden' }}
     >
       <button type="button" role="menuitem" className="linkmenu__item" onClick={() => { openExternal(cleaned.url); onClose() }}>
-        {isMail ? 'Write to this address' : 'Open link'}
+        {isMail ? t('link.writeTo') : t('link.open')}
       </button>
       <button type="button" role="menuitem" className="linkmenu__item" onClick={() => void copy()}>
-        {isMail ? 'Copy address' : cleaned.removed.length ? 'Copy link (no tracking)' : 'Copy link'}
+        {isMail ? t('link.copyAddress') : cleaned.removed.length ? t('link.copyLinkClean') : t('link.copyLink')}
       </button>
     </div>,
     document.body

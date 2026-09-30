@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Copy } from 'lucide-react'
+import { Trans, useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import { useApp } from '@/lib/store'
 import { Tooltip } from '@/features/tooltip'
 import { CODE_TTL_MS, activeVerificationCode, type ActiveCode } from './codes'
@@ -35,7 +37,7 @@ export function useActiveCode(text: () => string, receivedAt: number): ActiveCod
 /** Copy a code and confirm with the app's toast. */
 export async function copyCodeWithToast(code: string): Promise<void> {
   const ok = await copyText(code)
-  useApp.getState().toast({ message: ok ? `Copied ${code}` : 'Could not copy the code', duration: 2200 })
+  useApp.getState().toast({ message: ok ? i18n.t('reader:code.copied', { code }) : i18n.t('reader:code.copyFailed'), duration: 2200 })
 }
 
 interface Props {
@@ -46,19 +48,20 @@ interface Props {
 
 /** "Copy 482913": click to copy. Shift+C does the same for the open / focused conversation. */
 export function CodeChip({ code, variant }: Props): JSX.Element {
+  const { t } = useTranslation('reader')
   return (
-    <Tooltip label="Copy verification code" shortcut="⇧C">
+    <Tooltip label={t('code.copyTooltip')} shortcut="⇧C">
       <button
         type="button"
         className={`codechip codechip--${variant}`}
-        aria-label={`Copy verification code ${code}`}
+        aria-label={t('code.copyAria', { code })}
         tabIndex={variant === 'row' ? -1 : undefined}
         onClick={(e) => { e.stopPropagation(); void copyCodeWithToast(code) }}
         onMouseDown={(e) => e.stopPropagation()}
         onDoubleClick={(e) => e.stopPropagation()}
       >
         <Copy size={11} aria-hidden />
-        <span>Copy <b>{code}</b></span>
+        <span><Trans t={t} i18nKey="code.copy" values={{ code }} components={{ b: <b /> }} /></span>
       </button>
     </Tooltip>
   )

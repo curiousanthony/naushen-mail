@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, ChevronDown, Copy, ChevronRight, CornerUpLeft, CornerUpRight, Paperclip, ReplyAll } from 'lucide-react'
 import type { Address, Message } from '@shared/types'
 import type { TrackerHit } from '@shared/sanitize'
@@ -34,6 +35,7 @@ const addressList = (list: Address[]): string =>
 
 /** One detail row: the addresses plus a copy button (bare addresses, ", "-joined). */
 function AddressRow({ label, list }: { label: string; list: Address[] }): JSX.Element {
+  const { t } = useTranslation('reader')
   const [done, setDone] = useState(false)
   const copy = async (): Promise<void> => {
     if (!(await copyText(joinAddresses(list)))) return
@@ -45,14 +47,14 @@ function AddressRow({ label, list }: { label: string; list: Address[] }): JSX.El
       <dt>{label}</dt>
       <dd className="msg__detail-row">
         <span className="msg__detail-val">{addressList(list)}</span>
-        <Tooltip label={done ? '' : `Copy ${label}`}>
+        <Tooltip label={done ? '' : t('message.copyField', { label })}>
           <button
             type="button" className={`msg__copy${done ? ' is-done' : ''}`}
             onClick={(e) => { e.stopPropagation(); void copy() }}
-            aria-label={`Copy ${label} address${list.length > 1 ? 'es' : ''}`}
+            aria-label={t('message.copyAddress', { label, count: list.length })}
           >
             {done ? <Check size={12} aria-hidden /> : <Copy size={12} aria-hidden />}
-            {done && <span role="status">Copied</span>}
+            {done && <span role="status">{t('message.copied')}</span>}
           </button>
         </Tooltip>
       </dd>
@@ -72,6 +74,7 @@ interface Props {
  * The recipient detail (`from`/`to`/`cc`) is a second, independent toggle inside the card.
  */
 export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: Props): JSX.Element {
+  const { t } = useTranslation('reader')
   const [showDetail, setShowDetail] = useState(false)
   const [avatarFailed, setAvatarFailed] = useState(false)
   const [trackers, setTrackers] = useState<TrackerHit[]>([])
@@ -101,20 +104,20 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       <span className="msg__headtext">
         <span className="msg__line">
           <SenderName address={message.from} className="msg__from" />
-          {message.unread && <span className="msg__unread-dot" aria-label="Unread" />}
+          {message.unread && <span className="msg__unread-dot" aria-label={t('message.unread')} />}
           {!expanded && <span className="msg__snippet">{message.snippet}</span>}
         </span>
         {expanded && (
-          <Tooltip label={showDetail ? 'Hide details' : 'Show details'}>
+          <Tooltip label={showDetail ? t('message.hideDetails') : t('message.showDetails')}>
             <button
               type="button"
               className="msg__to"
               onClick={(e) => { e.stopPropagation(); setShowDetail((v) => !v) }}
               aria-expanded={showDetail}
-              aria-label={showDetail ? 'Hide recipient details' : 'Show recipient details'}
+              aria-label={showDetail ? t('message.hideRecipientDetails') : t('message.showRecipientDetails')}
             >
               <span>
-                to {recipients.length ? recipients.map(displayName).join(', ') : 'me'}
+                {t('message.toLine', { recipients: recipients.length ? recipients.map(displayName).join(', ') : t('message.toMe') })}
               </span>
               {showDetail ? <ChevronDown size={13} aria-hidden /> : <ChevronRight size={13} aria-hidden />}
             </button>
@@ -124,8 +127,8 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       <span className="msg__aside">
         {expanded && <TrackerShield trackers={trackers} />}
         {attachments.length > 0 && (
-          <Tooltip label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
-            <span className="msg__clip" role="img" aria-label={`${attachments.length} attachment${attachments.length > 1 ? 's' : ''}`}>
+          <Tooltip label={t('message.attachmentCount', { count: attachments.length })}>
+            <span className="msg__clip" role="img" aria-label={t('message.attachmentCount', { count: attachments.length })}>
               <Paperclip size={13} aria-hidden />
             </span>
           </Tooltip>
@@ -135,21 +138,21 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
         </time>
         {expanded && (
           <span className="msg__quickreply">
-            <Tooltip label="Reply" shortcut="R">
+            <Tooltip label={t('message.reply')} shortcut="R">
               <button
-                type="button" className="msg__quickbtn" aria-label="Reply"
+                type="button" className="msg__quickbtn" aria-label={t('message.reply')}
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'reply', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
               ><CornerUpLeft size={19} aria-hidden /></button>
             </Tooltip>
-            <Tooltip label="Reply all" shortcut="A">
+            <Tooltip label={t('message.replyAll')} shortcut="A">
               <button
-                type="button" className="msg__quickbtn" aria-label="Reply all"
+                type="button" className="msg__quickbtn" aria-label={t('message.replyAll')}
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'replyAll', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
               ><ReplyAll size={19} aria-hidden /></button>
             </Tooltip>
-            <Tooltip label="Forward" shortcut="F">
+            <Tooltip label={t('message.forward')} shortcut="F">
               <button
-                type="button" className="msg__quickbtn" aria-label="Forward"
+                type="button" className="msg__quickbtn" aria-label={t('message.forward')}
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'forward', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
               ><CornerUpRight size={19} aria-hidden /></button>
             </Tooltip>
@@ -164,7 +167,7 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
       {expanded ? (
         <div className="msg__head">{head}</div>
       ) : (
-        <Tooltip label="Expand message">
+        <Tooltip label={t('message.expand')}>
           <button
             className="msg__head"
             onClick={onToggle}
@@ -177,12 +180,12 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
 
       {expanded && showDetail && (
         <dl className="msg__detail selectable">
-          <AddressRow label="From" list={[message.from]} />
-          {message.replyTo && <AddressRow label="Reply-to" list={[message.replyTo]} />}
-          {message.to.length > 0 ? <AddressRow label="To" list={message.to} /> : <><dt>To</dt><dd>—</dd></>}
-          {message.cc.length > 0 && <AddressRow label="Cc" list={message.cc} />}
-          {message.bcc.length > 0 && <AddressRow label="Bcc" list={message.bcc} />}
-          <dt>Date</dt>
+          <AddressRow label={t('message.detail.from')} list={[message.from]} />
+          {message.replyTo && <AddressRow label={t('message.detail.replyTo')} list={[message.replyTo]} />}
+          {message.to.length > 0 ? <AddressRow label={t('message.detail.to')} list={message.to} /> : <><dt>{t('message.detail.to')}</dt><dd>—</dd></>}
+          {message.cc.length > 0 && <AddressRow label={t('message.detail.cc')} list={message.cc} />}
+          {message.bcc.length > 0 && <AddressRow label={t('message.detail.bcc')} list={message.bcc} />}
+          <dt>{t('message.detail.date')}</dt>
           <dd>{fullDate(message.date)}</dd>
         </dl>
       )}

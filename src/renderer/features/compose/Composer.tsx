@@ -6,6 +6,8 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { currentLocale } from '@/i18n'
 import {
   AlertTriangle, Braces, Check, ChevronDown, ChevronUp, HelpCircle, Maximize2, Minimize2, Minus,
   Paperclip, Send, Trash2, X
@@ -55,8 +57,11 @@ interface Props {
 }
 
 const AUTOSAVE_MS = 2000
+/** "Remind me if no reply" fires this many days after the message leaves. */
+const FOLLOW_UP_DAYS = 3
 
 export function Composer({ composer, inline = false, offsetRight, width, stack, minimised, onMinimise }: Props): JSX.Element {
+  const { t } = useTranslation('compose')
   // Atomic selectors: a selector returning a fresh object re-renders forever under zustand v5.
   const accounts = useApp((s) => s.accounts)
   const settings = useApp((s) => s.settings)
@@ -130,7 +135,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
   const snippetContext = useCallback((): SnippetContext => ({
     recipient: to[0] ?? cc[0] ?? null,
     me: account ? { name: account.name, email: account.email } : null,
-    locale: navigator.language
+    locale: currentLocale()
   }), [to, cc, account])
 
   useEffect(() => {
@@ -350,8 +355,8 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
     closedRef.current = true
     void window.api.invoke('drafts.delete', draftId).catch(() => undefined)
     closeComposer(composer.id)
-    toast({ message: 'Draft discarded' })
-  }, [closeComposer, composer.id, draftId, toast])
+    toast({ message: t('toast.discarded') })
+  }, [closeComposer, composer.id, draftId, toast, t])
 
   const doSend = useCallback(async (opts: { scheduledAt?: number | null; archive?: boolean } = {}) => {
     if (!editor || sending) return
@@ -402,7 +407,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       ...(replyRef ? { inReplyTo: replyRef } : {})
     })
 
-    const message = followUp ? { ...built, followUpDays: 3 } : built
+    const message = followUp ? { ...built, followUpDays: FOLLOW_UP_DAYS } : built
     const plan = planSend({ undoSendSeconds: settings.undoSendSeconds, scheduledAt: opts.scheduledAt })
     // Undo (and a failed send) reopen the composer from a draft, so capture it now: closing the
     // composer destroys the editor and `snapshot()` would have nothing left to read.
@@ -419,20 +424,20 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
     // runs behind it, and a failure brings the draft straight back rather than losing it.
     closedRef.current = true
     closeComposer(composer.id)
-    if (archiveThread) void act({ type: 'archive' }, [archiveThread], 'Conversation archived')
+    if (archiveThread) void act({ type: 'archive' }, [archiveThread], t('toast.archived'))
 
     if (plan.kind === 'send') {
       // No undo window configured: say "Sending…" until the provider accepts it.
-      toast({ message: 'Sending…', duration: 0 })
+      toast({ message: t('toast.sending'), duration: 0 })
       const pendingId = useApp.getState().toasts.at(-1)?.id
       try {
         await window.api.invoke('compose.send', message)
         await window.api.invoke('drafts.delete', draftId).catch(() => undefined)
         if (pendingId != null) useApp.getState().dismissToast(pendingId)
-        toast({ message: followUp ? 'Sent · follow-up in 3 days if no reply' : 'Sent', duration: 3000 })
+        toast({ message: followUp ? t('toast.sentFollowUp', { count: FOLLOW_UP_DAYS }) : t('toast.sent'), duration: 3000 })
       } catch (e) {
         if (pendingId != null) useApp.getState().dismissToast(pendingId)
-        toast({ message: e instanceof Error ? `Not sent: ${e.message}` : 'Could not send the message' })
+        toast({ message: e instanceof Error ? t('toast.notSent', { reason: e.message }) : t('toast.sendFailed') })
         await reopen()
       }
       return
@@ -443,20 +448,20 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
     void queued
       .then(() => window.api.invoke('drafts.delete', draftId).catch(() => undefined))
       .catch((e: unknown) => {
-        toast({ message: e instanceof Error ? `Not sent: ${e.message}` : 'Could not send the message' })
+        toast({ message: e instanceof Error ? t('toast.notSent', { reason: e.message }) : t('toast.sendFailed') })
         return reopen()
       })
 
     if (plan.kind === 'scheduled') {
       toast({
-        message: scheduledToast(plan.at) + (followUp ? ' · follow-up in 3 days' : ''),
-        actionLabel: 'Cancel',
+        message: followUp ? t('toast.scheduledFollowUp', { scheduled: scheduledToast(plan.at), count: FOLLOW_UP_DAYS }) : scheduledToast(plan.at),
+        actionLabel: t('toast.cancel'),
         onAction: () => void queued.then((sc: ScheduledSend) => window.api.invoke('compose.cancelScheduled', sc.id)).catch(() => undefined)
       })
     } else {
       toast({
-        message: followUp ? 'Sent · follow-up in 3 days if no reply' : 'Sent',
-        actionLabel: 'Undo',
+        message: followUp ? t('toast.sentFollowUp', { count: FOLLOW_UP_DAYS }) : t('toast.sent'),
+        actionLabel: t('toast.undo'),
         duration: plan.undoSeconds * 1000,
         onAction: () => void queued
           .then(async (sc: ScheduledSend) => {
@@ -467,7 +472,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       })
     }
   }, [editor, sending, to, cc, bcc, subject, attachments, knownDomains, dismissedNotes, accountId, signatureOn, signatureHtml,
-      quoted, replyRef, draftId, followUp, settings.undoSendSeconds, closeComposer, composer, toast, act, snapshot])
+      quoted, replyRef, draftId, followUp, settings.undoSendSeconds, closeComposer, composer, toast, act, snapshot, t])
 
   const addFiles = useCallback(async (files: File[]) => {
     if (!files.length) return
@@ -538,7 +543,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
   // ---------------------------------------------------------------- render
 
   const options = useMemo(() => scheduleOptions(new Date()), [menu])
-  const title = subject.trim() || (composer.mode === 'new' ? 'New message' : replySubject(''))
+  const title = subject.trim() || (composer.mode === 'new' ? t('window.newMessage') : replySubject(''))
   const over = isOverSizeLimit(attachments)
 
   const chrome = !inline
@@ -550,8 +555,8 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
     return (
       <div className="cmp-min" style={{ right: offsetRight, zIndex: 40 + stack }}>
         <button type="button" className="cmp-min__title" onClick={() => onMinimise(false)}>{title}</button>
-        <button type="button" className="cmp-iconbtn" aria-label="Expand" onClick={() => onMinimise(false)}><ChevronUp size={15} /></button>
-        <button type="button" className="cmp-iconbtn" aria-label="Close" onClick={() => close({ save: true })}><X size={15} /></button>
+        <button type="button" className="cmp-iconbtn" aria-label={t('window.expand')} onClick={() => onMinimise(false)}><ChevronUp size={15} /></button>
+        <button type="button" className="cmp-iconbtn" aria-label={t('window.close')} onClick={() => close({ save: true })}><X size={15} /></button>
       </div>
     )
   }
@@ -561,7 +566,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       ref={rootRef}
       className={`cmp${chrome ? ' cmp--window' : ' cmp--inline'}${maximised ? ' is-max' : ''}${dragging ? ' is-dragging' : ''}`}
       style={style}
-      aria-label="Message composer"
+      aria-label={t('window.composer')}
       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false) }}
       onDrop={(e) => {
@@ -574,18 +579,18 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
         <header className="cmp__header">
           <span className="cmp__title">{title}</span>
           <div className="cmp__chrome">
-            <button type="button" className="cmp-iconbtn" aria-label="Minimise" onClick={() => onMinimise(true)}><Minus size={15} /></button>
-            <button type="button" className="cmp-iconbtn" aria-label={maximised ? 'Restore' : 'Maximise'} onClick={() => setMaximised((v) => !v)}>
+            <button type="button" className="cmp-iconbtn" aria-label={t('window.minimise')} onClick={() => onMinimise(true)}><Minus size={15} /></button>
+            <button type="button" className="cmp-iconbtn" aria-label={maximised ? t('window.restore') : t('window.maximise')} onClick={() => setMaximised((v) => !v)}>
               {maximised ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             </button>
-            <button type="button" className="cmp-iconbtn" aria-label="Close" onClick={() => close({ save: true })}><X size={15} /></button>
+            <button type="button" className="cmp-iconbtn" aria-label={t('window.close')} onClick={() => close({ save: true })}><X size={15} /></button>
           </div>
         </header>
       )}
 
       <div className="cmp__fields">
         <div className="cmp-field cmp-field--from">
-          <span className="cmp-field__label">From</span>
+          <span className="cmp-field__label">{t('fields.from')}</span>
           <div className="cmp-from">
             <button
               ref={accountRef}
@@ -596,7 +601,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
               onClick={() => setMenu(menu === 'account' ? null : 'account')}
             >
               {account ? <AccountAvatar account={account} size={16} /> : <span className="cmp-from__dot" />}
-              {account ? `${account.name} <${account.email}>` : 'No account'}
+              {account ? `${account.name} <${account.email}>` : t('fields.noAccount')}
               {accounts.length > 1 && <ChevronDown size={13} />}
             </button>
             {menu === 'account' && (
@@ -604,7 +609,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                 ref={fromMenuRef}
                 className="cmp-pop cmp-pop--from"
                 role="listbox"
-                aria-label="Send from"
+                aria-label={t('fields.sendFrom')}
                 onKeyDown={(e) => {
                   const rows = Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>('button'))
                   const i = rows.indexOf(document.activeElement as HTMLButtonElement)
@@ -627,7 +632,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                       <span className="cmp-menu__title">{a.name}</span>
                       <span className="cmp-menu__desc">{a.email}</span>
                     </span>
-                    {signatureFor(settings.signatureHtml, a.id) && <span className="cmpx-from-tag">Signature</span>}
+                    {signatureFor(settings.signatureHtml, a.id) && <span className="cmpx-from-tag">{t('fields.signature')}</span>}
                     {a.id === accountId && <Check size={14} className="cmpx-from-check" />}
                   </button>
                 ))}
@@ -639,7 +644,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
         <RecipientField
           ref={toRef}
           kind="to"
-          label="To"
+          label={t('fields.to')}
           value={to}
           onChange={setTo}
           suspects={suspects}
@@ -648,24 +653,24 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
           autoFocus={composer.mode === 'new' && !composer.draftId && !composer.init?.to?.length}
           trailing={
             <span className="cmp-field__links">
-              {!showCc && <button type="button" tabIndex={-1} className="cmp-link" onClick={() => { focusOnReveal.current = 'cc'; setShowCc(true) }}>Cc</button>}
-              {!showBcc && <button type="button" tabIndex={-1} className="cmp-link" onClick={() => { focusOnReveal.current = 'bcc'; setShowBcc(true) }}>Bcc</button>}
+              {!showCc && <button type="button" tabIndex={-1} className="cmp-link" onClick={() => { focusOnReveal.current = 'cc'; setShowCc(true) }}>{t('fields.cc')}</button>}
+              {!showBcc && <button type="button" tabIndex={-1} className="cmp-link" onClick={() => { focusOnReveal.current = 'bcc'; setShowBcc(true) }}>{t('fields.bcc')}</button>}
             </span>
           }
         />
-        {showCc && <RecipientField ref={ccRef} kind="cc" label="Cc" value={cc} onChange={setCc} suspects={suspects} onDropAddress={moveRecipient} onDragActive={onChipDragActive} />}
-        {showBcc && <RecipientField ref={bccRef} kind="bcc" label="Bcc" value={bcc} onChange={setBcc} suspects={suspects} onDropAddress={moveRecipient} onDragActive={onChipDragActive} />}
+        {showCc && <RecipientField ref={ccRef} kind="cc" label={t('fields.cc')} value={cc} onChange={setCc} suspects={suspects} onDropAddress={moveRecipient} onDragActive={onChipDragActive} />}
+        {showBcc && <RecipientField ref={bccRef} kind="bcc" label={t('fields.bcc')} value={bcc} onChange={setBcc} suspects={suspects} onDropAddress={moveRecipient} onDragActive={onChipDragActive} />}
 
         {(crowd || typos.length > 0) && (
           <div className="cmpx-notes">
-            {typos.map((t) => (
-              <div key={t.address.email} className="cmpx-note" role="status">
+            {typos.map((ty) => (
+              <div key={ty.address.email} className="cmpx-note" role="status">
                 <AlertTriangle size={13} className="cmpx-note__icon" />
                 <span className="cmpx-note__text">
-                  <b>{t.typedDomain}</b> looks like a typo of <b>{t.suggestedDomain}</b>
+                  <Trans t={t} i18nKey="notes.typo" values={{ typed: ty.typedDomain, suggested: ty.suggestedDomain }} components={{ b: <b /> }} />
                 </span>
-                <button type="button" tabIndex={-1} className="cmp-link" onClick={() => fixTypo(t)}>Use {t.suggestedDomain}</button>
-                <button type="button" tabIndex={-1} className="cmp-iconbtn" aria-label="Keep as typed" onClick={() => dismissNote(`typo:${t.address.email.toLowerCase()}`)}>
+                <button type="button" tabIndex={-1} className="cmp-link" onClick={() => fixTypo(ty)}>{t('notes.useDomain', { domain: ty.suggestedDomain })}</button>
+                <button type="button" tabIndex={-1} className="cmp-iconbtn" aria-label={t('notes.keepAsTyped')} onClick={() => dismissNote(`typo:${ty.address.email.toLowerCase()}`)}>
                   <X size={12} />
                 </button>
               </div>
@@ -675,13 +680,13 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                 <AlertTriangle size={13} className="cmpx-note__icon" />
                 <span className="cmpx-note__text">
                   {crowd.list
-                    ? <>This looks like a <b>mailing list</b>; your reply goes to everyone on it.</>
-                    : <>Replying to <b>{crowd.count} people</b>.</>}
+                    ? <Trans t={t} i18nKey="notes.mailingList" components={{ b: <b /> }} />
+                    : <Trans t={t} i18nKey="notes.replyingTo" count={crowd.count} components={{ b: <b /> }} />}
                 </span>
                 {replyInfo && replyInfo.senderOnly.length > 0 && (
-                  <button type="button" tabIndex={-1} className="cmp-link" onClick={replySenderOnly}>Reply to sender only</button>
+                  <button type="button" tabIndex={-1} className="cmp-link" onClick={replySenderOnly}>{t('notes.replySenderOnly')}</button>
                 )}
-                <button type="button" tabIndex={-1} className="cmp-iconbtn" aria-label="Dismiss" onClick={() => dismissNote('replyall')}>
+                <button type="button" tabIndex={-1} className="cmp-iconbtn" aria-label={t('notes.dismiss')} onClick={() => dismissNote('replyall')}>
                   <X size={12} />
                 </button>
               </div>
@@ -690,12 +695,12 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
         )}
 
         <div className="cmp-field">
-          <span className="cmp-field__label">Subject</span>
+          <span className="cmp-field__label">{t('fields.subject')}</span>
           <input
             ref={subjectRef}
             className="cmp-input"
             value={subject}
-            aria-label="Subject"
+            aria-label={t('fields.subject')}
             onChange={(e) => setSubject(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); editor?.commands.focus('start') } }}
           />
@@ -711,8 +716,8 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
         {quoted && (
           <div className="cmp__quote">
-            <Tooltip label="Show quoted text">
-              <button type="button" className="cmp__quote-toggle" aria-expanded={quoteOpen} aria-label="Show quoted text" onClick={() => setQuoteOpen((v) => !v)}>···</button>
+            <Tooltip label={t('quote.show')}>
+              <button type="button" className="cmp__quote-toggle" aria-expanded={quoteOpen} aria-label={t('quote.show')} onClick={() => setQuoteOpen((v) => !v)}>···</button>
             </Tooltip>
             {quoteOpen && (
               <blockquote className="cmp__quoted">
@@ -732,13 +737,13 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
             <span key={a.id} className={`cmp-att${isImageType(a.mimeType) ? ' is-image' : ''}`}>
               <span className="cmp-att__name">{a.filename}</span>
               <span className="cmp-att__size">{formatBytes(a.size)}</span>
-              <button type="button" className="cmp-att__x" aria-label={`Remove ${a.filename}`} onClick={() => setAttachments((l) => l.filter((x) => x.id !== a.id))}>
+              <button type="button" className="cmp-att__x" aria-label={t('attachments.remove', { name: a.filename })} onClick={() => setAttachments((l) => l.filter((x) => x.id !== a.id))}>
                 <X size={11} strokeWidth={2.5} />
               </button>
             </span>
           ))}
           <span className={`cmp-att__total${over ? ' is-over' : ''}`}>
-            {formatBytes(totalBytes(attachments))}{over ? ' — over the 25 MB limit' : ''}
+            {over ? t('attachments.totalOver', { size: formatBytes(totalBytes(attachments)) }) : formatBytes(totalBytes(attachments))}
           </span>
         </div>
       )}
@@ -752,61 +757,61 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
           <div className="cmpx-confirm__actions">
             {/* One contextual fix, for the most important problem; "Send anyway" covers the rest. */}
             {!problems.errors.length && problems.nudges[0]?.id === 'attachment' && (
-              <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); fileInput.current?.click() }}>Attach a file</button>
+              <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); fileInput.current?.click() }}>{t('confirm.attachFile')}</button>
             )}
             {!problems.errors.length && problems.nudges[0]?.id === 'subject' && (
-              <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); subjectRef.current?.focus() }}>Add subject</button>
+              <button type="button" className="cmpx-confirm__btn" onClick={() => { setProblems(null); subjectRef.current?.focus() }}>{t('confirm.addSubject')}</button>
             )}
             {!problems.errors.length && typos[0] && problems.nudges[0]?.id === 'typo' && (
-              <button type="button" className="cmpx-confirm__btn" onClick={() => fixTypo(typos[0])}>Use {typos[0].suggestedDomain}</button>
+              <button type="button" className="cmpx-confirm__btn" onClick={() => fixTypo(typos[0])}>{t('notes.useDomain', { domain: typos[0].suggestedDomain })}</button>
             )}
             {!problems.errors.length && (
               <button type="button" className="cmpx-confirm__btn cmpx-confirm__btn--primary" onClick={() => void doSend()}>
-                Send anyway<kbd>⌘↵</kbd>
+                {t('confirm.sendAnyway')}<kbd>⌘↵</kbd>
               </button>
             )}
-            <button type="button" className="cmp-iconbtn" aria-label="Dismiss" onClick={() => setProblems(null)}><X size={13} /></button>
+            <button type="button" className="cmp-iconbtn" aria-label={t('notes.dismiss')} onClick={() => setProblems(null)}><X size={13} /></button>
           </div>
         </div>
       )}
 
       <footer className="cmp__toolbar">
         <div className="cmp__tools">
-          <Tooltip label="Snippets">
-            <button type="button" className="cmp-toolbtn" aria-label="Snippets" onClick={() => setMenu(menu === 'snippets' ? null : 'snippets')}><Braces size={16} /></button>
+          <Tooltip label={t('toolbar.snippets')}>
+            <button type="button" className="cmp-toolbtn" aria-label={t('toolbar.snippets')} onClick={() => setMenu(menu === 'snippets' ? null : 'snippets')}><Braces size={16} /></button>
           </Tooltip>
-          <Tooltip label="Attach files">
-            <button type="button" className="cmp-toolbtn" aria-label="Attach files" onClick={() => fileInput.current?.click()}><Paperclip size={16} /></button>
+          <Tooltip label={t('toolbar.attach')}>
+            <button type="button" className="cmp-toolbtn" aria-label={t('toolbar.attach')} onClick={() => fileInput.current?.click()}><Paperclip size={16} /></button>
           </Tooltip>
-          <Tooltip label="Discard draft" shortcut="⌘⇧D">
-            <button type="button" className="cmp-toolbtn" aria-label="Discard draft" onClick={discard}><Trash2 size={16} /></button>
+          <Tooltip label={t('toolbar.discard')} shortcut="⌘⇧D">
+            <button type="button" className="cmp-toolbtn" aria-label={t('toolbar.discard')} onClick={discard}><Trash2 size={16} /></button>
           </Tooltip>
-          <Tooltip label="Formatting help">
-            <button type="button" className="cmp-toolbtn" aria-label="Formatting help" onClick={() => setMenu(menu === 'help' ? null : 'help')}><HelpCircle size={16} /></button>
+          <Tooltip label={t('toolbar.help')}>
+            <button type="button" className="cmp-toolbtn" aria-label={t('toolbar.help')} onClick={() => setMenu(menu === 'help' ? null : 'help')}><HelpCircle size={16} /></button>
           </Tooltip>
           {signatureHtml && (
-            <button type="button" className={`cmp-toolbtn cmp-toolbtn--text${signatureOn ? ' is-on' : ''}`} onClick={() => setSignatureOn((v) => !v)}>Signature</button>
+            <button type="button" className={`cmp-toolbtn cmp-toolbtn--text${signatureOn ? ' is-on' : ''}`} onClick={() => setSignatureOn((v) => !v)}>{t('fields.signature')}</button>
           )}
-          {savedAt && <span className="cmp__saved">Draft saved</span>}
+          {savedAt && <span className="cmp__saved">{t('toolbar.draftSaved')}</span>}
         </div>
 
         <div className="cmp__send">
           <button type="button" className="cmp-send" disabled={sending} onClick={() => void doSend()}>
-            <Send size={14} /> Send
+            <Send size={14} /> {t('toolbar.send')}
           </button>
-          <button type="button" className="cmp-send__caret" aria-label="Schedule send" disabled={sending} onClick={() => setMenu(menu === 'schedule' ? null : 'schedule')}>
+          <button type="button" className="cmp-send__caret" aria-label={t('schedule.title')} disabled={sending} onClick={() => setMenu(menu === 'schedule' ? null : 'schedule')}>
             <ChevronDown size={14} />
           </button>
 
           {menu === 'schedule' && (
             <div className="cmp-pop cmp-pop--schedule">
-              <div className="cmp-menu__group">Schedule send</div>
+              <div className="cmp-menu__group">{t('schedule.title')}</div>
               <div className="cmp-pop__when">
                 <WhenField
                   value={whenText}
                   onChange={setWhenText}
-                  placeholder="Type a time… tomorrow 9am"
-                  ariaLabel="Type a send time"
+                  placeholder={t('schedule.timePlaceholder')}
+                  ariaLabel={t('schedule.timeLabel')}
                   autoFocus
                   onSubmit={(w) => { setMenu(null); void doSend({ scheduledAt: w.date.getTime() }) }}
                 />
@@ -834,17 +839,17 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                         className="cmp-send cmp-send--sm"
                         onClick={() => {
                           const at = fromLocalInputValue(customTime || toLocalInputValue(new Date(Date.now() + 36e5)))
-                          if (!at) { toast({ message: 'Pick a time in the future' }); return }
+                          if (!at) { toast({ message: t('schedule.pickFuture') }); return }
                           setMenu(null); void doSend({ scheduledAt: at })
                         }}
-                      >Schedule</button>
+                      >{t('schedule.confirm')}</button>
                     </div>
                   )
               ))}
               <div className="tf-sep" />
               <button type="button" className="cmp-menu__row tf-followup" role="menuitemcheckbox" aria-checked={followUp} onClick={() => setFollowUp((v) => !v)}>
                 <span className="tf-followup__box" data-on={followUp}>{followUp && <Check size={11} strokeWidth={3} />}</span>
-                <span className="cmp-menu__title">Remind me if no reply in 3 days</span>
+                <span className="cmp-menu__title">{t('schedule.followUp', { count: FOLLOW_UP_DAYS })}</span>
               </button>
             </div>
           )}
@@ -852,8 +857,8 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
         {menu === 'snippets' && (
           <div className="cmp-pop cmp-pop--snippets">
-            <div className="cmp-menu__group">Snippets</div>
-            {snippets.length === 0 && <div className="cmp-menu__empty">No snippets yet</div>}
+            <div className="cmp-menu__group">{t('toolbar.snippets')}</div>
+            {snippets.length === 0 && <div className="cmp-menu__empty">{t('snippets.none')}</div>}
             {snippets.map((s) => (
               <button key={s.id} type="button" className="cmp-menu__row" onClick={() => { editor?.chain().focus().insertContent((s.doc.content ?? s.doc) as never).run(); setMenu(null) }}>
                 <span className="cmp-menu__icon"><Braces size={15} /></span>
@@ -866,16 +871,16 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
                 type="button"
                 className="cmp-menu__row cmp-menu__row--new"
                 onClick={() => setNewSnippet('')}
-              >+ New snippet from this draft</button>
+              >{t('snippets.newFromDraft')}</button>
             ) : (
               <div className="cmp-pop__custom">
-                <label htmlFor={`snip-${composer.id}`}>Snippet name</label>
+                <label htmlFor={`snip-${composer.id}`}>{t('snippets.nameLabel')}</label>
                 <input
                   id={`snip-${composer.id}`}
                   className="cmp-input"
                   autoFocus
                   value={newSnippet}
-                  placeholder="Website link"
+                  placeholder={t('snippets.namePlaceholder')}
                   onChange={(e) => setNewSnippet(e.target.value)}
                   onKeyDown={(e) => {
                     e.stopPropagation()
@@ -896,7 +901,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
 
         {menu === 'help' && (
           <div className="cmp-pop cmp-pop--help">
-            <div className="cmp-menu__group">Typing</div>
+            <div className="cmp-menu__group">{t('help.typing')}</div>
             <button
               type="button"
               role="switch"
@@ -904,16 +909,16 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
               className="cmpx-toggle"
               onClick={() => void useApp.getState().updateSettings({ smartTypography: settings.smartTypography === false })}
             >
-              <span>Smart quotes, dashes and ellipsis</span>
+              <span>{t('help.smartTypography')}</span>
               <span className="cmpx-toggle__track" />
             </button>
-            <div className="cmp-menu__group">Formatting</div>
+            <div className="cmp-menu__group">{t('help.formatting')}</div>
             {[
-              ['/', 'Insert a block'], [':', 'Emoji'], ['⌘B / ⌘I / ⌘U', 'Bold, italic, underline'],
-              ['⌘⇧S', 'Strikethrough'], ['⌘E', 'Code'], ['⌘K / ⌘⇧L', 'Link'], [';name', 'Snippet'], ['⌥⌘1–3', 'Headings'],
-              ['# ## ###', 'Headings'], ['- or *', 'Bulleted list'], ['1.', 'Numbered list'],
-              ['[]', 'To-do'], ['>', 'Quote'], ['```', 'Code block'], ['---', 'Divider'],
-              ['⌘↵', 'Send'], ['⌘⇧↵', 'Send & archive'], ['esc', 'Save draft & close']
+              ['/', t('help.insertBlock')], [':', t('help.emoji')], ['⌘B / ⌘I / ⌘U', t('help.textStyles')],
+              ['⌘⇧S', t('help.strikethrough')], ['⌘E', t('help.code')], ['⌘K / ⌘⇧L', t('help.link')], [';name', t('help.snippet')], ['⌥⌘1–3', t('help.headings')],
+              ['# ## ###', t('help.headings')], [t('help.bulletKeys'), t('help.bulletList')], ['1.', t('help.numberedList')],
+              ['[]', t('help.todo')], ['>', t('help.quote')], ['```', t('help.codeBlock')], ['---', t('help.divider')],
+              ['⌘↵', t('help.send')], ['⌘⇧↵', t('help.sendArchive')], ['esc', t('help.saveClose')]
             ].map(([k, v]) => (
               <div key={k} className="cmp-help__row"><kbd>{k}</kbd><span>{v}</span></div>
             ))}
@@ -924,7 +929,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       <input ref={fileInput} type="file" multiple hidden onChange={(e) => { void addFiles(Array.from(e.target.files ?? [])); e.target.value = '' }} />
       <input ref={imageInput} type="file" accept="image/*" multiple hidden onChange={(e) => { void addFiles(Array.from(e.target.files ?? [])); e.target.value = '' }} />
 
-      {dragging && <div className="cmp__drop">Drop files to attach</div>}
+      {dragging && <div className="cmp__drop">{t('attachments.drop')}</div>}
     </section>
   )
 }

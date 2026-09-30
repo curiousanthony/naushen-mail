@@ -6,6 +6,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/react'
+import { useTranslation } from 'react-i18next'
 import { Check, ExternalLink, Trash2 } from 'lucide-react'
 import { Tooltip } from '@/features/tooltip'
 import './smart.css'
@@ -28,6 +29,7 @@ export function normaliseHref(raw: string): string {
 }
 
 export function LinkPopover({ editor, anchor, onClose }: Props): JSX.Element {
+  const { t } = useTranslation('compose')
   const existing = editor.isActive('link')
   const [href, setHref] = useState<string>(() => (editor.getAttributes('link').href as string | undefined) ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -79,12 +81,12 @@ export function LinkPopover({ editor, anchor, onClose }: Props): JSX.Element {
   }
 
   return (
-    <div ref={rootRef} className="cmpx-link" style={pos} role="dialog" aria-label="Edit link">
+    <div ref={rootRef} className="cmpx-link" style={pos} role="dialog" aria-label={t('link.dialog')}>
       <input
         ref={inputRef}
         className="cmpx-link__input"
-        placeholder="Paste or type a link"
-        aria-label="Link URL"
+        placeholder={t('link.placeholder')}
+        aria-label={t('link.urlLabel')}
         spellCheck={false}
         value={href}
         onChange={(e) => setHref(e.target.value)}
@@ -94,23 +96,23 @@ export function LinkPopover({ editor, anchor, onClose }: Props): JSX.Element {
           else if (e.key === 'Escape') { e.preventDefault(); finish() }
         }}
       />
-      <Tooltip label="Apply" shortcut="↵">
-        <button type="button" className="cmp-iconbtn" aria-label="Apply link" onMouseDown={(e) => { e.preventDefault(); apply() }}>
+      <Tooltip label={t('link.apply')} shortcut="↵">
+        <button type="button" className="cmp-iconbtn" aria-label={t('link.applyLink')} onMouseDown={(e) => { e.preventDefault(); apply() }}>
           <Check size={14} />
         </button>
       </Tooltip>
       {existing && (
         <>
-          <Tooltip label="Open link">
-            <button type="button" className="cmp-iconbtn" aria-label="Open link" onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', normaliseHref(href)) }}>
+          <Tooltip label={t('link.open')}>
+            <button type="button" className="cmp-iconbtn" aria-label={t('link.open')} onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', normaliseHref(href)) }}>
               <ExternalLink size={14} />
             </button>
           </Tooltip>
-          <Tooltip label="Remove link">
+          <Tooltip label={t('link.remove')}>
             <button
               type="button"
               className="cmp-iconbtn"
-              aria-label="Remove link"
+              aria-label={t('link.remove')}
               onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().extendMarkRange('link').unsetLink().run(); onClose() }}
             >
               <Trash2 size={14} />

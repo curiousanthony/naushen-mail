@@ -10,6 +10,7 @@
 
 import { forwardRef, useCallback, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Address, Contact } from '@shared/types'
 import { avatarHue, rankContacts } from './frecency'
 import { chipLabel, dedupeAddresses, isValidEmail, parseAddress, parseAddressList } from './recipients'
@@ -54,6 +55,7 @@ const SUGGEST_LIMIT = 6
 export const RecipientField = forwardRef<RecipientFieldHandle, Props>(function RecipientField(
   { label, kind, value, onChange, trailing, autoFocus, onCommitBlur, onDropAddress, onDragActive, suspects }, ref
 ) {
+  const { t } = useTranslation('compose')
   const [text, setText] = useState('')
   const [suggestions, setSuggestions] = useState<Contact[]>([])
   const [active, setActive] = useState(0)
@@ -199,7 +201,7 @@ export const RecipientField = forwardRef<RecipientFieldHandle, Props>(function R
               onDragEnd={() => { setDragging(null); onDragActive?.(false) }}
             >
               {chipLabel(a)}
-              <button type="button" tabIndex={-1} className="cmp-chip__x" aria-label={`Remove ${a.email}`} onClick={() => remove(a.email)}>
+              <button type="button" tabIndex={-1} className="cmp-chip__x" aria-label={t('recipients.remove', { email: a.email })} onClick={() => remove(a.email)}>
                 <X size={11} strokeWidth={2.5} />
               </button>
             </span>
@@ -224,7 +226,7 @@ export const RecipientField = forwardRef<RecipientFieldHandle, Props>(function R
         />
         {listOpen && (
           <ul className="cmp-suggest" id={listId} role="listbox">
-            {!query && <li className="cmp-suggest__head" aria-hidden>Frequent</li>}
+            {!query && <li className="cmp-suggest__head" aria-hidden>{t('recipients.frequent')}</li>}
             {suggestions.map((c, i) => (
               <li key={c.email} role="option" aria-selected={i === active}>
                 <button

@@ -16,11 +16,10 @@ import { TextStyleKit } from '@tiptap/extension-text-style'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details'
 import { createLowlight, common } from 'lowlight'
+import i18n from '@/i18n'
 import { Callout } from './Callout'
 import { ImageBlock } from './ImageBlock'
 import { SmartTypography } from './smartTypography'
-
-export const PLACEHOLDER = "Write, or press '/' for blocks"
 
 /** Single-tilde strike, per the spec (`~s~`). StarterKit only binds `~~double~~`. */
 const singleStrikeInput = /(?:^|\s)(~(?!\s|~)([^~]+)~)$/
@@ -52,7 +51,8 @@ export interface BuildOptions {
   smartTypography?: () => boolean
 }
 
-export function buildExtensions(placeholder: string = PLACEHOLDER, opts: BuildOptions = {}): ReturnType<typeof StarterKit.configure>[] {
+/** `placeholder` overrides the (localised) first-line prompt. */
+export function buildExtensions(placeholder?: string, opts: BuildOptions = {}): ReturnType<typeof StarterKit.configure>[] {
   const lowlight = createLowlight(common)
 
   return [
@@ -85,11 +85,11 @@ export function buildExtensions(placeholder: string = PLACEHOLDER, opts: BuildOp
     Callout,
     Placeholder.configure({
       placeholder: ({ node, editor }) => {
-        if (node.type.name === 'detailsSummary') return 'Toggle'
-        if (node.type.name === 'heading') return `Heading ${node.attrs.level as number}`
+        if (node.type.name === 'detailsSummary') return i18n.t('compose:editor.toggle')
+        if (node.type.name === 'heading') return i18n.t('compose:editor.heading', { level: node.attrs.level as number })
         // Only the very first empty paragraph carries the long prompt.
         const isFirst = editor.state.doc.firstChild === node
-        return isFirst ? placeholder : "Write, or press '/'"
+        return isFirst ? (placeholder ?? i18n.t('compose:editor.placeholder')) : i18n.t('compose:editor.placeholderShort')
       },
       showOnlyWhenEditable: true,
       includeChildren: true

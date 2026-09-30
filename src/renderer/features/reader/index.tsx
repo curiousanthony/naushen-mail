@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ThreadWithMessages } from '@shared/types'
+import { useTranslation } from 'react-i18next'
 import { useApp } from '@/lib/store'
 import { fetchThread, peekThread } from '@/features/gestures/threadCache'
 import { ThreadHeader } from './ThreadHeader'
@@ -18,6 +19,7 @@ export type { ReplyMode } from './ReplyBar'
  * `settings.threadStyle`. Mounted always; renders nothing until `openThreadId` is set.
  */
 export function Reader(): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const openThreadId = useApp((s) => s.openThreadId)
   const openThread = useApp((s) => s.openThread)
   const settings = useApp((s) => s.settings)
@@ -178,7 +180,7 @@ export function Reader(): JSX.Element | null {
 
       <div className="reader__scroll">
         {loading && !thread ? (
-          <div className="reader__skeleton" aria-busy="true" aria-label="Loading conversation">
+          <div className="reader__skeleton" aria-busy="true" aria-label={t('thread.loading')}>
             <div className="reader__skeleton-line" />
             <div className="reader__skeleton-line" />
             <div className="reader__skeleton-line" />
@@ -186,8 +188,8 @@ export function Reader(): JSX.Element | null {
           </div>
         ) : !thread ? (
           <div className="reader__state">
-            <span className="reader__state-title">This conversation is no longer available.</span>
-            <span>It may have been deleted or moved.</span>
+            <span className="reader__state-title">{t('thread.unavailableTitle')}</span>
+            <span>{t('thread.unavailableHint')}</span>
           </div>
         ) : (
           <div className="reader__inner">
@@ -215,7 +217,7 @@ export function Reader(): JSX.Element | null {
   if (style === 'center') {
     return (
       <div className="reader__backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
-        <div className="reader reader--centre" role="dialog" aria-modal="true" aria-label={thread?.subject || 'Conversation'} ref={rootRef}>
+        <div className="reader reader--centre" role="dialog" aria-modal="true" aria-label={thread?.subject || t('thread.fallbackTitle')} ref={rootRef}>
           {body}
         </div>
       </div>
@@ -224,7 +226,7 @@ export function Reader(): JSX.Element | null {
 
   if (style === 'full') {
     return (
-      <div className="reader reader--full" role="region" aria-label={thread?.subject || 'Conversation'} ref={rootRef}>
+      <div className="reader reader--full" role="region" aria-label={thread?.subject || t('thread.fallbackTitle')} ref={rootRef}>
         {body}
       </div>
     )
@@ -234,7 +236,7 @@ export function Reader(): JSX.Element | null {
     <div
       className="reader reader--side"
       role="region"
-      aria-label={thread?.subject || 'Conversation'}
+      aria-label={thread?.subject || t('thread.fallbackTitle')}
       style={{ width }}
       ref={rootRef}
     >
@@ -242,7 +244,7 @@ export function Reader(): JSX.Element | null {
         className={`reader__resizer no-drag${dragging ? ' is-dragging' : ''}`}
         role="separator"
         aria-orientation="vertical"
-        aria-label="Resize conversation panel"
+        aria-label={t('thread.resize')}
         aria-valuenow={Math.round(width)}
         onPointerDown={onResizeStart}
         onPointerMove={onResizeMove}

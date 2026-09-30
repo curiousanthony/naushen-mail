@@ -17,6 +17,7 @@
  */
 
 import { htmlToDoc, serializeToEmailHtml, type DocNode } from '@shared/emailhtml'
+import i18n from '@/i18n'
 
 export interface Snippet {
   id: string
@@ -119,7 +120,7 @@ export function upsertSnippet(
   storage: SnippetStorage = defaultStorage()
 ): Snippet[] {
   const list = loadSnippets(storage)
-  const name = input.name.trim() || 'Untitled snippet'
+  const name = input.name.trim() || i18n.t('compose:snippets.untitled')
   const now = Date.now()
   const existing = list.find((s) => s.id === input.id) ?? list.find((s) => eqName(s.name, name))
   const next = existing

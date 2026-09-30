@@ -6,6 +6,7 @@
  */
 
 import type { Address } from '@shared/types'
+import i18n from '@/i18n'
 
 // ------------------------------------------------------------ "you mentioned an attachment"
 
@@ -209,15 +210,15 @@ export function sendNudges(input: {
 }): Nudge[] {
   const out: Nudge[] = []
   const nothingWritten = !input.bodyText.trim() && !input.attachmentCount && !input.hasInlineImage
-  if (nothingWritten) out.push({ id: 'empty', text: 'This message is empty.' })
+  if (nothingWritten) out.push({ id: 'empty', text: i18n.t('compose:nudge.empty') })
   if (input.typos.length) {
     const t = input.typos[0]
-    out.push({ id: 'typo', text: `${t.typedDomain} may be a typo.` })
+    out.push({ id: 'typo', text: i18n.t('compose:nudge.typo', { domain: t.typedDomain }) })
   }
   if (!input.attachmentCount && !input.hasInlineImage) {
     const m = findAttachmentMention(input.bodyText)
-    if (m) out.push({ id: 'attachment', text: `You wrote “${m.word.toLowerCase()}” but nothing is attached.` })
+    if (m) out.push({ id: 'attachment', text: i18n.t('compose:nudge.attachment', { word: m.word.toLowerCase() }) })
   }
-  if (!input.subject.trim()) out.push({ id: 'subject', text: 'No subject.' })
+  if (!input.subject.trim()) out.push({ id: 'subject', text: i18n.t('compose:nudge.noSubject') })
   return out
 }

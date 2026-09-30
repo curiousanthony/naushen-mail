@@ -1,4 +1,6 @@
-import { currentLocale } from '@/i18n'
+import i18n, { currentLocale } from '@/i18n'
+
+const t = (key: string, opts?: Record<string, unknown>): string => i18n.t(key, { ns: 'compose', ...opts })
 /**
  * "Schedule send" presets. Pure so the labels and the timestamps can be tested without
  * freezing the clock in the UI.
@@ -37,7 +39,7 @@ export function scheduleDetail(d: Date, now: Date): string {
   const day = far
     ? new Intl.DateTimeFormat(currentLocale(), { weekday: 'short', day: 'numeric', month: 'short' }).format(d)
     : fmtDay(d)
-  return `${day}, ${fmtTime(d)}`
+  return t('schedule.detail', { day, time: fmtTime(d) })
 }
 
 /**
@@ -52,10 +54,10 @@ export function scheduleOptions(now: Date = new Date()): ScheduleOption[] {
   const afternoon = at(now, early ? 0 : 1, 13)
   const monday = at(now, daysUntilNextMonday(now), 8)
   return [
-    { id: 'tomorrow-morning', label: early ? 'This morning' : 'Tomorrow morning', detail: scheduleDetail(morning, now), at: morning.getTime() },
-    { id: 'tomorrow-afternoon', label: early ? 'This afternoon' : 'Tomorrow afternoon', detail: scheduleDetail(afternoon, now), at: afternoon.getTime() },
-    { id: 'next-week', label: 'Next week', detail: scheduleDetail(monday, now), at: monday.getTime() },
-    { id: 'custom', label: 'Pick date & time', detail: '', at: null }
+    { id: 'tomorrow-morning', label: early ? t('schedule.thisMorning') : t('schedule.tomorrowMorning'), detail: scheduleDetail(morning, now), at: morning.getTime() },
+    { id: 'tomorrow-afternoon', label: early ? t('schedule.thisAfternoon') : t('schedule.tomorrowAfternoon'), detail: scheduleDetail(afternoon, now), at: afternoon.getTime() },
+    { id: 'next-week', label: t('schedule.nextWeek'), detail: scheduleDetail(monday, now), at: monday.getTime() },
+    { id: 'custom', label: t('schedule.pickDateTime'), detail: '', at: null }
   ]
 }
 
@@ -75,5 +77,5 @@ export function fromLocalInputValue(value: string, now: Date = new Date()): numb
 
 /** "Scheduled for Tue, 08:00" toast text. */
 export function scheduledToast(at: number, now: Date = new Date()): string {
-  return `Scheduled for ${scheduleDetail(new Date(at), now)}`
+  return t('schedule.scheduledFor', { when: scheduleDetail(new Date(at), now) })
 }

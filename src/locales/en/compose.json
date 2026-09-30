@@ -1,0 +1,217 @@
+{
+  "window": {
+    "newMessage": "New message",
+    "composer": "Message composer",
+    "minimise": "Minimise",
+    "maximise": "Maximise",
+    "restore": "Restore",
+    "expand": "Expand",
+    "close": "Close"
+  },
+  "fields": {
+    "from": "From",
+    "to": "To",
+    "cc": "Cc",
+    "bcc": "Bcc",
+    "subject": "Subject",
+    "noAccount": "No account",
+    "sendFrom": "Send from",
+    "signature": "Signature"
+  },
+  "recipients": {
+    "remove": "Remove {{email}}",
+    "frequent": "Frequent"
+  },
+  "notes": {
+    "typo": "<b>{{typed}}</b> looks like a typo of <b>{{suggested}}</b>",
+    "useDomain": "Use {{domain}}",
+    "keepAsTyped": "Keep as typed",
+    "mailingList": "This looks like a <b>mailing list</b>; your reply goes to everyone on it.",
+    "replyingTo_one": "Replying to <b>{{count}} person</b>.",
+    "replyingTo_other": "Replying to <b>{{count}} people</b>.",
+    "replySenderOnly": "Reply to sender only",
+    "dismiss": "Dismiss"
+  },
+  "quote": {
+    "show": "Show quoted text"
+  },
+  "attachments": {
+    "remove": "Remove {{name}}",
+    "totalOver": "{{size}} — over the 25 MB limit",
+    "drop": "Drop files to attach",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes",
+    "size": "{{value}} {{unit}}"
+  },
+  "confirm": {
+    "attachFile": "Attach a file",
+    "addSubject": "Add subject",
+    "sendAnyway": "Send anyway"
+  },
+  "validation": {
+    "noRecipient": "Add at least one recipient.",
+    "invalidAddress_one": "{{email}} is not a valid email address.",
+    "invalidAddress_other": "{{count}} recipients are not valid email addresses.",
+    "noSubject": "This message has no subject.",
+    "empty": "This message is empty.",
+    "missingAttachment": "You mentioned an attachment but nothing is attached."
+  },
+  "nudge": {
+    "empty": "This message is empty.",
+    "typo": "{{domain}} may be a typo.",
+    "attachment": "You wrote “{{word}}” but nothing is attached.",
+    "noSubject": "No subject."
+  },
+  "toolbar": {
+    "snippets": "Snippets",
+    "attach": "Attach files",
+    "discard": "Discard draft",
+    "help": "Formatting help",
+    "draftSaved": "Draft saved",
+    "send": "Send"
+  },
+  "schedule": {
+    "title": "Schedule send",
+    "timePlaceholder": "Type a time… tomorrow 9am",
+    "timeLabel": "Type a send time",
+    "confirm": "Schedule",
+    "pickFuture": "Pick a time in the future",
+    "followUp_one": "Remind me if no reply in {{count}} day",
+    "followUp_other": "Remind me if no reply in {{count}} days",
+    "detail": "{{day}}, {{time}}",
+    "thisMorning": "This morning",
+    "thisAfternoon": "This afternoon",
+    "tomorrowMorning": "Tomorrow morning",
+    "tomorrowAfternoon": "Tomorrow afternoon",
+    "nextWeek": "Next week",
+    "pickDateTime": "Pick date & time",
+    "scheduledFor": "Scheduled for {{when}}"
+  },
+  "toast": {
+    "discarded": "Draft discarded",
+    "archived": "Conversation archived",
+    "sending": "Sending…",
+    "sent": "Sent",
+    "sentFollowUp_one": "Sent · follow-up in {{count}} day if no reply",
+    "sentFollowUp_other": "Sent · follow-up in {{count}} days if no reply",
+    "scheduledFollowUp_one": "{{scheduled}} · follow-up in {{count}} day",
+    "scheduledFollowUp_other": "{{scheduled}} · follow-up in {{count}} days",
+    "notSent": "Not sent: {{reason}}",
+    "sendFailed": "Could not send the message",
+    "cancel": "Cancel",
+    "undo": "Undo"
+  },
+  "snippets": {
+    "none": "No snippets yet",
+    "newFromDraft": "+ New snippet from this draft",
+    "nameLabel": "Snippet name",
+    "namePlaceholder": "Website link",
+    "untitled": "Untitled snippet"
+  },
+  "help": {
+    "typing": "Typing",
+    "smartTypography": "Smart quotes, dashes and ellipsis",
+    "formatting": "Formatting",
+    "insertBlock": "Insert a block",
+    "emoji": "Emoji",
+    "textStyles": "Bold, italic, underline",
+    "strikethrough": "Strikethrough",
+    "code": "Code",
+    "link": "Link",
+    "snippet": "Snippet",
+    "headings": "Headings",
+    "bulletKeys": "- or *",
+    "bulletList": "Bulleted list",
+    "numberedList": "Numbered list",
+    "todo": "To-do",
+    "quote": "Quote",
+    "codeBlock": "Code block",
+    "divider": "Divider",
+    "send": "Send",
+    "sendArchive": "Send & archive",
+    "saveClose": "Save draft & close"
+  },
+  "editor": {
+    "placeholder": "Write, or press '/' for blocks",
+    "placeholderShort": "Write, or press '/'",
+    "toggle": "Toggle",
+    "heading": "Heading {{level}}"
+  },
+  "slash": {
+    "noMatch": "No blocks match",
+    "insertSnippet": "Insert snippet",
+    "colour": "Colour",
+    "background": "Background",
+    "groups": {
+      "basic": "Basic blocks",
+      "media": "Media",
+      "advanced": "Advanced",
+      "snippets": "Snippets"
+    },
+    "items": {
+      "text": { "title": "Text", "description": "Just start writing with plain text." },
+      "h1": { "title": "Heading 1", "description": "Big section heading." },
+      "h2": { "title": "Heading 2", "description": "Medium section heading." },
+      "h3": { "title": "Heading 3", "description": "Small section heading." },
+      "bulletList": { "title": "Bulleted list", "description": "Create a simple bulleted list." },
+      "orderedList": { "title": "Numbered list", "description": "Create a list with numbering." },
+      "taskList": { "title": "To-do list", "description": "Track tasks with a checklist." },
+      "toggle": { "title": "Toggle list", "description": "Hide detail inside a collapsible." },
+      "quote": { "title": "Quote", "description": "Capture a quotation." },
+      "divider": { "title": "Divider", "description": "Visually divide blocks." },
+      "callout": { "title": "Callout", "description": "Make writing stand out." },
+      "code": { "title": "Code", "description": "Capture a snippet of code." },
+      "table": { "title": "Table", "description": "Add a simple table." },
+      "image": { "title": "Image", "description": "Upload or drop in a picture." },
+      "link": { "title": "Link", "description": "Link to a page on the web." },
+      "emoji": { "title": "Emoji", "description": "Search and insert an emoji." },
+      "textColor": { "title": "Text colour", "description": "Colour the selected text." },
+      "backgroundColor": { "title": "Background colour", "description": "Highlight the selected text." }
+    },
+    "colors": {
+      "default": "Default",
+      "gray": "Gray",
+      "brown": "Brown",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink",
+      "red": "Red"
+    }
+  },
+  "selection": {
+    "turnInto": "Turn into",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strikethrough": "Strikethrough",
+    "code": "Code",
+    "link": "Link",
+    "colour": "Colour",
+    "text": "Text",
+    "background": "Background",
+    "pasteLink": "Paste a link…",
+    "apply": "Apply",
+    "openLink": "Open link",
+    "removeLink": "Remove link"
+  },
+  "link": {
+    "dialog": "Edit link",
+    "placeholder": "Paste or type a link",
+    "urlLabel": "Link URL",
+    "apply": "Apply",
+    "applyLink": "Apply link",
+    "open": "Open link",
+    "remove": "Remove link"
+  },
+  "image": {
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right"
+  },
+  "callout": {
+    "changeIcon": "Change callout icon"
+  }
+}

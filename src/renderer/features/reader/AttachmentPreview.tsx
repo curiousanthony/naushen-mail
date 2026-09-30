@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Download, X } from 'lucide-react'
 import type { Attachment } from '@shared/types'
 import { formatBytes } from '@shared/sanitize'
@@ -35,6 +36,7 @@ export function dataUrlToBlob(dataUrl: string): Blob {
  * anything else goes straight to the save dialog and never reaches this component.
  */
 export function AttachmentPreview({ messageId, attachment, onClose, onDownload }: Props): JSX.Element {
+  const { t } = useTranslation('reader')
   const kind = attachmentKind(attachment.mimeType, attachment.filename)
   const [dataUrl, setDataUrl] = useState<string | null | undefined>(undefined) // undefined = loading
   const [text, setText] = useState<string | null>(null)
@@ -72,15 +74,15 @@ export function AttachmentPreview({ messageId, attachment, onClose, onDownload }
   }, [onClose])
 
   const body = (): JSX.Element => {
-    if (dataUrl === undefined) return <div className="attprev__status">Loading preview…</div>
-    if (dataUrl === null) return <div className="attprev__status">Couldn't load a preview for this file.</div>
+    if (dataUrl === undefined) return <div className="attprev__status">{t('preview.loading')}</div>
+    if (dataUrl === null) return <div className="attprev__status">{t('preview.failed')}</div>
     switch (kind) {
       case 'image': return <img className="attprev__img" src={dataUrl} alt={attachment.filename} />
       case 'pdf': return <iframe className="attprev__frame" src={dataUrl} title={attachment.filename} />
       case 'audio': return <audio className="attprev__audio" controls src={dataUrl} />
       case 'video': return <video className="attprev__video" controls src={dataUrl} />
       case 'text': case 'code': return <pre className="attprev__text selectable">{text}</pre>
-      default: return <div className="attprev__status">No preview available for this file type.</div>
+      default: return <div className="attprev__status">{t('preview.unavailable')}</div>
     }
   }
 
@@ -92,13 +94,13 @@ export function AttachmentPreview({ messageId, attachment, onClose, onDownload }
             <span className="attprev__name">{attachment.filename}</span>
             <span className="attprev__size">{formatBytes(attachment.size)}</span>
           </span>
-          <Tooltip label="Download">
-            <button className="attprev__btn" onClick={onDownload} aria-label="Download">
+          <Tooltip label={t('preview.download')}>
+            <button className="attprev__btn" onClick={onDownload} aria-label={t('preview.download')}>
               <Download size={16} aria-hidden />
             </button>
           </Tooltip>
-          <Tooltip label="Close" shortcut="Esc">
-            <button className="attprev__btn" onClick={onClose} aria-label="Close preview">
+          <Tooltip label={t('preview.close')} shortcut="Esc">
+            <button className="attprev__btn" onClick={onClose} aria-label={t('preview.closePreview')}>
               <X size={17} aria-hidden />
             </button>
           </Tooltip>

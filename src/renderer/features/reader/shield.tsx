@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ShieldCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n'
 import type { TrackerHit } from '@shared/sanitize'
 import { summarizeTrackers } from '@shared/sanitize/trackers'
 import { Tooltip } from '@/features/tooltip'
 import './shield.css'
 
 /** "Blocked 1 tracker" / "Blocked 3 trackers". */
-export const trackerLabel = (n: number): string => `Blocked ${n} ${n === 1 ? 'tracker' : 'trackers'}`
+export const trackerLabel = (n: number): string => i18n.t('reader:shield.blocked', { count: n })
 
 /**
  * A quiet shield in the message header, present only when at least one tracking image was
@@ -14,6 +16,7 @@ export const trackerLabel = (n: number): string => `Blocked ${n} ${n === 1 ? 'tr
  * (Apple Mail's Mail Privacy Protection hides this; we show it).
  */
 export function TrackerShield({ trackers }: { trackers: readonly TrackerHit[] }): JSX.Element | null {
+  const { t } = useTranslation('reader')
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLSpanElement>(null)
   const groups = useMemo(() => summarizeTrackers(trackers), [trackers])
@@ -42,7 +45,7 @@ export function TrackerShield({ trackers }: { trackers: readonly TrackerHit[] })
   useEffect(() => { setOpen(false) }, [trackers])
 
   if (trackers.length === 0) return null
-  const label = trackerLabel(trackers.length)
+  const label = t('shield.blocked', { count: trackers.length })
 
   return (
     <span className="shield" ref={root}>
@@ -64,11 +67,11 @@ export function TrackerShield({ trackers }: { trackers: readonly TrackerHit[] })
             {groups.map((g) => (
               <li key={g.host} className="shield__row">
                 <span className="shield__host">{g.host}</span>
-                <span className="shield__svc">{g.service ?? 'Tracking pixel'}{g.count > 1 ? ` ×${g.count}` : ''}</span>
+                <span className="shield__svc">{g.service ?? t('shield.trackingPixel')}{g.count > 1 ? ` ×${g.count}` : ''}</span>
               </li>
             ))}
           </ul>
-          <p className="shield__note">Trackers report that you opened this message. They stay blocked even when you load images.</p>
+          <p className="shield__note">{t('shield.note')}</p>
         </div>
       )}
     </span>

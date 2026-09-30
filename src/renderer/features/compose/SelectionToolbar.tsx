@@ -5,27 +5,24 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/react'
+import { useTranslation } from 'react-i18next'
 import {
   Bold, Check, ChevronDown, Code, ExternalLink, Italic, Link2, Palette,
   Strikethrough, Trash2, Underline
 } from 'lucide-react'
-import { Tooltip, splitShortcutHint } from '@/features/tooltip'
-import { BACKGROUND_COLORS, TEXT_COLORS, type SlashAction } from './slashItems'
+import { Tooltip } from '@/features/tooltip'
+import { backgroundColors, slashItems, textColors, type SlashAction } from './slashItems'
 import { applyBlockAction } from './SlashMenu'
 
-const TURN_INTO: { action: SlashAction; label: string }[] = [
-  { action: 'text', label: 'Text' },
-  { action: 'h1', label: 'Heading 1' },
-  { action: 'h2', label: 'Heading 2' },
-  { action: 'h3', label: 'Heading 3' },
-  { action: 'bulletList', label: 'Bulleted list' },
-  { action: 'orderedList', label: 'Numbered list' },
-  { action: 'taskList', label: 'To-do list' },
-  { action: 'toggle', label: 'Toggle list' },
-  { action: 'quote', label: 'Quote' },
-  { action: 'callout', label: 'Callout' },
-  { action: 'code', label: 'Code' }
+const TURN_INTO_ACTIONS: SlashAction[] = [
+  'text', 'h1', 'h2', 'h3', 'bulletList', 'orderedList', 'taskList', 'toggle', 'quote', 'callout', 'code'
 ]
+
+/** "Turn into" entries: the same names as the `/` menu, in the UI language. */
+function turnInto(): { action: SlashAction; label: string }[] {
+  const items = slashItems()
+  return TURN_INTO_ACTIONS.map((action) => ({ action, label: items.find((i) => i.action === action)?.title ?? action }))
+}
 
 interface Props {
   editor: Editor
@@ -35,6 +32,7 @@ interface Props {
 }
 
 export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.Element {
+  const { t } = useTranslation('compose')
   const [panel, setPanel] = useState<null | 'turn' | 'link' | 'color'>(null)
   const [href, setHref] = useState('')
   const linkInput = useRef<HTMLInputElement>(null)
@@ -65,28 +63,28 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
     <div className="cmp-seltoolbar" style={style} onMouseDown={(e) => e.stopPropagation()}>
       <div className="cmp-seltoolbar__bar">
         <button type="button" className="cmp-seltoolbar__btn cmp-seltoolbar__btn--wide" onMouseDown={mark(() => setPanel(panel === 'turn' ? null : 'turn'))}>
-          Turn into <ChevronDown size={12} />
+          {t('selection.turnInto')} <ChevronDown size={12} />
         </button>
         <span className="cmp-seltoolbar__sep" />
-        <ToolButton active={editor.isActive('bold')} label="Bold (⌘B)" onClick={mark(() => editor.chain().focus().toggleBold().run())}><Bold size={14} /></ToolButton>
-        <ToolButton active={editor.isActive('italic')} label="Italic (⌘I)" onClick={mark(() => editor.chain().focus().toggleItalic().run())}><Italic size={14} /></ToolButton>
-        <ToolButton active={editor.isActive('underline')} label="Underline (⌘U)" onClick={mark(() => editor.chain().focus().toggleUnderline().run())}><Underline size={14} /></ToolButton>
-        <ToolButton active={editor.isActive('strike')} label="Strikethrough (⌘⇧S)" onClick={mark(() => editor.chain().focus().toggleStrike().run())}><Strikethrough size={14} /></ToolButton>
-        <ToolButton active={editor.isActive('code')} label="Code (⌘E)" onClick={mark(() => editor.chain().focus().toggleCode().run())}><Code size={14} /></ToolButton>
-        <ToolButton active={editor.isActive('link')} label="Link (⌘K)" onClick={mark(() => setPanel(panel === 'link' ? null : 'link'))}><Link2 size={14} /></ToolButton>
-        <ToolButton active={panel === 'color'} label="Colour" onClick={mark(() => setPanel(panel === 'color' ? null : 'color'))}><Palette size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('bold')} label={t('selection.bold')} shortcut="⌘B" onClick={mark(() => editor.chain().focus().toggleBold().run())}><Bold size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('italic')} label={t('selection.italic')} shortcut="⌘I" onClick={mark(() => editor.chain().focus().toggleItalic().run())}><Italic size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('underline')} label={t('selection.underline')} shortcut="⌘U" onClick={mark(() => editor.chain().focus().toggleUnderline().run())}><Underline size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('strike')} label={t('selection.strikethrough')} shortcut="⌘⇧S" onClick={mark(() => editor.chain().focus().toggleStrike().run())}><Strikethrough size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('code')} label={t('selection.code')} shortcut="⌘E" onClick={mark(() => editor.chain().focus().toggleCode().run())}><Code size={14} /></ToolButton>
+        <ToolButton active={editor.isActive('link')} label={t('selection.link')} shortcut="⌘K" onClick={mark(() => setPanel(panel === 'link' ? null : 'link'))}><Link2 size={14} /></ToolButton>
+        <ToolButton active={panel === 'color'} label={t('selection.colour')} onClick={mark(() => setPanel(panel === 'color' ? null : 'color'))}><Palette size={14} /></ToolButton>
       </div>
 
       {panel === 'turn' && (
         <div className="cmp-seltoolbar__panel">
-          {TURN_INTO.map((t) => (
+          {turnInto().map((item) => (
             <button
-              key={t.action}
+              key={item.action}
               type="button"
               className="cmp-menu__row"
-              onMouseDown={(e) => { e.preventDefault(); applyBlockAction(editor, t.action, { snippets: [], onRequestImage, onRequestLink: () => setPanel('link') }); setPanel(null) }}
+              onMouseDown={(e) => { e.preventDefault(); applyBlockAction(editor, item.action, { snippets: [], onRequestImage, onRequestLink: () => setPanel('link') }); setPanel(null) }}
             >
-              <span className="cmp-menu__title">{t.label}</span>
+              <span className="cmp-menu__title">{item.label}</span>
             </button>
           ))}
         </div>
@@ -97,7 +95,7 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
           <input
             ref={linkInput}
             className="cmp-input cmp-input--link"
-            placeholder="Paste a link…"
+            placeholder={t('selection.pasteLink')}
             value={href}
             onChange={(e) => setHref(e.target.value)}
             onKeyDown={(e) => {
@@ -106,16 +104,16 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
               if (e.key === 'Escape') { e.preventDefault(); setPanel(null); editor.commands.focus() }
             }}
           />
-          <Tooltip label="Apply">
-            <button type="button" className="cmp-iconbtn" aria-label="Apply" onMouseDown={(e) => { e.preventDefault(); applyLink() }}><Check size={14} /></button>
+          <Tooltip label={t('selection.apply')}>
+            <button type="button" className="cmp-iconbtn" aria-label={t('selection.apply')} onMouseDown={(e) => { e.preventDefault(); applyLink() }}><Check size={14} /></button>
           </Tooltip>
           {editor.isActive('link') && (
             <>
-              <Tooltip label="Open link">
-                <button type="button" className="cmp-iconbtn" aria-label="Open link" onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', href) }}><ExternalLink size={14} /></button>
+              <Tooltip label={t('selection.openLink')}>
+                <button type="button" className="cmp-iconbtn" aria-label={t('selection.openLink')} onMouseDown={(e) => { e.preventDefault(); void window.api.invoke('app.openExternal', href) }}><ExternalLink size={14} /></button>
               </Tooltip>
-              <Tooltip label="Remove link">
-                <button type="button" className="cmp-iconbtn" aria-label="Remove link" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().extendMarkRange('link').unsetLink().run(); setPanel(null) }}><Trash2 size={14} /></button>
+              <Tooltip label={t('selection.removeLink')}>
+                <button type="button" className="cmp-iconbtn" aria-label={t('selection.removeLink')} onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().extendMarkRange('link').unsetLink().run(); setPanel(null) }}><Trash2 size={14} /></button>
               </Tooltip>
             </>
           )}
@@ -124,9 +122,9 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
 
       {panel === 'color' && (
         <div className="cmp-seltoolbar__panel cmp-seltoolbar__panel--color">
-          <div className="cmp-menu__group">Text</div>
+          <div className="cmp-menu__group">{t('selection.text')}</div>
           <div className="cmp-swatches">
-            {TEXT_COLORS.map((c) => (
+            {textColors().map((c) => (
               <Tooltip key={`t-${c.name}`} label={c.name}>
                 <button
                   type="button"
@@ -138,9 +136,9 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
               </Tooltip>
             ))}
           </div>
-          <div className="cmp-menu__group">Background</div>
+          <div className="cmp-menu__group">{t('selection.background')}</div>
           <div className="cmp-swatches">
-            {BACKGROUND_COLORS.map((c) => (
+            {backgroundColors().map((c) => (
               <Tooltip key={`b-${c.name}`} label={c.name}>
                 <button
                   type="button"
@@ -158,16 +156,16 @@ export function SelectionToolbar({ editor, rect, onRequestImage }: Props): JSX.E
   )
 }
 
-function ToolButton({ active, label, onClick, children }: {
+function ToolButton({ active, label, shortcut, onClick, children }: {
   active?: boolean
   label: string
+  shortcut?: string
   onClick: (e: React.MouseEvent) => void
   children: React.ReactNode
 }): JSX.Element {
-  const { text, shortcut } = splitShortcutHint(label)
   return (
-    <Tooltip label={text} shortcut={shortcut}>
-      <button type="button" aria-label={label} aria-pressed={active} className={`cmp-seltoolbar__btn${active ? ' is-active' : ''}`} onMouseDown={onClick}>
+    <Tooltip label={label} shortcut={shortcut}>
+      <button type="button" aria-label={shortcut ? `${label} (${shortcut})` : label} aria-pressed={active} className={`cmp-seltoolbar__btn${active ? ' is-active' : ''}`} onMouseDown={onClick}>
         {children}
       </button>
     </Tooltip>
