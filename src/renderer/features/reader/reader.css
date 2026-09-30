@@ -145,8 +145,16 @@
 .reader__actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin-bottom: 10px;
+}
+
+.reader__sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--c-divider);
+  flex: none;
 }
 
 .reader__actions-spacer { flex: 1; }
@@ -159,9 +167,9 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 30px;
-  min-width: 30px;
-  padding: 0 8px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0 9px;
   border-radius: var(--radius-md);
   color: var(--c-text-2);
   transition: background var(--t-fast), color var(--t-fast);
@@ -372,15 +380,15 @@
 
 /* Reply / Reply all / Forward, mirrored at the top-right of an expanded message (the bottom
    ReplyBar covers the thread as a whole; these act on this specific message). */
-.msg__quickreply { display: inline-flex; align-items: center; gap: 2px; margin-left: 2px; }
+.msg__quickreply { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; }
 .msg__quickbtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: var(--radius-sm);
-  color: var(--c-text-3);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--c-text-2);
   transition: color var(--t-fast), background var(--t-fast);
 }
 .msg__quickbtn:hover { color: var(--c-text); background: var(--c-bg-hover); }
@@ -402,6 +410,25 @@
 
 .msg__detail dt { color: var(--c-text-3); }
 .msg__detail dd { margin: 0; color: var(--c-text); overflow-wrap: anywhere; }
+.msg__detail dd.msg__detail-row { display: flex; align-items: flex-start; gap: 6px; }
+.msg__detail-val { flex: 0 1 auto; min-width: 0; }
+.msg__copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 4px;
+  margin-top: 1px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  color: var(--c-text-3);
+  opacity: 0.7;
+  transition: color var(--t-fast), background var(--t-fast), opacity var(--t-fast);
+}
+.msg__detail-row:hover .msg__copy, .msg__copy:focus-visible, .msg__copy.is-done { opacity: 1; }
+.msg__copy:hover { color: var(--c-text); background: var(--c-bg-hover); }
+.msg__copy.is-done { color: var(--c-accent); }
 
 .msg__body-wrap { padding: 2px 0 16px 40px; }
 

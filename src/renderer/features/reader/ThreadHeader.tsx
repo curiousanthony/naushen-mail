@@ -47,7 +47,7 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
         <div className="reader__actions no-drag">
           <Tooltip label="Collapse" shortcut="Esc">
             <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label="Collapse thread">
-              <ChevronsRight size={17} aria-hidden />
+              <ChevronsRight size={19} aria-hidden />
             </button>
           </Tooltip>
 
@@ -57,42 +57,23 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
               (now-removed) "..." menu used to list them. */}
           <span className="reader__actions-spacer" />
 
-          <Tooltip label="Mark as unread" shortcut="U">
-            <button className="reader__btn" onClick={() => void act({ type: 'markUnread' }, ids, 'Marked as unread')} aria-label="Mark as unread">
-              <MailOpen size={17} aria-hidden />
+          {/* Triage first (most-reached-for), then organise, then the rarely-wanted, with the
+              destructive Trash alone at the far right so it is never hit by accident. */}
+          <Tooltip label="Archive" shortcut="E">
+            <button className="reader__btn" onClick={() => void act({ type: 'archive' }, ids, 'Conversation archived')} aria-label="Archive">
+              <Archive size={19} aria-hidden />
             </button>
           </Tooltip>
-          <Tooltip label="Label" shortcut="L">
-            <button className="reader__btn" onClick={() => setOverlay('label-picker')} aria-label="Label">
-              <Tag size={17} aria-hidden />
+          <Tooltip label="Mark as unread" shortcut="U">
+            <button className="reader__btn" onClick={() => void act({ type: 'markUnread' }, ids, 'Marked as unread')} aria-label="Mark as unread">
+              <MailOpen size={19} aria-hidden />
             </button>
           </Tooltip>
           <Tooltip label="Set reminder" shortcut="H">
             <button className="reader__btn" onClick={() => setOverlay('snooze')} aria-label="Set reminder">
-              <Clock size={17} aria-hidden />
+              <Clock size={19} aria-hidden />
             </button>
           </Tooltip>
-          {unsub && (
-            <Tooltip label={unsub.kind === 'http' ? 'Opens in your browser' : 'Sends an email'}>
-              <button className="reader__btn" onClick={unsubscribe}>
-                <BellOff size={17} aria-hidden />
-                <span className="reader__btn-label">Unsubscribe</span>
-              </button>
-            </Tooltip>
-          )}
-          <Tooltip label="Report spam" shortcut="!">
-            <button className="reader__btn" onClick={() => void act({ type: 'spam' }, ids, 'Reported as spam')} aria-label="Report spam">
-              <ShieldAlert size={17} aria-hidden />
-            </button>
-          </Tooltip>
-          <Tooltip label="Move to trash" shortcut="#">
-            <button className="reader__btn is-danger" onClick={() => void act({ type: 'trash' }, ids, 'Moved to trash')} aria-label="Move to trash">
-              <Trash2 size={17} aria-hidden />
-            </button>
-          </Tooltip>
-
-          {/* Archive and Star aren't in that menu's list (they never were menu-only), so they
-              keep their long-standing spot at the trailing end, most-reached-for first. */}
           <Tooltip label={thread.starred ? 'Unstar' : 'Star'} shortcut="S">
             <button
               className="reader__btn"
@@ -101,16 +82,40 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
               aria-label={thread.starred ? 'Unstar' : 'Star'}
             >
               <Star
-                size={17}
+                size={19}
                 aria-hidden
                 fill={thread.starred ? 'var(--c-star)' : 'none'}
                 color={thread.starred ? 'var(--c-star)' : undefined}
               />
             </button>
           </Tooltip>
-          <Tooltip label="Archive" shortcut="E">
-            <button className="reader__btn" onClick={() => void act({ type: 'archive' }, ids, 'Conversation archived')} aria-label="Archive">
-              <Archive size={17} aria-hidden />
+
+          <span className="reader__sep" aria-hidden />
+
+          <Tooltip label="Label" shortcut="L">
+            <button className="reader__btn" onClick={() => setOverlay('label-picker')} aria-label="Label">
+              <Tag size={19} aria-hidden />
+            </button>
+          </Tooltip>
+          {unsub && (
+            <Tooltip label={unsub.kind === 'http' ? 'Opens in your browser' : 'Sends an email'}>
+              <button className="reader__btn" onClick={unsubscribe}>
+                <BellOff size={19} aria-hidden />
+                <span className="reader__btn-label">Unsubscribe</span>
+              </button>
+            </Tooltip>
+          )}
+          <Tooltip label="Report spam" shortcut="!">
+            <button className="reader__btn" onClick={() => void act({ type: 'spam' }, ids, 'Reported as spam')} aria-label="Report spam">
+              <ShieldAlert size={19} aria-hidden />
+            </button>
+          </Tooltip>
+
+          <span className="reader__sep" aria-hidden />
+
+          <Tooltip label="Move to trash" shortcut="#">
+            <button className="reader__btn is-danger" onClick={() => void act({ type: 'trash' }, ids, 'Moved to trash')} aria-label="Move to trash">
+              <Trash2 size={19} aria-hidden />
             </button>
           </Tooltip>
         </div>

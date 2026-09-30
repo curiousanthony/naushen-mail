@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, CornerUpLeft, CornerUpRight, Paperclip, ReplyAll } from 'lucide-react'
+import { Check, ChevronDown, Copy, ChevronRight, CornerUpLeft, CornerUpRight, Paperclip, ReplyAll } from 'lucide-react'
 import type { Address, Message } from '@shared/types'
 import type { TrackerHit } from '@shared/sanitize'
 import { useApp } from '@/lib/store'
@@ -14,6 +14,8 @@ import { InviteCard, findInvite } from './InviteCard'
 import { TrackerShield } from './shield'
 import { CodeChip, useActiveCode } from './CodeChip'
 import { messageCodeText } from './codes'
+import { copyText } from './clipboard'
+import { joinAddresses } from './addressCopy'
 
 const AVATAR_TINTS = ['blue', 'green', 'orange', 'purple', 'pink', 'red', 'yellow', 'brown'] as const
 
@@ -29,6 +31,34 @@ function avatarTint(email: string): string {
 
 const addressList = (list: Address[]): string =>
   list.map((a) => (a.name ? `${a.name} <${a.email}>` : a.email)).join(', ')
+
+/** One detail row: the addresses plus a copy button (bare addresses, ", "-joined). */
+function AddressRow({ label, list }: { label: string; list: Address[] }): JSX.Element {
+  const [done, setDone] = useState(false)
+  const copy = async (): Promise<void> => {
+    if (!(await copyText(joinAddresses(list)))) return
+    setDone(true)
+    window.setTimeout(() => setDone(false), 1400)
+  }
+  return (
+    <>
+      <dt>{label}</dt>
+      <dd className="msg__detail-row">
+        <span className="msg__detail-val">{addressList(list)}</span>
+        <Tooltip label={done ? '' : `Copy ${label}`}>
+          <button
+            type="button" className={`msg__copy${done ? ' is-done' : ''}`}
+            onClick={(e) => { e.stopPropagation(); void copy() }}
+            aria-label={`Copy ${label} address${list.length > 1 ? 'es' : ''}`}
+          >
+            {done ? <Check size={12} aria-hidden /> : <Copy size={12} aria-hidden />}
+            {done && <span role="status">Copied</span>}
+          </button>
+        </Tooltip>
+      </dd>
+    </>
+  )
+}
 
 interface Props {
   message: Message
@@ -105,23 +135,23 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
         </time>
         {expanded && (
           <span className="msg__quickreply">
-            <Tooltip label="Reply">
+            <Tooltip label="Reply" shortcut="R">
               <button
                 type="button" className="msg__quickbtn" aria-label="Reply"
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'reply', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-              ><CornerUpLeft size={14} aria-hidden /></button>
+              ><CornerUpLeft size={19} aria-hidden /></button>
             </Tooltip>
-            <Tooltip label="Reply all">
+            <Tooltip label="Reply all" shortcut="A">
               <button
                 type="button" className="msg__quickbtn" aria-label="Reply all"
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'replyAll', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-              ><ReplyAll size={14} aria-hidden /></button>
+              ><ReplyAll size={19} aria-hidden /></button>
             </Tooltip>
-            <Tooltip label="Forward">
+            <Tooltip label="Forward" shortcut="F">
               <button
                 type="button" className="msg__quickbtn" aria-label="Forward"
                 onClick={(e) => { e.stopPropagation(); openComposer({ mode: 'forward', threadId: message.threadId, messageId: message.id, placement: 'inline' }) }}
-              ><CornerUpRight size={14} aria-hidden /></button>
+              ><CornerUpRight size={19} aria-hidden /></button>
             </Tooltip>
           </span>
         )}
@@ -147,13 +177,11 @@ export function MessageCard({ message, expanded, onToggle, blockRemoteImages }: 
 
       {expanded && showDetail && (
         <dl className="msg__detail selectable">
-          <dt>From</dt>
-          <dd>{addressList([message.from])}</dd>
-          {message.replyTo && <><dt>Reply-to</dt><dd>{addressList([message.replyTo])}</dd></>}
-          <dt>To</dt>
-          <dd>{message.to.length ? addressList(message.to) : '—'}</dd>
-          {message.cc.length > 0 && <><dt>Cc</dt><dd>{addressList(message.cc)}</dd></>}
-          {message.bcc.length > 0 && <><dt>Bcc</dt><dd>{addressList(message.bcc)}</dd></>}
+          <AddressRow label="From" list={[message.from]} />
+          {message.replyTo && <AddressRow label="Reply-to" list={[message.replyTo]} />}
+          {message.to.length > 0 ? <AddressRow label="To" list={message.to} /> : <><dt>To</dt><dd>—</dd></>}
+          {message.cc.length > 0 && <AddressRow label="Cc" list={message.cc} />}
+          {message.bcc.length > 0 && <AddressRow label="Bcc" list={message.bcc} />}
           <dt>Date</dt>
           <dd>{fullDate(message.date)}</dd>
         </dl>
