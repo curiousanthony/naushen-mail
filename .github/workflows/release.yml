@@ -1,0 +1,192 @@
+name: Release
+
+# Push a tag like v0.2.0 (it must match "version" in package.json) to build installers for
+# macOS, Windows and Linux and publish them on a GitHub Release.
+#
+# Required secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (baked into the build as MAIN_VITE_GOOGLE_*).
+# Optional signing secrets (everything works unsigned without them):
+#   macOS            MAC_CSC_LINK (base64 .p12 or https URL), MAC_CSC_KEY_PASSWORD
+#   macOS notarise   APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID
+#   Windows (pfx)    WIN_CSC_LINK (base64 .pfx or https URL), WIN_CSC_KEY_PASSWORD
+#   Windows (Azure Trusted Signing)  secrets AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET;
+#                    repository variables AZURE_SIGN_ENDPOINT, AZURE_SIGN_ACCOUNT, AZURE_SIGN_PROFILE, AZURE_SIGN_PUBLISHER
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify-tag:
+    name: Check tag matches package.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          v="$(node -p "require('./package.json').version")"
+          if [ "${GITHUB_REF_NAME}" != "v${v}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version ${v}. Bump the version, commit, and re-tag."
+            exit 1
+          fi
+
+  build:
+    name: Build (${{ matrix.name }})
+    needs: verify-tag
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            os: macos-latest
+            artifact: installers-mac
+            archs: '--mac --arm64 --x64'
+          - name: Windows
+            os: windows-latest
+            artifact: installers-win
+            archs: '--win --x64|--win --arm64'
+          - name: Linux
+            os: ubuntu-latest
+            artifact: installers-linux
+            archs: '--linux --x64'
+    env:
+      MAIN_VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      MAIN_VITE_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Signing is opt-in: variables are only exported when the matching secret exists, so a
+      # missing secret means an unsigned build, never a failed one.
+      - name: Configure macOS signing
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$MAC_CSC_LINK" ]; then
+            echo "CSC_LINK=$MAC_CSC_LINK" >> "$GITHUB_ENV"
+            echo "CSC_KEY_PASSWORD=$MAC_CSC_KEY_PASSWORD" >> "$GITHUB_ENV"
+            flags="-c.mac.hardenedRuntime=true"
+            if [ -n "$APPLE_ID" ] && [ -n "$APPLE_APP_SPECIFIC_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+              echo "APPLE_ID=$APPLE_ID" >> "$GITHUB_ENV"
+              echo "APPLE_APP_SPECIFIC_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD" >> "$GITHUB_ENV"
+              echo "APPLE_TEAM_ID=$APPLE_TEAM_ID" >> "$GITHUB_ENV"
+              flags="$flags -c.mac.notarize=true"
+              echo "macOS: signing + notarising"
+            else
+              echo "macOS: signing without notarisation"
+            fi
+            echo "EB_EXTRA_FLAGS=$flags" >> "$GITHUB_ENV"
+          else
+            echo "macOS: no signing secrets, ad-hoc signed build"
+          fi
+
+      - name: Configure Windows signing
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_SIGN_ENDPOINT: ${{ vars.AZURE_SIGN_ENDPOINT }}
+          AZURE_SIGN_ACCOUNT: ${{ vars.AZURE_SIGN_ACCOUNT }}
+          AZURE_SIGN_PROFILE: ${{ vars.AZURE_SIGN_PROFILE }}
+          AZURE_SIGN_PUBLISHER: ${{ vars.AZURE_SIGN_PUBLISHER }}
+        run: |
+          if [ -n "$WIN_CSC_LINK" ]; then
+            echo "WIN_CSC_LINK=$WIN_CSC_LINK" >> "$GITHUB_ENV"
+            echo "WIN_CSC_KEY_PASSWORD=$WIN_CSC_KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "Windows: signing with .pfx certificate"
+          elif [ -n "$AZURE_CLIENT_SECRET" ] && [ -n "$AZURE_SIGN_ENDPOINT" ] && [ -n "$AZURE_SIGN_ACCOUNT" ] && [ -n "$AZURE_SIGN_PROFILE" ] && [ -n "$AZURE_SIGN_PUBLISHER" ]; then
+            echo "AZURE_TENANT_ID=$AZURE_TENANT_ID" >> "$GITHUB_ENV"
+            echo "AZURE_CLIENT_ID=$AZURE_CLIENT_ID" >> "$GITHUB_ENV"
+            echo "AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET" >> "$GITHUB_ENV"
+            echo "EB_EXTRA_FLAGS=-c.win.azureSignOptions.endpoint=$AZURE_SIGN_ENDPOINT -c.win.azureSignOptions.codeSigningAccountName=$AZURE_SIGN_ACCOUNT -c.win.azureSignOptions.certificateProfileName=$AZURE_SIGN_PROFILE -c.win.azureSignOptions.publisherName=$AZURE_SIGN_PUBLISHER" >> "$GITHUB_ENV"
+            echo "Windows: signing with Azure Trusted Signing"
+          else
+            echo "Windows: no signing secrets, unsigned build"
+          fi
+
+      - name: Bundle app
+        run: npm run build
+
+      - name: Package installers
+        shell: bash
+        env:
+          ARCHS: ${{ matrix.archs }}
+        run: |
+          # One electron-builder run per '|'-separated entry (Windows needs one run per arch so each
+          # gets its own installer). EB_EXTRA_FLAGS is unquoted on purpose: it splits into flags.
+          IFS='|' read -ra RUNS <<< "$ARCHS"
+          for args in "${RUNS[@]}"; do
+            echo "+ electron-builder $args --publish never ${EB_EXTRA_FLAGS:-}"
+            # shellcheck disable=SC2086
+            npx electron-builder $args --publish never ${EB_EXTRA_FLAGS:-}
+          done
+
+      - name: List outputs
+        shell: bash
+        run: ls -la release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+
+  publish:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: installers-*
+          merge-multiple: true
+      - name: Checksums
+        working-directory: dist
+        run: |
+          ls -la
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Create (or update) the release
+        run: |
+          flags=""
+          case "$TAG" in *-*) flags="--prerelease" ;; esac
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+          else
+            # shellcheck disable=SC2086
+            gh release create "$TAG" dist/* --title "Naushen Mail ${TAG#v}" --generate-notes --verify-tag $flags
+          fi

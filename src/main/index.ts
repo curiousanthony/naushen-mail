@@ -20,6 +20,29 @@ applyUserDataOverride()
 let win: BrowserWindow | null = null
 let pendingMailto: string | null = null
 
+const IS_MAC = process.platform === 'darwin'
+/** Headless test / screenshot runs use throw-away profiles and must be able to run side by side. */
+const IS_TEST_RUN = !!(process.env.MAILROOM_USER_DATA || process.env.MAILROOM_SHOT || process.env.MAILROOM_STEPS)
+
+/** Windows/Linux pass a clicked `mailto:` link as a command-line argument (macOS uses `open-url`). */
+function mailtoFromArgv(argv: string[]): string | null {
+  return argv.slice(1).find((a) => /^mailto:/i.test(a)) ?? null
+}
+
+// One running instance: a second launch (e.g. clicking a mailto: link) hands its argv to the first.
+const gotLock = IS_TEST_RUN || app.requestSingleInstanceLock()
+if (!gotLock) {
+  app.quit()
+} else if (!IS_MAC) {
+  const initial = mailtoFromArgv(process.argv)
+  if (initial) pendingMailto = initial
+  app.on('second-instance', (_e, argv) => {
+    const url = mailtoFromArgv(argv)
+    if (url) handleMailto(url)
+    else summon()
+  })
+}
+
 /** Parse a `mailto:` URI into composer-init fields (best-effort; unknown params are ignored). */
 function parseMailto(url: string): { to: { email: string }[]; cc: { email: string }[]; bcc: { email: string }[]; subject?: string; body?: string } | null {
   try {
@@ -77,17 +100,26 @@ function createWindow(repo: Repo): BrowserWindow {
     ...(saved ? { x: saved.x, y: saved.y } : {}),
     show: false,
     title: 'Naushen Mail',
-    titleBarStyle: 'hiddenInset',
-    trafficLightPosition: { x: 16, y: 16 },
-    vibrancy: 'sidebar',
-    visualEffectState: 'followWindow',
-    backgroundColor: '#00000000',
+    ...(IS_MAC
+      ? {
+          titleBarStyle: 'hiddenInset' as const,
+          trafficLightPosition: { x: 16, y: 16 },
+          vibrancy: 'sidebar' as const,
+          visualEffectState: 'followWindow' as const,
+          backgroundColor: '#00000000'
+        }
+      // Windows / Linux: a normal OS frame (menu bar auto-hides; Alt reveals it). No vibrancy there.
+      : { autoHideMenuBar: true, backgroundColor: nativeTheme.shouldUseDarkColors ? '#191919' : '#ffffff' }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true, nodeIntegration: false, sandbox: true, spellcheck: true
     }
   })
   trackWindowBounds(w, repo)
+  // Flag the platform before first paint so platform-dependent CSS (titlebar height) never flashes.
+  w.webContents.on('dom-ready', () => {
+    void w.webContents.executeJavaScript(`document.documentElement.dataset.platform=${JSON.stringify(process.platform)}`).catch(() => undefined)
+  })
   w.once('ready-to-show', () => { if (saved?.maximized) w.maximize(); w.show() })
   w.on('closed', () => { if (win === w) win = null })
   w.webContents.setWindowOpenHandler(({ url }) => {
@@ -103,7 +135,13 @@ function createWindow(repo: Repo): BrowserWindow {
 }
 
 app.whenReady().then(async () => {
+  if (!gotLock) return // a first instance is running and already received our argv
   app.setName('Naushen Mail')
+  if (process.platform === 'win32') app.setAppUserModelId('com.anthony.naushenmail') // toasts + taskbar grouping
+  // Windows: register as a mailto handler (per-user registry; the user still picks the default in
+  // Settings > Default apps). Linux gets it from the .desktop MimeType written by electron-builder, so we
+  // never call xdg-settings and silently steal the default. macOS uses Info.plist (CFBundleURLTypes).
+  if (process.platform === 'win32' && app.isPackaged) app.setAsDefaultProtocolClient('mailto')
   const db = openDb(userDataPath('mailroom.db'))
   const repo = new Repo(db)
   setMainLanguage(repo.getSettings().language)
@@ -136,4 +174,4 @@ app.whenReady().then(async () => {
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) summon() })
 })
 
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit() })
+app.on('window-all-closed', () => { if (!IS_MAC) app.quit() })

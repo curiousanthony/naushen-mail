@@ -60,6 +60,8 @@
   /* Matches BrowserWindow's trafficLightPosition.y * 2 (src/main/index.ts) so the traffic
      lights sit dead-centre in the drag strip, instead of high up with a lopsided gap below. */
   --titlebar-h: 32px;
+  /* Windows / Linux use the normal OS frame (no traffic lights), so only a small top gap remains;
+     main sets html[data-platform] before first paint. */
   /* Motion. Durations stay inside 120-220ms; nothing blocks input. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);        /* decelerating; the default */
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);    /* tiny overshoot: pops, checkboxes, dots */
@@ -115,3 +117,5 @@
     color-scheme: dark;
   }
 }
+
+:root[data-platform='win32'], :root[data-platform='linux'] { --titlebar-h: 8px; }

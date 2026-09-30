@@ -13,7 +13,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
     "test": "vitest run",
     "pack": "npm run build && electron-builder --mac --dir",
-    "dist": "npm run build && electron-builder --mac"
+    "dist": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win --x64 && electron-builder --win --arm64",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "release": "npm run build && electron-builder --mac --publish always"
   },
   "dependencies": {
     "@tiptap/core": "^3.31.3",

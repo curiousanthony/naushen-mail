@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Generates build/icon.svg, build/icon.png (1024) and build/icon.icns.
+// Generates build/icon.svg, build/icon.png (1024), build/icon.icns, build/icon.ico (Windows) and build/icons/512x512.png (Linux).
 // Original artwork: an off-white paper plane on a calm charcoal squircle. No third-party branding.
 // Rasterises the SVG with the repo's own Electron (transparent offscreen window), then iconutil builds the .icns.
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
+import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -91,4 +91,37 @@ for (const s of sizes) {
 }
 execFileSync('iconutil', ['-c', 'icns', iconset, '-o', join(buildDir, 'icon.icns')], { stdio: 'inherit' })
 rmSync(iconset, { recursive: true, force: true })
-console.log('wrote build/icon.svg, build/icon.png, build/icon.icns')
+
+// 3) Linux: electron-builder picks up build/icons/<size>x<size>.png
+const iconsDir = join(buildDir, 'icons')
+rmSync(iconsDir, { recursive: true, force: true })
+mkdirSync(iconsDir)
+for (const s of [512, 256, 128, 64, 48, 32, 16]) {
+  execFileSync('sips', ['-z', String(s), String(s), png, '--out', join(iconsDir, `${s}x${s}.png`)], { stdio: 'ignore' })
+}
+
+// 4) Windows .ico: PNG-compressed entries (supported since Vista), assembled by hand.
+const icoSizes = [16, 24, 32, 48, 64, 128, 256]
+const tmp = join(buildDir, '.ico-tmp')
+rmSync(tmp, { recursive: true, force: true })
+mkdirSync(tmp)
+const pngs = icoSizes.map((s) => {
+  const f = join(tmp, `${s}.png`)
+  execFileSync('sips', ['-z', String(s), String(s), png, '--out', f], { stdio: 'ignore' })
+  return readFileSync(f)
+})
+const head = Buffer.alloc(6)
+head.writeUInt16LE(1, 2) // type: icon
+head.writeUInt16LE(icoSizes.length, 4)
+let offset = 6 + 16 * icoSizes.length
+const dir = icoSizes.map((s, i) => {
+  const e = Buffer.alloc(16)
+  e[0] = s === 256 ? 0 : s; e[1] = s === 256 ? 0 : s
+  e.writeUInt16LE(1, 4); e.writeUInt16LE(32, 6) // planes, bpp
+  e.writeUInt32LE(pngs[i].length, 8); e.writeUInt32LE(offset, 12)
+  offset += pngs[i].length
+  return e
+})
+writeFileSync(join(buildDir, 'icon.ico'), Buffer.concat([head, ...dir, ...pngs]))
+rmSync(tmp, { recursive: true, force: true })
+console.log('wrote build/icon.svg, build/icon.png, build/icon.icns, build/icon.ico, build/icons/*.png')
