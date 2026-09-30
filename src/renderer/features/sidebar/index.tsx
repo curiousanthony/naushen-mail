@@ -13,9 +13,10 @@ import { Popover, useAnchor } from './Popover'
 import { ViewEditor } from './ViewEditor'
 import { useViewEditor } from './viewEditorState'
 import {
-  MAIL_ITEMS, accountLabel, accountTags, categoryGroups, loadCollapsed, mailNav, mergedLabels, navEquals,
+  MAIL_ITEMS, formatCount, accountLabel, accountTags, categoryGroups, loadCollapsed, mailNav, mergedLabels, navEquals,
   saveCollapsed, sidebarViews, unreadFor, unreadForGroup, type LabelGroup
 } from './lib'
+import { readExt } from '@/features/settings/lib/settings-ext'
 import { VIEW_ICONS } from './viewIcons'
 import { activeContactPrefix, applyContactSuggestion, SEARCH_OPERATOR_HELP } from '@/lib/searchQuery'
 import type { Contact } from '@shared/types'
@@ -360,8 +361,10 @@ function Section({ id, title, collapsed, onToggle, action, children }: {
 }
 
 function Badge({ n }: { n: number }): JSX.Element | null {
-  if (!n) return null
-  return <span className="badge">{n > 999 ? '999+' : n}</span>
+  const mode = useApp((st) => readExt(st.settings).sidebarCountMode)
+  const text = formatCount(n, mode)
+  if (!text) return null
+  return <span className="badge">{text}</span>
 }
 
 function Row({ icon, dot, label, suffix, count, active, onClick, trailing, title, dest }: {

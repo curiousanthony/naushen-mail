@@ -55,7 +55,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'thread.label', label: 'Label / remove label', section: 'Threads', keys: ['l'], keywords: ['tag', 'labels'] },
   { id: 'thread.star', label: 'Star / unstar', section: 'Threads', keys: ['s'], keywords: ['favorite'] },
   { id: 'thread.unsubscribe', label: 'Unsubscribe', section: 'Threads', keys: ['mod+u'], keywords: ['newsletter', 'mailing list'] },
-  { id: 'rule.create', label: 'Create rule from thread', section: 'Threads', keys: ['mod+shift+r'], keywords: ['filter', 'automate', 'sender', 'skip inbox'] },
+  { id: 'rule.create', label: 'Create rule from thread', section: 'Threads', keys: ['mod+alt+r'], keywords: ['filter', 'automate', 'sender', 'skip inbox'] },
   { id: 'thread.move', label: 'Move to…', section: 'Threads', keys: ['v'], keywords: ['folder', 'label', 'file', 'archive to'] },
   { id: 'thread.mute', label: 'Mute / unmute conversation', section: 'Threads', keys: ['m'], keywords: ['silence', 'ignore', 'skip inbox'] },
   { id: 'thread.markRead', label: 'Mark as read', section: 'Threads', keys: ['shift+i'], keywords: ['read', 'seen'] },
@@ -100,6 +100,7 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'ui.search', label: 'Search', section: 'Global', keys: ['/'], keywords: ['find'] },
   { id: 'ui.help', label: 'Keyboard shortcuts', section: 'Global', keys: ['?'], keywords: ['help', 'cheat sheet'] },
   { id: 'ui.sidebar', label: 'Toggle sidebar', section: 'Global', keys: ['mod+\\'], global: true, keywords: ['hide', 'show'] },
+  { id: 'sync.now', label: 'Sync now (refresh mail)', section: 'Global', keys: ['mod+r'], global: true, keywords: ['refresh', 'reload', 'check mail', 'fetch'] },
   { id: 'ui.settings', label: 'Open settings', section: 'Global', keys: ['mod+,'], owner: 'menu', keywords: ['preferences'] }
 ]
 

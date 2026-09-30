@@ -79,12 +79,14 @@ describe('initial backfill', () => {
       if (!p.hasMore) break
     }
     expect(calls[0].url.pathname).toMatch(/\/profile$/) // historyId captured before the crawl
-    expect(pages.map((p) => p.threads.length)).toEqual([100, 100, 30, 1]) // 3 list pages + trash/spam extras
-    expect(pages.map((p) => p.hasMore)).toEqual([true, true, true, false])
-    expect(pages.map((p) => !!p.reset)).toEqual([false, false, false, false]) // fresh account: no reset flag
+    // 3 list pages + trash/spam extras + 8 (empty) category steps + the closing page
+    expect(pages.map((p) => p.threads.length)).toEqual([100, 100, 30, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    expect(pages.map((p) => p.hasMore)).toEqual([...Array(12).fill(true), false])
+    expect(pages.every((p) => !p.reset)).toBe(true) // fresh account: no reset flag
     expect(decodeCursor(pages[0].cursor)).toMatchObject({ phase: 'backfill', historyId: '777', pageToken: '100', fetched: 100 })
     expect(decodeCursor(pages[2].cursor)).toMatchObject({ phase: 'backfill', extras: true, fetched: 230 })
-    expect(decodeCursor(cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '777' })
+    expect(decodeCursor(pages[3].cursor)).toMatchObject({ phase: 'categories', step: 0, historyId: '777' })
+    expect(decodeCursor(cursor)).toMatchObject({ v: 1, phase: 'incremental', historyId: '777', cat: true })
     expect(pages[3].threads[0].thread.labelIds).toEqual(['gmail-a:TRASH'])
     expect(peak).toBeLessThanOrEqual(5)
     expect(peak).toBeGreaterThan(1)
@@ -100,7 +102,7 @@ describe('initial backfill', () => {
       cursor = p.cursor
       if (!p.hasMore) break
     }
-    expect(total).toBe(251) // 250 + 1 trashed
+    expect(total).toBe(251) // 250 + 1 trashed (category steps return nothing here)
   })
 
   it('skips threads that vanish between list and get', async () => {
@@ -117,8 +119,49 @@ describe('initial backfill', () => {
   })
 })
 
+describe('category backfill', () => {
+  const profile = route('GET', /\/profile$/, () => ({ emailAddress: 'me@example.com', historyId: '777' }))
+  const promoIds = Array.from({ length: 150 }, (_, i) => `promo${i}`)
+  const list: Handler = route('GET', /\/threads$/, (c) => {
+    const q = c.url.searchParams
+    const labels = q.getAll('labelIds')
+    if (!labels.includes('CATEGORY_PROMOTIONS')) return { threads: [] }
+    const pool = q.get('q') === 'is:unread' ? promoIds.slice(0, 22) : promoIds
+    const start = Number(q.get('pageToken') ?? 0)
+    const n = Math.min(Number(q.get('maxResults')), pool.length - start)
+    return { threads: pool.slice(start, start + n).map((id) => ({ id })), ...(start + n < pool.length ? { nextPageToken: String(start + n) } : {}) }
+  })
+  const any: Handler = route('GET', /\/threads\/([^/]+)$/, (_c, m) => thread(m[1], [msg(`m-${m[1]}`, m[1], { labelIds: ['INBOX', 'CATEGORY_PROMOTIONS'] })]))
+
+  it('an existing incremental cursor without the flag runs the category backfill once, then resumes incremental', async () => {
+    const { adapter, calls } = rig([profile, list, any, route('GET', /\/history$/, () => ({ history: [], historyId: '900' }))])
+    let cursor: string | null = encodeCursor({ v: 1, phase: 'incremental', historyId: '500' })
+    const seen = new Set<string>()
+    let hasMore = true
+    for (let i = 0; i < 30 && hasMore; i++) {
+      const p = await adapter.sync(cursor)
+      p.threads.forEach((t) => seen.add(t.thread.remoteId))
+      cursor = p.cursor; hasMore = p.hasMore
+    }
+    expect(seen.size).toBe(150) // unread slice (22) is a subset of the wider slice
+    const lists = calls.filter((c) => /\/threads$/.test(c.url.pathname))
+    expect(lists[0].url.searchParams.getAll('labelIds')).toEqual(['CATEGORY_PROMOTIONS', 'INBOX'])
+    expect(lists[0].url.searchParams.get('q')).toBe('is:unread')
+    expect(calls.some((c) => c.url.pathname.endsWith('/profile'))).toBe(false) // no wipe / restart
+    expect(decodeCursor(cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '500', cat: true })
+    // next sync is a normal history poll
+    const before = calls.length
+    await adapter.sync(cursor)
+    expect(calls.slice(before).map((c) => c.url.pathname.split('/').pop())).toEqual(['history'])
+  })
+
+  it('accepts a legacy numeric cursor as needing the migration', () => {
+    expect(decodeCursor('12345')).toEqual({ v: 1, phase: 'incremental', historyId: '12345' })
+  })
+})
+
 describe('incremental sync', () => {
-  const cursor = (o: object = {}): string => encodeCursor({ v: 1, phase: 'incremental', historyId: '100', ...o } as never)
+  const cursor = (o: object = {}): string => encodeCursor({ v: 1, phase: 'incremental', historyId: '100', cat: true, ...o } as never)
 
   it('lists history with all four types, refetches only affected threads and advances historyId', async () => {
     const { adapter, calls } = rig([
@@ -136,7 +179,7 @@ describe('incremental sync', () => {
     expect(p.deletedRemoteThreadIds).toEqual(['t3'])
     expect(p.hasMore).toBe(false)
     expect(p.reset).toBeUndefined()
-    expect(decodeCursor(p.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '200' })
+    expect(decodeCursor(p.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '200', cat: true })
   })
 
   it('is a cheap no-op when nothing changed', async () => {
@@ -155,12 +198,12 @@ describe('incremental sync', () => {
     ], {}, { hydrateBatch: 3 })
     const a = await adapter.sync(cursor())
     expect([a.threads.length, a.hasMore]).toEqual([3, true])
-    expect(decodeCursor(a.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '300', pending: ['t3', 't4', 't5', 't6'] })
+    expect(decodeCursor(a.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '300', pending: ['t3', 't4', 't5', 't6'], cat: true })
     const b = await adapter.sync(a.cursor)
     expect([b.threads.length, b.hasMore]).toEqual([3, true])
     const c = await adapter.sync(b.cursor)
     expect([c.threads.length, c.hasMore]).toEqual([1, false])
-    expect(decodeCursor(c.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '300' })
+    expect(decodeCursor(c.cursor)).toEqual({ v: 1, phase: 'incremental', historyId: '300', cat: true })
     expect(calls.filter((x) => x.url.pathname.endsWith('/history'))).toHaveLength(1) // pending calls do not re-query history
   })
 

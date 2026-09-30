@@ -37,7 +37,7 @@ function RulePopover({ seed }: { seed: RuleSeed }): JSX.Element {
   const box = useRef<HTMLDivElement>(null)
   const input = useRef<HTMLInputElement>(null)
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null)
-  useFocusTrap(box)
+  useFocusTrap(box, close)
 
   const complete = isDraftComplete(draft)
   const candidate = useMemo(() => draftToRule(draft, { id: 'preview', enabled: true, position: 0, createdAt: 0 }), [draft])

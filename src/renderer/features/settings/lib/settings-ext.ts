@@ -9,6 +9,8 @@ export type ThreadStyle = 'side' | 'center' | 'full'
 export type AutoAdvance = 'next' | 'previous' | 'close'
 export type Accent = 'blue' | 'violet' | 'pink' | 'orange' | 'green' | 'teal' | 'neutral'
 
+export type CountMode = 'cap' | 'exact'
+
 export interface SettingsExt {
   threadStyle: ThreadStyle
   autoAdvance: AutoAdvance
@@ -18,9 +20,11 @@ export interface SettingsExt {
   accent: Accent
   /** Two-finger trackpad swipe on a thread row: left archives, right sets a reminder. */
   swipeGestures: boolean
+  /** Sidebar unread badges: '99+' cap (default, like Notion Mail) or the exact number. */
+  sidebarCountMode: CountMode
 }
 
-export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'close', signatureInReplies: true, accent: 'blue', swipeGestures: true }
+export const EXT_DEFAULTS: SettingsExt = { threadStyle: 'side', autoAdvance: 'close', signatureInReplies: true, accent: 'blue', swipeGestures: true, sidebarCountMode: 'cap' }
 
 export const THREAD_STYLES: readonly ThreadStyle[] = ['side', 'center', 'full']
 export const ACCENT_VALUES: readonly Accent[] = ['blue', 'violet', 'pink', 'orange', 'green', 'teal', 'neutral']
@@ -33,7 +37,8 @@ export function readExt(settings: AppSettings): SettingsExt {
     autoAdvance: AUTO_ADVANCE.includes(raw.autoAdvance as AutoAdvance) ? (raw.autoAdvance as AutoAdvance) : EXT_DEFAULTS.autoAdvance,
     signatureInReplies: typeof raw.signatureInReplies === 'boolean' ? raw.signatureInReplies : EXT_DEFAULTS.signatureInReplies,
     accent: ACCENT_VALUES.includes(raw.accent as Accent) ? (raw.accent as Accent) : EXT_DEFAULTS.accent,
-    swipeGestures: typeof raw.swipeGestures === 'boolean' ? raw.swipeGestures : EXT_DEFAULTS.swipeGestures
+    swipeGestures: typeof raw.swipeGestures === 'boolean' ? raw.swipeGestures : EXT_DEFAULTS.swipeGestures,
+    sidebarCountMode: raw.sidebarCountMode === 'exact' ? 'exact' : 'cap'
   }
 }
 

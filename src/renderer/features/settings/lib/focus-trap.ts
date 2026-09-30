@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 
 const FOCUSABLE_SELECTOR = [
   'a[href]', 'button:not([disabled])', 'textarea:not([disabled])',
@@ -32,10 +32,12 @@ export function handleTrapTab(container: HTMLElement, shiftKey: boolean, active:
  * Traps Tab/Shift+Tab within `containerRef` for as long as the component using it is mounted:
  * focuses the first focusable element (or the container itself) on mount, keeps Tab cycling
  * inside the container, and restores focus to whatever was focused before mounting when it
- * unmounts. Mount/unmount the caller with the dialog's own open state (as `SettingsDialog`
+ * unmounts. Pass `onEscape` to close on Esc regardless of where focus is. Mount/unmount the caller with the dialog's own open state (as `SettingsDialog`
  * already does) rather than passing a changing `active` flag.
  */
-export function useFocusTrap(containerRef: RefObject<HTMLElement | null>): void {
+export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, onEscape?: () => void): void {
+  const escRef = useRef(onEscape)
+  escRef.current = onEscape
   useEffect(() => {
     const container = containerRef.current
     const previouslyFocused = document.activeElement as HTMLElement | null
@@ -43,6 +45,11 @@ export function useFocusTrap(containerRef: RefObject<HTMLElement | null>): void 
     ;(first ?? container)?.focus({ preventScroll: true })
 
     const onKeyDown = (e: KeyboardEvent): void => {
+      // Esc closes the dialog wherever focus is (even if it drifted to <body> after a click on plain
+      // text); captured on the document so the global "esc backs out" handler never sees it.
+      if (e.key === 'Escape' && escRef.current && !e.defaultPrevented) {
+        e.preventDefault(); e.stopPropagation(); escRef.current(); return
+      }
       if (e.key !== 'Tab' || !container) return
       const target = handleTrapTab(container, e.shiftKey, document.activeElement)
       if (target) { e.preventDefault(); target.focus() }
