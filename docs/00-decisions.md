@@ -1,7 +1,9 @@
 # Naushen Mail — decisions & definition of done
 
-Naushen Mail is a personal-use, keyboard-first desktop mail client for macOS that clones the *ergonomics* of Notion Mail
-(which shuts down 2026-09-22) for Gmail and Outlook accounts. **No AI features. No Notion accounts, databases or
+Naushen Mail is a keyboard-first, cross-platform (macOS, Windows, Linux) desktop mail client that clones the *ergonomics*
+of Notion Mail (which shut down 2026-09-22). **Gmail is supported today; Outlook is implemented but hidden
+(`OUTLOOK_ENABLED` in `src/shared/features.ts`) until a Microsoft app registration exists.** It is published under
+the Functional Source License (FSL-1.1-ALv2; source-available, converts to Apache-2.0 after two years). **No AI features. No Notion accounts, databases or
 workspaces.** No Notion logos or proprietary fonts are used; only the general design language (spacing, neutrals,
 block-editor behaviour).
 
@@ -19,7 +21,7 @@ block-editor behaviour).
 ## Tech stack (and why)
 | Layer | Choice | Why / rejected alternatives |
 |---|---|---|
-| Shell | **Electron 44** (macOS `.app`, universal arm64/x64) | Notion Mail itself is Electron; proven native chrome (`hiddenInset` titlebar, vibrancy, traffic lights). Tauri rejected: no Rust toolchain on the machine, WebKit rich-text quirks. Swift/AppKit rejected: multi-week cost, no block editor ecosystem |
+| Shell | **Electron 44** (macOS arm64/x64, Windows, Linux) | Notion Mail itself is Electron; proven native chrome (`hiddenInset` titlebar, vibrancy, traffic lights). Tauri rejected: no Rust toolchain on the machine, WebKit rich-text quirks. Swift/AppKit rejected: multi-week cost, no block editor ecosystem |
 | Language | TypeScript (strict) everywhere | shared types between main/preload/renderer (`src/shared`) |
 | Build | **electron-vite 5 + Vite 7** | one config, HMR, main/preload/renderer |
 | UI | **React 19 + Zustand** + hand-written CSS with design tokens (`styles/tokens.css`) | tokens give exact light/dark parity with Notion's palette; no Tailwind to keep CSS auditable |
@@ -27,10 +29,10 @@ block-editor behaviour).
 | Editor | **TipTap 3 (ProseMirror)** + `@tiptap/suggestion` for `/` | block model + slash menu is a solved path; from-scratch editor is where this project would sink |
 | Local store | **`node:sqlite`** (built into Electron's Node 24) with **FTS5** | zero native modules → no ABI rebuild step (`better-sqlite3` rejected); verified FTS5 works in Electron |
 | Providers | **Gmail REST API** and **Microsoft Graph** via `fetch`, OAuth2 **PKCE + loopback redirect** | no backend server, no client secret for Microsoft; Google Desktop clients need a (non-confidential) secret. IMAP rejected: Microsoft removed basic auth for personal accounts, Gmail needs app passwords |
-| Tokens | Electron `safeStorage` (Keychain-backed) in the local DB | never in plaintext, never bundled |
+| Tokens | Electron `safeStorage` (Keychain / DPAPI / Linux secret service) in the local DB | never in plaintext, never bundled |
 | Outgoing MIME | `nodemailer/lib/mail-composer` | robust RFC 5322 + multipart/alternative + inline cid images |
 | HTML safety | DOMPurify → **sandboxed iframe** (`sandbox=""`, no scripts), remote images blocked until allowed | untrusted email HTML |
-| Packaging | electron-builder → `.dmg`/`.zip`, ad-hoc signed | no Apple Developer account assumed; see `docs/install.md` |
+| Packaging | electron-builder → `.dmg`, `Setup.exe`, AppImage/deb; unsigned or ad-hoc until certificates exist | see `docs/install.md`, `docs/maintainers.md` |
 | Tests | Vitest (store, query builder, serializers, adapters w/ mocked fetch) + headless Electron screenshot hook (`src/main/e2e.ts`) | |
 
 ## Architecture
@@ -55,9 +57,8 @@ the 7-day refresh-token expiry requires full Google verification, including a pa
 for a restricted scope (an earlier version of this doc, and the in-app guide, said otherwise — corrected
 2026-09-24). The correct, Google-sanctioned path for personal use: stay in **Testing**, add yourself as a
 **test user**, and expect to click **Reauthorize** roughly every 7 days (a quick Google sign-in, not a full
-re-setup — the app already surfaces a `reauth` account status for this). Both the Google Cloud and Azure app
-registrations must be created by the user — the app reads the client IDs from Settings → Accounts. See
-`docs/06-provider-setup.md`.
+re-setup — the app already surfaces a `reauth` account status for this). Official builds embed a Google desktop OAuth client (see `docs/maintainers.md`); self-builders can use their own
+(`docs/provider-setup-advanced.md`, Settings → Accounts).
 
 ## Definition of done
 
@@ -66,9 +67,9 @@ Status as of 2026-09-23, after 11 PRs merged to `main` in two rounds (8 feature 
 Verified means: exercised in the built app via the headless screenshot hook (`docs/…`/CLAUDE.md),
 not just read in the diff. 532 tests pass, typecheck and the packaged `.app` build are clean.
 
-- [x] Launches as a real macOS `.app`; window chrome matches Notion Mail (hidden inset titlebar, sidebar, traffic lights) — verified: `npm run pack` produces an ad-hoc-signed, launchable `.app`
+- [x] Launches as a real desktop app; on macOS the window chrome matches Notion Mail (hidden inset titlebar, sidebar, traffic lights) — verified: `npm run pack` produces an ad-hoc-signed, launchable `.app`
 - [x] Demo provider exercises the whole UI offline — verified extensively
-- [ ] Connect Gmail and Outlook accounts (OAuth) — code complete (adapters, PKCE loopback flow, token refresh/reauth, 193 adapter tests against mocked HTTP) and the setup doc's scopes match the code exactly, but **not exercised against a real account**: that needs OAuth apps only the user can create (`docs/06-provider-setup.md`)
+- [ ] Connect Gmail and Outlook accounts (OAuth) — code complete (adapters, PKCE loopback flow, token refresh/reauth, 193 adapter tests against mocked HTTP) and the setup doc's scopes match the code exactly, but **not exercised against a real account**: that needs OAuth apps only the user can create (`docs/provider-setup-advanced.md`)
 - [x] Sidebar: account switcher, compose, search, Views (create/edit/delete), Mail folders, labels with colours, unread counts (including "All Mail", fixed) — verified
 - [x] Thread list: date groups, hover actions, unread styling, multi-select, keyboard nav (`j/k/x/e/#/…`), bulk actions, reachable loading skeleton — verified
 - [x] Reader: side/centre/full peek, message cards, quoted-text collapse, sanitised HTML incl. resolved `cid:` inline images, inline reply/forward (dedup + Escape-to-close fixed) — verified. Attachment *download* is wired (`attachments.save`) but not exercised against a real account
@@ -79,5 +80,5 @@ not just read in the diff. 532 tests pass, typecheck and the packaged `.app` bui
 - [x] Documented: research, decisions, design system, provider setup, install; tests green; CI green on `main`
 
 **What's left for a fully "no more intervention needed" app**: only the user's ~20 minutes in
-Google Cloud Console + Azure (`docs/06-provider-setup.md`) — everything downstream of that is
+Google Cloud Console + Azure (`docs/provider-setup-advanced.md`) — everything downstream of that is
 built and tested against mocked provider responses.
