@@ -13,12 +13,16 @@ interface CommandUi {
   /** Bumped on every open so the palette remounts with a clean query. */
   paletteSeq: number
   hint: KeyHint | null
+  /** Keyboard-driven list mode: the focused row shows a focus ring (cleared by mouse use / Esc). */
+  listKbd: boolean
+  setListKbd(v: boolean): void
   openPalette(mode?: 'commands' | 'search', initial?: string): void
   setHint(h: KeyHint | null): void
 }
 
 export const useCommandUi = create<CommandUi>((set) => ({
-  paletteMode: 'commands', paletteInitial: '', paletteSeq: 0, hint: null,
+  paletteMode: 'commands', paletteInitial: '', paletteSeq: 0, hint: null, listKbd: false,
+  setListKbd(listKbd) { set((s) => (s.listKbd === listKbd ? s : { listKbd })) },
   openPalette(mode = 'commands', initial = '') {
     set((s) => ({ paletteMode: mode, paletteInitial: initial, paletteSeq: s.paletteSeq + 1 }))
     useApp.getState().setOverlay('palette')

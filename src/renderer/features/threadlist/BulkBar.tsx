@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { AlarmClock, Archive, FolderInput, Mail, MailOpen, Tag, Trash2, X } from 'lucide-react'
+import { AlarmClock, Archive, FolderInput, Mail, MailOpen, ShieldCheck, Tag, Trash2, X } from 'lucide-react'
 import type { Label, Thread } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Tooltip } from '@/features/tooltip'
@@ -22,6 +22,7 @@ export function BulkBar({ selected, labels }: BulkBarProps): JSX.Element | null 
   const act = useApp((s) => s.act)
   const clearSelection = useApp((s) => s.clearSelection)
   const setOverlay = useApp((s) => s.setOverlay)
+  const inSpam = useApp((s) => s.nav.kind === 'role' && s.nav.role === 'spam')
   const [anchor, toggle, close] = useAnchor()
   if (!selected.length) return null
 
@@ -37,6 +38,11 @@ export function BulkBar({ selected, labels }: BulkBarProps): JSX.Element | null 
     <div className="bulk" role="toolbar" aria-label={`${plural} selected`}>
       <span className="bulk__count">{n} selected</span>
       <span className="bulk__sep" />
+      {inSpam && (
+        <button className="bulk__btn" onClick={() => void act({ type: 'notSpam' }, ids, `${plural} moved to Inbox`)}>
+          <ShieldCheck size={14} /> Not spam <Hint>⇧E</Hint>
+        </button>
+      )}
       <button className="bulk__btn" onClick={() => void act({ type: 'archive' }, ids, `${plural} archived`)}>
         <Archive size={14} /> Archive <Hint>E</Hint>
       </button>

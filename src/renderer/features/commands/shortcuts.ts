@@ -7,7 +7,7 @@
  * menu, in which case the entry is documentation only (shown in the sheet, never bound here).
  */
 
-export type ShortcutOwner = 'commands' | 'reader' | 'compose' | 'menu'
+export type ShortcutOwner = 'commands' | 'reader' | 'compose' | 'menu' | 'list'
 
 export interface ShortcutDef {
   /** Command id; see runner.ts for the implementations. */
@@ -34,6 +34,9 @@ export const SHORTCUTS: ShortcutDef[] = [
   { id: 'nav.next', label: 'Next thread', section: 'Navigation', keys: ['j'], keywords: ['down', 'move'] },
   { id: 'nav.prev', label: 'Previous thread', section: 'Navigation', keys: ['k'], keywords: ['up', 'move'] },
   { id: 'nav.open', label: 'Open thread', section: 'Navigation', keys: ['enter'], keywords: ['read'] },
+  { id: 'nav.arrows', label: 'Move up / down the list (arrows)', section: 'Navigation', keys: ['down', 'up'], owner: 'list', keywords: ['cursor', 'focus', 'keyboard'], display: [['↑', '↓']] },
+  { id: 'nav.openO', label: 'Open focused thread', section: 'Navigation', keys: ['o'], owner: 'list', keywords: ['read'] },
+  { id: 'nav.list', label: 'Focus the list (keyboard)', section: 'Navigation', keys: ['g l'], keywords: ['cursor', 'rows', 'conversations', 'list'] },
   { id: 'nav.back', label: 'Close thread / back', section: 'Navigation', keys: ['esc'], keywords: ['dismiss', 'clear selection'] },
   { id: 'nav.top', label: 'Jump to top', section: 'Navigation', keys: ['mod+up'], keywords: ['first'] },
   { id: 'nav.bottom', label: 'Jump to bottom', section: 'Navigation', keys: ['mod+down'], keywords: ['last'] },

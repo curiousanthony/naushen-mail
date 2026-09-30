@@ -145,6 +145,7 @@ function move(delta: number): void {
   if (!id) return
   s.focus(id)
   if (s.openThreadId) s.openThread(id)
+  else useCommandUi.getState().setListKbd(true)
   reveal(id)
 }
 
@@ -153,6 +154,16 @@ function extend(delta: 1 | -1): void {
   const r = extendSelection(s.threads.map((t) => t.id), s.focusedId, s.selectedIds, delta)
   useApp.setState({ focusedId: r.focusedId, selectedIds: r.selectedIds })
   reveal(r.focusedId)
+}
+
+/** `g l`: put the keyboard cursor on the list (first row if none) without opening anything. */
+function focusList(): void {
+  const s = S()
+  if (s.overlay) s.setOverlay(null)
+  ;(document.activeElement as HTMLElement | null)?.blur?.()
+  if (!s.focusedId || !s.threads.some((t) => t.id === s.focusedId)) { const id = s.threads[0]?.id ?? null; if (id) s.focus(id) }
+  useCommandUi.getState().setListKbd(true)
+  reveal(S().focusedId)
 }
 
 export const THEMES = ['system', 'light', 'dark'] as const
@@ -172,8 +183,9 @@ export const HANDLERS: Record<string, Handler> = {
     else if (s.composers.length) s.closeComposer(s.composers[s.composers.length - 1].id)
     else if (s.openThreadId) s.openThread(null)
     else if (s.selectedIds.length) s.clearSelection()
-    else collapseBundleAt(s.focusedId)
+    else if (!collapseBundleAt(s.focusedId)) useCommandUi.getState().setListKbd(false)
   },
+  'nav.list': focusList,
   'nav.top': () => { const s = S(); const id = s.threads[0]?.id ?? null; if (id) { s.focus(id); if (s.openThreadId) s.openThread(id); reveal(id) } },
   'nav.bottom': () => { const s = S(); const id = s.threads[s.threads.length - 1]?.id ?? null; if (id) { s.focus(id); if (s.openThreadId) s.openThread(id); reveal(id) } },
   'go.role': ({ arg }) => { if (arg) goRole(arg as SystemRole) },
