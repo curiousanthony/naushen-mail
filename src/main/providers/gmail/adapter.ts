@@ -98,7 +98,7 @@ export class GmailAdapter implements ProviderAdapter {
 
   async listLabels(): Promise<Label[]> {
     const res = await this.http.get<{ labels?: GmailLabel[] }>('/labels')
-    return mapLabels(this.accountId, res.labels ?? [])
+    return mapLabels(this.accountId, res?.labels ?? [])
   }
 
   async createLabel(name: string, color?: string): Promise<Label> {
@@ -188,12 +188,12 @@ export class GmailAdapter implements ProviderAdapter {
         pageToken: c.pageToken,
         fields: 'threads(id),nextPageToken'
       })
-      const ids = (res.threads ?? []).map((t) => t.id)
+      const ids = (res?.threads ?? []).map((t) => t.id)
       const { threads } = await this.hydrate(ids)
       const fetched = c.fetched + ids.length
-      const more = !!res.nextPageToken && fetched < limit && ids.length > 0
+      const more = !!res?.nextPageToken && fetched < limit && ids.length > 0
       const next: GmailCursor = more
-        ? { v: 1, phase: 'backfill', historyId: c.historyId, pageToken: res.nextPageToken, fetched }
+        ? { v: 1, phase: 'backfill', historyId: c.historyId, pageToken: res?.nextPageToken, fetched }
         : { v: 1, phase: 'backfill', historyId: c.historyId, fetched, extras: true }
       return { threads, deletedRemoteThreadIds: [], cursor: encodeCursor(next), hasMore: true, reset }
     }
@@ -204,7 +204,7 @@ export class GmailAdapter implements ProviderAdapter {
       const res = await this.http.get<{ threads?: { id: string }[] }>('/threads', {
         labelIds: label, includeSpamTrash: true, maxResults: EXTRA_PER_MAILBOX, fields: 'threads(id)'
       })
-      for (const t of res.threads ?? []) idSet.add(t.id)
+      for (const t of res?.threads ?? []) idSet.add(t.id)
     }
     const { threads } = await this.hydrate([...idSet])
     return {
@@ -223,12 +223,12 @@ export class GmailAdapter implements ProviderAdapter {
       labelIds: [plan.label, 'INBOX'], ...(plan.unread ? { q: 'is:unread' } : {}),
       maxResults: Math.max(1, Math.min(100, plan.limit - c.fetched)), pageToken: c.pageToken, fields: 'threads(id),nextPageToken'
     })
-    const ids = (res.threads ?? []).map((t) => t.id)
+    const ids = (res?.threads ?? []).map((t) => t.id)
     const { threads } = await this.hydrate(ids)
     const fetched = c.fetched + ids.length
-    const more = !!res.nextPageToken && fetched < plan.limit && ids.length > 0
+    const more = !!res?.nextPageToken && fetched < plan.limit && ids.length > 0
     const next: GmailCursor = more
-      ? { ...c, pageToken: res.nextPageToken, fetched }
+      ? { ...c, pageToken: res?.nextPageToken, fetched }
       : { v: 1, phase: 'categories', historyId: c.historyId, step: c.step + 1, fetched: 0, pending: c.pending }
     return { threads, deletedRemoteThreadIds: [], cursor: encodeCursor(next), hasMore: true }
   }
@@ -251,9 +251,9 @@ export class GmailAdapter implements ProviderAdapter {
           if (e instanceof GmailApiError && e.status === 404) return this.firstBackfillPage(true)
           throw e
         }
-        for (const id of diffHistory(res.history ?? []).threadIds) ids.add(id)
-        if (res.historyId) latest = res.historyId
-        pageToken = res.nextPageToken
+        for (const id of diffHistory(res?.history ?? []).threadIds) ids.add(id)
+        if (res?.historyId) latest = res?.historyId
+        pageToken = res?.nextPageToken
       } while (pageToken)
       pending = [...ids]
       historyId = latest

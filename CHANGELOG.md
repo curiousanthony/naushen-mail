@@ -5,6 +5,9 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+- Gmail sync no longer fails with "Cannot read properties of undefined" when Gmail returns an empty response for a thread listing.
+
 ## [0.1.0] - 2026-09-30
 
 First public release.
