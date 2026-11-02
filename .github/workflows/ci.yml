@@ -53,7 +53,7 @@ jobs:
             "release/mac-arm64/Naushen Mail.app/Contents/MacOS/Naushen Mail"
           test -s "$RUNNER_TEMP/shot.png"
           test -s "$RUNNER_TEMP/mr-ci/mailroom.db"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: mailroom-smoke-screenshot
           path: ${{ runner.temp }}/shot.png
