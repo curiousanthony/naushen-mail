@@ -230,6 +230,7 @@ function SearchRow(): JSX.Element {
   const [q, setQ] = useState('')
   const [focused, setFocused] = useState(false)
   const [suggestions, setSuggestions] = useState<Contact[]>([])
+  const [active, setActive] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
   const prev = useRef<Nav>({ kind: 'role', role: 'inbox' })
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -284,6 +285,26 @@ function SearchRow(): JSX.Element {
     setQ(next)
     inputRef.current?.focus()
   }
+  const showPeople = focused && !!contactPrefix && suggestions.length > 0
+  const showOps = focused && !contactPrefix && !q.trim()
+  const operators = searchOperatorHelp()
+  const count = showPeople ? suggestions.length : showOps ? operators.length : 0
+  const idx = active >= 0 && active < count ? active : -1
+  const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Escape') { e.stopPropagation(); exit(); return }
+    if (!count) return
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      const step = e.key === 'ArrowDown' ? 1 : -1
+      setActive(idx < 0 ? (step > 0 ? 0 : count - 1) : (idx + step + count) % count)
+    } else if (e.key === 'Enter' && idx >= 0) {
+      e.preventDefault()
+      if (showPeople) pickContact(suggestions[idx])
+      else insertOperator(operators[idx].op)
+      setActive(-1)
+    }
+  }
+  const optId = (i: number): string => `search-opt-${i}`
   const pickContact = (c: Contact): void => {
     if (!contactPrefix) return
     if (timer.current) { clearTimeout(timer.current); timer.current = null }
@@ -299,18 +320,21 @@ function SearchRow(): JSX.Element {
         <Search size={15} />
         <input
           ref={inputRef} value={q} placeholder={t('search.placeholder')} aria-label={t('search.placeholder')}
-          onChange={(e) => change(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Escape') { e.stopPropagation(); exit() } }}
+          role="combobox" aria-expanded={count > 0} aria-controls="search-listbox" aria-autocomplete="list"
+          aria-activedescendant={idx >= 0 ? optId(idx) : undefined}
+          onChange={(e) => { setActive(-1); change(e.target.value) }}
+          onKeyDown={onSearchKey}
           onFocus={() => setFocused(true)}
           onBlur={() => { setFocused(false); if (!q.trim()) exit() }}
         />
         {q && <button className="search__clear" onMouseDown={(e) => e.preventDefault()} onClick={exit} aria-label={t('search.clear')}><X size={13} /></button>}
       </div>
-      {focused && contactPrefix && suggestions.length > 0 && (
-        <div className="search__ops" role="listbox" aria-label={t('search.people')}>
-          {suggestions.map((c) => (
+      {showPeople && (
+        <div id="search-listbox" className="search__ops" role="listbox" aria-label={t('search.people')}>
+          {suggestions.map((c, i) => (
             <button
-              key={c.email} type="button" className="search__op search__op--contact" role="option"
+              key={c.email} id={optId(i)} aria-selected={i === idx} type="button" className="search__op search__op--contact" role="option"
+              onMouseEnter={() => setActive(i)}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => pickContact(c)}
             >
@@ -321,11 +345,12 @@ function SearchRow(): JSX.Element {
           ))}
         </div>
       )}
-      {focused && !contactPrefix && !q.trim() && (
-        <div className="search__ops" role="listbox" aria-label={t('search.operators')}>
-          {searchOperatorHelp().map((o) => (
+      {showOps && (
+        <div id="search-listbox" className="search__ops" role="listbox" aria-label={t('search.operators')}>
+          {operators.map((o, i) => (
             <button
-              key={o.op} type="button" className="search__op" role="option"
+              key={o.op} id={optId(i)} aria-selected={i === idx} type="button" className="search__op" role="option"
+              onMouseEnter={() => setActive(i)}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insertOperator(o.op)}
             >
@@ -452,7 +477,7 @@ function ViewRow({ view, count, active, onClick }: {
   const dotColor = view.color ? `var(--chip-${view.color}-fg)` : undefined
   const Icon = view.emoji ? VIEW_ICONS[view.emoji] : undefined
   // The two seeded views are stored in English; show them translated until the user renames them.
-  const seeded = ({ 'view-unread': ['Unread', 'unread'], 'view-attachments': ['With attachments', 'attachments'] } as Record<string, [string, string]>)[view.id]
+  const seeded = ({ 'view-unread': ['Unread', 'unread'], 'view-attachments': ['With attachments', 'attachments'], 'view-conversations': ['Conversations', 'conversations'] } as Record<string, [string, string]>)[view.id]
   const label = seeded && view.name === seeded[0] ? i18n.t(`common:defaultViews.${seeded[1]}`) : view.name
 
   return (

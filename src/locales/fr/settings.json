@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "Compte", "mail": "Courrier", "app": "App" },
+    "group": {
+      "account": "Compte",
+      "mail": "Courrier",
+      "app": "App"
+    },
     "accounts": "Comptes",
     "appearance": "Apparence et boîte de réception",
     "signature": "Signature",
@@ -28,11 +32,20 @@
     "cancel": "Annuler",
     "labelColour": "Couleur du libellé",
     "colors": {
-      "gray": "Gris", "brown": "Marron", "orange": "Orange", "yellow": "Jaune", "green": "Vert",
-      "blue": "Bleu", "purple": "Violet", "pink": "Rose", "red": "Rouge"
+      "gray": "Gris",
+      "brown": "Marron",
+      "orange": "Orange",
+      "yellow": "Jaune",
+      "green": "Vert",
+      "blue": "Bleu",
+      "purple": "Violet",
+      "pink": "Rose",
+      "red": "Rouge"
     }
   },
-  "providers": { "demo": "Démo" },
+  "providers": {
+    "demo": "Démo"
+  },
   "store": {
     "darwin": "Trousseau macOS",
     "win32": "Gestionnaire d'identifiants Windows/DPAPI",
@@ -69,9 +82,18 @@
     "openAdvanced": "Ouvrir les réglages avancés du client Google",
     "connected": "{{email}} connecté",
     "providers": {
-      "gmail": { "title": "Connecter Gmail", "sub": "Compte Google" },
-      "outlook": { "title": "Connecter Outlook", "sub": "Compte Microsoft" },
-      "mock": { "title": "Ajouter un compte de démo", "sub": "Messages d'exemple, hors connexion" }
+      "gmail": {
+        "title": "Connecter Gmail",
+        "sub": "Compte Google"
+      },
+      "outlook": {
+        "title": "Connecter Outlook",
+        "sub": "Compte Microsoft"
+      },
+      "mock": {
+        "title": "Ajouter un compte de démo",
+        "sub": "Messages d'exemple, hors connexion"
+      }
     },
     "status": {
       "syncing": "Synchronisation…",
@@ -86,7 +108,8 @@
       "reauthorize": "Autoriser à nouveau",
       "syncNow": "Synchroniser",
       "disconnect": "Déconnecter",
-      "disconnectConfirm": "<b>Déconnecter {{email}} ?</b> Ses messages, libellés et rappels locaux sont supprimés de Naushen Mail sur cet ordinateur. Rien n'est supprimé chez {{provider}}."
+      "disconnectConfirm": "<b>Déconnecter {{email}} ?</b> Ses messages, libellés et rappels locaux sont supprimés de Naushen Mail sur cet ordinateur. Rien n'est supprimé chez {{provider}}.",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -104,7 +127,9 @@
     "secretHint": "Google considère le secret d'une app de bureau comme non confidentiel, mais le point de terminaison des jetons l'exige tout de même.",
     "hideSecret": "Masquer le secret",
     "showSecret": "Afficher le secret",
-    "google": { "title": "Google (Gmail)" },
+    "google": {
+      "title": "Google (Gmail)"
+    },
     "wizard": {
       "project": {
         "title": "Créer un projet Google Cloud",
@@ -173,12 +198,31 @@
     "builtWith": "Construit avec",
     "openSource": "Logiciels libres, utilisés selon leurs propres licences.",
     "links": {
-      "setup": { "label": "Guide de configuration des fournisseurs", "desc": "Connecter Gmail", "desc_outlook": "Connecter Gmail et Outlook" },
-      "decisions": { "label": "Décisions et architecture", "desc": "Pile technique, compromis, critères d'achèvement" },
-      "design": { "label": "Système de design", "desc": "Jetons, typographie, animations" },
-      "privacy": { "label": "Politique de confidentialité", "desc": "Ce que Naushen Mail stocke et où" },
-      "issues": { "label": "Signaler un problème", "desc": "Bugs et idées sur GitHub" },
-      "source": { "label": "Code source", "desc": "Naushen Mail sur GitHub" }
+      "setup": {
+        "label": "Guide de configuration des fournisseurs",
+        "desc": "Connecter Gmail",
+        "desc_outlook": "Connecter Gmail et Outlook"
+      },
+      "decisions": {
+        "label": "Décisions et architecture",
+        "desc": "Pile technique, compromis, critères d'achèvement"
+      },
+      "design": {
+        "label": "Système de design",
+        "desc": "Jetons, typographie, animations"
+      },
+      "privacy": {
+        "label": "Politique de confidentialité",
+        "desc": "Ce que Naushen Mail stocke et où"
+      },
+      "issues": {
+        "label": "Signaler un problème",
+        "desc": "Bugs et idées sur GitHub"
+      },
+      "source": {
+        "label": "Code source",
+        "desc": "Naushen Mail sur GitHub"
+      }
     }
   },
   "appearance": {
@@ -199,16 +243,33 @@
     "theme": {
       "label": "Thème",
       "desc": "Suivre macOS, ou choisir clair ou sombre. Les changements s'appliquent immédiatement.",
-      "light": "Clair", "dark": "Sombre", "system": "Système"
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
     },
     "density": {
       "label": "Densité",
-      "comfortable": { "label": "Confortable", "desc": "Plus d'espace dans la liste, la barre latérale et la lecture" },
-      "compact": { "label": "Compacte", "desc": "Lignes resserrées : plus de conversations à l'écran" }
+      "comfortable": {
+        "label": "Confortable",
+        "desc": "Plus d'espace dans la liste, la barre latérale et la lecture"
+      },
+      "compact": {
+        "label": "Compacte",
+        "desc": "Lignes resserrées : plus de conversations à l'écran"
+      }
     },
-    "accent": { "label": "Couleur d'accentuation", "desc": "Sélection, focus, pastilles de non-lu et boutons principaux." },
+    "accent": {
+      "label": "Couleur d'accentuation",
+      "desc": "Sélection, focus, pastilles de non-lu et boutons principaux."
+    },
     "accents": {
-      "blue": "Bleu", "violet": "Violet", "pink": "Rose", "orange": "Orange", "green": "Vert", "teal": "Turquoise", "neutral": "Neutre"
+      "blue": "Bleu",
+      "violet": "Violet",
+      "pink": "Rose",
+      "orange": "Orange",
+      "green": "Vert",
+      "teal": "Turquoise",
+      "neutral": "Neutre"
     },
     "counts": {
       "label": "Affichage du nombre de non-lus",
@@ -217,17 +278,35 @@
       "exact": "Nombre exact"
     },
     "threadStyle": {
-      "side": { "label": "Aperçu latéral", "desc": "S'ouvre à droite, par-dessus la liste" },
-      "center": { "label": "Aperçu centré", "desc": "Une fenêtre centrée par-dessus la liste" },
-      "full": { "label": "Pleine page", "desc": "Remplace la liste tant qu'elle est ouverte" }
+      "side": {
+        "label": "Aperçu latéral",
+        "desc": "S'ouvre à droite, par-dessus la liste"
+      },
+      "center": {
+        "label": "Aperçu centré",
+        "desc": "Une fenêtre centrée par-dessus la liste"
+      },
+      "full": {
+        "label": "Pleine page",
+        "desc": "Remplace la liste tant qu'elle est ouverte"
+      }
     },
     "listCount": {
       "label": "Afficher le nombre de messages à côté du titre de la vue",
       "desc": "Affiche le nombre de conversations de la liste actuelle, à droite du titre (Boîte de réception, Catégories, …). Désactivé par défaut."
     },
-    "groupByDate": { "label": "Grouper par date", "desc": "Regrouper les conversations sous Aujourd'hui, Hier, 7 derniers jours, etc." },
-    "markRead": { "label": "Marquer comme lu à l'ouverture", "desc": "Une conversation est marquée comme lue dès que vous l'ouvrez." },
-    "remoteImages": { "label": "Bloquer les images distantes", "desc": "Les images des e-mails ne sont chargées que si vous l'autorisez. Protège contre les pixels espions." },
+    "groupByDate": {
+      "label": "Grouper par date",
+      "desc": "Regrouper les conversations sous Aujourd'hui, Hier, 7 derniers jours, etc."
+    },
+    "markRead": {
+      "label": "Marquer comme lu à l'ouverture",
+      "desc": "Une conversation est marquée comme lue dès que vous l'ouvrez."
+    },
+    "remoteImages": {
+      "label": "Bloquer les images distantes",
+      "desc": "Les images des e-mails ne sont chargées que si vous l'autorisez. Protège contre les pixels espions."
+    },
     "hideCategories": {
       "label": "Masquer Promotions/Réseaux sociaux/Notifications/Forums de la boîte de réception",
       "desc": "Gmail uniquement. Limite la boîte de réception aux messages principaux ; le reste reste à un clic sous Catégories dans la barre latérale. Désactivé par défaut : rien ne change tant que vous ne l'activez pas."
@@ -236,16 +315,24 @@
       "label": "Afficher les avatars",
       "desc": "Photos des expéditeurs et destinataires dans la liste et la lecture, via Gravatar. Désactivé par défaut : Notion Mail ne les affichait pas non plus, et c'est un service externe de plus sollicité pour chaque contact."
     },
-    "swipe": { "label": "Gestes de balayage", "desc": "Balayage à deux doigts sur une conversation : vers la gauche pour archiver, vers la droite pour ajouter un rappel. Trackpads uniquement." },
+    "swipe": {
+      "label": "Gestes de balayage",
+      "desc": "Balayage à deux doigts sur une conversation : vers la gauche pour archiver, vers la droite pour ajouter un rappel. Trackpads uniquement."
+    },
     "autoAdvance": {
       "label": "Passage automatique",
       "desc": "Où aller après avoir archivé, mis à la corbeille ou mis en attente la conversation ouverte.",
-      "next": "Suivante", "previous": "Précédente", "close": "Fermer"
+      "next": "Suivante",
+      "previous": "Précédente",
+      "close": "Fermer"
     }
   },
   "sending": {
     "title": "Envoi et notifications",
-    "groups": { "sending": "Envoi", "notifications": "Notifications" },
+    "groups": {
+      "sending": "Envoi",
+      "notifications": "Notifications"
+    },
     "undo": {
       "label": "Annuler l'envoi",
       "desc": "Retient chaque message un instant après avoir appuyé sur Envoyer, pour pouvoir le rappeler.",
@@ -256,17 +343,29 @@
     "notifications": {
       "label": "Notifications de bureau",
       "desc": "Affiche une notification macOS à l'arrivée d'un nouveau message dans votre boîte de réception. Les rafales sont regroupées en une seule ; rien ne s'affiche pendant que vous regardez cette boîte.",
-      "off": "Désactivées", "all": "Tous les nouveaux messages", "people": "Personnes uniquement"
+      "off": "Désactivées",
+      "all": "Tous les nouveaux messages",
+      "people": "Personnes uniquement"
     },
-    "dock": { "label": "Pastille du Dock", "desc": "Affiche le nombre de messages non lus de la boîte de réception sur l'icône du Dock." }
+    "dock": {
+      "label": "Pastille du Dock",
+      "desc": "Affiche le nombre de messages non lus de la boîte de réception sur l'icône du Dock."
+    }
   },
   "shortcuts": {
     "title": "Raccourcis clavier",
     "description": "Naushen Mail est conçu pour être piloté au clavier. Les raccourcis sont fixes pour le moment.",
     "viewAll": "Voir tous les raccourcis",
     "names": {
-      "commandMenu": "Menu de commandes", "compose": "Écrire", "archive": "Archiver", "reply": "Répondre", "reminder": "Ajouter un rappel",
-      "label": "Libellé", "search": "Rechercher", "undo": "Annuler", "all": "Afficher tous les raccourcis"
+      "commandMenu": "Menu de commandes",
+      "compose": "Écrire",
+      "archive": "Archiver",
+      "reply": "Répondre",
+      "reminder": "Ajouter un rappel",
+      "label": "Libellé",
+      "search": "Rechercher",
+      "undo": "Annuler",
+      "all": "Afficher tous les raccourcis"
     }
   },
   "labels": {
@@ -304,8 +403,15 @@
     "delete": "Supprimer",
     "deleteConfirm": "<b>Supprimer la vue « {{name}} » ?</b> Vos messages ne sont pas affectés.",
     "role": {
-      "inbox": "Boîte de réception", "sent": "Envoyés", "drafts": "Brouillons", "trash": "Corbeille", "spam": "Spam", "archive": "Archives",
-      "starred": "Favoris", "important": "Importants", "all": "Tous les messages"
+      "inbox": "Boîte de réception",
+      "sent": "Envoyés",
+      "drafts": "Brouillons",
+      "trash": "Corbeille",
+      "spam": "Spam",
+      "archive": "Archives",
+      "starred": "Favoris",
+      "important": "Importants",
+      "all": "Tous les messages"
     },
     "filter": {
       "reminders": "Rappels",
@@ -380,10 +486,22 @@
     "templatesIntro": "Partez d'une mise en page courante, puis modifiez le texte d'exemple comme n'importe quelle autre partie de la signature.",
     "templatesAria": "Modèles de signature",
     "templates": {
-      "minimal": { "label": "Minimal", "description": "Juste votre nom et votre fonction, sans photo." },
-      "photo-left": { "label": "Photo à gauche", "description": "Une photo ronde à côté de votre nom, fonction et e-mail." },
-      "compact": { "label": "Compact", "description": "Nom, fonction et téléphone sur une seule ligne." },
-      "classic": { "label": "Bloc classique", "description": "Nom, fonction, entreprise, un séparateur, puis les coordonnées." }
+      "minimal": {
+        "label": "Minimal",
+        "description": "Juste votre nom et votre fonction, sans photo."
+      },
+      "photo-left": {
+        "label": "Photo à gauche",
+        "description": "Une photo ronde à côté de votre nom, fonction et e-mail."
+      },
+      "compact": {
+        "label": "Compact",
+        "description": "Nom, fonction et téléphone sur une seule ligne."
+      },
+      "classic": {
+        "label": "Bloc classique",
+        "description": "Nom, fonction, entreprise, un séparateur, puis les coordonnées."
+      }
     },
     "replaceConfirm": "Remplacer votre signature actuelle par <b>{{name}}</b> ? Cette action est irréversible.",
     "replace": "Remplacer",

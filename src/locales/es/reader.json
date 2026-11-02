@@ -27,7 +27,9 @@
     "noSubject": "(sin asunto)",
     "messageCount_one": "{{count}} mensaje",
     "messageCount_other": "{{count}} mensajes",
-    "messageCount_many": "{{count}} mensajes"
+    "messageCount_many": "{{count}} mensajes",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "Responder",

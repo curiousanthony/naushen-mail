@@ -34,7 +34,7 @@ export class Outbox {
 
   cancel(id: string): void {
     const s = this.repo.listScheduled().find((x) => x.id === id)
-    if (s && s.status === 'pending') {
+    if (s && (s.status === 'pending' || s.status === 'failed')) {
       this.repo.saveScheduled({ ...s, status: 'cancelled' })
       this.engine.emit({ type: 'outbox', id, status: 'cancelled' })
     }
@@ -49,11 +49,11 @@ export class Outbox {
       for (const s of due) {
         try {
           await this.engine.send(s.message)
-          this.repo.saveScheduled({ ...s, status: 'sent' })
+          this.repo.saveScheduled({ ...s, status: 'sent', doneAt: Date.now() })
           this.engine.emit({ type: 'outbox', id: s.id, status: 'sent' })
         } catch (e) {
           const error = e instanceof Error ? e.message : String(e)
-          this.repo.saveScheduled({ ...s, status: 'failed', error })
+          this.repo.saveScheduled({ ...s, status: 'failed', error, doneAt: Date.now() })
           this.engine.emit({ type: 'outbox', id: s.id, status: 'failed', error })
         }
       }

@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "Conta", "mail": "E-mail", "app": "App" },
+    "group": {
+      "account": "Conta",
+      "mail": "E-mail",
+      "app": "App"
+    },
     "accounts": "Contas",
     "appearance": "Aparência e caixa de entrada",
     "signature": "Assinatura",
@@ -27,11 +31,20 @@
     "cancel": "Cancelar",
     "labelColour": "Cor do marcador",
     "colors": {
-      "gray": "Cinza", "brown": "Marrom", "orange": "Laranja", "yellow": "Amarelo", "green": "Verde",
-      "blue": "Azul", "purple": "Roxo", "pink": "Rosa", "red": "Vermelho"
+      "gray": "Cinza",
+      "brown": "Marrom",
+      "orange": "Laranja",
+      "yellow": "Amarelo",
+      "green": "Verde",
+      "blue": "Azul",
+      "purple": "Roxo",
+      "pink": "Rosa",
+      "red": "Vermelho"
     }
   },
-  "providers": { "demo": "Demo" },
+  "providers": {
+    "demo": "Demo"
+  },
   "store": {
     "darwin": "Chaveiro do macOS",
     "win32": "Gerenciador de Credenciais do Windows/DPAPI",
@@ -68,9 +81,18 @@
     "openAdvanced": "Abrir os ajustes avançados do cliente Google",
     "connected": "{{email}} conectado",
     "providers": {
-      "gmail": { "title": "Conectar Gmail", "sub": "Conta Google" },
-      "outlook": { "title": "Conectar Outlook", "sub": "Conta Microsoft" },
-      "mock": { "title": "Adicionar conta demo", "sub": "E-mails de exemplo, offline" }
+      "gmail": {
+        "title": "Conectar Gmail",
+        "sub": "Conta Google"
+      },
+      "outlook": {
+        "title": "Conectar Outlook",
+        "sub": "Conta Microsoft"
+      },
+      "mock": {
+        "title": "Adicionar conta demo",
+        "sub": "E-mails de exemplo, offline"
+      }
     },
     "status": {
       "syncing": "Sincronizando…",
@@ -85,7 +107,8 @@
       "reauthorize": "Reautorizar",
       "syncNow": "Sincronizar agora",
       "disconnect": "Desconectar",
-      "disconnectConfirm": "<b>Desconectar {{email}}?</b> Os e-mails, marcadores e lembretes locais dessa conta serão removidos do Naushen Mail neste computador. Nada é excluído do {{provider}}."
+      "disconnectConfirm": "<b>Desconectar {{email}}?</b> Os e-mails, marcadores e lembretes locais dessa conta serão removidos do Naushen Mail neste computador. Nada é excluído do {{provider}}.",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -103,7 +126,9 @@
     "secretHint": "O Google trata o segredo de um app para computador como não confidencial, mas o endpoint de token ainda o exige.",
     "hideSecret": "Ocultar segredo",
     "showSecret": "Mostrar segredo",
-    "google": { "title": "Google (Gmail)" },
+    "google": {
+      "title": "Google (Gmail)"
+    },
     "wizard": {
       "project": {
         "title": "Crie um projeto no Google Cloud",
@@ -172,12 +197,31 @@
     "builtWith": "Criado com",
     "openSource": "Software de código aberto, usado sob suas próprias licenças.",
     "links": {
-      "setup": { "label": "Guia de configuração de provedores", "desc": "Conectar o Gmail", "desc_outlook": "Conectar Gmail e Outlook" },
-      "decisions": { "label": "Decisões e arquitetura", "desc": "Stack, trade-offs, critérios de conclusão" },
-      "design": { "label": "Design system", "desc": "Tokens, tipografia, movimento" },
-      "privacy": { "label": "Política de Privacidade", "desc": "O que o Naushen Mail guarda e onde" },
-      "issues": { "label": "Relatar um problema", "desc": "Bugs e ideias no GitHub" },
-      "source": { "label": "Código-fonte", "desc": "Naushen Mail no GitHub" }
+      "setup": {
+        "label": "Guia de configuração de provedores",
+        "desc": "Conectar o Gmail",
+        "desc_outlook": "Conectar Gmail e Outlook"
+      },
+      "decisions": {
+        "label": "Decisões e arquitetura",
+        "desc": "Stack, trade-offs, critérios de conclusão"
+      },
+      "design": {
+        "label": "Design system",
+        "desc": "Tokens, tipografia, movimento"
+      },
+      "privacy": {
+        "label": "Política de Privacidade",
+        "desc": "O que o Naushen Mail guarda e onde"
+      },
+      "issues": {
+        "label": "Relatar um problema",
+        "desc": "Bugs e ideias no GitHub"
+      },
+      "source": {
+        "label": "Código-fonte",
+        "desc": "Naushen Mail no GitHub"
+      }
     }
   },
   "appearance": {
@@ -198,16 +242,33 @@
     "theme": {
       "label": "Tema",
       "desc": "Siga o macOS ou escolha claro ou escuro. As mudanças valem na hora.",
-      "light": "Claro", "dark": "Escuro", "system": "Sistema"
+      "light": "Claro",
+      "dark": "Escuro",
+      "system": "Sistema"
     },
     "density": {
       "label": "Densidade",
-      "comfortable": { "label": "Confortável", "desc": "Mais espaço na lista, na barra lateral e no leitor" },
-      "compact": { "label": "Compacta", "desc": "Linhas mais justas — mais conversas na tela" }
+      "comfortable": {
+        "label": "Confortável",
+        "desc": "Mais espaço na lista, na barra lateral e no leitor"
+      },
+      "compact": {
+        "label": "Compacta",
+        "desc": "Linhas mais justas — mais conversas na tela"
+      }
     },
-    "accent": { "label": "Cor de destaque", "desc": "Seleção, foco, pontos de não lida e botões principais." },
+    "accent": {
+      "label": "Cor de destaque",
+      "desc": "Seleção, foco, pontos de não lida e botões principais."
+    },
     "accents": {
-      "blue": "Azul", "violet": "Violeta", "pink": "Rosa", "orange": "Laranja", "green": "Verde", "teal": "Azul-petróleo", "neutral": "Neutro"
+      "blue": "Azul",
+      "violet": "Violeta",
+      "pink": "Rosa",
+      "orange": "Laranja",
+      "green": "Verde",
+      "teal": "Azul-petróleo",
+      "neutral": "Neutro"
     },
     "counts": {
       "label": "Exibição do contador de não lidas",
@@ -216,17 +277,35 @@
       "exact": "Contagem exata"
     },
     "threadStyle": {
-      "side": { "label": "Painel lateral", "desc": "Abre pela direita, sobre a lista" },
-      "center": { "label": "Painel central", "desc": "Uma janela centralizada sobre a lista" },
-      "full": { "label": "Tela cheia", "desc": "Substitui a lista enquanto estiver aberta" }
+      "side": {
+        "label": "Painel lateral",
+        "desc": "Abre pela direita, sobre a lista"
+      },
+      "center": {
+        "label": "Painel central",
+        "desc": "Uma janela centralizada sobre a lista"
+      },
+      "full": {
+        "label": "Tela cheia",
+        "desc": "Substitui a lista enquanto estiver aberta"
+      }
     },
     "listCount": {
       "label": "Mostrar quantidade de e-mails ao lado do título",
       "desc": "Mostra quantas conversas há na lista atual, à direita do título (Caixa de Entrada, Categorias, …). Desativado por padrão."
     },
-    "groupByDate": { "label": "Agrupar por data", "desc": "Agrupa as conversas em Hoje, Ontem, Últimos 7 dias e assim por diante." },
-    "markRead": { "label": "Marcar como lida ao abrir", "desc": "Uma conversa passa a ser lida assim que você a abre." },
-    "remoteImages": { "label": "Bloquear imagens remotas", "desc": "As imagens dos e-mails só carregam quando você permite. Protege contra pixels de rastreamento." },
+    "groupByDate": {
+      "label": "Agrupar por data",
+      "desc": "Agrupa as conversas em Hoje, Ontem, Últimos 7 dias e assim por diante."
+    },
+    "markRead": {
+      "label": "Marcar como lida ao abrir",
+      "desc": "Uma conversa passa a ser lida assim que você a abre."
+    },
+    "remoteImages": {
+      "label": "Bloquear imagens remotas",
+      "desc": "As imagens dos e-mails só carregam quando você permite. Protege contra pixels de rastreamento."
+    },
     "hideCategories": {
       "label": "Ocultar Promoções/Social/Atualizações/Fóruns da Caixa de Entrada",
       "desc": "Somente Gmail. Mantém a Caixa de Entrada só com e-mails Principais; o resto fica a um clique em Categorias, na barra lateral. Desativado por padrão — nada muda até você ativar."
@@ -235,16 +314,24 @@
       "label": "Mostrar avatares",
       "desc": "Fotos de remetentes e destinatários na lista e no leitor, via Gravatar. Desativado por padrão — o Notion Mail também não as mostrava, e é mais um contato consultando um serviço externo."
     },
-    "swipe": { "label": "Gestos de deslizar", "desc": "Deslizar com dois dedos em uma conversa: para a esquerda arquiva, para a direita define um lembrete. Somente em trackpads." },
+    "swipe": {
+      "label": "Gestos de deslizar",
+      "desc": "Deslizar com dois dedos em uma conversa: para a esquerda arquiva, para a direita define um lembrete. Somente em trackpads."
+    },
     "autoAdvance": {
       "label": "Avanço automático",
       "desc": "Para onde ir depois de arquivar, excluir ou adiar a conversa aberta.",
-      "next": "Próxima", "previous": "Anterior", "close": "Fechar"
+      "next": "Próxima",
+      "previous": "Anterior",
+      "close": "Fechar"
     }
   },
   "sending": {
     "title": "Envio e notificações",
-    "groups": { "sending": "Envio", "notifications": "Notificações" },
+    "groups": {
+      "sending": "Envio",
+      "notifications": "Notificações"
+    },
     "undo": {
       "label": "Desfazer envio",
       "desc": "Segura cada mensagem por um instante depois de você pressionar Enviar, para que possa desistir.",
@@ -255,17 +342,29 @@
     "notifications": {
       "label": "Notificações na área de trabalho",
       "desc": "Mostra uma notificação do macOS quando chegam novos e-mails na caixa de entrada. Vários e-mails seguidos são agrupados em uma só; nada aparece enquanto você está vendo essa caixa de entrada.",
-      "off": "Desativadas", "all": "Todos os novos e-mails", "people": "Somente pessoas"
+      "off": "Desativadas",
+      "all": "Todos os novos e-mails",
+      "people": "Somente pessoas"
     },
-    "dock": { "label": "Selo no Dock", "desc": "Mostra o número de mensagens não lidas da Caixa de Entrada no ícone do Dock." }
+    "dock": {
+      "label": "Selo no Dock",
+      "desc": "Mostra o número de mensagens não lidas da Caixa de Entrada no ícone do Dock."
+    }
   },
   "shortcuts": {
     "title": "Atalhos de teclado",
     "description": "O Naushen Mail foi feito para ser usado pelo teclado. Por enquanto, os atalhos são fixos.",
     "viewAll": "Ver todos os atalhos",
     "names": {
-      "commandMenu": "Menu de comandos", "compose": "Escrever", "archive": "Arquivar", "reply": "Responder", "reminder": "Definir lembrete",
-      "label": "Marcador", "search": "Buscar", "undo": "Desfazer", "all": "Mostrar todos os atalhos"
+      "commandMenu": "Menu de comandos",
+      "compose": "Escrever",
+      "archive": "Arquivar",
+      "reply": "Responder",
+      "reminder": "Definir lembrete",
+      "label": "Marcador",
+      "search": "Buscar",
+      "undo": "Desfazer",
+      "all": "Mostrar todos os atalhos"
     }
   },
   "labels": {
@@ -302,8 +401,15 @@
     "delete": "Excluir",
     "deleteConfirm": "<b>Excluir a visualização “{{name}}”?</b> Seus e-mails não são afetados.",
     "role": {
-      "inbox": "Caixa de Entrada", "sent": "Enviados", "drafts": "Rascunhos", "trash": "Lixeira", "spam": "Spam", "archive": "Arquivados",
-      "starred": "Com estrela", "important": "Importantes", "all": "Todos os e-mails"
+      "inbox": "Caixa de Entrada",
+      "sent": "Enviados",
+      "drafts": "Rascunhos",
+      "trash": "Lixeira",
+      "spam": "Spam",
+      "archive": "Arquivados",
+      "starred": "Com estrela",
+      "important": "Importantes",
+      "all": "Todos os e-mails"
     },
     "filter": {
       "reminders": "Lembretes",
@@ -376,10 +482,22 @@
     "templatesIntro": "Comece por um layout comum e depois edite o texto de exemplo como qualquer outra parte da assinatura.",
     "templatesAria": "Modelos de assinatura",
     "templates": {
-      "minimal": { "label": "Minimalista", "description": "Só seu nome e cargo — sem foto." },
-      "photo-left": { "label": "Foto à esquerda", "description": "Uma foto circular ao lado do nome, cargo e e-mail." },
-      "compact": { "label": "Compacta", "description": "Nome, cargo e telefone em uma única linha." },
-      "classic": { "label": "Bloco clássico", "description": "Nome, cargo, empresa, um divisor e depois os contatos." }
+      "minimal": {
+        "label": "Minimalista",
+        "description": "Só seu nome e cargo — sem foto."
+      },
+      "photo-left": {
+        "label": "Foto à esquerda",
+        "description": "Uma foto circular ao lado do nome, cargo e e-mail."
+      },
+      "compact": {
+        "label": "Compacta",
+        "description": "Nome, cargo e telefone em uma única linha."
+      },
+      "classic": {
+        "label": "Bloco clássico",
+        "description": "Nome, cargo, empresa, um divisor e depois os contatos."
+      }
     },
     "replaceConfirm": "Substituir sua assinatura atual por <b>{{name}}</b>? Esta ação não pode ser desfeita.",
     "replace": "Substituir",

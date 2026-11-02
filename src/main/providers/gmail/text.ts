@@ -18,6 +18,16 @@ export function normalizeCharset(charset: string | undefined | null): string {
 /** Decode bytes with a declared charset. Unknown charset => utf-8, then windows-1252 if utf-8 is invalid. */
 export function decodeBytes(bytes: Uint8Array, charset?: string | null): string {
   const label = normalizeCharset(charset)
+  // Senders often mislabel UTF-8 bodies as us-ascii / iso-8859-1 (=> "Ã©" mojibake). Valid multi-byte UTF-8 is
+  // overwhelmingly likely to really be UTF-8, so trust the bytes over a single-byte label.
+  if (/^(windows-125\d|iso-8859-\d+)$/.test(label)) {
+    try {
+      const s = new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+      if (/[^\x00-\x7f]/.test(s)) return s
+    } catch {
+      /* genuinely single-byte */
+    }
+  }
   try {
     return new TextDecoder(label, { fatal: label === 'utf-8' && !charset }).decode(bytes)
   } catch {

@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "アカウント", "mail": "メール", "app": "アプリ" },
+    "group": {
+      "account": "アカウント",
+      "mail": "メール",
+      "app": "アプリ"
+    },
     "accounts": "アカウント",
     "appearance": "外観と受信トレイ",
     "signature": "署名",
@@ -26,11 +30,20 @@
     "cancel": "キャンセル",
     "labelColour": "ラベルの色",
     "colors": {
-      "gray": "グレー", "brown": "ブラウン", "orange": "オレンジ", "yellow": "イエロー", "green": "グリーン",
-      "blue": "ブルー", "purple": "パープル", "pink": "ピンク", "red": "レッド"
+      "gray": "グレー",
+      "brown": "ブラウン",
+      "orange": "オレンジ",
+      "yellow": "イエロー",
+      "green": "グリーン",
+      "blue": "ブルー",
+      "purple": "パープル",
+      "pink": "ピンク",
+      "red": "レッド"
     }
   },
-  "providers": { "demo": "デモ" },
+  "providers": {
+    "demo": "デモ"
+  },
   "store": {
     "darwin": "macOSキーチェーン",
     "win32": "Windows資格情報マネージャー/DPAPI",
@@ -67,9 +80,18 @@
     "openAdvanced": "Googleクライアントの詳細設定を開く",
     "connected": "{{email}}を接続しました",
     "providers": {
-      "gmail": { "title": "Gmailを接続", "sub": "Googleアカウント" },
-      "outlook": { "title": "Outlookを接続", "sub": "Microsoftアカウント" },
-      "mock": { "title": "デモアカウントを追加", "sub": "サンプルメール（オフライン）" }
+      "gmail": {
+        "title": "Gmailを接続",
+        "sub": "Googleアカウント"
+      },
+      "outlook": {
+        "title": "Outlookを接続",
+        "sub": "Microsoftアカウント"
+      },
+      "mock": {
+        "title": "デモアカウントを追加",
+        "sub": "サンプルメール（オフライン）"
+      }
     },
     "status": {
       "syncing": "同期中…",
@@ -84,7 +106,8 @@
       "reauthorize": "再認証",
       "syncNow": "今すぐ同期",
       "disconnect": "接続を解除",
-      "disconnectConfirm": "<b>{{email}}の接続を解除しますか?</b> このコンピュータ上のNaushen Mailから、メール、ラベル、ローカルのリマインダーが削除されます。{{provider}}のデータは削除されません。"
+      "disconnectConfirm": "<b>{{email}}の接続を解除しますか?</b> このコンピュータ上のNaushen Mailから、メール、ラベル、ローカルのリマインダーが削除されます。{{provider}}のデータは削除されません。",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -102,7 +125,9 @@
     "secretHint": "Googleではデスクトップアプリのシークレットは機密扱いではありませんが、トークンエンドポイントでは引き続き必要です。",
     "hideSecret": "シークレットを非表示",
     "showSecret": "シークレットを表示",
-    "google": { "title": "Google (Gmail)" },
+    "google": {
+      "title": "Google (Gmail)"
+    },
     "wizard": {
       "project": {
         "title": "Google Cloudプロジェクトを作成",
@@ -171,12 +196,31 @@
     "builtWith": "使用ソフトウェア",
     "openSource": "オープンソースソフトウェアを、それぞれのライセンスに従って使用しています。",
     "links": {
-      "setup": { "label": "プロバイダ設定ガイド", "desc": "Gmailを接続", "desc_outlook": "GmailとOutlookを接続" },
-      "decisions": { "label": "設計方針とアーキテクチャ", "desc": "技術スタック、トレードオフ、完了の定義" },
-      "design": { "label": "デザインシステム", "desc": "トークン、タイポグラフィ、モーション" },
-      "privacy": { "label": "プライバシーポリシー", "desc": "Naushen Mailが保存する内容と保存場所" },
-      "issues": { "label": "問題を報告", "desc": "GitHubでの不具合報告とアイデア" },
-      "source": { "label": "ソースコード", "desc": "GitHubのNaushen Mail" }
+      "setup": {
+        "label": "プロバイダ設定ガイド",
+        "desc": "Gmailを接続",
+        "desc_outlook": "GmailとOutlookを接続"
+      },
+      "decisions": {
+        "label": "設計方針とアーキテクチャ",
+        "desc": "技術スタック、トレードオフ、完了の定義"
+      },
+      "design": {
+        "label": "デザインシステム",
+        "desc": "トークン、タイポグラフィ、モーション"
+      },
+      "privacy": {
+        "label": "プライバシーポリシー",
+        "desc": "Naushen Mailが保存する内容と保存場所"
+      },
+      "issues": {
+        "label": "問題を報告",
+        "desc": "GitHubでの不具合報告とアイデア"
+      },
+      "source": {
+        "label": "ソースコード",
+        "desc": "GitHubのNaushen Mail"
+      }
     }
   },
   "appearance": {
@@ -197,16 +241,33 @@
     "theme": {
       "label": "テーマ",
       "desc": "macOSに合わせるか、ライトまたはダークを選べます。変更はすぐに反映されます。",
-      "light": "ライト", "dark": "ダーク", "system": "システム"
+      "light": "ライト",
+      "dark": "ダーク",
+      "system": "システム"
     },
     "density": {
       "label": "表示密度",
-      "comfortable": { "label": "ゆったり", "desc": "リスト、サイドバー、リーダーの余白を広めにします" },
-      "compact": { "label": "コンパクト", "desc": "行間を詰めて、より多くのスレッドを表示します" }
+      "comfortable": {
+        "label": "ゆったり",
+        "desc": "リスト、サイドバー、リーダーの余白を広めにします"
+      },
+      "compact": {
+        "label": "コンパクト",
+        "desc": "行間を詰めて、より多くのスレッドを表示します"
+      }
     },
-    "accent": { "label": "アクセントカラー", "desc": "選択、フォーカス、未読の点、メインボタンに使われます。" },
+    "accent": {
+      "label": "アクセントカラー",
+      "desc": "選択、フォーカス、未読の点、メインボタンに使われます。"
+    },
     "accents": {
-      "blue": "ブルー", "violet": "バイオレット", "pink": "ピンク", "orange": "オレンジ", "green": "グリーン", "teal": "ティール", "neutral": "ニュートラル"
+      "blue": "ブルー",
+      "violet": "バイオレット",
+      "pink": "ピンク",
+      "orange": "オレンジ",
+      "green": "グリーン",
+      "teal": "ティール",
+      "neutral": "ニュートラル"
     },
     "counts": {
       "label": "未読件数の表示",
@@ -215,17 +276,35 @@
       "exact": "正確な件数"
     },
     "threadStyle": {
-      "side": { "label": "サイドプレビュー", "desc": "リストの上に右側から開きます" },
-      "center": { "label": "センタープレビュー", "desc": "リストの上に中央のポップアップで開きます" },
-      "full": { "label": "全画面", "desc": "開いている間、リストを置き換えます" }
+      "side": {
+        "label": "サイドプレビュー",
+        "desc": "リストの上に右側から開きます"
+      },
+      "center": {
+        "label": "センタープレビュー",
+        "desc": "リストの上に中央のポップアップで開きます"
+      },
+      "full": {
+        "label": "全画面",
+        "desc": "開いている間、リストを置き換えます"
+      }
     },
     "listCount": {
       "label": "ビューのタイトルの横にメール件数を表示",
       "desc": "現在のリストにあるスレッドの数を、タイトル（受信トレイ、カテゴリなど）の右に表示します。初期設定ではオフです。"
     },
-    "groupByDate": { "label": "日付でグループ化", "desc": "スレッドを「今日」「昨日」「過去7日間」などにまとめます。" },
-    "markRead": { "label": "開いたら既読にする", "desc": "スレッドを開くとすぐに既読になります。" },
-    "remoteImages": { "label": "リモート画像をブロック", "desc": "メール内の画像は、許可したときだけ読み込まれます。トラッキングピクセルから保護します。" },
+    "groupByDate": {
+      "label": "日付でグループ化",
+      "desc": "スレッドを「今日」「昨日」「過去7日間」などにまとめます。"
+    },
+    "markRead": {
+      "label": "開いたら既読にする",
+      "desc": "スレッドを開くとすぐに既読になります。"
+    },
+    "remoteImages": {
+      "label": "リモート画像をブロック",
+      "desc": "メール内の画像は、許可したときだけ読み込まれます。トラッキングピクセルから保護します。"
+    },
     "hideCategories": {
       "label": "プロモーション/ソーシャル/アップデート/フォーラムを受信トレイに表示しない",
       "desc": "Gmailのみ。受信トレイをメインのメールだけにし、その他はサイドバーの「カテゴリ」からすぐ開けます。初期設定ではオフで、オンにするまで何も変わりません。"
@@ -234,16 +313,24 @@
       "label": "アバターを表示",
       "desc": "スレッドリストとリーダーに、Gravatar経由で送信者と受信者の写真を表示します。初期設定ではオフです。連絡先ごとに外部サービスへ問い合わせが発生するためです。"
     },
-    "swipe": { "label": "スワイプジェスチャー", "desc": "スレッドを2本指でスワイプ: 左でアーカイブ、右でリマインダーを設定します。トラックパッドのみ。" },
+    "swipe": {
+      "label": "スワイプジェスチャー",
+      "desc": "スレッドを2本指でスワイプ: 左でアーカイブ、右でリマインダーを設定します。トラックパッドのみ。"
+    },
     "autoAdvance": {
       "label": "自動で次へ移動",
       "desc": "開いているスレッドをアーカイブ、ゴミ箱に移動、またはスヌーズした後の移動先です。",
-      "next": "次へ", "previous": "前へ", "close": "閉じる"
+      "next": "次へ",
+      "previous": "前へ",
+      "close": "閉じる"
     }
   },
   "sending": {
     "title": "送信と通知",
-    "groups": { "sending": "送信", "notifications": "通知" },
+    "groups": {
+      "sending": "送信",
+      "notifications": "通知"
+    },
     "undo": {
       "label": "送信を取り消す",
       "desc": "「送信」を押した後、しばらくメッセージを保留して取り消せるようにします。",
@@ -254,17 +341,29 @@
     "notifications": {
       "label": "デスクトップ通知",
       "desc": "受信トレイに新着メールが届いたときにmacOSの通知を表示します。連続して届いた場合は1件にまとめられ、その受信トレイを表示中は通知されません。",
-      "off": "オフ", "all": "すべての新着メール", "people": "個人からのみ"
+      "off": "オフ",
+      "all": "すべての新着メール",
+      "people": "個人からのみ"
     },
-    "dock": { "label": "Dockバッジ", "desc": "Dockアイコンに、受信トレイの未読メッセージ数を表示します。" }
+    "dock": {
+      "label": "Dockバッジ",
+      "desc": "Dockアイコンに、受信トレイの未読メッセージ数を表示します。"
+    }
   },
   "shortcuts": {
     "title": "キーボードショートカット",
     "description": "Naushen Mailはキーボードだけで操作できるように作られています。ショートカットは現在のところ固定です。",
     "viewAll": "すべてのショートカットを表示",
     "names": {
-      "commandMenu": "コマンドメニュー", "compose": "新規作成", "archive": "アーカイブ", "reply": "返信", "reminder": "リマインダーを設定",
-      "label": "ラベル", "search": "検索", "undo": "取り消し", "all": "すべてのショートカットを表示"
+      "commandMenu": "コマンドメニュー",
+      "compose": "新規作成",
+      "archive": "アーカイブ",
+      "reply": "返信",
+      "reminder": "リマインダーを設定",
+      "label": "ラベル",
+      "search": "検索",
+      "undo": "取り消し",
+      "all": "すべてのショートカットを表示"
     }
   },
   "labels": {
@@ -300,8 +399,15 @@
     "delete": "削除",
     "deleteConfirm": "<b>ビュー「{{name}}」を削除しますか?</b> メールには影響しません。",
     "role": {
-      "inbox": "受信トレイ", "sent": "送信済み", "drafts": "下書き", "trash": "ゴミ箱", "spam": "迷惑メール", "archive": "アーカイブ",
-      "starred": "スター付き", "important": "重要", "all": "すべてのメール"
+      "inbox": "受信トレイ",
+      "sent": "送信済み",
+      "drafts": "下書き",
+      "trash": "ゴミ箱",
+      "spam": "迷惑メール",
+      "archive": "アーカイブ",
+      "starred": "スター付き",
+      "important": "重要",
+      "all": "すべてのメール"
     },
     "filter": {
       "reminders": "リマインダー",
@@ -372,10 +478,22 @@
     "templatesIntro": "よく使うレイアウトから始めて、プレースホルダのテキストを署名のほかの部分と同じように編集できます。",
     "templatesAria": "署名テンプレート",
     "templates": {
-      "minimal": { "label": "ミニマル", "description": "名前と肩書きのみ。写真なし。" },
-      "photo-left": { "label": "写真を左に", "description": "名前、肩書き、メールアドレスの横に丸い写真を配置します。" },
-      "compact": { "label": "コンパクト", "description": "名前、肩書き、電話番号を1行に配置します。" },
-      "classic": { "label": "クラシック", "description": "名前、肩書き、会社名、区切り線、連絡先の順に配置します。" }
+      "minimal": {
+        "label": "ミニマル",
+        "description": "名前と肩書きのみ。写真なし。"
+      },
+      "photo-left": {
+        "label": "写真を左に",
+        "description": "名前、肩書き、メールアドレスの横に丸い写真を配置します。"
+      },
+      "compact": {
+        "label": "コンパクト",
+        "description": "名前、肩書き、電話番号を1行に配置します。"
+      },
+      "classic": {
+        "label": "クラシック",
+        "description": "名前、肩書き、会社名、区切り線、連絡先の順に配置します。"
+      }
     },
     "replaceConfirm": "現在の署名を<b>{{name}}</b>に置き換えますか? この操作は取り消せません。",
     "replace": "置き換える",

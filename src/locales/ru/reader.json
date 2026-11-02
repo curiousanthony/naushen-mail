@@ -28,7 +28,9 @@
     "messageCount_one": "{{count}} письмо",
     "messageCount_few": "{{count}} письма",
     "messageCount_many": "{{count}} писем",
-    "messageCount_other": "{{count}} письма"
+    "messageCount_other": "{{count}} письма",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "Ответить",

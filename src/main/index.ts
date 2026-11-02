@@ -8,7 +8,7 @@ import { Outbox } from './sync/outbox'
 import { registerIpc } from './ipc'
 import { refreshAvatars, restoreAccounts } from './accounts'
 import { buildMenu } from './menu'
-import { seedDefaultViews } from './seed'
+import { seedConversationsView, seedDefaultViews } from './seed'
 import './providers/register'
 import { userDataPath } from './paths'
 import { applyUserDataOverride, attachE2E } from './e2e'
@@ -148,6 +148,7 @@ app.whenReady().then(async () => {
   const engine = new SyncEngine(repo)
   const outbox = new Outbox(repo, engine)
   seedDefaultViews(repo)
+  seedConversationsView(repo)
   restoreAccounts(repo, engine)
   registerIpc(repo, engine, outbox)
 

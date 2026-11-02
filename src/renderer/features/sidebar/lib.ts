@@ -113,7 +113,7 @@ export const unreadForGroup = (counts: Counts, accountId: string, g: LabelGroup)
 
 /** Gmail's inbox-tab category names in Gmail's own tab order. Mirrors main/providers/gmail/labels.ts. */
 /** Primary (CATEGORY_PERSONAL) is deliberately absent: it is the plain Inbox, never a Categories row. */
-export const CATEGORY_ORDER = ['CATEGORY_SOCIAL', 'CATEGORY_PROMOTIONS', 'CATEGORY_UPDATES', 'CATEGORY_FORUMS']
+export const CATEGORY_ORDER = ['CATEGORY_SOCIAL', 'CATEGORY_UPDATES', 'CATEGORY_PROMOTIONS', 'CATEGORY_FORUMS']
 
 /** Gmail's category names are fixed provider strings, so they are localised by `remoteId` rather than shown as stored. */
 function categoryName(remoteId: string, stored: string): string {

@@ -47,29 +47,82 @@
     "unmute": "Stummschaltung aufheben",
     "mute": "Unterhaltung stummschalten",
     "reportSpam": "Als Spam melden",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "createRule": "Create rule…"
   },
   "empty": {
-    "filtered": { "title": "Keine Treffer", "body": "Keine Unterhaltung passt zu diesen Filtern." },
-    "inbox": { "title": "Alles erledigt.", "body": "Nichts Neues im Posteingang." },
-    "sent": { "title": "Noch nichts gesendet", "body": "Gesendete Nachrichten erscheinen hier." },
-    "drafts": { "title": "Keine Entwürfe", "body": "Eine begonnene Nachricht wird hier gesichert." },
-    "trash": { "title": "Papierkorb ist leer", "body": "Gelöschte Unterhaltungen landen zuerst hier." },
-    "spam": { "title": "Kein Spam", "body": "Nichts wurde als Spam markiert." },
-    "starred": { "title": "Keine markierten Unterhaltungen", "body": "Markierte Unterhaltungen lassen sich schnell wiederfinden." },
-    "mailbox": { "title": "Keine E-Mails", "body": "Dieses Postfach ist leer." },
-    "categories": { "title": "Nichts kategorisiert", "body": "E-Mails aus Soziale Netzwerke, Werbung, Benachrichtigungen und Foren werden hier gruppiert, sobald sie eintreffen." },
-    "reminders": { "title": "Keine Erinnerungen", "body": "Zurückgestellte Unterhaltungen kehren hierher zurück." },
-    "label": { "title": "Keine Unterhaltungen", "body": "Dieses Label ist noch nirgends vergeben." },
-    "search": { "title": "Keine Ergebnisse", "body": "Nichts passt zu „{{text}}“." },
-    "view": { "title": "Noch nichts hier", "body": "Keine Unterhaltung passt zu {{name}}.", "thisView": "dieser Ansicht" },
+    "filtered": {
+      "title": "Keine Treffer",
+      "body": "Keine Unterhaltung passt zu diesen Filtern."
+    },
+    "inbox": {
+      "title": "Alles erledigt.",
+      "body": "Nichts Neues im Posteingang."
+    },
+    "sent": {
+      "title": "Noch nichts gesendet",
+      "body": "Gesendete Nachrichten erscheinen hier."
+    },
+    "drafts": {
+      "title": "Keine Entwürfe",
+      "body": "Eine begonnene Nachricht wird hier gesichert."
+    },
+    "trash": {
+      "title": "Papierkorb ist leer",
+      "body": "Gelöschte Unterhaltungen landen zuerst hier."
+    },
+    "spam": {
+      "title": "Kein Spam",
+      "body": "Nichts wurde als Spam markiert."
+    },
+    "starred": {
+      "title": "Keine markierten Unterhaltungen",
+      "body": "Markierte Unterhaltungen lassen sich schnell wiederfinden."
+    },
+    "mailbox": {
+      "title": "Keine E-Mails",
+      "body": "Dieses Postfach ist leer."
+    },
+    "categories": {
+      "title": "Nichts kategorisiert",
+      "body": "E-Mails aus Soziale Netzwerke, Werbung, Benachrichtigungen und Foren werden hier gruppiert, sobald sie eintreffen."
+    },
+    "reminders": {
+      "title": "Keine Erinnerungen",
+      "body": "Zurückgestellte Unterhaltungen kehren hierher zurück."
+    },
+    "label": {
+      "title": "Keine Unterhaltungen",
+      "body": "Dieses Label ist noch nirgends vergeben."
+    },
+    "search": {
+      "title": "Keine Ergebnisse",
+      "body": "Nichts passt zu „{{text}}“."
+    },
+    "view": {
+      "title": "Noch nichts hier",
+      "body": "Keine Unterhaltung passt zu {{name}}.",
+      "thisView": "dieser Ansicht"
+    },
     "searchHint": "Weniger Wörter versuchen oder mit from:name nach Absender suchen."
   },
   "zero": {
-    "morning": { "line1": "Posteingang leer, und es ist noch nicht mal Mittag.", "line2": "Nichts zu tun. Genieße den ruhigen Start." },
-    "afternoon": { "line1": "Alles frei. Zeit für das, was liegen geblieben ist.", "line2": "Nichts mehr offen. Der Nachmittag gehört dir." },
-    "evening": { "line1": "Nichts mehr zu beantworten. Laptop zu.", "line2": "Posteingang leer. Jetzt ist das Abendessen dran." },
-    "night": { "line1": "Nichts mehr da. Ab ins Bett.", "line2": "Leer. Was auch immer es ist, es hat bis morgen Zeit." }
+    "morning": {
+      "line1": "Posteingang leer, und es ist noch nicht mal Mittag.",
+      "line2": "Nichts zu tun. Genieße den ruhigen Start."
+    },
+    "afternoon": {
+      "line1": "Alles frei. Zeit für das, was liegen geblieben ist.",
+      "line2": "Nichts mehr offen. Der Nachmittag gehört dir."
+    },
+    "evening": {
+      "line1": "Nichts mehr zu beantworten. Laptop zu.",
+      "line2": "Posteingang leer. Jetzt ist das Abendessen dran."
+    },
+    "night": {
+      "line1": "Nichts mehr da. Ab ins Bett.",
+      "line2": "Leer. Was auch immer es ist, es hat bis morgen Zeit."
+    }
   },
   "bundle": {
     "newCount_one": "{{count}} neu",
@@ -137,23 +190,73 @@
     "messageCount_one": "{{count}} Nachricht",
     "messageCount_other": "{{count}} Nachrichten",
     "dateBetween": "{{from}} und {{to}}",
-    "unit": { "mb": "MB", "messages": "Nachrichten" },
-    "group": { "status": "Status", "people": "Personen", "content": "Inhalt", "time": "Zeit" },
+    "unit": {
+      "mb": "MB",
+      "messages": "Nachrichten"
+    },
+    "group": {
+      "status": "Status",
+      "people": "Personen",
+      "content": "Inhalt",
+      "time": "Zeit"
+    },
     "prop": {
-      "read": { "label": "Lesestatus", "hint": "Ungelesen oder bereits gelesen" },
-      "starred": { "label": "Markiert", "hint": "Mit einem Stern markiert" },
-      "reminder": { "label": "Erinnerung", "hint": "Zurückgestellt oder wartet auf Antwort" },
-      "reply": { "label": "Antwortstatus", "hint": "Wer zuletzt geschrieben hat" },
-      "label": { "label": "Label", "hint": "Eines der gewählten Labels" },
-      "account": { "label": "Account", "hint": "Welches Postfach" },
-      "from": { "label": "Von", "hint": "Name, Adresse oder Domain des Absenders" },
-      "recipient": { "label": "Gesendet an", "hint": "Direkt an mich oder nur in Cc" },
-      "newsletter": { "label": "Newsletter", "hint": "Enthält einen Abmelde-Link" },
-      "subject": { "label": "Betreff", "hint": "Betreff enthält ein Wort" },
-      "attachment": { "label": "Anhang", "hint": "Dateien nach Typ oder Größe" },
-      "invite": { "label": "Kalendereinladung", "hint": "Enthält eine .ics-Einladung" },
-      "size": { "label": "Länge der Unterhaltung", "hint": "Einzelne Nachricht oder lange Unterhaltung" },
-      "date": { "label": "Datum", "hint": "Wann die letzte Nachricht eingetroffen ist" }
+      "read": {
+        "label": "Lesestatus",
+        "hint": "Ungelesen oder bereits gelesen"
+      },
+      "starred": {
+        "label": "Markiert",
+        "hint": "Mit einem Stern markiert"
+      },
+      "reminder": {
+        "label": "Erinnerung",
+        "hint": "Zurückgestellt oder wartet auf Antwort"
+      },
+      "reply": {
+        "label": "Antwortstatus",
+        "hint": "Wer zuletzt geschrieben hat"
+      },
+      "label": {
+        "label": "Label",
+        "hint": "Eines der gewählten Labels"
+      },
+      "account": {
+        "label": "Account",
+        "hint": "Welches Postfach"
+      },
+      "from": {
+        "label": "Von",
+        "hint": "Name, Adresse oder Domain des Absenders"
+      },
+      "recipient": {
+        "label": "Gesendet an",
+        "hint": "Direkt an mich oder nur in Cc"
+      },
+      "newsletter": {
+        "label": "Newsletter",
+        "hint": "Enthält einen Abmelde-Link"
+      },
+      "subject": {
+        "label": "Betreff",
+        "hint": "Betreff enthält ein Wort"
+      },
+      "attachment": {
+        "label": "Anhang",
+        "hint": "Dateien nach Typ oder Größe"
+      },
+      "invite": {
+        "label": "Kalendereinladung",
+        "hint": "Enthält eine .ics-Einladung"
+      },
+      "size": {
+        "label": "Länge der Unterhaltung",
+        "hint": "Einzelne Nachricht oder lange Unterhaltung"
+      },
+      "date": {
+        "label": "Datum",
+        "hint": "Wann die letzte Nachricht eingetroffen ist"
+      }
     },
     "op": {
       "is": "ist",
@@ -203,5 +306,15 @@
       "presentation": "Präsentation",
       "archive": "Archiv"
     }
+  },
+  "outbox": {
+    "title": "Outbox",
+    "drafts": "Drafts saved on this device",
+    "failed": "Not sent — {{error}}",
+    "sent": "Sent {{time}}",
+    "scheduled": "Scheduled for {{time}}",
+    "sending": "Sending…",
+    "discard": "Discard",
+    "draftSaved": "Saved {{time}}"
   }
 }

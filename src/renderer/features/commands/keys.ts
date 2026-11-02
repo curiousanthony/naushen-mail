@@ -134,7 +134,7 @@ export class KeyMatcher {
 
 const SYMBOLS: Record<string, string> = {
   mod: '⌘', ctrl: '⌃', alt: '⌥', shift: '⇧', enter: '↵', up: '↑', down: '↓', left: '←', right: '→',
-  backspace: '⌫', delete: '⌦', esc: 'esc', tab: '⇥', space: 'Space', home: 'Home', end: 'End', pageup: 'PgUp', pagedown: 'PgDn'
+  backspace: '⌫', delete: '⌦', esc: 'Esc', tab: '⇥', space: 'Space', home: 'Home', end: 'End', pageup: 'PgUp', pagedown: 'PgDn'
 }
 
 /** `mod+shift+enter` -> ['⌘', '⇧', '↵']. Non-mac shows Ctrl / Shift / Alt words. */

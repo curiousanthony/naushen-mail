@@ -184,7 +184,7 @@ export function compileCondition(c: FilterCondition, now = Date.now()): ThreadFi
       return { hasAttachment: true }
     case 'size':
       if (c.op === 'single') return { maxMessages: 1 }
-      if (c.op === 'conversation') return { minMessages: 2 }
+      if (c.op === 'conversation') return { conversation: true }
       return { minMessages: Math.max(1, Math.floor(c.n ?? 2)) }
     case 'date': return dateRange(c, now)
   }

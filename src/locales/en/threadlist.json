@@ -47,29 +47,82 @@
     "unmute": "Unmute conversation",
     "mute": "Mute conversation",
     "reportSpam": "Report spam",
-    "delete": "Delete"
+    "delete": "Delete",
+    "createRule": "Create rule…"
   },
   "empty": {
-    "filtered": { "title": "No matches", "body": "No conversations match these filters." },
-    "inbox": { "title": "You're all caught up.", "body": "Nothing new in your inbox." },
-    "sent": { "title": "Nothing sent yet", "body": "Messages you send will appear here." },
-    "drafts": { "title": "No drafts", "body": "Start a message and it will be saved here." },
-    "trash": { "title": "Trash is empty", "body": "Deleted conversations land here first." },
-    "spam": { "title": "No spam", "body": "Nothing has been flagged as spam." },
-    "starred": { "title": "No starred conversations", "body": "Star a conversation to find it quickly." },
-    "mailbox": { "title": "No mail here", "body": "This mailbox is empty." },
-    "categories": { "title": "Nothing categorized", "body": "Social, Promotions, Updates and Forums mail will group here as it arrives." },
-    "reminders": { "title": "No reminders", "body": "Conversations you snooze will come back here." },
-    "label": { "title": "No conversations", "body": "Nothing carries this label yet." },
-    "search": { "title": "No results", "body": "Nothing matches “{{text}}”." },
-    "view": { "title": "Nothing here yet", "body": "No conversations match {{name}}.", "thisView": "this view" },
+    "filtered": {
+      "title": "No matches",
+      "body": "No conversations match these filters."
+    },
+    "inbox": {
+      "title": "You're all caught up.",
+      "body": "Nothing new in your inbox."
+    },
+    "sent": {
+      "title": "Nothing sent yet",
+      "body": "Messages you send will appear here."
+    },
+    "drafts": {
+      "title": "No drafts",
+      "body": "Start a message and it will be saved here."
+    },
+    "trash": {
+      "title": "Trash is empty",
+      "body": "Deleted conversations land here first."
+    },
+    "spam": {
+      "title": "No spam",
+      "body": "Nothing has been flagged as spam."
+    },
+    "starred": {
+      "title": "No starred conversations",
+      "body": "Star a conversation to find it quickly."
+    },
+    "mailbox": {
+      "title": "No mail here",
+      "body": "This mailbox is empty."
+    },
+    "categories": {
+      "title": "Nothing categorized",
+      "body": "Social, Promotions, Updates and Forums mail will group here as it arrives."
+    },
+    "reminders": {
+      "title": "No reminders",
+      "body": "Conversations you snooze will come back here."
+    },
+    "label": {
+      "title": "No conversations",
+      "body": "Nothing carries this label yet."
+    },
+    "search": {
+      "title": "No results",
+      "body": "Nothing matches “{{text}}”."
+    },
+    "view": {
+      "title": "Nothing here yet",
+      "body": "No conversations match {{name}}.",
+      "thisView": "this view"
+    },
     "searchHint": "Try fewer words, or search by sender with from:name."
   },
   "zero": {
-    "morning": { "line1": "Inbox zero, and it is not even lunch.", "line2": "Nothing here. Enjoy the quiet start." },
-    "afternoon": { "line1": "All clear. Go do the thing you were avoiding.", "line2": "Nothing left. The afternoon is yours." },
-    "evening": { "line1": "Nothing left to answer. Close the laptop.", "line2": "Inbox zero. Dinner can have your attention now." },
-    "night": { "line1": "Nothing here. Go to sleep.", "line2": "Empty. Whatever it is can wait until morning." }
+    "morning": {
+      "line1": "Inbox zero, and it is not even lunch.",
+      "line2": "Nothing here. Enjoy the quiet start."
+    },
+    "afternoon": {
+      "line1": "All clear. Go do the thing you were avoiding.",
+      "line2": "Nothing left. The afternoon is yours."
+    },
+    "evening": {
+      "line1": "Nothing left to answer. Close the laptop.",
+      "line2": "Inbox zero. Dinner can have your attention now."
+    },
+    "night": {
+      "line1": "Nothing here. Go to sleep.",
+      "line2": "Empty. Whatever it is can wait until morning."
+    }
   },
   "bundle": {
     "newCount_one": "{{count}} new",
@@ -137,23 +190,73 @@
     "messageCount_one": "{{count}} message",
     "messageCount_other": "{{count}} messages",
     "dateBetween": "{{from}} and {{to}}",
-    "unit": { "mb": "MB", "messages": "messages" },
-    "group": { "status": "Status", "people": "People", "content": "Content", "time": "Time" },
+    "unit": {
+      "mb": "MB",
+      "messages": "messages"
+    },
+    "group": {
+      "status": "Status",
+      "people": "People",
+      "content": "Content",
+      "time": "Time"
+    },
     "prop": {
-      "read": { "label": "Read status", "hint": "Unread or already read" },
-      "starred": { "label": "Starred", "hint": "Flagged with a star" },
-      "reminder": { "label": "Reminder", "hint": "Snoozed or waiting on a reply" },
-      "reply": { "label": "Reply status", "hint": "Who wrote last" },
-      "label": { "label": "Label", "hint": "Any of the chosen labels" },
-      "account": { "label": "Account", "hint": "Which mailbox" },
-      "from": { "label": "From", "hint": "Sender name, address or domain" },
-      "recipient": { "label": "Sent to", "hint": "To me directly, or only Cc’d" },
-      "newsletter": { "label": "Newsletter", "hint": "Has an unsubscribe link" },
-      "subject": { "label": "Subject", "hint": "Subject contains a word" },
-      "attachment": { "label": "Attachment", "hint": "Files, by type or size" },
-      "invite": { "label": "Calendar invite", "hint": "Carries an .ics invite" },
-      "size": { "label": "Conversation length", "hint": "Single message or long thread" },
-      "date": { "label": "Date", "hint": "When the last message arrived" }
+      "read": {
+        "label": "Read status",
+        "hint": "Unread or already read"
+      },
+      "starred": {
+        "label": "Starred",
+        "hint": "Flagged with a star"
+      },
+      "reminder": {
+        "label": "Reminder",
+        "hint": "Snoozed or waiting on a reply"
+      },
+      "reply": {
+        "label": "Reply status",
+        "hint": "Who wrote last"
+      },
+      "label": {
+        "label": "Label",
+        "hint": "Any of the chosen labels"
+      },
+      "account": {
+        "label": "Account",
+        "hint": "Which mailbox"
+      },
+      "from": {
+        "label": "From",
+        "hint": "Sender name, address or domain"
+      },
+      "recipient": {
+        "label": "Sent to",
+        "hint": "To me directly, or only Cc’d"
+      },
+      "newsletter": {
+        "label": "Newsletter",
+        "hint": "Has an unsubscribe link"
+      },
+      "subject": {
+        "label": "Subject",
+        "hint": "Subject contains a word"
+      },
+      "attachment": {
+        "label": "Attachment",
+        "hint": "Files, by type or size"
+      },
+      "invite": {
+        "label": "Calendar invite",
+        "hint": "Carries an .ics invite"
+      },
+      "size": {
+        "label": "Conversation length",
+        "hint": "Single message or long thread"
+      },
+      "date": {
+        "label": "Date",
+        "hint": "When the last message arrived"
+      }
     },
     "op": {
       "is": "is",
@@ -203,5 +306,15 @@
       "presentation": "Presentation",
       "archive": "Archive"
     }
+  },
+  "outbox": {
+    "title": "Outbox",
+    "drafts": "Drafts saved on this device",
+    "failed": "Not sent — {{error}}",
+    "sent": "Sent {{time}}",
+    "scheduled": "Scheduled for {{time}}",
+    "sending": "Sending…",
+    "discard": "Discard",
+    "draftSaved": "Saved {{time}}"
   }
 }

@@ -57,6 +57,12 @@
   },
   "defaultViews": {
     "unread": "अपठित",
-    "attachments": "अटैचमेंट वाले"
+    "attachments": "अटैचमेंट वाले",
+    "conversations": "Conversations"
+  },
+  "authNotice": {
+    "expired": "{{email}} needs to be reauthorized before it can send or sync.",
+    "soon": "Authorization for {{email}} expires {{when}}.",
+    "reauthorize": "Reauthorize"
   }
 }

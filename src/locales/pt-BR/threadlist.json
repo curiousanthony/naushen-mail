@@ -47,29 +47,82 @@
     "unmute": "Reativar conversa",
     "mute": "Silenciar conversa",
     "reportSpam": "Denunciar spam",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "createRule": "Create rule…"
   },
   "empty": {
-    "filtered": { "title": "Nenhum resultado", "body": "Nenhuma conversa corresponde a estes filtros." },
-    "inbox": { "title": "Tudo em dia.", "body": "Nada de novo na sua caixa de entrada." },
-    "sent": { "title": "Nada enviado ainda", "body": "As mensagens que você enviar aparecerão aqui." },
-    "drafts": { "title": "Nenhum rascunho", "body": "Comece uma mensagem e ela será salva aqui." },
-    "trash": { "title": "A lixeira está vazia", "body": "As conversas excluídas vêm primeiro para cá." },
-    "spam": { "title": "Nenhum spam", "body": "Nada foi marcado como spam." },
-    "starred": { "title": "Nenhuma conversa com estrela", "body": "Marque uma conversa com estrela para encontrá-la rápido." },
-    "mailbox": { "title": "Nenhum e-mail aqui", "body": "Esta caixa de correio está vazia." },
-    "categories": { "title": "Nada categorizado", "body": "E-mails de Social, Promoções, Atualizações e Fóruns serão agrupados aqui conforme chegarem." },
-    "reminders": { "title": "Nenhum lembrete", "body": "As conversas que você adiar voltarão para cá." },
-    "label": { "title": "Nenhuma conversa", "body": "Nada tem este marcador ainda." },
-    "search": { "title": "Nenhum resultado", "body": "Nada corresponde a “{{text}}”." },
-    "view": { "title": "Nada aqui ainda", "body": "Nenhuma conversa corresponde a {{name}}.", "thisView": "esta visualização" },
+    "filtered": {
+      "title": "Nenhum resultado",
+      "body": "Nenhuma conversa corresponde a estes filtros."
+    },
+    "inbox": {
+      "title": "Tudo em dia.",
+      "body": "Nada de novo na sua caixa de entrada."
+    },
+    "sent": {
+      "title": "Nada enviado ainda",
+      "body": "As mensagens que você enviar aparecerão aqui."
+    },
+    "drafts": {
+      "title": "Nenhum rascunho",
+      "body": "Comece uma mensagem e ela será salva aqui."
+    },
+    "trash": {
+      "title": "A lixeira está vazia",
+      "body": "As conversas excluídas vêm primeiro para cá."
+    },
+    "spam": {
+      "title": "Nenhum spam",
+      "body": "Nada foi marcado como spam."
+    },
+    "starred": {
+      "title": "Nenhuma conversa com estrela",
+      "body": "Marque uma conversa com estrela para encontrá-la rápido."
+    },
+    "mailbox": {
+      "title": "Nenhum e-mail aqui",
+      "body": "Esta caixa de correio está vazia."
+    },
+    "categories": {
+      "title": "Nada categorizado",
+      "body": "E-mails de Social, Promoções, Atualizações e Fóruns serão agrupados aqui conforme chegarem."
+    },
+    "reminders": {
+      "title": "Nenhum lembrete",
+      "body": "As conversas que você adiar voltarão para cá."
+    },
+    "label": {
+      "title": "Nenhuma conversa",
+      "body": "Nada tem este marcador ainda."
+    },
+    "search": {
+      "title": "Nenhum resultado",
+      "body": "Nada corresponde a “{{text}}”."
+    },
+    "view": {
+      "title": "Nada aqui ainda",
+      "body": "Nenhuma conversa corresponde a {{name}}.",
+      "thisView": "esta visualização"
+    },
     "searchHint": "Tente menos palavras ou busque por remetente com from:nome."
   },
   "zero": {
-    "morning": { "line1": "Caixa de entrada zerada, e nem é hora do almoço.", "line2": "Nada por aqui. Aproveite o começo tranquilo." },
-    "afternoon": { "line1": "Tudo limpo. Vá fazer aquilo que você vinha adiando.", "line2": "Nada sobrando. A tarde é sua." },
-    "evening": { "line1": "Nada mais a responder. Feche o notebook.", "line2": "Caixa de entrada zerada. O jantar merece sua atenção agora." },
-    "night": { "line1": "Nada por aqui. Vá dormir.", "line2": "Vazio. O que quer que seja pode esperar até amanhã." }
+    "morning": {
+      "line1": "Caixa de entrada zerada, e nem é hora do almoço.",
+      "line2": "Nada por aqui. Aproveite o começo tranquilo."
+    },
+    "afternoon": {
+      "line1": "Tudo limpo. Vá fazer aquilo que você vinha adiando.",
+      "line2": "Nada sobrando. A tarde é sua."
+    },
+    "evening": {
+      "line1": "Nada mais a responder. Feche o notebook.",
+      "line2": "Caixa de entrada zerada. O jantar merece sua atenção agora."
+    },
+    "night": {
+      "line1": "Nada por aqui. Vá dormir.",
+      "line2": "Vazio. O que quer que seja pode esperar até amanhã."
+    }
   },
   "bundle": {
     "newCount_one": "{{count}} nova",
@@ -137,23 +190,73 @@
     "messageCount_one": "{{count}} mensagem",
     "messageCount_other": "{{count}} mensagens",
     "dateBetween": "{{from}} e {{to}}",
-    "unit": { "mb": "MB", "messages": "mensagens" },
-    "group": { "status": "Status", "people": "Pessoas", "content": "Conteúdo", "time": "Tempo" },
+    "unit": {
+      "mb": "MB",
+      "messages": "mensagens"
+    },
+    "group": {
+      "status": "Status",
+      "people": "Pessoas",
+      "content": "Conteúdo",
+      "time": "Tempo"
+    },
     "prop": {
-      "read": { "label": "Status de leitura", "hint": "Não lida ou já lida" },
-      "starred": { "label": "Com estrela", "hint": "Marcada com uma estrela" },
-      "reminder": { "label": "Lembrete", "hint": "Adiada ou aguardando resposta" },
-      "reply": { "label": "Status de resposta", "hint": "Quem escreveu por último" },
-      "label": { "label": "Marcador", "hint": "Qualquer um dos marcadores escolhidos" },
-      "account": { "label": "Conta", "hint": "Qual caixa de correio" },
-      "from": { "label": "De", "hint": "Nome, endereço ou domínio do remetente" },
-      "recipient": { "label": "Enviada para", "hint": "Direto para mim ou só em Cc" },
-      "newsletter": { "label": "Newsletter", "hint": "Tem link para cancelar inscrição" },
-      "subject": { "label": "Assunto", "hint": "O assunto contém uma palavra" },
-      "attachment": { "label": "Anexo", "hint": "Arquivos, por tipo ou tamanho" },
-      "invite": { "label": "Convite de calendário", "hint": "Traz um convite .ics" },
-      "size": { "label": "Tamanho da conversa", "hint": "Mensagem única ou conversa longa" },
-      "date": { "label": "Data", "hint": "Quando chegou a última mensagem" }
+      "read": {
+        "label": "Status de leitura",
+        "hint": "Não lida ou já lida"
+      },
+      "starred": {
+        "label": "Com estrela",
+        "hint": "Marcada com uma estrela"
+      },
+      "reminder": {
+        "label": "Lembrete",
+        "hint": "Adiada ou aguardando resposta"
+      },
+      "reply": {
+        "label": "Status de resposta",
+        "hint": "Quem escreveu por último"
+      },
+      "label": {
+        "label": "Marcador",
+        "hint": "Qualquer um dos marcadores escolhidos"
+      },
+      "account": {
+        "label": "Conta",
+        "hint": "Qual caixa de correio"
+      },
+      "from": {
+        "label": "De",
+        "hint": "Nome, endereço ou domínio do remetente"
+      },
+      "recipient": {
+        "label": "Enviada para",
+        "hint": "Direto para mim ou só em Cc"
+      },
+      "newsletter": {
+        "label": "Newsletter",
+        "hint": "Tem link para cancelar inscrição"
+      },
+      "subject": {
+        "label": "Assunto",
+        "hint": "O assunto contém uma palavra"
+      },
+      "attachment": {
+        "label": "Anexo",
+        "hint": "Arquivos, por tipo ou tamanho"
+      },
+      "invite": {
+        "label": "Convite de calendário",
+        "hint": "Traz um convite .ics"
+      },
+      "size": {
+        "label": "Tamanho da conversa",
+        "hint": "Mensagem única ou conversa longa"
+      },
+      "date": {
+        "label": "Data",
+        "hint": "Quando chegou a última mensagem"
+      }
     },
     "op": {
       "is": "é",
@@ -203,5 +306,15 @@
       "presentation": "Apresentação",
       "archive": "Arquivo compactado"
     }
+  },
+  "outbox": {
+    "title": "Outbox",
+    "drafts": "Drafts saved on this device",
+    "failed": "Not sent — {{error}}",
+    "sent": "Sent {{time}}",
+    "scheduled": "Scheduled for {{time}}",
+    "sending": "Sending…",
+    "discard": "Discard",
+    "draftSaved": "Saved {{time}}"
   }
 }

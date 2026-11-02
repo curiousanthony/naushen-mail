@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { TimeChips } from '@/features/time/TimeChips'
 import {
-  Archive, BellOff, ChevronsRight, Clock, MailOpen, ShieldAlert, Star, Tag, Trash2
+  Archive, BellOff, ChevronsRight, Clock, MailOpen, ShieldAlert, Star, Tag, Trash2, X
 } from 'lucide-react'
 import type { Label, ThreadWithMessages } from '@shared/types'
 import { useApp } from '@/lib/store'
@@ -30,6 +30,8 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
   const { t } = useTranslation('reader')
   const act = useApp((s) => s.act)
   const setOverlay = useApp((s) => s.setOverlay)
+  // The centred reader is a popup, so "collapse to the side" becomes a plain close.
+  const centred = useApp((s) => s.settings.threadStyle) === 'center'
 
   const unsub = findUnsubscribe(thread.messages)
   const threadLabels = thread.labelIds
@@ -47,9 +49,9 @@ export function ThreadHeader({ thread, labels, onClose }: Props): JSX.Element {
     <header className="reader__header">
       <div className="reader__header-inner">
         <div className="reader__actions no-drag">
-          <Tooltip label={t('header.collapse')} shortcut="Esc">
-            <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label={t('header.collapseThread')}>
-              <ChevronsRight size={19} aria-hidden />
+          <Tooltip label={centred ? t('header.close') : t('header.collapse')} shortcut="Esc">
+            <button className="reader__btn reader__btn--collapse" onClick={onClose} aria-label={centred ? t('header.closeThread') : t('header.collapseThread')}>
+              {centred ? <X size={19} aria-hidden /> : <ChevronsRight size={19} aria-hidden />}
             </button>
           </Tooltip>
 

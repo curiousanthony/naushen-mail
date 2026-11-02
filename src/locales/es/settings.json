@@ -108,7 +108,8 @@
       "reauthorize": "Volver a autorizar",
       "syncNow": "Sincronizar ahora",
       "disconnect": "Desconectar",
-      "disconnectConfirm": "<b>¿Desconectar {{email}}?</b> Su correo, etiquetas y recordatorios locales se eliminan de Naushen Mail en este equipo. No se borra nada de {{provider}}."
+      "disconnectConfirm": "<b>¿Desconectar {{email}}?</b> Su correo, etiquetas y recordatorios locales se eliminan de Naushen Mail en este equipo. No se borra nada de {{provider}}.",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {

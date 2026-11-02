@@ -26,7 +26,9 @@
     "trashed": "Movida para a lixeira",
     "noSubject": "(sem assunto)",
     "messageCount_one": "{{count}} mensagem",
-    "messageCount_other": "{{count}} mensagens"
+    "messageCount_other": "{{count}} mensagens",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "Responder",

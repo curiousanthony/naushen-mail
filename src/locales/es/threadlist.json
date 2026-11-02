@@ -47,7 +47,8 @@
     "unmute": "Dejar de silenciar conversación",
     "mute": "Silenciar conversación",
     "reportSpam": "Marcar como spam",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "createRule": "Create rule…"
   },
   "empty": {
     "filtered": {
@@ -314,5 +315,15 @@
       "presentation": "Presentación",
       "archive": "Archivo comprimido"
     }
+  },
+  "outbox": {
+    "title": "Outbox",
+    "drafts": "Drafts saved on this device",
+    "failed": "Not sent — {{error}}",
+    "sent": "Sent {{time}}",
+    "scheduled": "Scheduled for {{time}}",
+    "sending": "Sending…",
+    "discard": "Discard",
+    "draftSaved": "Saved {{time}}"
   }
 }

@@ -2,55 +2,34 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Paperclip, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { ThreadWithMessages } from '@shared/types'
-import { sanitizeEmailHtml } from '@shared/sanitize'
-import { plainTextToHtml } from '@shared/sanitize/text'
 import { useApp } from '@/lib/store'
 import { displayName, fullDate, initials } from '@/lib/format'
 import { chipStyle } from '@/lib/labels'
 import { gravatarUrl } from '@/lib/avatar'
 import { rowLabels } from '../threadlist/lib'
 import { peekThread, fetchThread } from '../gestures/threadCache'
-import { buildBodyDocument, readThemeTokens, type ThemeTokens } from '../reader/bodyDocument'
 import { usePreviewStore } from './previewStore'
 import { computePreviewPosition, type Point, type Size } from './position'
 import './preview.css'
 
-/** Re-read tokens whenever the OS/app colour scheme flips. Same idea as the reader's own hook
- *  (MessageBody.tsx's useThemeTokens), kept separate so this feature doesn't reach into another
- *  one's internals for a private hook. */
-function useThemeTokens(): { tokens: ThemeTokens; dark: boolean } {
-  const [state, setState] = useState(() => ({
-    tokens: readThemeTokens(),
-    dark: window.matchMedia('(prefers-color-scheme: dark)').matches
-  }))
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const update = (): void => { requestAnimationFrame(() => setState({ tokens: readThemeTokens(), dark: mq.matches })) }
-    mq.addEventListener('change', update)
-    return () => mq.removeEventListener('change', update)
-  }, [])
-  return state
-}
-
 /**
- * The body preview's own srcdoc: the thread's latest message, sanitised the same way the reader
- * sanitises it (trackers stripped outright, remote images gated by the same setting) — never a
- * second, looser pass. No `cid:` resolution here (that's a round trip through `messages
- * .inlineImages`, not worth paying for a preview that's dismissed the moment the mouse moves on);
- * an unresolved inline image just shows the reader's existing "blocked" placeholder.
+ * A readable text excerpt of the thread's latest message. The preview used to render the real
+ * HTML, but banners and logos filled the card before any text appeared, so it shows the words
+ * (images, styles and scripts dropped) -- far more useful for deciding whether to open the mail.
  */
-function bodySrcDoc(thread: ThreadWithMessages, tokens: ThemeTokens, dark: boolean, blockRemoteImages: boolean): string {
-  const message = thread.messages[thread.messages.length - 1]
-  let html: string
-  let paper = false
-  if (message?.bodyHtml?.trim()) {
-    const result = sanitizeEmailHtml(message.bodyHtml, { allowRemoteImages: !blockRemoteImages })
-    html = result.html
-    paper = dark && result.hasAuthoredBackground
-  } else {
-    html = plainTextToHtml(message?.bodyText ?? '').html
+const EXCERPT_CHARS = 900
+function excerptOf(thread: ThreadWithMessages): string {
+  const m = thread.messages[thread.messages.length - 1]
+  if (!m) return ''
+  let text = m.bodyText?.trim() ?? ''
+  if (!text && m.bodyHtml) {
+    const doc = new DOMParser().parseFromString(m.bodyHtml, 'text/html')
+    doc.querySelectorAll('style, script, head, img, svg, title').forEach((n) => n.remove())
+    doc.querySelectorAll('br, p, div, tr, li, h1, h2, h3, h4').forEach((n) => n.append(' '))
+    text = doc.body.textContent ?? ''
   }
-  return buildBodyDocument({ html, tokens, dark, paper })
+  text = text.replace(/\s+/g, ' ').trim()
+  return text.length > EXCERPT_CHARS ? text.slice(0, EXCERPT_CHARS).trimEnd() + '…' : text
 }
 
 /**
@@ -82,8 +61,6 @@ export function PreviewHost(): JSX.Element | null {
   const labels = useApp((s) => s.labels)
   const accounts = useApp((s) => s.accounts)
   const showAvatars = useApp((s) => s.settings.showAvatars)
-  const blockRemoteImages = useApp((s) => s.settings.blockRemoteImages)
-  const { tokens, dark } = useThemeTokens()
 
   const ref = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState<Size | null>(null)
@@ -107,17 +84,17 @@ export function PreviewHost(): JSX.Element | null {
     return () => { cancelled = true }
   }, [show, thread?.id])
 
-  const srcDoc = useMemo(() => {
-    if (!full || full.id !== thread?.id || !full.messages.length) return null
-    return bodySrcDoc(full, tokens, dark, blockRemoteImages)
-  }, [full, thread?.id, tokens, dark, blockRemoteImages])
+  const excerpt = useMemo(() => {
+    if (!full || full.id !== thread?.id || !full.messages.length) return ''
+    return excerptOf(full)
+  }, [full, thread?.id])
 
   // Re-measure only when the card's own content could have changed its footprint.
   useLayoutEffect(() => {
     if (!show || !ref.current) { setSize(null); return }
     const r = ref.current.getBoundingClientRect()
     setSize({ width: r.width, height: r.height })
-  }, [show, thread?.id, thread?.subject, thread?.snippet, thread?.labelIds.join(','), !!srcDoc])
+  }, [show, thread?.id, thread?.subject, thread?.snippet, thread?.labelIds.join(','), excerpt])
 
   // Reposition on every cursor update, reusing the last measured size.
   useLayoutEffect(() => {
@@ -185,16 +162,7 @@ export function PreviewHost(): JSX.Element | null {
         {thread.messageCount > 1 && <span className="preview__count">{thread.messageCount}</span>}
       </div>
 
-      {srcDoc ? (
-        // sandbox has no allow-scripts (same as the reader's own iframe, bodyDocument.ts) and
-        // the whole card is pointer-events:none (preview.css), so this is inert either way.
-        <div className="preview__body">
-          <iframe className="preview__frame" title={t('frameTitle')} srcDoc={srcDoc} sandbox="allow-same-origin" scrolling="no" tabIndex={-1} />
-          <div className="preview__fade" aria-hidden />
-        </div>
-      ) : thread.snippet ? (
-        <p className="preview__snippet">{thread.snippet}</p>
-      ) : null}
+      {excerpt || thread.snippet ? <p className="preview__excerpt">{excerpt || thread.snippet}</p> : null}
 
       {(chips.length > 0 || thread.hasAttachments || thread.starred) && (
         <div className="preview__meta">

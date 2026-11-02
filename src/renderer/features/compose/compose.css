@@ -961,3 +961,14 @@
   .cmp-swatch--bg { color: #37352f; }
   .cmp-menu__swatch { color: var(--c-text); }
 }
+
+.auth-notice {
+  display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12px;
+  background: var(--c-bg-hover); color: var(--c-text-2); border-bottom: 1px solid var(--c-border);
+}
+.auth-notice > span { flex: 1; min-width: 0; }
+.auth-notice__btn {
+  flex: none; font: inherit; font-size: 12px; padding: 2px 8px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--c-border); background: var(--c-bg); color: var(--c-text);
+}
+.auth-notice__btn:hover { background: var(--c-bg-hover); }

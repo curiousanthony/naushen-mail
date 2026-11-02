@@ -47,29 +47,82 @@
     "unmute": "取消静音会话",
     "mute": "静音会话",
     "reportSpam": "举报垃圾邮件",
-    "delete": "删除"
+    "delete": "删除",
+    "createRule": "Create rule…"
   },
   "empty": {
-    "filtered": { "title": "没有匹配项", "body": "没有会话符合这些筛选条件。" },
-    "inbox": { "title": "已全部处理。", "body": "收件箱里没有新邮件。" },
-    "sent": { "title": "还没有发送过邮件", "body": "你发送的邮件会显示在这里。" },
-    "drafts": { "title": "没有草稿", "body": "开始写一封邮件，它会保存在这里。" },
-    "trash": { "title": "废纸篓是空的", "body": "删除的会话会先放在这里。" },
-    "spam": { "title": "没有垃圾邮件", "body": "没有邮件被标记为垃圾邮件。" },
-    "starred": { "title": "没有星标会话", "body": "为会话加星标，方便快速找到。" },
-    "mailbox": { "title": "这里没有邮件", "body": "此邮箱是空的。" },
-    "categories": { "title": "暂无分类邮件", "body": "社交、推广、动态和论坛邮件到达后会在此分组。" },
-    "reminders": { "title": "没有提醒", "body": "你延后处理的会话会回到这里。" },
-    "label": { "title": "没有会话", "body": "还没有会话带有此标签。" },
-    "search": { "title": "没有结果", "body": "没有与“{{text}}”匹配的内容。" },
-    "view": { "title": "这里暂时没有内容", "body": "没有会话符合{{name}}。", "thisView": "此视图" },
+    "filtered": {
+      "title": "没有匹配项",
+      "body": "没有会话符合这些筛选条件。"
+    },
+    "inbox": {
+      "title": "已全部处理。",
+      "body": "收件箱里没有新邮件。"
+    },
+    "sent": {
+      "title": "还没有发送过邮件",
+      "body": "你发送的邮件会显示在这里。"
+    },
+    "drafts": {
+      "title": "没有草稿",
+      "body": "开始写一封邮件，它会保存在这里。"
+    },
+    "trash": {
+      "title": "废纸篓是空的",
+      "body": "删除的会话会先放在这里。"
+    },
+    "spam": {
+      "title": "没有垃圾邮件",
+      "body": "没有邮件被标记为垃圾邮件。"
+    },
+    "starred": {
+      "title": "没有星标会话",
+      "body": "为会话加星标，方便快速找到。"
+    },
+    "mailbox": {
+      "title": "这里没有邮件",
+      "body": "此邮箱是空的。"
+    },
+    "categories": {
+      "title": "暂无分类邮件",
+      "body": "社交、推广、动态和论坛邮件到达后会在此分组。"
+    },
+    "reminders": {
+      "title": "没有提醒",
+      "body": "你延后处理的会话会回到这里。"
+    },
+    "label": {
+      "title": "没有会话",
+      "body": "还没有会话带有此标签。"
+    },
+    "search": {
+      "title": "没有结果",
+      "body": "没有与“{{text}}”匹配的内容。"
+    },
+    "view": {
+      "title": "这里暂时没有内容",
+      "body": "没有会话符合{{name}}。",
+      "thisView": "此视图"
+    },
     "searchHint": "试试减少字词，或用 from:name 按发件人搜索。"
   },
   "zero": {
-    "morning": { "line1": "收件箱已清空，而且还没到午饭时间。", "line2": "这里什么也没有。享受宁静的开始。" },
-    "afternoon": { "line1": "全部搞定。去做那件一直拖着的事吧。", "line2": "没有待办了。下午属于你。" },
-    "evening": { "line1": "没有要回复的了。合上电脑吧。", "line2": "收件箱已清空。现在可以专心吃晚饭了。" },
-    "night": { "line1": "这里什么也没有。去睡觉吧。", "line2": "空空如也。有什么事，明早再说。" }
+    "morning": {
+      "line1": "收件箱已清空，而且还没到午饭时间。",
+      "line2": "这里什么也没有。享受宁静的开始。"
+    },
+    "afternoon": {
+      "line1": "全部搞定。去做那件一直拖着的事吧。",
+      "line2": "没有待办了。下午属于你。"
+    },
+    "evening": {
+      "line1": "没有要回复的了。合上电脑吧。",
+      "line2": "收件箱已清空。现在可以专心吃晚饭了。"
+    },
+    "night": {
+      "line1": "这里什么也没有。去睡觉吧。",
+      "line2": "空空如也。有什么事，明早再说。"
+    }
   },
   "bundle": {
     "newCount_other": "{{count}} 封新邮件",
@@ -128,23 +181,73 @@
     "megabytes": "{{n}} MB",
     "messageCount_other": "{{count}} 封邮件",
     "dateBetween": "{{from}} 至 {{to}}",
-    "unit": { "mb": "MB", "messages": "封邮件" },
-    "group": { "status": "状态", "people": "联系人", "content": "内容", "time": "时间" },
+    "unit": {
+      "mb": "MB",
+      "messages": "封邮件"
+    },
+    "group": {
+      "status": "状态",
+      "people": "联系人",
+      "content": "内容",
+      "time": "时间"
+    },
     "prop": {
-      "read": { "label": "已读状态", "hint": "未读或已读" },
-      "starred": { "label": "星标", "hint": "已加星标" },
-      "reminder": { "label": "提醒", "hint": "已延后或等待回复" },
-      "reply": { "label": "回复状态", "hint": "最后由谁发言" },
-      "label": { "label": "标签", "hint": "所选标签中的任意一个" },
-      "account": { "label": "账户", "hint": "哪个邮箱" },
-      "from": { "label": "发件人", "hint": "发件人姓名、地址或域名" },
-      "recipient": { "label": "收件方式", "hint": "直接发给我，或仅抄送" },
-      "newsletter": { "label": "订阅邮件", "hint": "带有退订链接" },
-      "subject": { "label": "主题", "hint": "主题包含某个词" },
-      "attachment": { "label": "附件", "hint": "按类型或大小筛选文件" },
-      "invite": { "label": "日历邀请", "hint": "带有 .ics 邀请" },
-      "size": { "label": "会话长度", "hint": "单封邮件或长会话" },
-      "date": { "label": "日期", "hint": "最新一封邮件的到达时间" }
+      "read": {
+        "label": "已读状态",
+        "hint": "未读或已读"
+      },
+      "starred": {
+        "label": "星标",
+        "hint": "已加星标"
+      },
+      "reminder": {
+        "label": "提醒",
+        "hint": "已延后或等待回复"
+      },
+      "reply": {
+        "label": "回复状态",
+        "hint": "最后由谁发言"
+      },
+      "label": {
+        "label": "标签",
+        "hint": "所选标签中的任意一个"
+      },
+      "account": {
+        "label": "账户",
+        "hint": "哪个邮箱"
+      },
+      "from": {
+        "label": "发件人",
+        "hint": "发件人姓名、地址或域名"
+      },
+      "recipient": {
+        "label": "收件方式",
+        "hint": "直接发给我，或仅抄送"
+      },
+      "newsletter": {
+        "label": "订阅邮件",
+        "hint": "带有退订链接"
+      },
+      "subject": {
+        "label": "主题",
+        "hint": "主题包含某个词"
+      },
+      "attachment": {
+        "label": "附件",
+        "hint": "按类型或大小筛选文件"
+      },
+      "invite": {
+        "label": "日历邀请",
+        "hint": "带有 .ics 邀请"
+      },
+      "size": {
+        "label": "会话长度",
+        "hint": "单封邮件或长会话"
+      },
+      "date": {
+        "label": "日期",
+        "hint": "最新一封邮件的到达时间"
+      }
     },
     "op": {
       "is": "是",
@@ -194,5 +297,15 @@
       "presentation": "演示文稿",
       "archive": "压缩包"
     }
+  },
+  "outbox": {
+    "title": "Outbox",
+    "drafts": "Drafts saved on this device",
+    "failed": "Not sent — {{error}}",
+    "sent": "Sent {{time}}",
+    "scheduled": "Scheduled for {{time}}",
+    "sending": "Sending…",
+    "discard": "Discard",
+    "draftSaved": "Saved {{time}}"
   }
 }

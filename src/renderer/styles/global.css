@@ -54,3 +54,6 @@ input, textarea { font: inherit; color: inherit; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Key hints read as keys everywhere: "esc" -> "Esc", "r" -> "R". */
+kbd, .tooltip__shortcut, .cmd-key { text-transform: capitalize; }

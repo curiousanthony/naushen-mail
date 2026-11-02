@@ -24,6 +24,8 @@ import { EditorSurface, useComposerEditor } from './Editor'
 import { RecipientField, type RecipientFieldHandle, type RecipientKind } from './RecipientField'
 import { dedupeAddresses, validateCompose } from './recipients'
 import { buildOutgoing, planSend } from './send'
+import { AuthNotice } from './AuthNotice'
+import { useLayers } from '@/lib/layers'
 import {
   fileToAttachment, formatBytes, isImageType, isOverSizeLimit, partitionFiles,
   totalBytes, type PendingAttachment
@@ -547,8 +549,10 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
   const over = isOverSizeLimit(attachments)
 
   const chrome = !inline
+  const layerTop = useLayers((s) => s.top)
+  useEffect(() => { if (!inline) useLayers.getState().raise(composer.id) }, [inline, composer.id])
   const style: React.CSSProperties | undefined = chrome && !maximised
-    ? { right: offsetRight, bottom: 0, zIndex: 40 + stack, ...(width ? { width } : {}) }
+    ? { right: offsetRight, bottom: 0, zIndex: layerTop === composer.id ? 60 : 40 + stack, ...(width ? { width } : {}) }
     : undefined
 
   if (chrome && minimised) {
@@ -567,6 +571,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
       className={`cmp${chrome ? ' cmp--window' : ' cmp--inline'}${maximised ? ' is-max' : ''}${dragging ? ' is-dragging' : ''}`}
       style={style}
       aria-label={t('window.composer')}
+      onPointerDownCapture={chrome ? () => useLayers.getState().raise(composer.id) : undefined}
       onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false) }}
       onDrop={(e) => {
@@ -588,6 +593,7 @@ export function Composer({ composer, inline = false, offsetRight, width, stack, 
         </header>
       )}
 
+      <AuthNotice account={account} />
       <div className="cmp__fields">
         <div className="cmp-field cmp-field--from">
           <span className="cmp-field__label">{t('fields.from')}</span>

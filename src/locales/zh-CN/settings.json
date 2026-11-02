@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "账户", "mail": "邮件", "app": "应用" },
+    "group": {
+      "account": "账户",
+      "mail": "邮件",
+      "app": "应用"
+    },
     "accounts": "账户",
     "appearance": "外观与收件箱",
     "signature": "签名",
@@ -26,11 +30,20 @@
     "cancel": "取消",
     "labelColour": "标签颜色",
     "colors": {
-      "gray": "灰色", "brown": "棕色", "orange": "橙色", "yellow": "黄色", "green": "绿色",
-      "blue": "蓝色", "purple": "紫色", "pink": "粉色", "red": "红色"
+      "gray": "灰色",
+      "brown": "棕色",
+      "orange": "橙色",
+      "yellow": "黄色",
+      "green": "绿色",
+      "blue": "蓝色",
+      "purple": "紫色",
+      "pink": "粉色",
+      "red": "红色"
     }
   },
-  "providers": { "demo": "演示" },
+  "providers": {
+    "demo": "演示"
+  },
   "store": {
     "darwin": "macOS 钥匙串",
     "win32": "Windows 凭据管理器/DPAPI",
@@ -67,9 +80,18 @@
     "openAdvanced": "打开高级 Google 客户端设置",
     "connected": "已连接 {{email}}",
     "providers": {
-      "gmail": { "title": "连接 Gmail", "sub": "Google 账户" },
-      "outlook": { "title": "连接 Outlook", "sub": "Microsoft 账户" },
-      "mock": { "title": "添加演示账户", "sub": "示例邮件，离线可用" }
+      "gmail": {
+        "title": "连接 Gmail",
+        "sub": "Google 账户"
+      },
+      "outlook": {
+        "title": "连接 Outlook",
+        "sub": "Microsoft 账户"
+      },
+      "mock": {
+        "title": "添加演示账户",
+        "sub": "示例邮件，离线可用"
+      }
     },
     "status": {
       "syncing": "正在同步…",
@@ -84,7 +106,8 @@
       "reauthorize": "重新授权",
       "syncNow": "立即同步",
       "disconnect": "断开连接",
-      "disconnectConfirm": "<b>断开 {{email}}？</b>该账户的邮件、标签和本地提醒将从这台电脑上的 Naushen Mail 中移除。{{provider}} 上不会删除任何内容。"
+      "disconnectConfirm": "<b>断开 {{email}}？</b>该账户的邮件、标签和本地提醒将从这台电脑上的 Naushen Mail 中移除。{{provider}} 上不会删除任何内容。",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -102,7 +125,9 @@
     "secretHint": "Google 将桌面应用的密钥视为非机密信息，但令牌端点仍然需要它。",
     "hideSecret": "隐藏密钥",
     "showSecret": "显示密钥",
-    "google": { "title": "Google（Gmail）" },
+    "google": {
+      "title": "Google（Gmail）"
+    },
     "wizard": {
       "project": {
         "title": "创建 Google Cloud 项目",
@@ -171,12 +196,31 @@
     "builtWith": "构建于",
     "openSource": "开源软件，按其各自的许可证使用。",
     "links": {
-      "setup": { "label": "服务商设置指南", "desc": "连接 Gmail", "desc_outlook": "连接 Gmail 和 Outlook" },
-      "decisions": { "label": "决策与架构", "desc": "技术栈、取舍、完成标准" },
-      "design": { "label": "设计系统", "desc": "设计令牌、字体、动效" },
-      "privacy": { "label": "隐私政策", "desc": "Naushen Mail 存储什么、存在哪里" },
-      "issues": { "label": "报告问题", "desc": "在 GitHub 上提交缺陷和想法" },
-      "source": { "label": "源代码", "desc": "GitHub 上的 Naushen Mail" }
+      "setup": {
+        "label": "服务商设置指南",
+        "desc": "连接 Gmail",
+        "desc_outlook": "连接 Gmail 和 Outlook"
+      },
+      "decisions": {
+        "label": "决策与架构",
+        "desc": "技术栈、取舍、完成标准"
+      },
+      "design": {
+        "label": "设计系统",
+        "desc": "设计令牌、字体、动效"
+      },
+      "privacy": {
+        "label": "隐私政策",
+        "desc": "Naushen Mail 存储什么、存在哪里"
+      },
+      "issues": {
+        "label": "报告问题",
+        "desc": "在 GitHub 上提交缺陷和想法"
+      },
+      "source": {
+        "label": "源代码",
+        "desc": "GitHub 上的 Naushen Mail"
+      }
     }
   },
   "appearance": {
@@ -197,16 +241,33 @@
     "theme": {
       "label": "主题",
       "desc": "跟随 macOS，或选择浅色或深色。更改会立即生效。",
-      "light": "浅色", "dark": "深色", "system": "跟随系统"
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
     },
     "density": {
       "label": "密度",
-      "comfortable": { "label": "舒适", "desc": "列表、边栏和阅读区留有更多空间" },
-      "compact": { "label": "紧凑", "desc": "行距更小，屏幕上显示更多会话" }
+      "comfortable": {
+        "label": "舒适",
+        "desc": "列表、边栏和阅读区留有更多空间"
+      },
+      "compact": {
+        "label": "紧凑",
+        "desc": "行距更小，屏幕上显示更多会话"
+      }
     },
-    "accent": { "label": "强调色", "desc": "用于选中、焦点、未读圆点和主要按钮。" },
+    "accent": {
+      "label": "强调色",
+      "desc": "用于选中、焦点、未读圆点和主要按钮。"
+    },
     "accents": {
-      "blue": "蓝色", "violet": "紫罗兰", "pink": "粉色", "orange": "橙色", "green": "绿色", "teal": "青色", "neutral": "中性"
+      "blue": "蓝色",
+      "violet": "紫罗兰",
+      "pink": "粉色",
+      "orange": "橙色",
+      "green": "绿色",
+      "teal": "青色",
+      "neutral": "中性"
     },
     "counts": {
       "label": "未读数显示",
@@ -215,17 +276,35 @@
       "exact": "精确数字"
     },
     "threadStyle": {
-      "side": { "label": "侧边预览", "desc": "从右侧滑出，覆盖在列表上" },
-      "center": { "label": "居中预览", "desc": "列表上方的居中弹窗" },
-      "full": { "label": "整页", "desc": "打开时取代列表" }
+      "side": {
+        "label": "侧边预览",
+        "desc": "从右侧滑出，覆盖在列表上"
+      },
+      "center": {
+        "label": "居中预览",
+        "desc": "列表上方的居中弹窗"
+      },
+      "full": {
+        "label": "整页",
+        "desc": "打开时取代列表"
+      }
     },
     "listCount": {
       "label": "在视图标题旁显示邮件数量",
       "desc": "在标题（收件箱、分类等）右侧显示当前列表中的会话数量。默认关闭。"
     },
-    "groupByDate": { "label": "按日期分组", "desc": "将会话归入今天、昨天、过去 7 天等分组下。" },
-    "markRead": { "label": "打开时标为已读", "desc": "打开会话后，它会立即变为已读。" },
-    "remoteImages": { "label": "阻止远程图片", "desc": "邮件中的图片仅在你允许时才会载入，以防追踪像素。" },
+    "groupByDate": {
+      "label": "按日期分组",
+      "desc": "将会话归入今天、昨天、过去 7 天等分组下。"
+    },
+    "markRead": {
+      "label": "打开时标为已读",
+      "desc": "打开会话后，它会立即变为已读。"
+    },
+    "remoteImages": {
+      "label": "阻止远程图片",
+      "desc": "邮件中的图片仅在你允许时才会载入，以防追踪像素。"
+    },
     "hideCategories": {
       "label": "在收件箱中隐藏推广/社交/动态/论坛邮件",
       "desc": "仅限 Gmail。让收件箱只保留“主要”邮件，其余邮件仍可在边栏的“分类”中一键查看。默认关闭，开启前不会有任何变化。"
@@ -234,16 +313,24 @@
       "label": "显示头像",
       "desc": "通过 Gravatar 在会话列表和阅读区显示发件人和收件人的照片。默认关闭，因为这会为每位联系人多请求一次外部服务。"
     },
-    "swipe": { "label": "轻扫手势", "desc": "在会话上用双指轻扫：向左归档，向右设置提醒。仅限触控板。" },
+    "swipe": {
+      "label": "轻扫手势",
+      "desc": "在会话上用双指轻扫：向左归档，向右设置提醒。仅限触控板。"
+    },
     "autoAdvance": {
       "label": "自动前进",
       "desc": "归档、删除或延后当前会话后跳转到哪里。",
-      "next": "下一个", "previous": "上一个", "close": "关闭"
+      "next": "下一个",
+      "previous": "上一个",
+      "close": "关闭"
     }
   },
   "sending": {
     "title": "发送与通知",
-    "groups": { "sending": "发送", "notifications": "通知" },
+    "groups": {
+      "sending": "发送",
+      "notifications": "通知"
+    },
     "undo": {
       "label": "撤销发送",
       "desc": "点按“发送”后将邮件暂留片刻，以便你收回。",
@@ -254,17 +341,29 @@
     "notifications": {
       "label": "桌面通知",
       "desc": "收件箱收到新邮件时显示 macOS 通知。连续到达的邮件会合并为一条；正在查看该收件箱时不会提醒。",
-      "off": "关闭", "all": "所有新邮件", "people": "仅限联系人"
+      "off": "关闭",
+      "all": "所有新邮件",
+      "people": "仅限联系人"
     },
-    "dock": { "label": "程序坞标记", "desc": "在程序坞图标上显示收件箱未读邮件数量。" }
+    "dock": {
+      "label": "程序坞标记",
+      "desc": "在程序坞图标上显示收件箱未读邮件数量。"
+    }
   },
   "shortcuts": {
     "title": "键盘快捷键",
     "description": "Naushen Mail 专为键盘操作而设计。目前快捷键是固定的。",
     "viewAll": "查看所有快捷键",
     "names": {
-      "commandMenu": "命令菜单", "compose": "写邮件", "archive": "归档", "reply": "回复", "reminder": "设置提醒",
-      "label": "标签", "search": "搜索", "undo": "撤销", "all": "显示所有快捷键"
+      "commandMenu": "命令菜单",
+      "compose": "写邮件",
+      "archive": "归档",
+      "reply": "回复",
+      "reminder": "设置提醒",
+      "label": "标签",
+      "search": "搜索",
+      "undo": "撤销",
+      "all": "显示所有快捷键"
     }
   },
   "labels": {
@@ -300,8 +399,15 @@
     "delete": "删除",
     "deleteConfirm": "<b>删除视图“{{name}}”？</b>你的邮件不受影响。",
     "role": {
-      "inbox": "收件箱", "sent": "已发送", "drafts": "草稿", "trash": "废纸篓", "spam": "垃圾邮件", "archive": "归档",
-      "starred": "星标", "important": "重要", "all": "所有邮件"
+      "inbox": "收件箱",
+      "sent": "已发送",
+      "drafts": "草稿",
+      "trash": "废纸篓",
+      "spam": "垃圾邮件",
+      "archive": "归档",
+      "starred": "星标",
+      "important": "重要",
+      "all": "所有邮件"
     },
     "filter": {
       "reminders": "提醒",
@@ -372,10 +478,22 @@
     "templatesIntro": "从常见版式开始，然后像编辑签名的其他部分一样修改占位文字。",
     "templatesAria": "签名模板",
     "templates": {
-      "minimal": { "label": "极简", "description": "只有姓名和职位，没有照片。" },
-      "photo-left": { "label": "照片居左", "description": "圆形照片位于姓名、职位和邮箱旁。" },
-      "compact": { "label": "紧凑", "description": "姓名、职位和电话排成一行。" },
-      "classic": { "label": "经典区块", "description": "姓名、职位、公司，然后是分隔线和联系方式。" }
+      "minimal": {
+        "label": "极简",
+        "description": "只有姓名和职位，没有照片。"
+      },
+      "photo-left": {
+        "label": "照片居左",
+        "description": "圆形照片位于姓名、职位和邮箱旁。"
+      },
+      "compact": {
+        "label": "紧凑",
+        "description": "姓名、职位和电话排成一行。"
+      },
+      "classic": {
+        "label": "经典区块",
+        "description": "姓名、职位、公司，然后是分隔线和联系方式。"
+      }
     },
     "replaceConfirm": "用<b>{{name}}</b>替换当前签名？此操作无法撤销。",
     "replace": "替换",

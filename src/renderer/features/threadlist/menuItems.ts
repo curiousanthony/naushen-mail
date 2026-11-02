@@ -29,6 +29,7 @@ export function buildRowMenu(t: Pick<Thread, 'unread' | 'starred' | 'muted'>, ro
   out.push({ id: 'label', label: tr('menu.label'), icon: 'tag', cmd: 'thread.label', shortcut: 'L' })
   out.push({ id: 'move', label: tr('menu.moveTo'), icon: 'folder', cmd: 'thread.move', shortcut: 'V' })
   out.push({ id: 'mute', label: t.muted ? tr('menu.unmute') : tr('menu.mute'), icon: 'bell-off', cmd: 'thread.mute', shortcut: 'M' })
+  out.push({ id: 'rule', label: tr('menu.createRule'), icon: 'rule', cmd: 'rule.create', sep: true })
   if (role !== 'spam' && role !== 'trash') out.push({ id: 'spam', label: tr('menu.reportSpam'), icon: 'spam', cmd: 'thread.spam', shortcut: '!', sep: true })
   out.push({ id: 'trash', label: tr('menu.delete'), icon: 'trash', cmd: 'thread.trash', shortcut: '#', danger: true, sep: role === 'spam' || role === 'trash' })
   return out

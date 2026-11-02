@@ -27,6 +27,8 @@ export interface Account {
   syncCursor: string | null
   lastSyncAt: number | null
   status: 'ok' | 'syncing' | 'error' | 'reauth'
+  /** When the user last completed the OAuth consent (Gmail apps in Google's "Testing" mode expire 7 days after). */
+  authorizedAt?: number
   statusMessage?: string
 }
 
@@ -189,6 +191,8 @@ export interface ThreadFilter {
   /** Conversation length bounds (messages). Single message = max 1; conversation = min 2. */
   minMessages?: number
   maxMessages?: number
+  /** A real back-and-forth: messages from at least two different senders (not just repeated mail from one). */
+  conversation?: boolean
   /** 'snoozed': snoozed right now. 'reminder': has a "remind if no reply" set. 'any': either. 'none': neither. */
   reminderState?: 'snoozed' | 'reminder' | 'any' | 'none'
 }
@@ -272,12 +276,20 @@ export interface Draft extends Omit<OutgoingMessage, 'html' | 'text'> {
   updatedAt: number
 }
 
+/** Gmail OAuth apps left in Google's "Testing" mode lose their refresh token 7 days after consent. */
+export const GMAIL_TESTING_TOKEN_MS = 7 * 86_400_000
+export function authExpiresAt(a: Pick<Account, 'provider' | 'authorizedAt'>): number | null {
+  return a.provider === 'gmail' && a.authorizedAt ? a.authorizedAt + GMAIL_TESTING_TOKEN_MS : null
+}
+
 export interface ScheduledSend {
   id: string
   message: OutgoingMessage
   sendAt: number
   status: 'pending' | 'sent' | 'failed' | 'cancelled'
   error?: string
+  /** When it was last sent or last failed (shown in the Outbox list). */
+  doneAt?: number
 }
 
 // ---------------------------------------------------------------- Settings

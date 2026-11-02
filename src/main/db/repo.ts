@@ -40,11 +40,15 @@ export class Repo {
 
   // ------------------------------------------------------------ accounts
   listAccounts(): Account[] {
-    return (this.db.prepare('SELECT * FROM accounts ORDER BY created_at').all() as Row[]).map(rowToAccount)
+    return (this.db.prepare('SELECT * FROM accounts ORDER BY created_at').all() as Row[]).map((r) => this.withAuth(rowToAccount(r)))
   }
   getAccount(id: string): Account | null {
     const r = this.db.prepare('SELECT * FROM accounts WHERE id = ?').get(id) as Row | undefined
-    return r ? rowToAccount(r) : null
+    return r ? this.withAuth(rowToAccount(r)) : null
+  }
+  private withAuth(a: Account): Account {
+    const at = Number(this.kvGet(`authorizedAt:${a.id}`))
+    return at > 0 ? { ...a, authorizedAt: at } : a
   }
   upsertAccount(a: Account): void {
     this.db.prepare(
@@ -329,6 +333,9 @@ export class Repo {
     if (f.lastFrom) {
       const lastMine = `EXISTS (SELECT 1 FROM messages m WHERE m.id = (SELECT m2.id FROM messages m2 WHERE m2.thread_id = t.id AND m2.is_draft = 0 ORDER BY m2.date DESC, m2.id DESC LIMIT 1) AND ${meIn('m.from_json')})`
       w.push(f.lastFrom === 'me' ? lastMine : `NOT ${lastMine}`)
+    }
+    if (f.conversation) {
+      w.push(`(SELECT COUNT(DISTINCT lower(json_extract(m.from_json, '$.email'))) FROM messages m WHERE m.thread_id = t.id AND m.is_draft = 0) >= 2`)
     }
     if (f.minMessages) { w.push('t.message_count >= ?'); p.push(f.minMessages) }
     if (f.maxMessages) { w.push('t.message_count <= ?'); p.push(f.maxMessages) }

@@ -26,7 +26,9 @@
     "trashed": "ट्रैश में ले जाया गया",
     "noSubject": "(कोई विषय नहीं)",
     "messageCount_one": "{{count}} संदेश",
-    "messageCount_other": "{{count}} संदेश"
+    "messageCount_other": "{{count}} संदेश",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "जवाब दें",

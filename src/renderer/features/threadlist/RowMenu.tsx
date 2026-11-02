@@ -1,12 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
-  AlarmClock, Archive, BellOff, FolderInput, Inbox, Mail, MailOpen, ShieldAlert, Star, Tag, Trash2, type LucideIcon
+  AlarmClock, Archive, BellOff, FolderInput, Inbox, Mail, MailOpen, ShieldAlert, SlidersHorizontal, Star, Tag, Trash2, type LucideIcon
 } from 'lucide-react'
 import type { RowMenuItem } from './menuItems'
 
 const ICONS: Record<string, LucideIcon> = {
   archive: Archive, inbox: Inbox, mail: Mail, 'mail-open': MailOpen, star: Star, clock: AlarmClock,
-  tag: Tag, folder: FolderInput, 'bell-off': BellOff, spam: ShieldAlert, trash: Trash2
+  tag: Tag, folder: FolderInput, 'bell-off': BellOff, spam: ShieldAlert, rule: SlidersHorizontal, trash: Trash2
 }
 
 export interface RowMenuProps {

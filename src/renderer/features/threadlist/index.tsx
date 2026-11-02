@@ -12,6 +12,7 @@ import { FilterBar } from './FilterBar'
 import { EmptyTrashButton } from './EmptyTrash'
 import { BulkBar } from './BulkBar'
 import { RowMenu } from './RowMenu'
+import { openRuleForThread } from '@/features/rules/actions'
 import { buildRowMenu, type RowMenuItem } from './menuItems'
 import { TitleGlyph, titleIconFor } from './titleIcon'
 import { readShowListCount } from './listPrefs'
@@ -28,6 +29,8 @@ import {
 import { useListFlip } from './useListFlip'
 import { EmptyState, Skeleton } from './EmptyState'
 import './threadlist.css'
+import './outbox.css'
+import { OutboxPanel } from './OutboxPanel'
 
 /**
  * Row geometry must agree with threadlist.css, because the windowing maths below measures
@@ -152,6 +155,7 @@ export function ThreadList(): JSX.Element {
     // Commands act on selection > open thread > cursor. Right-clicking a row outside the current
     // selection (or beside the open thread) must act on that row alone, so target it explicitly
     // and put the previous selection back once the action / picker is done.
+    if (item.cmd === 'rule.create') { void openRuleForThread(id); return }
     const st = useApp.getState()
     const before = st.selectedIds
     const inSel = before.length > 1 && before.includes(id)
@@ -271,6 +275,7 @@ export function ThreadList(): JSX.Element {
         {nav.kind === 'role' && nav.role === 'trash' && <EmptyTrashButton />}
         <FilterBar labels={userLabels} showGroupToggle={nav.kind !== 'categories'} />
       </header>
+      <OutboxPanel full={nav.kind === 'role' && nav.role === 'drafts'} />
 
       <div
         className="tl__scroll" ref={scroller} onScroll={onScroll}

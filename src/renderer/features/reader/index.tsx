@@ -1,3 +1,4 @@
+import { useLayers } from '@/lib/layers'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ThreadWithMessages } from '@shared/types'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +27,7 @@ export function Reader(): JSX.Element | null {
   const labels = useApp((s) => s.labels)
   const overlay = useApp((s) => s.overlay)
   const composers = useApp((s) => s.composers)
+  const top = useLayers((s) => s.top)
 
   const [thread, setThread] = useState<ThreadWithMessages | null>(null)
   const [loading, setLoading] = useState(false)
@@ -215,9 +217,20 @@ export function Reader(): JSX.Element | null {
   )
 
   if (style === 'center') {
+    // With a composer open, the reader is just another window: it rises above the composer when
+    // clicked (z 50 > composers' 40+), and its scrim lets clicks through so the composer stays reachable.
+    const raised = composers.length > 0 && top === 'reader'
     return (
-      <div className="reader__backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}>
-        <div className="reader reader--centre" role="dialog" aria-modal="true" aria-label={thread?.subject || t('thread.fallbackTitle')} ref={rootRef}>
+      <div
+        className="reader__backdrop"
+        style={composers.length ? { zIndex: raised ? 50 : 20, pointerEvents: raised ? 'none' : undefined } : undefined}
+        onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}
+      >
+        <div
+          className="reader reader--centre" role="dialog" aria-modal="true" aria-label={thread?.subject || t('thread.fallbackTitle')} ref={rootRef}
+          style={raised ? { pointerEvents: 'auto' } : undefined}
+          onPointerDownCapture={() => useLayers.getState().raise('reader')}
+        >
           {body}
         </div>
       </div>

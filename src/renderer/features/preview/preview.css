@@ -5,7 +5,7 @@
 .preview {
   position: fixed;
   z-index: 1100;
-  width: 340px;
+  width: 400px;
   max-width: calc(100vw - 16px);
   padding: 12px 14px;
   border-radius: var(--radius-lg);
@@ -164,4 +164,16 @@
 @keyframes preview-in {
   from { opacity: 0; transform: translateY(2px); }
   to { opacity: 1; transform: none; }
+}
+
+.preview__excerpt {
+  margin: 0 0 4px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 12;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }

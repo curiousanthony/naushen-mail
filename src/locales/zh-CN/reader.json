@@ -25,7 +25,9 @@
     "trash": "移到废纸篓",
     "trashed": "已移到废纸篓",
     "noSubject": "（无主题）",
-    "messageCount_other": "{{count}} 封邮件"
+    "messageCount_other": "{{count}} 封邮件",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "回复",

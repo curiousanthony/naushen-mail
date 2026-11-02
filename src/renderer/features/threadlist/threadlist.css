@@ -448,6 +448,9 @@
   white-space: nowrap;
 }
 .trow[data-unread='true'] .trow__time { color: var(--c-text-2); font-weight: 500; }
+/* The hover Star action already says "starred" (it is filled), so the row's own star steps aside. */
+.trow:hover .trow__starred,
+.trow:focus-within .trow__starred { display: none; }
 .trow__actions { display: none; align-items: center; gap: 4px; }
 .trow:hover .trow__time,
 .trow:focus-within .trow__time { display: none; }

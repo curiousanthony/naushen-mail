@@ -57,6 +57,12 @@
   },
   "defaultViews": {
     "unread": "Непрочитанные",
-    "attachments": "С вложениями"
+    "attachments": "С вложениями",
+    "conversations": "Conversations"
+  },
+  "authNotice": {
+    "expired": "{{email}} needs to be reauthorized before it can send or sync.",
+    "soon": "Authorization for {{email}} expires {{when}}.",
+    "reauthorize": "Reauthorize"
   }
 }

@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "Konto", "mail": "E-Mail", "app": "App" },
+    "group": {
+      "account": "Konto",
+      "mail": "E-Mail",
+      "app": "App"
+    },
     "accounts": "Konten",
     "appearance": "Darstellung & Posteingang",
     "signature": "Signatur",
@@ -27,11 +31,20 @@
     "cancel": "Abbrechen",
     "labelColour": "Labelfarbe",
     "colors": {
-      "gray": "Grau", "brown": "Braun", "orange": "Orange", "yellow": "Gelb", "green": "Grün",
-      "blue": "Blau", "purple": "Lila", "pink": "Rosa", "red": "Rot"
+      "gray": "Grau",
+      "brown": "Braun",
+      "orange": "Orange",
+      "yellow": "Gelb",
+      "green": "Grün",
+      "blue": "Blau",
+      "purple": "Lila",
+      "pink": "Rosa",
+      "red": "Rot"
     }
   },
-  "providers": { "demo": "Demo" },
+  "providers": {
+    "demo": "Demo"
+  },
   "store": {
     "darwin": "macOS-Schlüsselbund",
     "win32": "Windows-Anmeldeinformationsverwaltung/DPAPI",
@@ -68,9 +81,18 @@
     "openAdvanced": "Erweiterte Google-Client-Einstellungen öffnen",
     "connected": "{{email}} verbunden",
     "providers": {
-      "gmail": { "title": "Gmail verbinden", "sub": "Google-Konto" },
-      "outlook": { "title": "Outlook verbinden", "sub": "Microsoft-Konto" },
-      "mock": { "title": "Demo-Konto hinzufügen", "sub": "Beispiel-Mails, offline" }
+      "gmail": {
+        "title": "Gmail verbinden",
+        "sub": "Google-Konto"
+      },
+      "outlook": {
+        "title": "Outlook verbinden",
+        "sub": "Microsoft-Konto"
+      },
+      "mock": {
+        "title": "Demo-Konto hinzufügen",
+        "sub": "Beispiel-Mails, offline"
+      }
     },
     "status": {
       "syncing": "Synchronisiere…",
@@ -85,7 +107,8 @@
       "reauthorize": "Erneut autorisieren",
       "syncNow": "Jetzt synchronisieren",
       "disconnect": "Trennen",
-      "disconnectConfirm": "<b>{{email}} trennen?</b> E-Mails, Labels und lokale Erinnerungen dieses Kontos werden aus Naushen Mail auf diesem Computer entfernt. Bei {{provider}} wird nichts gelöscht."
+      "disconnectConfirm": "<b>{{email}} trennen?</b> E-Mails, Labels und lokale Erinnerungen dieses Kontos werden aus Naushen Mail auf diesem Computer entfernt. Bei {{provider}} wird nichts gelöscht.",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -103,7 +126,9 @@
     "secretHint": "Google stuft das Secret einer Desktop-App als nicht vertraulich ein, der Token-Endpunkt verlangt es aber trotzdem.",
     "hideSecret": "Secret verbergen",
     "showSecret": "Secret anzeigen",
-    "google": { "title": "Google (Gmail)" },
+    "google": {
+      "title": "Google (Gmail)"
+    },
     "wizard": {
       "project": {
         "title": "Google-Cloud-Projekt erstellen",
@@ -172,12 +197,31 @@
     "builtWith": "Entwickelt mit",
     "openSource": "Open-Source-Software, verwendet unter den jeweiligen Lizenzen.",
     "links": {
-      "setup": { "label": "Anleitung zur Anbieter-Einrichtung", "desc": "Gmail verbinden", "desc_outlook": "Gmail und Outlook verbinden" },
-      "decisions": { "label": "Entscheidungen & Architektur", "desc": "Stack, Abwägungen, Definition of Done" },
-      "design": { "label": "Designsystem", "desc": "Tokens, Schrift, Bewegung" },
-      "privacy": { "label": "Datenschutzerklärung", "desc": "Was Naushen Mail speichert und wo" },
-      "issues": { "label": "Problem melden", "desc": "Fehler und Ideen auf GitHub" },
-      "source": { "label": "Quellcode", "desc": "Naushen Mail auf GitHub" }
+      "setup": {
+        "label": "Anleitung zur Anbieter-Einrichtung",
+        "desc": "Gmail verbinden",
+        "desc_outlook": "Gmail und Outlook verbinden"
+      },
+      "decisions": {
+        "label": "Entscheidungen & Architektur",
+        "desc": "Stack, Abwägungen, Definition of Done"
+      },
+      "design": {
+        "label": "Designsystem",
+        "desc": "Tokens, Schrift, Bewegung"
+      },
+      "privacy": {
+        "label": "Datenschutzerklärung",
+        "desc": "Was Naushen Mail speichert und wo"
+      },
+      "issues": {
+        "label": "Problem melden",
+        "desc": "Fehler und Ideen auf GitHub"
+      },
+      "source": {
+        "label": "Quellcode",
+        "desc": "Naushen Mail auf GitHub"
+      }
     }
   },
   "appearance": {
@@ -198,16 +242,33 @@
     "theme": {
       "label": "Erscheinungsbild",
       "desc": "Folge macOS oder wähle Hell oder Dunkel. Änderungen gelten sofort.",
-      "light": "Hell", "dark": "Dunkel", "system": "System"
+      "light": "Hell",
+      "dark": "Dunkel",
+      "system": "System"
     },
     "density": {
       "label": "Dichte",
-      "comfortable": { "label": "Komfortabel", "desc": "Mehr Luft in Liste, Seitenleiste und Leseansicht" },
-      "compact": { "label": "Kompakt", "desc": "Engere Zeilen — mehr Unterhaltungen auf dem Bildschirm" }
+      "comfortable": {
+        "label": "Komfortabel",
+        "desc": "Mehr Luft in Liste, Seitenleiste und Leseansicht"
+      },
+      "compact": {
+        "label": "Kompakt",
+        "desc": "Engere Zeilen — mehr Unterhaltungen auf dem Bildschirm"
+      }
     },
-    "accent": { "label": "Akzentfarbe", "desc": "Auswahl, Fokus, Punkte für Ungelesenes und primäre Schaltflächen." },
+    "accent": {
+      "label": "Akzentfarbe",
+      "desc": "Auswahl, Fokus, Punkte für Ungelesenes und primäre Schaltflächen."
+    },
     "accents": {
-      "blue": "Blau", "violet": "Violett", "pink": "Rosa", "orange": "Orange", "green": "Grün", "teal": "Türkis", "neutral": "Neutral"
+      "blue": "Blau",
+      "violet": "Violett",
+      "pink": "Rosa",
+      "orange": "Orange",
+      "green": "Grün",
+      "teal": "Türkis",
+      "neutral": "Neutral"
     },
     "counts": {
       "label": "Anzeige ungelesener Mails",
@@ -216,17 +277,35 @@
       "exact": "Genaue Anzahl"
     },
     "threadStyle": {
-      "side": { "label": "Seitliche Vorschau", "desc": "Öffnet sich rechts über der Liste" },
-      "center": { "label": "Zentrierte Vorschau", "desc": "Ein zentriertes Fenster über der Liste" },
-      "full": { "label": "Ganze Seite", "desc": "Ersetzt die Liste, solange sie geöffnet ist" }
+      "side": {
+        "label": "Seitliche Vorschau",
+        "desc": "Öffnet sich rechts über der Liste"
+      },
+      "center": {
+        "label": "Zentrierte Vorschau",
+        "desc": "Ein zentriertes Fenster über der Liste"
+      },
+      "full": {
+        "label": "Ganze Seite",
+        "desc": "Ersetzt die Liste, solange sie geöffnet ist"
+      }
     },
     "listCount": {
       "label": "Anzahl der Mails neben dem Ansichtstitel anzeigen",
       "desc": "Zeigt rechts neben dem Titel (Posteingang, Kategorien, …) an, wie viele Unterhaltungen die aktuelle Liste enthält. Standardmäßig aus."
     },
-    "groupByDate": { "label": "Nach Datum gruppieren", "desc": "Unterhaltungen unter Heute, Gestern, Letzte 7 Tage usw. gruppieren." },
-    "markRead": { "label": "Beim Öffnen als gelesen markieren", "desc": "Eine Unterhaltung gilt als gelesen, sobald du sie öffnest." },
-    "remoteImages": { "label": "Externe Bilder blockieren", "desc": "Bilder in E-Mails werden nur geladen, wenn du es erlaubst. Schützt vor Tracking-Pixeln." },
+    "groupByDate": {
+      "label": "Nach Datum gruppieren",
+      "desc": "Unterhaltungen unter Heute, Gestern, Letzte 7 Tage usw. gruppieren."
+    },
+    "markRead": {
+      "label": "Beim Öffnen als gelesen markieren",
+      "desc": "Eine Unterhaltung gilt als gelesen, sobald du sie öffnest."
+    },
+    "remoteImages": {
+      "label": "Externe Bilder blockieren",
+      "desc": "Bilder in E-Mails werden nur geladen, wenn du es erlaubst. Schützt vor Tracking-Pixeln."
+    },
     "hideCategories": {
       "label": "Werbung/Soziale Netzwerke/Updates/Foren im Posteingang ausblenden",
       "desc": "Nur Gmail. Hält den Posteingang auf „Primär“; der Rest bleibt in der Seitenleiste unter „Kategorien“ nur einen Klick entfernt. Standardmäßig aus — es ändert sich nichts, bis du das aktivierst."
@@ -235,16 +314,24 @@
       "label": "Avatare anzeigen",
       "desc": "Fotos von Absendern und Empfängern in Liste und Leseansicht, über Gravatar. Standardmäßig aus — Notion Mail zeigte sie auch nicht, und es ist ein weiterer Kontakt zu einem externen Dienst pro Person."
     },
-    "swipe": { "label": "Wischgesten", "desc": "Zwei-Finger-Wischen auf einer Unterhaltung: nach links archiviert, nach rechts setzt eine Erinnerung. Nur Trackpads." },
+    "swipe": {
+      "label": "Wischgesten",
+      "desc": "Zwei-Finger-Wischen auf einer Unterhaltung: nach links archiviert, nach rechts setzt eine Erinnerung. Nur Trackpads."
+    },
     "autoAdvance": {
       "label": "Automatisch weiter",
       "desc": "Wohin es geht, nachdem du die geöffnete Unterhaltung archiviert, gelöscht oder zurückgestellt hast.",
-      "next": "Nächste", "previous": "Vorherige", "close": "Schließen"
+      "next": "Nächste",
+      "previous": "Vorherige",
+      "close": "Schließen"
     }
   },
   "sending": {
     "title": "Senden & Mitteilungen",
-    "groups": { "sending": "Senden", "notifications": "Mitteilungen" },
+    "groups": {
+      "sending": "Senden",
+      "notifications": "Mitteilungen"
+    },
     "undo": {
       "label": "Senden rückgängig machen",
       "desc": "Hält jede Nachricht nach dem Klick auf „Senden“ kurz zurück, damit du sie zurückholen kannst.",
@@ -255,17 +342,29 @@
     "notifications": {
       "label": "Mitteilungen auf dem Schreibtisch",
       "desc": "Zeigt eine macOS-Mitteilung, wenn neue Mails im Posteingang eintreffen. Mehrere werden zu einer zusammengefasst; solange du diesen Posteingang ansiehst, erscheint nichts.",
-      "off": "Aus", "all": "Alle neuen Mails", "people": "Nur von Personen"
+      "off": "Aus",
+      "all": "Alle neuen Mails",
+      "people": "Nur von Personen"
     },
-    "dock": { "label": "Dock-Badge", "desc": "Zeigt die Anzahl ungelesener Posteingang-Nachrichten am Dock-Symbol an." }
+    "dock": {
+      "label": "Dock-Badge",
+      "desc": "Zeigt die Anzahl ungelesener Posteingang-Nachrichten am Dock-Symbol an."
+    }
   },
   "shortcuts": {
     "title": "Tastaturkürzel",
     "description": "Naushen Mail ist für die Bedienung per Tastatur gemacht. Die Kürzel sind vorerst fest vorgegeben.",
     "viewAll": "Alle Kürzel anzeigen",
     "names": {
-      "commandMenu": "Befehlsmenü", "compose": "Verfassen", "archive": "Archivieren", "reply": "Antworten", "reminder": "Erinnerung setzen",
-      "label": "Label", "search": "Suchen", "undo": "Widerrufen", "all": "Alle Kürzel anzeigen"
+      "commandMenu": "Befehlsmenü",
+      "compose": "Verfassen",
+      "archive": "Archivieren",
+      "reply": "Antworten",
+      "reminder": "Erinnerung setzen",
+      "label": "Label",
+      "search": "Suchen",
+      "undo": "Widerrufen",
+      "all": "Alle Kürzel anzeigen"
     }
   },
   "labels": {
@@ -302,8 +401,15 @@
     "delete": "Löschen",
     "deleteConfirm": "<b>Die Ansicht „{{name}}“ löschen?</b> Deine E-Mails bleiben unberührt.",
     "role": {
-      "inbox": "Posteingang", "sent": "Gesendet", "drafts": "Entwürfe", "trash": "Papierkorb", "spam": "Spam", "archive": "Archiv",
-      "starred": "Markiert", "important": "Wichtig", "all": "Alle E-Mails"
+      "inbox": "Posteingang",
+      "sent": "Gesendet",
+      "drafts": "Entwürfe",
+      "trash": "Papierkorb",
+      "spam": "Spam",
+      "archive": "Archiv",
+      "starred": "Markiert",
+      "important": "Wichtig",
+      "all": "Alle E-Mails"
     },
     "filter": {
       "reminders": "Erinnerungen",
@@ -376,10 +482,22 @@
     "templatesIntro": "Starte mit einem gängigen Layout und bearbeite den Platzhaltertext wie jeden anderen Teil der Signatur.",
     "templatesAria": "Signaturvorlagen",
     "templates": {
-      "minimal": { "label": "Minimal", "description": "Nur Name und Position — ohne Foto." },
-      "photo-left": { "label": "Foto links", "description": "Ein rundes Foto neben Name, Position und E-Mail." },
-      "compact": { "label": "Kompakt", "description": "Name, Position und Telefon in einer Zeile." },
-      "classic": { "label": "Klassischer Block", "description": "Name, Position, Firma, eine Trennlinie, dann Kontaktdaten." }
+      "minimal": {
+        "label": "Minimal",
+        "description": "Nur Name und Position — ohne Foto."
+      },
+      "photo-left": {
+        "label": "Foto links",
+        "description": "Ein rundes Foto neben Name, Position und E-Mail."
+      },
+      "compact": {
+        "label": "Kompakt",
+        "description": "Name, Position und Telefon in einer Zeile."
+      },
+      "classic": {
+        "label": "Klassischer Block",
+        "description": "Name, Position, Firma, eine Trennlinie, dann Kontaktdaten."
+      }
     },
     "replaceConfirm": "Deine aktuelle Signatur durch <b>{{name}}</b> ersetzen? Das lässt sich nicht rückgängig machen.",
     "replace": "Ersetzen",

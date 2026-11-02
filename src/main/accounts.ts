@@ -45,6 +45,7 @@ export async function connectAccount(kind: ProviderKind, repo: Repo, engine: Syn
   const { account, adapter } = await connector.connect({ repo })
   const acc = { ...account, color: account.color || COLORS[repo.listAccounts().length % COLORS.length] }
   repo.upsertAccount(acc)
+  repo.kvSet(`authorizedAt:${acc.id}`, String(Date.now()))
   engine.register(adapter)
   await engine.syncAccount(acc.id)
   return repo.getAccount(acc.id)!

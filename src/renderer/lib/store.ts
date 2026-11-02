@@ -149,6 +149,9 @@ function saveLastAccount(id: string): void {
   try { globalThis.localStorage?.setItem(LAST_ACCOUNT_KEY, id) } catch { /* ignore */ }
 }
 
+/** Outbox ids the user retried: their eventual success is announced (it otherwise happens silently). */
+export const retriedSends = new Set<string>()
+
 export const useApp = create<AppState>((set, get) => ({
   ready: false, accounts: [], labels: [], views: [], settings: DEFAULT_SETTINGS, counts: { unread: {} },
   accountId: loadLastAccount(), nav: { kind: 'role', role: 'inbox' }, threads: [], total: 0, loading: false,
@@ -163,12 +166,15 @@ export const useApp = create<AppState>((set, get) => ({
     await get().refreshThreads()
     set({ ready: true })
     window.api.onEvent((e) => {
+      if (e.type === 'outbox' && e.status === 'sent' && retriedSends.delete(e.id)) {
+        get().toast({ message: i18n.t('common:toast.sent'), duration: 3000 })
+      }
       if (e.type === 'outbox' && e.status === 'failed') {
         get().toast({
           message: e.error ? i18n.t('common:toast.sendFailedWithReason', { error: e.error }) : i18n.t('common:toast.sendFailed'),
           actionLabel: i18n.t('common:actions.retry'),
           duration: 0, // sticky: a swallowed send failure is exactly what must never go unnoticed
-          onAction: () => void window.api.invoke('compose.retry', e.id)
+          onAction: () => { retriedSends.add(e.id); void window.api.invoke('compose.retry', e.id) }
         })
       }
       // Coalesce bursts of sync events.

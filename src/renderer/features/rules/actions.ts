@@ -36,7 +36,11 @@ export const useRuleUi = create<{ seed: RuleSeed | null; open(seed: RuleSeed): v
 
 /** `⌘⇧R` / palette: open the rule popover pre-filled from the open or focused thread. */
 export async function openRuleForFocused(): Promise<void> {
-  const id = S().openThreadId ?? S().focusedId
+  return openRuleForThread(S().openThreadId ?? S().focusedId)
+}
+
+/** Open the rule popover for a specific thread (e.g. the right-clicked row), without opening it. */
+export async function openRuleForThread(id: string | null): Promise<void> {
   if (!id) return
   const t = await window.api.invoke('threads.get', id)
   const me = S().accounts.find((a) => a.id === t?.accountId)?.email ?? ''

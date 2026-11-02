@@ -1,6 +1,10 @@
 {
   "nav": {
-    "group": { "account": "Account", "mail": "Mail", "app": "App" },
+    "group": {
+      "account": "Account",
+      "mail": "Mail",
+      "app": "App"
+    },
     "accounts": "Accounts",
     "appearance": "Appearance & inbox",
     "signature": "Signature",
@@ -27,11 +31,20 @@
     "cancel": "Cancel",
     "labelColour": "Label colour",
     "colors": {
-      "gray": "Gray", "brown": "Brown", "orange": "Orange", "yellow": "Yellow", "green": "Green",
-      "blue": "Blue", "purple": "Purple", "pink": "Pink", "red": "Red"
+      "gray": "Gray",
+      "brown": "Brown",
+      "orange": "Orange",
+      "yellow": "Yellow",
+      "green": "Green",
+      "blue": "Blue",
+      "purple": "Purple",
+      "pink": "Pink",
+      "red": "Red"
     }
   },
-  "providers": { "demo": "Demo" },
+  "providers": {
+    "demo": "Demo"
+  },
   "store": {
     "darwin": "macOS Keychain",
     "win32": "Windows Credential Manager/DPAPI",
@@ -68,9 +81,18 @@
     "openAdvanced": "Open the advanced Google client settings",
     "connected": "Connected {{email}}",
     "providers": {
-      "gmail": { "title": "Connect Gmail", "sub": "Google account" },
-      "outlook": { "title": "Connect Outlook", "sub": "Microsoft account" },
-      "mock": { "title": "Add demo account", "sub": "Sample mail, offline" }
+      "gmail": {
+        "title": "Connect Gmail",
+        "sub": "Google account"
+      },
+      "outlook": {
+        "title": "Connect Outlook",
+        "sub": "Microsoft account"
+      },
+      "mock": {
+        "title": "Add demo account",
+        "sub": "Sample mail, offline"
+      }
     },
     "status": {
       "syncing": "Syncing…",
@@ -85,7 +107,8 @@
       "reauthorize": "Reauthorize",
       "syncNow": "Sync now",
       "disconnect": "Disconnect",
-      "disconnectConfirm": "<b>Disconnect {{email}}?</b> Its mail, labels and local reminders are removed from Naushen Mail on this computer. Nothing is deleted from {{provider}}."
+      "disconnectConfirm": "<b>Disconnect {{email}}?</b> Its mail, labels and local reminders are removed from Naushen Mail on this computer. Nothing is deleted from {{provider}}.",
+      "authExpires": "Authorization expires {{when}}"
     }
   },
   "oauth": {
@@ -103,7 +126,9 @@
     "secretHint": "Google treats a desktop-app secret as non-confidential, but the token endpoint still requires it.",
     "hideSecret": "Hide secret",
     "showSecret": "Show secret",
-    "google": { "title": "Google (Gmail)" },
+    "google": {
+      "title": "Google (Gmail)"
+    },
     "wizard": {
       "project": {
         "title": "Create a Google Cloud project",
@@ -172,12 +197,31 @@
     "builtWith": "Built with",
     "openSource": "Open-source software, used under its own licences.",
     "links": {
-      "setup": { "label": "Provider setup guide", "desc": "Connect Gmail", "desc_outlook": "Connect Gmail and Outlook" },
-      "decisions": { "label": "Decisions & architecture", "desc": "Stack, trade-offs, definition of done" },
-      "design": { "label": "Design system", "desc": "Tokens, type, motion" },
-      "privacy": { "label": "Privacy Policy", "desc": "What Naushen Mail stores and where" },
-      "issues": { "label": "Report an issue", "desc": "Bugs and ideas on GitHub" },
-      "source": { "label": "Source code", "desc": "Naushen Mail on GitHub" }
+      "setup": {
+        "label": "Provider setup guide",
+        "desc": "Connect Gmail",
+        "desc_outlook": "Connect Gmail and Outlook"
+      },
+      "decisions": {
+        "label": "Decisions & architecture",
+        "desc": "Stack, trade-offs, definition of done"
+      },
+      "design": {
+        "label": "Design system",
+        "desc": "Tokens, type, motion"
+      },
+      "privacy": {
+        "label": "Privacy Policy",
+        "desc": "What Naushen Mail stores and where"
+      },
+      "issues": {
+        "label": "Report an issue",
+        "desc": "Bugs and ideas on GitHub"
+      },
+      "source": {
+        "label": "Source code",
+        "desc": "Naushen Mail on GitHub"
+      }
     }
   },
   "appearance": {
@@ -198,16 +242,33 @@
     "theme": {
       "label": "Theme",
       "desc": "Follow macOS, or pick light or dark. Changes apply immediately.",
-      "light": "Light", "dark": "Dark", "system": "System"
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
     },
     "density": {
       "label": "Density",
-      "comfortable": { "label": "Comfortable", "desc": "More breathing room in the list, sidebar and reader" },
-      "compact": { "label": "Compact", "desc": "Tighter rows — more conversations on screen" }
+      "comfortable": {
+        "label": "Comfortable",
+        "desc": "More breathing room in the list, sidebar and reader"
+      },
+      "compact": {
+        "label": "Compact",
+        "desc": "Tighter rows — more conversations on screen"
+      }
     },
-    "accent": { "label": "Accent colour", "desc": "Selection, focus, unread dots and primary buttons." },
+    "accent": {
+      "label": "Accent colour",
+      "desc": "Selection, focus, unread dots and primary buttons."
+    },
     "accents": {
-      "blue": "Blue", "violet": "Violet", "pink": "Pink", "orange": "Orange", "green": "Green", "teal": "Teal", "neutral": "Neutral"
+      "blue": "Blue",
+      "violet": "Violet",
+      "pink": "Pink",
+      "orange": "Orange",
+      "green": "Green",
+      "teal": "Teal",
+      "neutral": "Neutral"
     },
     "counts": {
       "label": "Unread count display",
@@ -216,17 +277,35 @@
       "exact": "Exact count"
     },
     "threadStyle": {
-      "side": { "label": "Side peek", "desc": "Opens from the right, over the list" },
-      "center": { "label": "Center peek", "desc": "A centered popup over the list" },
-      "full": { "label": "Full page", "desc": "Replaces the list while open" }
+      "side": {
+        "label": "Side peek",
+        "desc": "Opens from the right, over the list"
+      },
+      "center": {
+        "label": "Center peek",
+        "desc": "A centered popup over the list"
+      },
+      "full": {
+        "label": "Full page",
+        "desc": "Replaces the list while open"
+      }
     },
     "listCount": {
       "label": "Show email count next to view title",
       "desc": "Shows how many conversations are in the current list, to the right of the title (Inbox, Categories, …). Off by default."
     },
-    "groupByDate": { "label": "Group by date", "desc": "Group threads under Today, Yesterday, Last 7 days and so on." },
-    "markRead": { "label": "Mark as read when opened", "desc": "A thread becomes read as soon as you open it." },
-    "remoteImages": { "label": "Block remote images", "desc": "Images in email are loaded only when you allow them. Protects against tracking pixels." },
+    "groupByDate": {
+      "label": "Group by date",
+      "desc": "Group threads under Today, Yesterday, Last 7 days and so on."
+    },
+    "markRead": {
+      "label": "Mark as read when opened",
+      "desc": "A thread becomes read as soon as you open it."
+    },
+    "remoteImages": {
+      "label": "Block remote images",
+      "desc": "Images in email are loaded only when you allow them. Protects against tracking pixels."
+    },
     "hideCategories": {
       "label": "Hide Promotions/Social/Updates/Forums from Inbox",
       "desc": "Gmail only. Keeps the Inbox to Primary mail; the rest stays one click away under Categories in the sidebar. Off by default — nothing changes until you turn this on."
@@ -235,16 +314,24 @@
       "label": "Show avatars",
       "desc": "Sender and recipient photos in the thread list and reader, via Gravatar. Off by default — Notion Mail didn't show them either, and it's one more thing pinging an outside service per contact."
     },
-    "swipe": { "label": "Swipe gestures", "desc": "Two-finger swipe on a conversation: left archives, right sets a reminder. Trackpads only." },
+    "swipe": {
+      "label": "Swipe gestures",
+      "desc": "Two-finger swipe on a conversation: left archives, right sets a reminder. Trackpads only."
+    },
     "autoAdvance": {
       "label": "Auto-advance",
       "desc": "Where to go after you archive, trash or snooze the open thread.",
-      "next": "Next", "previous": "Previous", "close": "Close"
+      "next": "Next",
+      "previous": "Previous",
+      "close": "Close"
     }
   },
   "sending": {
     "title": "Sending & notifications",
-    "groups": { "sending": "Sending", "notifications": "Notifications" },
+    "groups": {
+      "sending": "Sending",
+      "notifications": "Notifications"
+    },
     "undo": {
       "label": "Undo send",
       "desc": "Hold each message for a moment after you press Send, so you can take it back.",
@@ -255,17 +342,29 @@
     "notifications": {
       "label": "Desktop notifications",
       "desc": "Show a macOS notification when new mail arrives in your inbox. Bursts are grouped into one; nothing fires while you are looking at that inbox.",
-      "off": "Off", "all": "All new mail", "people": "People only"
+      "off": "Off",
+      "all": "All new mail",
+      "people": "People only"
     },
-    "dock": { "label": "Dock badge", "desc": "Show the number of unread Inbox messages on the Dock icon." }
+    "dock": {
+      "label": "Dock badge",
+      "desc": "Show the number of unread Inbox messages on the Dock icon."
+    }
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",
     "description": "Naushen Mail is built to be driven from the keyboard. Shortcuts are fixed for now.",
     "viewAll": "View all shortcuts",
     "names": {
-      "commandMenu": "Command menu", "compose": "Compose", "archive": "Archive", "reply": "Reply", "reminder": "Set reminder",
-      "label": "Label", "search": "Search", "undo": "Undo", "all": "Show all shortcuts"
+      "commandMenu": "Command menu",
+      "compose": "Compose",
+      "archive": "Archive",
+      "reply": "Reply",
+      "reminder": "Set reminder",
+      "label": "Label",
+      "search": "Search",
+      "undo": "Undo",
+      "all": "Show all shortcuts"
     }
   },
   "labels": {
@@ -302,8 +401,15 @@
     "delete": "Delete",
     "deleteConfirm": "<b>Delete the view “{{name}}”?</b> Your mail is not affected.",
     "role": {
-      "inbox": "Inbox", "sent": "Sent", "drafts": "Drafts", "trash": "Trash", "spam": "Spam", "archive": "Archive",
-      "starred": "Starred", "important": "Important", "all": "All mail"
+      "inbox": "Inbox",
+      "sent": "Sent",
+      "drafts": "Drafts",
+      "trash": "Trash",
+      "spam": "Spam",
+      "archive": "Archive",
+      "starred": "Starred",
+      "important": "Important",
+      "all": "All mail"
     },
     "filter": {
       "reminders": "Reminders",
@@ -376,10 +482,22 @@
     "templatesIntro": "Start from a common layout, then edit the placeholder text like any other part of the signature.",
     "templatesAria": "Signature templates",
     "templates": {
-      "minimal": { "label": "Minimal", "description": "Just your name and title — no photo." },
-      "photo-left": { "label": "Photo left", "description": "A circular photo beside your name, title and email." },
-      "compact": { "label": "Compact", "description": "Name, title and phone on a single line." },
-      "classic": { "label": "Classic block", "description": "Name, title, company, a divider, then contact info." }
+      "minimal": {
+        "label": "Minimal",
+        "description": "Just your name and title — no photo."
+      },
+      "photo-left": {
+        "label": "Photo left",
+        "description": "A circular photo beside your name, title and email."
+      },
+      "compact": {
+        "label": "Compact",
+        "description": "Name, title and phone on a single line."
+      },
+      "classic": {
+        "label": "Classic block",
+        "description": "Name, title, company, a divider, then contact info."
+      }
     },
     "replaceConfirm": "Replace your current signature with <b>{{name}}</b>? This can't be undone.",
     "replace": "Replace",

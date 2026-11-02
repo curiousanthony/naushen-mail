@@ -25,7 +25,9 @@
     "trash": "ゴミ箱に移動",
     "trashed": "ゴミ箱に移動しました",
     "noSubject": "(件名なし)",
-    "messageCount_other": "{{count}}件のメッセージ"
+    "messageCount_other": "{{count}}件のメッセージ",
+    "close": "Close",
+    "closeThread": "Close thread"
   },
   "replyBar": {
     "reply": "返信",

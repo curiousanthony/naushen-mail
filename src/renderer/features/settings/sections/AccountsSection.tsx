@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { Trans, useTranslation } from 'react-i18next'
 import { AlertCircle, CircleUserRound, FlaskConical, Mail, RefreshCw, ShieldAlert } from 'lucide-react'
 import { OUTLOOK_ENABLED } from '@shared/features'
-import type { Account, ProviderKind } from '@shared/types'
+import { authExpiresAt, type Account, type ProviderKind } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { Avatar, Button, ConfirmBar, EmptyState, Group, SectionTitle, Spinner } from '../ui'
 import { OAuthSetup } from './OAuthSetup'
@@ -52,6 +52,9 @@ function AccountRow({ account, now, onConnect, connecting }: { account: Account;
             <span className={clsx('st-badge', `st-badge--${account.provider}`)}>{providerLabel(account.provider)}</span>
           </div>
           <div className="st-account__email">{account.email}</div>
+          {authExpiresAt(account) !== null && account.status !== 'reauth' && (
+            <div className="st-account__hint">{t('accounts.row.authExpires', { when: new Date(authExpiresAt(account)!).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) })}</div>
+          )}
           {!account.avatarUrl && account.provider !== 'mock' && account.status !== 'reauth' && (
             <div className="st-account__hint">{t('accounts.row.noPhoto', { company: account.provider === 'gmail' ? 'Google' : 'Microsoft' })}</div>
           )}
